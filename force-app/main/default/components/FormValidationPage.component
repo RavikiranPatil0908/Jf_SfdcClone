@@ -2,7 +2,7 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 25--03--2025
+  @last modified on  : 02--04--2025
   @last modified by  : @Ravi
 -->
 <apex:component access="global">
@@ -15,7 +15,7 @@
     <apex:attribute access="global" name="lateralAddmissionNotAllowProgramList" type="String" description="Program List" />
     // var totalAcad =  3;
     var ctrlPressed = false;
-    //var isCalled = false;
+    //  var isCalled = false;
     // var objDate = {};
     // var responseData = null;
     // var checkPercent = {
