@@ -1,0 +1,98 @@
+<apex:page controller="AsyncShootFacultyController" showHeader="false" sidebar="false">
+    
+      <apex:includeLightning />
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+        <title>Video Remark Form</title>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+       
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+       
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet" />
+            <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <style>
+            #auraErrorMessage {
+        display: none;
+        }
+       
+        .form-group .control-label:after {
+            content:"*";
+            color:red;
+        }
+       
+        .lightboxContainer {
+            position:relative;
+            display:inline-block;
+        }
+       
+        .lightboxContainer:after {
+            content: url("{!URLFOR($Resource.FacultyRemarkDocuments,'playBtn.png')}");
+            z-index:999;
+            position:absolute;
+            display: inline-block;
+            top:50%;
+            left:50%;
+            margin-left:-32px;
+            margin-top:-32px;
+            opacity:0.8;
+           
+        }
+       
+        .lightboxContainer:hover:after {
+            opacity:1;
+        }
+       
+       
+        .lightboxContainer img {
+            width: 1280px;
+            height: 500px;
+            position: relative;
+        }
+       
+        </style>
+        </head>
+        <body>
+    <apex:form id="frm">
+        <apex:pageBlock title="Faculty Records" >
+            <apex:outputPanel id="norec" rendered="{!totalRecords == 0}">
+                <apex:outputText value="No records found." style="color:red; font-weight:bold;" />
+            </apex:outputPanel>
+              <apex:pageBlockTable value="{!facultyName}" var="r">
+                  <apex:column headerValue="Faculty Name">
+                   <apex:outputText value="{!facultyName}" />
+                  </apex:column>
+            </apex:pageBlockTable>
+            <apex:pageBlockTable id="recordsTable" value="{!records}" var="record">
+                <apex:column headerValue="Record Name">
+                    <apex:outputPanel layout="block">
+                        
+                       <apex:outputLink value="{$Label.Site_Url}apex/FacultyVideoRemarks?recordId={!record.Id}&remark={!IF(NOT(ISBLANK(record.Video_Link_Version_2__c)),'2', '1')}" rendered="{!record.Post_Production_Status__c = 'Sent For Faculty Review'}">
+                            {!record.Name}
+                        </apex:outputLink>
+                        <apex:outputText value="{!record.Name}" rendered="{!record.Post_Production_Status__c !='Sent For Faculty Review'}" />
+                        </apex:outputPanel>
+                </apex:column>
+                <apex:column value="{!record.Post_Production_Status__c}" headerValue="Status"/>
+                <apex:column value="{!record.Subject__c}" headerValue="Subject"/>
+                 <apex:column value="{!record.Chapter_Name__c}" headerValue="Chapter Name" />
+                <apex:column headerValue="Current Download Link">
+                     <apex:outputLink value="{!record.Current_Download_Link__c}">{!record.Current_Download_Link__c}</apex:outputLink>
+                    </apex:column>
+            </apex:pageBlockTable>
+ 
+            <!-- Pagination Controls -->
+            
+            <apex:panelGrid id="btn" columns="2">
+                <apex:commandButton value="Previous" action="{!previousPage}" disabled="{!pageNumber == 1}" rerender="recordsTable,btn,frm"/>
+                <apex:commandButton value="Next" action="{!nextPage}" disabled="{!pageNumber >= totalPages}" rerender="recordsTable,btn,frm"/>
+                <apex:outputText value="Page {!pageNumber} of {!CEILING(totalRecords / pageSize)} of total {!totalRecords} Records"/>
+                
+            </apex:panelGrid>
+                
+        </apex:pageBlock>
+    </apex:form>
+     </body>
+</apex:page>

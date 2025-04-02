@@ -1,0 +1,9 @@
+<apex:component controller="InterviewSlotApprovalController" access="global">
+    <apex:attribute access="global" name="interviewSlot" assignTo="{!InterviewSlotID}" type="String" description="InterviewSlot ID" />
+
+<apex:repeat value="{!lstAccount}" var="objAccount" id="theRepeat">
+    <apex:outputText value="{!objAccount.Name}" id="theValue" />
+    <br/>
+</apex:repeat>
+<!-- End Default Content REMOVE THIS -->
+</apex:component>

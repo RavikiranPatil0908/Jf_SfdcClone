@@ -1,0 +1,8 @@
+<apex:page readOnly="true" controller="Student_Deletion_from_BB" sidebar="false" standardStylesheets="false" showHeader="false" cache="true" expires="0" 
+contentType="application/octet-stream#Student_Deletion_from_BB.csv" action="{!GetData}">
+    <apex:outputText value="Student ID"/> 
+        <apex:repeat value="{!lstOpp}" var="opp">
+            <apex:outputText value="{!NewLine}"/>
+            <apex:outputText value="{!opp.Account.nm_StudentNo__c }"/>
+        </apex:repeat>   
+</apex:page>

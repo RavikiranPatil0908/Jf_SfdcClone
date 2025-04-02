@@ -1,0 +1,464 @@
+<apex:page showHeader="false" standardStylesheets="false" controller="ValidityExtensionPaymentController" >
+ <style>
+        .Processingview
+        {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;           
+            width:  100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+           
+        }
+        .required
+        {
+            border: 2px solid #c00 !important;
+        }
+        .overlay
+        {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+          background-color: rgba(0,0,0,0.5);
+        }
+        .poup
+        {
+            position: fixed;
+            top: 30%;
+            width: 40%;
+            margin-left: 30%;
+            z-index: 11;
+        }
+        .messageCell
+        {
+            color:White !important;
+        }
+        .LateFee
+        {
+            Color: red;
+            float: right;
+            margin-right: 4%;
+            font-style: italic;
+        }
+     </style>
+     <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>NMIMS Distance Education: Login</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        
+            <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/logo.png')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/select-bg.png')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/banner.jpg')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/chosen.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/style.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/vars.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css.map')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css.map')}"/>
+     </head>   
+         <nav class="headerNavigation">
+          <div class="container">
+            <div class="logoImg"><a href="#"><apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive"/></a></div>
+            <div class="headerLinks"><!--<a href="#" class="header-phone-link"><span class="icon-phone"></span></a>-->
+              <button class="mobileMenu"><span class="icon-menu"></span></button>
+              <div class="search"><a href="#" class="icon-search" data-toggle="modal" data-target="#searchModal"></a></div>
+              <ul class="navLinks">
+                <li class="link"> <a href="#">
+                  <div class="linkIns">
+                    <div class="icon-looking-for linkIcon"></div>
+                    I‘m looking for <span class="icon-down-arrow arrow-down"></span> </div>
+                  </a>
+                  <ul class="linkDropdown">
+                    <li><a href="#">Programs</a></li>
+                    <li><a href="#">Academic Deliverables</a></li>
+                    <li class="innerDropdown"><a href="#">Resources <span class="">&gt;&gt;</span></a>
+                      <ul class="linkDropdownIns">
+                        <li><a href="#">Programs</a></li>
+                        <li><a href="#">Examinations</a></li>
+                        <li><a href="#">Students Zone</a></li>
+                        <li><a href="#">Alumni</a></li>
+                      </ul>
+                    </li>
+                    <li><a href="#">Support</a></li>
+                    <li><a href="#">Calendar</a></li>
+                    <li><a href="#">Locations</a></li>
+                    <li><a href="#">Alumni</a></li>
+                    <li><a href="#">Students Zone</a></li>
+                  </ul>
+                </li>
+                <li class="link"> <a href="#">
+                  <div class="linkIns">
+                    <div class="icon-admission linkIcon"></div>
+                    Admission info <span class="icon-down-arrow arrow-down"></span> </div>
+                  </a>
+                  <ul class="linkDropdown">
+                    <li><a href="#">Admission Process</a></li>
+                    <li><a href="#">Fee Structure</a></li>
+                    <li><a href="#">Request A Visit</a></li>
+                    <li><a href="#">Apply Now</a></li>
+                    <li><a href="#">Check Status</a></li>
+                    <li><a href="#">Re-Register</a></li>
+                  </ul>
+                </li>
+                <li class="link"> <a href="#">
+                  <div class="linkIns">
+                    <div class="icon-university linkIcon"></div>
+                    The University <span class="icon-down-arrow arrow-down"></span> </div>
+                  </a>
+                  <ul class="linkDropdown">
+                    <li class="innerDropdown"><a href="#">Why NGASCE <span class="">&gt;&gt;</span></a>
+                      <ul class="linkDropdownIns open-left">
+                        <li><a href="#">Key Differentiators</a></li>
+                        <li><a href="#">Awards &amp; Recognition</a></li>
+                        <li><a href="#">Testimonials</a></li>
+                      </ul>
+                    </li>
+                    <li class="innerDropdown"><a href="#">About Us <span class="">&gt;&gt;</span></a>
+                      <ul class="linkDropdownIns open-left">
+                        <li><a href="#">Our Vision and Mission</a></li>
+                        <li><a href="#">Vice Chancellor's Note</a></li>
+                        <li><a href="#">Director's Note</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <!--/ Logo & Navigation --> 
+          <!-- Breadcrumb & Social Icons -->
+        <div class="topSocialWrapper">
+          <div class="container">
+            <div class="grayWrapper">
+              <ol class="breadcrumb">
+                <li><a href="#">
+                  <h5>Home</h5>
+                  </a></li>
+                <li><a href="#">
+                  <h5>Admission Info</h5>
+                  </a></li>
+                <li class="active">
+                  <h5>Payment</h5>
+                </li>
+              </ol>
+            </div>
+            <div class="shareIcons">
+              <ul>
+                <li><a href="#" class="icon-google-plus"></a></li>
+                <li><a href="#" class="icon-twitter"></a></li>
+                <li><a href="#" class="icon-facebook"></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!--/ Bredcrums & Social Icons --> 
+
+        <!-- Banner -->
+        <div class="bannerContainer" style="background-image:url({!URLFOR($Resource.ImageResource,'images/')}banner.jpg);">
+        
+          <div class="container">
+            <div class="bannerIns">
+              <h2>Payment</h2>
+            </div>
+          </div>
+        </div>
+        <!--/ Banner -->  
+        
+       <!-- Payment -->
+<apex:form >   
+<apex:actionFunction name="callMakePayment" action="{!makePayment}"/>
+<form id="reg-long-form" role="form">
+<apex:pageMessages />
+  <div class="tab-wrapper">
+    <div class="container">
+      <div class="tab-content">
+        <div class="tab-pane active" style="padding:0">
+          <div class="form-wrapper">
+            <div class="row">
+              <div class="col-md-6">
+                   <div class="form-group">
+                     <label for="first_name">Student No</label>
+                      <input type="Text" disabled="true" value="{!studentNumber}" class="form-control" />
+                   </div>
+                 <div class="form-group">
+                   <label for="first_name">Amount</label>
+                     <input type="Text" disabled="true" value="{!Amount}" class="form-control"/>
+                 </div>
+                </div>
+               </div>  
+        
+               <div class="message-box text-center form-group">Mode of Payment</div>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="radio"><strong>Select a mode of payment</strong></div>
+                </div>
+                <div class="col-sm-4 col-md-3">
+                  <div class="radio">
+                    <label>
+                        <input type="radio" name="PaymentMode" id="PaymentMode1" class="iCheckRadio" value="Online" data-mode="1"  required="required"/>
+                         <span>Online</span>
+                     </label>
+                  </div>
+                </div>
+                <div class="col-sm-4 col-md-3">
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="PaymentMode" id="PaymentMode2" class="iCheckRadio" data-mode="2" value="Demand Draft" />
+                        <span>Demand Draft</span>
+                     </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-------------------------Demand Draft Details-----------------------------------------------------------------------------------------------> 
+              <apex:outputPanel rendered="{!IF(ICValue =='true' && ICValue !=null,true,false)}">
+               <div class="row" id="DDNote">
+                        <div class="col-md-4">
+                        <div class="form-group required-label">
+                          
+                          <apex:inputField id="txtddno" value="{!objPayment.nm_DemandDraftNumber__c}" styleClass="form-control notnull" html-placeholder="Demand Draft Number"/>
+                        </div>
+                       </div> 
+                       <div class="col-md-4">
+                        <div class="form-group">
+                          
+                          <apex:inputField id="txtddbank" value="{!objPayment.nm_NameoftheBank__c}" styleClass="form-control notnull" html-placeholder="Name of the Bank"/>
+                        </div>
+                       </div> 
+                        <div class="col-md-4">
+                        <div class="form-group required-label">
+                          
+                          <div class="input-group date" data-date-format="DD/MM/YYYY" id="datetimepicker1"><span class="dateInput dateOnlyInput">
+                          <apex:inputText value="{!objPayment.nm_DemandDraftDate__c}" styleClass="form-control notnull" id="dob" html-placeholder="Demand Draft Date"/>
+                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                        </div>
+                      </div>
+                        <div class="col-md-4">
+                          <div class="form-group required-label">
+                          
+                          <apex:inputField id="txtbankloc" value="{!objPayment.nm_BankLocation__c}" styleClass="form-control notnull" html-placeholder="Bank Location"/>
+                        </div>
+                        </div>
+                        <div class="col-md-4">
+                        <div class="form-group required-label">
+                         
+                          <div class="input-group date" data-date-format="DD/MM/YYYY" id="datetimepicker2"><span class="dateInput dateOnlyInput">
+                          <apex:inputText value="{!objPayment.nm_DispatchDate__c}" styleClass="form-control notnull" id="doc1" html-placeholder="Dispatch Date"/>
+                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                        </div>
+                      </div>
+                  </div> <!-- /row -->  
+                 </apex:outputPanel> 
+                <apex:outputPanel rendered="{!If(ICValue != 'true', true, false)}">   
+                    <div class="row" id="DDNote">
+                      <p class="note">
+                      <span style="color:red;">Note:</span> Kindly personally submit the Demand Draft to: {!objAccount.nm_Centers__r.name} {!objAccount.nm_Centers__r.nm_City__c}</p>
+                    </div> <!-- /row -->
+                </apex:outputPanel>  
+ <!-----------------------------------------------------------------end Dd Section---------------------------------------------------------------->            
+            <div class="row">
+              <div class="col-sm-6">
+                <apex:commandButton value="Make Payment" styleClass="btn pgSubmit"  id="PayBtn" onclick="GoToPayment();return false;"/>
+              </div>
+              <apex:outputPanel rendered="{!IF(ICValue =='true' && ICValue !=null,true,false)}">
+               <div class="col-sm-6">
+                 <apex:commandButton value="Save DD Details" styleClass="btn pgSubmit"  id="PayBtndd" action="{!SaveDD}" />
+                 </div>
+                 </apex:outputPanel>
+                      
+           </div>     
+         </div>
+       </div>
+      </div>
+     </div>
+    </div>
+</form>
+</apex:form>             
+    <!-- Footer -->
+        <footer>
+          <div class="container">
+            <div class="row">
+              <div class="col-md-2 col-sm-4">
+                <p class="small">I‘m looking for</p>
+                <ul class="footerLinks">
+                  <li><a href="programs.html">Programs</a></li>
+                  <li><a href="examination-process.html">Examinations</a></li>
+                  <li><a href="#">Students Zone</a></li>
+                  <li><a href="#">Academic Deliverables</a></li>
+                  <li><a href="#">Resources</a></li>
+                  <li><a href="#">Support</a></li>
+                  <li><a href="#">Calendar</a></li>
+                </ul>
+              </div>
+              <div class="col-md-3 col-sm-4">
+                <p class="small">Admission Info</p>
+                <ul class="footerLinks">
+                  <li><a href="admission-process.html">Admission Process</a></li>
+                  <li><a href="#">Fee Structure</a></li>
+                  <li><a href="#">Lateral Admissions Or Upgradation</a></li>
+                  <li><a href="#">Request A Visit</a></li>
+                  <li><a href="#">Apply Now</a></li>
+                  <li><a href="#">Check Status</a></li>
+                  <li><a href="#">Re-Register</a></li>
+                </ul>
+              </div>
+              <div class="col-md-2 col-sm-4">
+                <p class="small">The University</p>
+                <ul class="footerLinks">
+                  <li><a href="about.html">About us</a></li>
+                  <li><a href="#">Vice Chancellor’s Note</a></li>
+                  <li><a href="#">Director’s Note</a></li>
+                  <li><a href="#">Key Differentiators</a></li>
+                  <li><a href="#">Awards AND Recognition</a></li>
+                  <li><a href="#">Testimonials</a></li>
+                  <li><a href="locations.html">Locations</a></li>
+                </ul>
+              </div>
+              <div class="clearfix visible-sm"></div>
+              <div class="col-md-5">
+                <div class="connectWrapper">
+                  <form class="form-inline">
+                    <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Sign Up for latest Updates" />
+                    <button type="submit" class="btn btn-default custom-btn">SIGN UP</button>
+                  </form>
+                  <div class="footerSocialIcons">
+                    <p class="small">Follow Us :</p>
+                    <p class="text">Connect with us via Social Media and get all our latest news and upcoming events.</p>
+                    <ul>
+                      <li><a href="#" class="icon-twitter"></a></li>
+                      <li><a href="#" class="icon-facebook"></a></li>
+                      <li><a href="#" class="icon-google-plus"></a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-md-12">
+                <div class="footerBottom">
+                  <div class="pageLinks">
+                    <ul>
+                      <li><a href="#">NMIMS UNIVERSITY </a></li>
+                      <li><a href="news.html"> NEWS AND EVENTS </a></li>
+                      <li><a href="#" >BLOG </a></li>
+                      <li><a href="#">CORPORATE CONNECT </a></li>
+                      <li><a href="our-faculty.html">FACULTY </a></li>
+                      <li><a href="#">FAQ'S </a></li>
+                      <li><a href="#"> CONTACT US</a></li>
+                    </ul>
+                  </div>
+                  <div class="copyRight">
+                    <p class="text">&copy; 2016 NMIMS. All Rights Reserved.</p>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+        <!--/ Footer --> 
+
+    <!-- Search Popup -->
+    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <form class="form-inline" id="">
+              <input type="text" class="form-control" id="searchInput" placeholder=""/>
+              <button type="" class="icon-search"></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ Search Popup --> 
+    
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $('.notnull').attr('required','true');
+        $('[id$=DDNote]').hide();
+        $('[id$=PayBtndd]').hide();
+
+        $('[id$=btnErr]').click(function(){
+            $('[id$=ErrorPopUp]').hide();
+            return false;
+        });
+        
+        var opt = $('[id$=hdnPaymentMode]').val();
+        if( opt == 'Demand Draft' )
+        {
+            $('[id$=DDNote]').show();
+            $('[id$=PayBtn]').hide();
+            $('[id$=PayBtndd]').show();
+        }
+        else if( opt == 'Online' )
+        {
+            $('[id$=DDNote]').hide();
+            $('[id$=PayBtn]').show();
+            $('[id$=PayBtndd]').hide();
+        }
+       
+        $('input[name$=PaymentMode]').change(function(){
+            var selectedOpt = this.value; 
+            if(selectedOpt != undefined)   
+            {        
+                $('[id$=hdnPaymentMode]').val(selectedOpt);
+                 
+                if( selectedOpt == 'Demand Draft' )
+                {
+                    $('[id$=DDNote]').show();
+                    $('[id$=PayBtn]').hide();
+                    $('[id$=PayBtndd]').show();
+                }
+                else if( selectedOpt == 'Online' )
+                {
+                    $('[id$=DDNote]').hide();
+                    $('[id$=PayBtn]').show();
+                    $('[id$=PayBtndd]').hide();
+                 }
+            }
+        });
+        $('input[name$=PaymentMode1]').change(function(){
+            
+            var selectedOpt = this.value; 
+            if(selectedOpt != undefined)   
+            {        
+                 $('[id$=hdnPaymentOption]').val(selectedOpt);
+            }     
+        });
+        
+    });
+   
+     
+    </script>
+    <script>
+       function GoToPayment()
+      {
+          callMakePayment();
+      }
+    </script>
+     <!--All java script  -->
+     <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+     <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}"/>
+</apex:page>

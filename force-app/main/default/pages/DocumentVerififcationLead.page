@@ -1,0 +1,102 @@
+<apex:page controller="nmDocVerificationlead" id="pg">
+
+  <apex:sectionHeader subtitle="{!objLead.firstname} {!objLead.lastname}" title="Document Verification"/>
+  <style>
+  
+    .Processingview
+        {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;           
+            width:  100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+           
+        }
+    </style>
+    
+<script type="text/javascript">
+            function validate() {
+                // validate code here
+             
+               call();
+            }
+        </script>
+<head>
+ <apex:includeScript value="{!URLFOR($Resource.Data,'js/vendor/modernizr-2.6.2-respond-1.1.0.min.js')}"/>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+ 
+  <apex:form id="idForm">
+      <apex:actionStatus id="idStatus" startText="Processing..."/>
+      <apex:outputPanel id="main">
+         
+          <apex:outputPanel rendered="{!if(show==true,false,true)}">
+          <apex:pageBlock id="pb1" title="Verify Documents" >
+          <apex:pageMessages id="msg"></apex:pageMessages>
+              <apex:pageBlockTable value="{!lstLinkForDocumentLead }" var="varDocument"> 
+                  <apex:column value="{!varDocument.nm_DocumentName__c}" headerValue="Document Name"/>
+                  <apex:column value="{!varDocument.nm_DocumentLink__c}" headerValue="Document Link"/>
+                  <apex:column headerValue="Status">
+                      
+                      <apex:selectList id="chooseColor" value="{!varDocument.nm_Status__c}" size="1" rendered="{!IF(varDocument.nm_DocumentName__c == 'AIU Certificate (For Foreign University)' , true,false)}">
+                        <apex:selectOption itemValue="--None--" itemLabel="--None--"/>
+                        <apex:selectOption itemValue="Approved" itemLabel="Approved"/>
+                        <apex:selectOption itemValue="Not Applicable" itemLabel="Not Applicable"/>
+                        <apex:selectOption itemValue="Disapproved" itemLabel="Disapproved"/>
+                       
+                        <apex:selectOption itemValue="Re-Submited" itemLabel="Re-Submited"/>
+                        <apex:actionSupport event="onchange" reRender="main" action="{!ChangeDocumentsStatus}" status="view"/>
+                      </apex:selectList> 
+                      <apex:selectList id="chooseColor2" value="{!varDocument.nm_Status__c}" size="1" rendered="{!IF(varDocument.nm_DocumentName__c == 'Degree Certificate' || varDocument.nm_DocumentName__c == 'Aadhaar Card', true,false)}">
+                        <apex:selectOption itemValue="--None--" itemLabel="--None--"/>
+                        <apex:selectOption itemValue="Approved" itemLabel="Approved"/>
+                          <apex:selectOption itemValue="Not Applicable" itemLabel="Not Applicable"/>
+                        <apex:selectOption itemValue="Disapproved" itemLabel="Disapproved"/>
+                        <apex:selectOption itemValue="Admission Form & Documents Provisional" itemLabel="Admission Form & Documents Provisional" />
+                        <apex:selectOption itemValue="Re-Submited" itemLabel="Re-Submited"/>
+                      <apex:actionSupport event="onchange" reRender="main" action="{!ChangeDocumentsStatus}" status="view"/> 
+                      </apex:selectList> 
+                      <apex:selectList id="chooseColor1" value="{!varDocument.nm_Status__c}" size="1" rendered="{!IF(varDocument.nm_DocumentName__c != 'AIU Certificate (For Foreign University)'&& varDocument.nm_DocumentName__c != 'Degree Certificate' && varDocument.nm_DocumentName__c != 'Aadhaar Card', true,false)}">
+                        <apex:selectOption itemValue="--None--" itemLabel="--None--"/>
+                        <apex:selectOption itemValue="Approved" itemLabel="Approved"/>
+                          <apex:selectOption itemValue="Not Applicable" itemLabel="Not Applicable"/>
+                        <apex:selectOption itemValue="Disapproved" itemLabel="Disapproved"/>                        
+                        <apex:selectOption itemValue="Re-Submited" itemLabel="Re-Submited"/>
+                        <apex:actionSupport event="onchange" reRender="main"  action="{!ChangeDocumentsStatus}" status="view"/>
+                      </apex:selectList> 
+                     
+                     
+                  </apex:column>
+                  <apex:column headerValue="Reason if Disapproved" id="cl">
+                      <apex:inputText value="{!varDocument.nm_ReasonforDisapprove__c}" id="txt" disabled="{!varDocument.nm_Status__c == 'Approved'}"   />
+                 
+                  </apex:column>
+              </apex:pageBlockTable>
+          </apex:pageBlock>
+          <apex:actionFunction name="call" action="{!save}"/>
+          <apex:pageBlock id="pb2" title="Update Status">
+              <apex:pageBlockSection id="pbinformation" >
+                  <apex:selectList value="{!objLead.nm_StudentStatus__c}" size="1">
+                      <apex:selectOptions value="{!lstOptionStatus}"/>
+                      <apex:actionSupport reRender="pb2" event="onchange"/>
+                  </apex:selectList>
+                  <apex:inputField value="{!objLead.nm_ReasonforProvisionalNoAdmission__c}" rendered="{!IF(objLead.nm_StudentStatus__c == 'Admission Form & Documents Provisional' || objLead.nm_StudentStatus__c == 'Not Eligible',true,false)}"/>
+              </apex:pageBlockSection> 
+              <center>
+                  <apex:commandButton title="Update"  value="Update" onclick="this.disabled='disabled'; validate();" />  
+              </center> 
+          </apex:pageBlock>
+          </apex:outputPanel>
+          
+          <center>
+          <apex:commandButton value="GO Back" action="{!Back}" rendered="{!show}"/>
+          </center>
+      </apex:outputPanel>
+      <apex:actionStatus id="view" startStyleClass="Processingview"/>
+  </apex:form>
+
+</apex:page>

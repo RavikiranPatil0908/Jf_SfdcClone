@@ -1,0 +1,501 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 06-12-2024
+  @last modified by  : @BK
+-->
+<apex:component access="global" controller="DashboardPageController" allowDML="true">
+
+    <apex:attribute access="global" name="recordId" type="ID" description="Record Id" assignTo="{!objectId}"/>
+    <apex:attribute access="global" name="objType" type="String" description="Object Type" assignTo="{!objectType}"/>
+
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/pages/ui/notifications.js"></script>
+    <!-- Custom Css -->
+    <link href="{!URLFOR($Resource.AdminBSBMaterialDesign, 'AdminBSBMaterialDesign/css/dashboard.css')}" rel="stylesheet"/>
+
+    <div class="container-fluid">
+        <div class="block-header">
+            <h3 style="color:#37a0f4">Hello! {!objRecord.name}</h3>
+        </div>
+
+        <!-- Status -->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="header p-b-0 b-b-n">
+                    <div class="row clearfix">
+                        <div class="col-xs-12 col-sm-6">
+                            <h5>Basic Details</h5>
+                        </div>
+                        <!-- <div class="col-xs-12 col-sm-6">
+                            <h5>Status : <span style="color:#37a0f4"> Registration Fee Paid</span></h5>
+                        </div> -->
+                   
+                    </div>
+                </div>
+                <div class="body">
+                    <apex:actionFunction name="SendOTP" action="{!sendOTP}" reRender="VerificationModal,openModal" oncomplete="showVerificationModal();">
+                        <apex:param name="otpMode" value="" assignTo="{!objOTP.OtpMode}" /> 
+                        <apex:param name="otpResendMsg" value="" assignTo="{!objOTP.resendOtp}" />
+                    </apex:actionFunction>
+
+                    <apex:actionFunction name="VerifyOTP" action="{!VerifyOTP}" reRender="informationSection,handleMsg,otpInput,errorMsg" oncomplete="showErrorMsg();">
+                        <apex:param name="otpCode" value="" assignTo="{!objOTP.Otp}" />
+                    </apex:actionFunction>
+                    <apex:outputPanel id="informationSection">
+                        <div class="table-responsive desktop-view">
+                            <table class="table table-hover dashboard-task-infos">
+                                <tbody>
+                                    <tr>
+                                        <td class="table-label">Registration ID</td>
+                                        <td>{!objRecord.registrationId}</td>
+                                        <td class="table-label">Applicant Name</td>
+                                        <td>{!objRecord.name}</td>
+                                        <td></td>
+                                       
+                                    </tr>
+                                    <tr>
+                                        <td class="table-label">Program Category</td>
+                                        <td>{!objRecord.programCategory}</td>
+                                        <td class="table-label">Mobile Number</td>
+                                        <td>{!objRecord.phone}</td>
+                                        <apex:outputPanel layout="none" rendered="{!objRecord.isMobileVerified}">
+                                            <td class="col-teal"> Verified</td>                                          
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="none" rendered="{!!objRecord.isMobileVerified}">
+                                            <td>
+                                                <a href="javascript:void(0);" onclick="triggerOTP('M','false');" class=" col-pink">Verify</a>
+                                            </td>                                          
+                                        </apex:outputPanel>
+                                    </tr>
+                                    <tr>
+                                        <td class="table-label">Program Name</td>
+                                        <td>{!objRecord.programName}</td>
+                                        <td class="table-label">Email ID</td>
+                                        <td>{!objRecord.email}</td>
+                                        <apex:outputPanel layout="none" rendered="{!objRecord.isEmailVerified}">
+                                            <td class="col-teal"> Verified</td>                                          
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="none" rendered="{!!objRecord.isEmailVerified}">
+                                            <td> 
+                                                <a href="javascript:void(0);" onclick="triggerOTP('E','false');" class="col-pink">Verify</a>
+                                            </td>                                          
+                                        </apex:outputPanel> 
+                                    </tr>
+                                    <tr>
+                                        <apex:outputPanel layout="none" rendered="{!!ISBLANK(objRecord.specialization)}">
+                                            <td class="table-label">Specialization</td>
+                                            <td>{!objRecord.specialization}</td>
+                                        </apex:outputPanel>
+                                        <td class="table-label">City</td>
+                                        <td>{!objRecord.city}</td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row studentDetails mobile-view">
+                            <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"><span class="table-label">Registration ID</span></div>
+                                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8"><span>{!objRecord.registrationId}</span></div>
+                            </div>
+                            <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"><span class="table-label">Applicant Name</span></div>
+                                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8"><span>{!objRecord.name}</span></div>
+                            </div>
+                            <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"><span class="table-label">Program Category</span></div>
+                                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8"><span>{!objRecord.programCategory}</span></div>
+                            </div>
+                            <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"><span class="table-label">Program Name</span></div>
+                                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8"><span>{!objRecord.programName}</span></div>
+                            </div>
+                            <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"><span class="table-label">Mobile Number</span></div>
+                                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                    <span>
+                                        {!objRecord.phone}
+                                        <apex:outputPanel layout="none" rendered="{!objRecord.isMobileVerified}">
+                                            <span class="col-teal" style="float:right"> Verified</span>                                          
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="none" rendered="{!!objRecord.isMobileVerified}">
+                                            <span style="float: right;"> 
+                                                <a href="javascript:void(0);" onclick="triggerOTP('M','false');" class="col-pink">Verify</a>
+                                            </span>                                          
+                                        </apex:outputPanel>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"><span class="table-label">Email ID</span></div>
+                                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                    <span>{!objRecord.email} 
+                                        <apex:outputPanel layout="none" rendered="{!objRecord.isEmailVerified}">
+                                            <span class="col-teal" style="float:right"> Verified</span>                                          
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="none" rendered="{!!objRecord.isEmailVerified}">
+                                            <span style="float: right;"> 
+                                                <a href="javascript:void(0);" onclick="triggerOTP('E','false');" class="col-pink">Verify</a>
+                                            </span>                                          
+                                        </apex:outputPanel> 
+                                    </span>
+                                </div>
+                            </div>
+                            <apex:outputPanel styleClass="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0" layout="block" rendered="{!!ISBLANK(objRecord.specialization)}">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"><span class="table-label">Specialization</span></div>
+                                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8"><span>{!objRecord.specialization}</span></div>
+                            </apex:outputPanel>
+                            <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"><span class="table-label">City</span></div>
+                                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8"><span>{!objRecord.city}</span></div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- progress bar  -->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="header p-b-0 b-b-n">
+                    <div class="row clearfix">
+                        <div class="col-xs-12 col-sm-6">
+                            <h5>Application Journey</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="body">
+                    <div class="row">
+                        <apex:actionRegion >
+                            <apex:repeat value="{!objRecord.lstOfActions}" var="mapKey">
+                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div class="status-bar font-bold {!IF(objRecord.mapOfActionVsStatus[mapKey],'active','')}">
+                                        <apex:outputPanel rendered="{!objRecord.mapOfActionVsStatus[mapKey]}" layout="none">
+                                            <i class="awesome material-icons">verified</i>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!!objRecord.mapOfActionVsStatus[mapKey]}" layout="none">
+                                            <i class="awesome material-icons">pending_actions</i>
+                                        </apex:outputPanel>
+                                        {!mapKey}
+                                    </div>
+                                </div>
+                            </apex:repeat>
+                        </apex:actionRegion>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <!-- #END progress bar  --> 
+
+
+        <!--Lateral Admission Details -->
+        <!-- <apex:outputPanel styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+            <div class="card">
+                <div class="header p-b-0 b-b-n">
+                    <div class="row clearfix">
+                        <div class="col-xs-12 col-sm-6">
+                            <h5>Lateral Admission Details</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="body">
+                    <div class="table-responsive">
+                        <table class="table table-hover dashboard-task-infos">
+                            <tbody>
+                                <tr>
+                                    <td class="table-label">Old Student Number</td>
+                                    <td>{!objRecord.oldStudentNo}</td>
+                                    <td class="table-label">Is Verified?</td>
+                                    <apex:outputPanel layout="none" rendered="{!!objRecord.isLateralVerified}">
+                                        <td>No</td>
+                                        <td style="color:brown">Verify</td>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel layout="none" rendered="{!objRecord.isLateralVerified}">
+                                        <td>Yes</td>
+                                        <td style="color:green"> Verified</td>  
+                                    </apex:outputPanel>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel> -->
+
+        <!-- ================================================= DEB Verification Section ================================================= -->
+        <apex:outputPanel id="debVerification">
+            <apex:outputPanel styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" rendered="{!objRecord.isDebVerificationPending}" layout="block">
+                <div class="card">
+                    <div class="header p-b-0 b-b-n">
+                        <div class="row clearfix">
+                            <div class="col-xs-12 col-sm-6">
+                                <h5>Distance Education Bureau Identification Number (DEB ID) Details</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="body">
+                        <div class="row clearfix">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <!-- <apex:outputlabel styleClass="form-label" value="Distance Education Bureau Identification Number (DEB ID)">
+                                            <apex:outputText style="color:red;font-style:bold" value=" *" />
+                                        </apex:outputlabel> -->
+                                        <apex:inputText id="DEBId" styleClass="form-control validateDEBId numonly " value="{!objDEBRequest.debId}"  />
+                                    </div>
+                                    <span style="font-size:15px;">
+                                        <span style="color:red;font-style:bold">*</span>  Kindly enter your Unique 12-digit numeric DEB ID<br/>Note: As per the UGC guidelines, it is required for you to create your DEB ID once you have created your ABC ID. 
+                                        <a href="https://digr70srsogza.cloudfront.net/academics/1725341466ZPJJe.pdf" target="_blank">Click here</a> to know how to generate your DEB ID.
+                                        <br/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="row clearfix">
+                            <div class="col-md-9">
+                                <div class="verifyDEBId">
+                                    Verify Your DEB ID : 
+                                    <apex:commandLink styleClass="btn btn-primary btn-custom" id="verifyDEBIdBtn" value="Click Here" action="{!verifyDEBID}" 
+                                     oncomplete="reRenderDEBSection();" onclick="showLoader();">
+                                    </apex:commandLink>
+                                </div>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </apex:outputPanel>
+        </apex:outputPanel>
+
+        <apex:actionFunction reRender="debVerification,showDEBMsg" name="reRenderDEBSection" oncomplete="showDEBMsg();"></apex:actionFunction>
+
+        <apex:outputPanel id="showDEBMsg">
+            <script>
+                if('{!JSENCODE(objDEBRequest.errorMsg)}' !== '') { 
+                    function showDEBMsg() {
+                        let debErrorMsg = '{!JSENCODE(objDEBRequest.errorMsg)}';
+                        $('.page-loader-wrapper').fadeOut();
+                        if(debErrorMsg === 'success') {
+                            showNotificationMsg('bg-green', 'Distance Education Bureau Identification Number (DEB ID) has been verified!');
+                        } else if(debErrorMsg === 'mismatch-dob') {
+                            showNotificationMsg('bg-red', 'The entered Date of Birth does not match the details from the Distance Education Bureau.');
+                        } else if(debErrorMsg === 'mismatch-deb') {
+                            showNotificationMsg('bg-red', 'The entered DEB ID does not match the details from the Distance Education Bureau.');
+                        } else {
+                            showNotificationMsg('bg-red', 'Please enter valid, Distance Education Bureau Identification Number (DEB ID)!');
+                        }
+                    }
+                }
+
+                
+            </script>
+        </apex:outputPanel>
+        <!-- ================================================= #END DEB Verification Section ================================================= -->
+
+
+        <!-- <div class="col-xs-12 col-sm-6 col-md-6 col-lg-12">
+            <div class="card">
+                <div class="row clearfix">
+                    <div class="col-xs-12 col-sm-6">
+                        <h5>Document Submission Stage</h5>
+                        <div class="chart-container">
+                            <div class="circular-progress">
+                                <span class="progress-value">35%</span>
+                            </div>
+                
+                            <span class="text">Documents</span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <h5>Fee Payment Status</h5>
+                        <div class="chart-container">
+                            <div class="circular-progress">
+                                <span class="progress-value">35%</span>
+                            </div>
+                
+                            <span class="text">Fees</span>
+                        </div>
+                    </div>
+                
+                </div>
+                
+            </div>
+        </div> -->
+
+         <!-- ================================================= Email\Mobile Verification ===================================================================== -->
+        <apex:outputPanel styleClass="modal fade VerificationModal" id="VerificationModal" html-tabindex="-1" html-role="dialog" 
+         rendered="{!IF(!objRecord.isMobileVerified || !objRecord.isEmailVerified, true, false)}" layout="block">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="defaultModalLabel">OTP Verification!</h4>
+                    </div>
+                    <div class="modal-body row">
+                        <apex:outputPanel id="errorMsg">
+                            <p class="errorMsg" style="display:none;color:red;"></p>
+                        </apex:outputPanel>
+                        <p>Enter the code sent to your {!objOTP.alertMsg} to verify your account.</p>
+                        <apex:inputText id="otpInput" rendered="{!IF(objOTP.otpStatus == 'OTP Sent',true,false)}" styleClass="form-control numonly notnull" value="{!objOTP.Otp}"
+                            html-placeholder="Enter OTP.." />
+                    </div>
+                    <div class="modal-footer">
+                        <button class="disabledBtn btn btn-lg btn-primary waves-effect" id="reSendBtn" data-dismiss="modal" disabled="disabled" onclick="triggerOTP('{!JSENCODE(objOTP.OtpMode)}','true');">
+                            Resend OTP <span class="timerSection noTop">(<span class="showTimer noTop"></span><span class="timer hidden"></span>)</span>
+                        </button>
+                        <a href="javascript:void(0);" class="btn btn-lg btn-primary waves-effect" onclick="return validateOTPInput();">Submit</a>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="openModal">
+            <script>
+                function showVerificationModal() {
+                    console.log('is OTP Triggered');
+                    $('.page-loader-wrapper').fadeOut();
+                    if('{!objOTP.isOTPSent}' == 'true') {
+                        $('body').find('[id$=otpInput]').val('');
+                        $('[id$=VerificationModal]').modal({
+                            backdrop: 'static',
+                            keyboard: false
+                        });
+                        if('{!JSENCODE(objOTP.resendOtp)}' == 'true'){
+                            showModalMsg('OTP has been Re-Sent.');
+                        }
+
+                        // Timer 
+                        let timeVal = 180;
+                        $('.timer').html(timeVal);
+                        $('.showTimer').html(fmtMSS(timeVal));
+                        refreshTimer();
+
+                        // Interval
+                        let timerInterval = 1000;
+                        let loadTimer = setInterval(refreshTimer, timerInterval);
+                    }
+                    else if(`{!JSENCODE(objOTP.errorMsg)}` != '') {
+                        showNotificationMsg('bg-pink', `{!JSENCODE(objOTP.errorMsg)}`);
+                    }
+                }
+            </script>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="handleMsg">
+            <script>
+                function showErrorMsg() {
+                    $('.page-loader-wrapper').fadeOut();
+                    if(`{!JSENCODE(objOTP.errorMsg)}` != '') {
+                        showModalMsg(`{!JSENCODE(objOTP.errorMsg)}`);
+                        $('body').find('[id$=otpInput]').val('');
+                    } else if('{!objOTP.isSuccess}' == 'true') {
+                        $('[id$=VerificationModal]').modal('hide');
+                        console.log('Mode==>'+'{!JSENCODE(objOTP.isModeVerified)}');
+                        let msg = '{!JSENCODE(objOTP.isModeVerified)}' == 'E' ? 'Email Id has been verified' : 'Mobile Number has been verified';
+                        showNotificationMsg('alert-success', msg);
+                    } 
+                }
+            </script>
+        </apex:outputPanel>
+         <!-- ================================================= #END# Email\Mobile Verification ===================================================================== -->
+    </div>
+
+    <script>
+
+        // function loadProgressBar() {
+        //     const first = document.querySelector(".first");
+        //     const second = document.querySelector(".second");
+        //     const third = document.querySelector(".third");
+        //     const fourth = document.querySelector(".fourth");
+        //     const fifth = document.querySelector(".fifth");
+        //     const sixth = document.querySelector(".sixth");
+        //     const seventh = document.querySelector(".seventh");
+        //     const eighth = document.querySelector(".eighth");
+        //     const steps = [first, second, third, fourth, fifth, sixth, seventh, eighth];
+
+        //     nextStep(2,steps);
+        // }
+
+        // function nextStep(currentStep,steps) {
+        //     steps.forEach(step => step.classList.remove("active"));
+
+        //     steps.forEach((step, index) => {
+        //         if (index <= currentStep) {
+        //             step.classList.add("active");
+        //         } else {
+        //             step.classList.remove("active");
+        //         }
+        //     });
+        // }
+
+        // steps.forEach((step, index) => {
+        //     step.addEventListener("click", () => {
+        //         nextStep(index);
+        //     });
+        // });
+
+        // Refresh Timer
+        function refreshTimer() {
+            setTimeout(function () {
+                var myTime = parseInt($('.timer').html()) - 1;
+                if (myTime > 0) {
+                    $('.timer').html(myTime);
+                    $('.showTimer').html(fmtMSS(myTime));
+                } else {
+                    $('.timer').html('');
+                    $('.showTimer').html('');
+                    $('.timerSection').hide();
+                    $('#reSendBtn').prop("disabled", false);
+                    $('#reSendBtn').removeClass('disabledBtn');
+                }
+            }, 1);
+        }
+
+        function fmtMSS(s){return(s-(s%=60))/60+(9<s?':':':0')+s}
+
+        function showModalMsg(message) {
+            let element = $('body').find('.errorMsg');
+            element.text(message);
+            element.show();
+            setTimeout(() => {
+                element.hide();
+            }, 9000);
+        }
+
+        function triggerOTP(mode, isResend) {
+            showLoader();
+            SendOTP(mode,isResend);
+        }
+
+        function showLoader() {
+            $('.page-loader-wrapper').show();
+        }
+
+        function showNotificationMsg(status, msg) {
+            showNotification(status, msg, 'top', 'center', 'animated fadeInDown', 'animated fadeOutUp');
+        }
+
+        function validateOTPInput() {
+            let otpInput = $('body').find('[id$=otpInput]').val();
+            if(otpInput == '' || otpInput.length == 0 || otpInput == null) {
+                showModalMsg('Please enter the value');
+                return false;
+            }
+            showLoader();
+            VerifyOTP(otpInput);
+            return true;
+        }
+
+        $(document).ready(function () { 
+            $('body').on('keypress','.numonly', function(e){ 
+                return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) ) ? false : true;
+            });
+
+            // loadProgressBar();
+        });
+    </script>
+</apex:component>

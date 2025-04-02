@@ -1,0 +1,28 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 15-03-2024
+  @last modified by  : @BK
+-->
+<apex:page showHeader="false" sidebar="false">
+    <html>
+    <apex:includeLightning />    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />  
+ 
+    <body>
+    <div id="LightningComponentid" />   
+    <script>
+    var id = "{!$CurrentPage.parameters.id}";
+    $Lightning.use("c:RaiseTicketButtonLwcvfApp", function() {
+        $Lightning.createComponent("c:raiseTicketButton",
+          {recordId: id, isClassic: true},
+          "LightningComponentid",
+          function(cmp) {
+             console.log('LWC Componenet added in VF page');
+          });
+    });
+    </script>
+    </body>
+    </html>
+</apex:page>

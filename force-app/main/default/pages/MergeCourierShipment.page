@@ -1,0 +1,95 @@
+<apex:page standardController="Dispatch_Order__c" recordSetvar="order" extensions="MergeCourierShipmentController" >
+ 
+    <apex:includeScript value="{!$Resource.restexplorer_scripts}" />
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/modernizr-2.8.3-respond-1.4.2.min.js')}"/>
+    <apex:form id="wizard">
+    
+    <apex:sectionHeader title="Mass Airwaybill Merger Wizard" subtitle="Step {!step} of 4"/>
+
+        <apex:pageBlock id="step1" title="Step 1. Confirm records to be merged" mode="edit" rendered="{!step='1'}">
+            <apex:pagemessages escape="false"></apex:pagemessages>
+            <apex:pageBlockSection >
+            <apex:pageBlockTable var="a" value="{!selected}">
+                <apex:column value="{!a.DispatchID__c}"/>
+                <apex:column value="{!a.Opportunity__c}"/>
+                <apex:column value="{!a.Order_Type__c}"/>
+                <apex:column value="{!a.Status_Of_Dispatch__c}"/>
+                <apex:column value="{!a.Fed_Ex_Shipment_Created__c}"/>
+                <apex:column value="{!a.Program__c}"/>
+               <apex:column value="{!a.Tracking_Number__c}"/>
+               <apex:column value="{!a.Address__c}"/>
+               <apex:column value="{!a.From_Address__c}"/>
+                <apex:column value="{!a.Name_Of_Other_Courier_Service__c}"/>               
+                <apex:column value="{!a.Semester__c}"/>  
+                <apex:column value="{!a.Learning_Center_Name__c}"/>
+                <apex:column value="{!a.Student_Number__c }"/> 
+               
+            </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:panelGrid columns="2">
+            </apex:panelGrid>
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!cancel}" value="Previous" id="CancelbtnId"/>
+                <apex:commandButton action="{!step3}" value="Next" id="NextbtnId"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock> 
+      <!--
+        <apex:pageBlock id="step2" title="Step 2. Specify the number of page to be Merged" mode="edit" rendered="{!step='2'}">
+            <apex:pagemessages escape="false"></apex:pagemessages>
+           
+            <span style="text-align:center"><apex:selectList id="Programs" value="{!numberOfPage}" style="padding:5px; display: block;margin: 0 auto;" styleClass="form-control notnull" multiselect="false" size="1">
+                <apex:selectOption itemValue="4" itemLabel="All Pages"/>
+                <apex:selectOption itemValue="1" itemLabel="1"/>
+                <apex:selectOption itemValue="2" itemLabel="2"/>
+                <apex:selectOption itemValue="3" itemLabel="3"/>
+            </apex:selectList></span>
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!step1}" value="Previous"/>
+                <apex:commandButton action="{!step3}" value="Next"/>
+                <apex:commandButton action="{!cancel}" value="Cancel" onclick="return confirmCancel()" immediate="true" style="margin-left: 2em"/>
+            </apex:pageBlockButtons>
+      </apex:pageBlock> 
+    -->
+      
+      <apex:pageBlock id="step3" title="Step 3. Confirmation" mode="edit" rendered="{!step='3'}">
+          <apex:pagemessages escape="false"></apex:pagemessages>
+          <apex:pageBlockButtons >
+              <apex:commandButton action="{!step1}" value="Previous"/>
+              <apex:commandButton action="{!GenerateIndiaPostPdf}" value="Merge All Airwaybills"/>
+              <apex:commandButton action="{!cancel}" value="Cancel" onclick="return confirmCancel()" immediate="true" style="margin-left: 2em"/>
+          </apex:pageBlockButtons>
+      </apex:pageBlock> 
+      
+        <apex:pageBlock id="step4" title="Step 4. Results" mode="edit" rendered="{!step='4'}">
+          <apex:pagemessages escape="false"></apex:pagemessages>
+          <br/>
+         <apex:commandButton action="{!GenerateIndiaPostPdf}" value="Download Mass DO"/>
+          <apex:pageBlockButtons >
+              <apex:commandButton action="{!cancel}" value="Done"/>
+          </apex:pageBlockButtons>
+      </apex:pageBlock> 
+      
+     <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min_.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}"/>
+     </apex:form>
+   
+   <script type="text/javascript">
+   
+    $(document).ready(function(){
+        
+    });
+
+    function openInNewTab(url) {
+        var win = window.open(url, '_blank');
+        win.focus();
+    }
+
+
+    </script>
+</apex:page>

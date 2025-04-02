@@ -1,0 +1,713 @@
+<apex:page sidebar="false" showHeader="false" cache="false" standardStylesheets="false" controller="BasicInfoOfStudent">
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="robots" content="noindex, follow" />
+    <title>NMentor</title>
+    <link rel="stylesheet" href="{!URLFOR($Resource.NMentor_Resources,'css/slider.css')}" />
+    <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.NMentor_Resources,'css/slick.css')}" />
+    <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.NMentor_Resources,'css/style.css')}" />
+    <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.NMentor_Resources,'css/responsive.css')}" />
+    <!--Home Slider-->
+    <link rel="stylesheet" href="{!URLFOR($Resource.NMentor_Resources,'css/flexslider.css')}" />
+    <!--Home Slider End-->
+    <div class="cookidiv" style="display: none;">
+        <div class="container">
+            <div class="L_cooki">
+                <p>Cookies are being used on this site to make your user experience better. When you click any links on this page, you give us consent to set cookies </p>
+            </div>
+            <div class="R_cooki">
+                <a href="https://distance.nmims.edu/privacy-policy-page.html" target="_blank" class="ok_btn">Privacy &amp; Cookies Policy</a>
+                <a href="javaScript:void(0);" class=" btn-close-cooki">Ok</a>
+            </div>
+        </div>
+    </div>
+    <!-- header start -->
+    <header>
+        <div class="logo">
+            <!-- <a href="http://distance.nmims.edu/" target="_blank"> -->
+                <img src="{!URLFOR($Resource.NMentor_Resources,'images/p-logo.png')}" alt="" />
+            <!-- </a> -->
+        </div>
+        <div id="menu-icon">
+            <div id="nav-icon" class="">
+                <span />
+                <span />
+                <span />
+            </div>
+        </div>
+        <div class="social-icon-bg">
+            <ul>
+                <li class="menu single-page-nav">
+                    <a style="margin: 0px; padding: 0px;" />
+                    <a href="#NMentor" class="menuClick">NMentor</a>
+                    <a href="#Speakers" class="menuClick">Speakers</a>
+                    <a href="#NMentor" class="menuClick">Register</a>
+                    <a href="#About_Us" class="menuClick">About Us</a>
+                </li>
+            </ul>
+        </div>
+        <div class="clearB" />
+    </header>
+    <!-- header end -->
+    <div id="wrapper">
+        <section>
+            <div class="albert_thought">
+                <img src="{!URLFOR($Resource.NMentor_Resources,'images/albert_einstein.png')}" alt="" />
+                <span class="quotes_heading">I have no special talent. I am only passionately curious. - Albert Einstein</span>
+            </div>
+        </section>
+        <!--Section 01-->
+        <section class="section_01" id="NMentor">
+            <div class="Intro_Nmentor_block">
+                <div class="intro_bg">
+                    <img src="{!URLFOR($Resource.NMentor_Resources,'images/intro_bg.png')}" alt="" />
+                </div>
+                <div class="container">
+                    <div class="nmentor_section">
+                        <div class="LNmentor_col">
+                            <div class="nm_title_section">
+                                <h2 class="intro_heading">Introducing</h2>
+                                <h1 class="heading01">NMentor Conclave</h1>
+                                <span class="sub_heading">Learning. Connecting. Inspiring.</span>
+                            </div>
+                            <span class="ie_title">Connecting industry experts with the leaders of tomorrow</span>
+                            <div class="four_info_section">
+                                <div class="hr_block defalut_info">
+                                    <span class="defalut_img">
+                                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/hr_icon.png')}" alt="" />
+                                    </span>
+                                    <div class="default_text">
+                                        <h3>Topic: H.R 4.0 – Shifting Dynamics.</h3>
+                                    </div>
+                                    <i class="clearB" />
+                                </div>
+                                <!--hr-->
+                                <div class="date_block defalut_info">
+                                    <span class="defalut_img">
+                                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/date_icon.png')}" alt="" />
+                                    </span>
+                                    <div class="default_text">
+                                        <h3>Date: May 11
+                                                
+                                            <sup>th</sup> 2019
+                                            
+                                        </h3>
+                                    </div>
+                                    <i class="clearB" />
+                                </div>
+                                <!--Date-->
+                                <div class="time_block defalut_info">
+                                    <span class="defalut_img">
+                                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/time_icon.png')}" alt="" />
+                                    </span>
+                                    <div class="default_text">
+                                        <h3>Time: Saturday 9 am - 5 pm</h3>
+                                    </div>
+                                    <i class="clearB" />
+                                </div>
+                                <!--Time-->
+                                <div class="venue_block defalut_info">
+                                    <span class="defalut_img">
+                                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/venue_icon.png')}" alt="" />
+                                    </span>
+                                    <div class="default_text">
+                                        <h3>Venue: Mumbai | Mukesh Patel Auditorium, New NMIMS Building </h3>
+                                    </div>
+                                    <i class="clearB" />
+                                </div>
+                                <!--Time-->
+                            </div>
+                        </div>
+                        <div class="RNmentor_col">
+                            <div class="register_section">
+                                <div id="clockdiv">
+                                    <div>
+                                        <span class="days" />
+                                        <div class="smalltext">Days</div>
+                                    </div>
+                                    <div>
+                                        <span class="hours" />
+                                        <div class="smalltext">Hours</div>
+                                    </div>
+                                    <div>
+                                        <span class="minutes" />
+                                        <div class="smalltext">Minutes</div>
+                                    </div>
+                                    <div>
+                                        <span class="seconds" />
+                                        <div class="smalltext">Seconds</div>
+                                    </div>
+                                    <i class="clearB" />
+                                </div>
+                                <div class="register_block">
+                                    <h2>Register Now</h2>
+                                    <apex:form id="servicefrm">
+                                        <div class="service-box">
+                                            <ul>
+                                                <li>
+                                                    <label>Name</label>
+                                                    <apex:inputText id="name"  value="{!objReferral.Name__c}" styleClass="onlyAlphabets" html-placeholder="Enter full name" style="background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg=='); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;" />
+                                                    <div id="frm_name_error" class="errormsg">Please enter your name</div>
+                                                </li>
+                                                <li> 
+                                                    <label>Email</label>
+                                                    <apex:inputText value="{!objReferral.Email__c}" id="email" html-placeholder="eg. abc@gmail.com" />
+                                                    <div id="frm_email_error" class="errormsg">Please enter your valid email</div>
+                                                </li>
+                                                <i class="clearB"></i>
+                                            </ul>
+                                        </div>
+                                        <div class="service-box">
+                                            <ul>
+                                                <li>
+                                                    <label>Mobile No.</label>
+                                                    <apex:inputText value="{!objReferral.Mobile_Number__c}" styleClass="limitedChar" id="contactno" html-placeholder="+91 000  000  0000" onkeypress="return numbersonly(event)" maxlength="10"/>
+                                                    <div id="frm_contactno_error" class="errormsg">Please enter your contact no.</div>
+                                                </li>
+                                                <li>
+                                                    <label>City</label>
+                                                    <apex:selectList id="city" value="{!objReferral.City__c}" size="1" multiselect="false">
+                                                        <apex:selectOption itemValue="" itemLabel="--Select--" />
+                                                        <apex:selectOption itemValue="Mumbai" itemLabel="Mumbai" />
+                                                        <apex:selectOption itemValue="Goa" itemLabel="Goa" />
+                                                        <apex:selectOption itemValue="Ahmedabad" itemLabel="Ahmedabad" />
+                                                        <apex:selectOption itemValue="Bangalore" itemLabel="Bangalore" />
+                                                        <apex:selectOption itemValue="Bhopal" itemLabel="Bhopal" />
+                                                        <apex:selectOption itemValue="Bhubaneswar" itemLabel="Bhubaneswar" />
+                                                        <apex:selectOption itemValue="Chandigarh" itemLabel="Chandigarh" />
+                                                        <apex:selectOption itemValue="Delhi-NCR" itemLabel="Delhi-NCR" />
+                                                        <apex:selectOption itemValue="Hyderabad" itemLabel="Hyderabad" />
+                                                        <apex:selectOption itemValue="Indore" itemLabel="Indore" />
+                                                        <apex:selectOption itemValue="Jaipur" itemLabel="Jaipur" />
+                                                        <apex:selectOption itemValue="Jodhpur" itemLabel="Jodhpur" />
+                                                        <apex:selectOption itemValue="Kolkata" itemLabel="Kolkata" />
+                                                        <apex:selectOption itemValue="Lucknow" itemLabel="Lucknow" />
+                                                        <apex:selectOption itemValue="Ludhiana" itemLabel="Ludhiana" />
+                                                        <apex:selectOption itemValue="Mohali" itemLabel="Mohali" />
+                                                        <apex:selectOption itemValue="Nagpur" itemLabel="Nagpur" />
+                                                        <apex:selectOption itemValue="Nashik" itemLabel="Nashik" />
+                                                        <apex:selectOption itemValue="Panchkula" itemLabel="Panchkula" />
+                                                        <apex:selectOption itemValue="Pune" itemLabel="Pune" />
+                                                        <apex:selectOption itemValue="Surat" itemLabel="Surat" />
+                                                        <apex:selectOption itemValue="Udaipur" itemLabel="Udaipur" />
+                                                        <apex:selectOption itemValue="Vadodara" itemLabel="Vadodara" />
+                                                    </apex:selectList>
+
+                                                    
+                                                    <div id="frm_city_error" class="errormsg">Please enter city</div>
+                                                </li>                               
+                                                <i class="clearB"></i>
+                                            </ul>
+                                        </div>
+                                        <div class="service-box-msg">
+                                            <ul>
+                                                <li style="text-align:Right;">      
+                                                    <apex:commandButton value="SUBMIT" id="next" action="{!Save}" styleClass="submit-btn"/>                                 
+                                                </li>
+                                                <div class="clearB"></div>
+                                            </ul>
+                                        </div>
+                                        <i class="clearB"></i>      
+                                            
+
+                                    </apex:form>
+                                </div>
+                            </div>
+                        </div>
+                        <i class="clearB" />
+                    </div>
+                    <i class="clearB" />
+                </div>
+                <i class="clearB" />
+            </div>
+        </section>
+        <!--End Section 01-->
+        <!--Start Section 02-->
+        <div class="faculty_structure" id="Speakers">
+            <div class="container">
+                <div class="faculty_block">
+                    <h2 class="heading-01">Speakers &amp; Panelists</h2>
+                    <p>At NMentor, the panelists &amp; speakers are eminent academicians, originating from prestigious organisations. Emerging from diverse backgrounds, they are here to give you peak industry insights. </p>
+                    <div class="our-faculty-slider regular thumb-slider">
+                        <div class="thumb">
+                            <div class="faculty-info">
+                                <div class="fc_block">
+                                    <img src="{!URLFOR($Resource.NMentor_Resources,'images/speakers/swatee.png')}" alt="" />
+                                    <i class="clearB" />
+                                </div>
+                                <div class="faculty_info">
+                                    <h1>Dr. Swatee Sarangi</h1>
+                                    <span class="company_name">Larsen &amp; Toubro</span>
+                                    <p>Head - Capability Development, Corporate HR</p>
+                                </div>
+                            </div>
+                            <i class="clearB" />
+                        </div>
+                        <!-- end -->
+                        <!--<div class="thumb"><div class="faculty-info"><div class="fc_block"><img src="images/speakers/placeholder.png" /><i class="clearB"></i></div><div class="faculty_info"><h1>Dr. Kamal K. Jain</h1><span class="company_name">Academician</span></div></div><i class="clearB"></i></div>-->
+                        <!-- end -->
+                        <div class="thumb">
+                            <div class="faculty-info">
+                                <div class="fc_block">
+                                    <img src="{!URLFOR($Resource.NMentor_Resources,'images/speakers/anindya.png')}" alt="" />
+                                    <i class="clearB" />
+                                </div>
+                                <div class="faculty_info">
+                                    <h1>Anindya Shee</h1>
+                                    <span class="company_name">Cipla</span>
+                                    <p>VP and Global Head- Organization
+                                            Development, Talent Management,
+                                            HR Technology, Shared Services,
+                                            Analytics &amp; Governance</p>
+                                </div>
+                            </div>
+                            <i class="clearB" />
+                        </div>
+                        <!-- end -->
+                        <div class="thumb">
+                            <div class="faculty-info">
+                                <div class="fc_block">
+                                    <img src="{!URLFOR($Resource.NMentor_Resources,'images/speakers/rajendra_ghag.png')}" alt="" />
+                                    <i class="clearB" />
+                                </div>
+                                <div class="faculty_info">
+                                    <h1>Rajendra Ghag</h1>
+                                    <span class="company_name">HDFC Standard life</span>
+                                    <p>Sr. EVP and CHRO</p>
+                                </div>
+                            </div>
+                            <i class="clearB" />
+                        </div>
+                        <!-- end -->
+                        <div class="thumb">
+                            <div class="faculty-info">
+                                <div class="fc_block">
+                                    <img src="{!URLFOR($Resource.NMentor_Resources,'images/speakers/dipankar_ghosh.png')}" alt="" />
+                                    <i class="clearB" />
+                                </div>
+                                <div class="faculty_info">
+                                    <h1>Dipankar Ghosh</h1>
+                                    <span class="company_name">Bajaj Consumer</span>
+                                    <p>CHRO</p>
+                                </div>
+                            </div>
+                            <i class="clearB" />
+                        </div>
+                        <!-- end -->
+                        <div class="thumb">
+                            <div class="faculty-info">
+                                <div class="fc_block">
+                                    <img src="{!URLFOR($Resource.NMentor_Resources,'images/speakers/shantanu.png')}" alt="" />
+                                    <i class="clearB" />
+                                </div>
+                                <div class="faculty_info">
+                                    <h1>Shantanu Bhattacharya</h1>
+                                    <span class="company_name">Phillips</span>
+                                    <p>Director L&amp;D</p>
+                                </div>
+                            </div>
+                            <i class="clearB" />
+                        </div>
+                        <!-- end -->
+                        <div class="thumb">
+                            <div class="faculty-info">
+                                <div class="fc_block">
+                                    <img src="{!URLFOR($Resource.NMentor_Resources,'images/speakers/manoj.png')}" alt="" />
+                                    <i class="clearB" />
+                                </div>
+                                <div class="faculty_info">
+                                    <h1>Manoj Prasad</h1>
+                                    <span class="company_name">Reliance Industries</span>
+                                    <p>VP, People Change &amp; Digital Transformation</p>
+                                </div>
+                            </div>
+                            <i class="clearB" />
+                        </div>
+                        <!-- end -->
+                        <div class="thumb">
+                            <div class="faculty-info">
+                                <div class="fc_block">
+                                    <img src="{!URLFOR($Resource.NMentor_Resources,'images/speakers/tripti.png')}" alt="" />
+                                    <i class="clearB" />
+                                </div>
+                                <div class="faculty_info">
+                                    <h1>Dr. Tripti Singh</h1>
+                                    <span class="company_name" />
+                                    <p>Academician</p>
+                                </div>
+                            </div>
+                            <i class="clearB" />
+                        </div>
+                        <!-- end -->
+                    </div>
+                </div>
+            </div>
+            <div class="speakers_bg">
+                <img src="{!URLFOR($Resource.NMentor_Resources,'images/speakers_bg.png')}" alt="" />
+            </div>
+        </div>
+        <!--Faculty Structure-->
+        <!--End Section 02-->
+        <!--Start Section 01-->
+        <section>
+            <div class="PDIDM-section">
+                <div class="pdidm-block">
+                    <div class="L-pdidm-block">
+                        <h2 class="heading-01">Why NMentor</h2>
+                        <div class="wnm_section">
+                            <ul>
+                                <li class="certfication_section">
+                                    <div>
+                                        <h2>Certification</h2>
+                                        <p>Every participant is
+                                            bestowed with a certificate that
+                                            has the credibility of NGA SCE</p>
+                                    </div>
+                                </li>
+                                <li class="case_study_section">
+                                    <div>
+                                        <h2>Real Case Studies</h2>
+                                        <p>Opportunity to learn real world
+                                            application of concepts through
+                                            case studies</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="R-pdidm-block">
+                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/right_mentor.jpg')}" alt="" />
+                    </div>
+                    <i class="clearB" />
+                </div>
+            </div>
+        </section>
+        <!--End Section 01-->
+        <!--Section 03-->
+        <section class="section03">
+            <div class="feature_section">
+                <div class="feature_block">
+                    <div class="feature_img">
+                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/unique_bg.png')}" alt="" />
+                        <div class="feature_title">
+                            <h4>What makes NMentor unique</h4>
+                        </div>
+                    </div>
+                    <div class="feature_information">
+                        <ul>
+                            <li class="interact_speakers">
+                                <div class="feature_box fb_L sm-feature_block">
+                                    <div class="featurebox_img" style="float: right;">
+                                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/interact_with_speaker_icon.png')}" alt="" />
+                                    </div>
+                                    <div class="feature_text a-right">
+                                        Excellent platform to 
+                                            
+                                        <span class="orange-color">interact with eminent speakers</span> comprising of Industry
+                                        Experts and sought-after Academicians
+                                    
+                                        
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="acquisition_sec">
+                                <div class="feature_box fb_R sm-feature_block">
+                                    <div class="featurebox_img">
+                                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/acquisition_icon.png')}" alt="" />
+                                    </div>
+                                    <div class="feature_text a-left">
+                                        Understand the shifting 
+                                            
+                                        <span class="orange-color">acquisition and retention landscape</span> of the industry                                   
+                                    
+                                        
+                                    </div>
+                                </div>
+                            </li>
+                            <i class="clearB" />
+                        </ul>
+                        <ul>
+                            <li class="innovative_business_sec">
+                                <div class="feature_box fb_L">
+                                    <div class="featurebox_img" style="float: right;">
+                                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/innovative_icon.png')}" alt="" />
+                                    </div>
+                                    <div class="feature_text text a-right">
+                                        <span class="orange-color">Understand innovative business concepts,</span> which can be applied in their current jobs       
+                                    
+                                        
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="analysing_sec">
+                                <div class="feature_box fb_R">
+                                    <div class="featurebox_img">
+                                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/analysing_business_problems_icon.png')}" alt="" />
+                                    </div>
+                                    <div class="feature_text a-left">
+                                        Enhance perspective at 
+                                            
+                                        <span class="orange-color">analysing business problems </span>in their current role
+                                    
+                                        
+                                    </div>
+                                </div>
+                            </li>
+                            <i class="clearB" />
+                        </ul>
+                    </div>
+                </div>
+                <i class="clearB" />
+                <div class="nm_bg">
+                    <img src="{!URLFOR($Resource.NMentor_Resources,'images/nm_icon.png')}" alt="" />
+                </div>
+            </div>
+        </section>
+        <!--End Section 03-->
+        <section class="about_nmims_edge_section" id="About_Us">
+            <div class="container">
+                <div class="about_nmims_block">
+                    <h2 class="heading-01">About 
+                            
+                        <span class="red-color">NMIMS</span>
+                    </h2>
+                    <p>NMIMS Global Access School for Continuing Education (NGA-SCE), has been imparting Management Education through a hi-tech, yet user-friendly online platform (on mobile &amp; Desktop) to working professionals. In keeping with the tradition of Continuing Education, NGA-SCE plans to hold a series of day long seminars on specialisations like Human Resources (HR), Marketing and Finance. </p>
+                </div>
+                <!--End About Nmims Block-->
+                <div class="nmims_edge_block">
+                    <h2 class="heading-01">
+                        <span class="red-color">NMIMS </span>Edge
+                        
+                    </h2>
+                    <div class="edge_section">
+                        <div class="Left_edge_block">
+                            <img src="{!URLFOR($Resource.NMentor_Resources,'images/edge_img.jpg')}" alt="" />
+                        </div>
+                        <div class="Right_edge_block">
+                            <ul>
+                                <li>
+                                    <div class="edge_icon">
+                                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/award_category_icon.png')}" alt="" />
+                                    </div>
+                                    <div class="edge_text">
+                                        Awarded Category 1 Autonomy By UGC
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="edge_icon">
+                                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/regional_centre_icon.png')}" alt="" />
+                                    </div>
+                                    <div class="edge_text">
+                                         Accredited by NAAC with Grade A+
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="edge_icon">
+                                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/modern_library_icon.png')}" alt="" />
+                                    </div>
+                                    <div class="edge_text">
+                                        800+ hours of live interactive lectures
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="edge_icon">
+                                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/academicians_experts_icon.png')}" alt="" />
+                                    </div>
+                                    <div class="edge_text">
+                                        200+ Faculty member of academicians and industry experts
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="edge_icon">
+                                        <img src="{!URLFOR($Resource.NMentor_Resources,'images/trusted_student_icon.png')}" alt="" />
+                                    </div>
+                                    <div class="edge_text">
+                                        Trusted by 40,000+ students across 5,000+ companies
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <i class="clearB" />
+                    </div>
+                </div>
+                <i class="clearB" />
+            </div>
+            <!--Container-->
+        </section>
+        <!-- footer start -->
+        <footer>
+            <div class="container">
+                <ul>
+                    <li>© 2019 NMIMS. All Rights Reserved. | 
+                            
+                        <a href="http://distance.nmims.edu/privacy-policy-page.html" target="_blank">Privacy Policy</a>
+                    </li>
+                    <!--<li><a href="https://www.facebook.com/NMIMSSCE" target="_blank"><img src="images/f-fb-icon.png"></a><a href="https://twitter.com/NMIMS_SCE" target="_blank"><img src="images/f-twt-icon.png"></a><a href="https://www.linkedin.com/company/nmims" target="_blank"><img src="images/f-in-icon.png"></a>
+                    <!__ <a href="https://plus.google.com/u/0/116325782206816676798" target="_blank"><img src="images/f-g-icon.png"></a></li>-->
+                    <li>Made by 
+                            
+                        <a href="http://www.tonicworldwide.com/" target="_blank">Tonic Worldwide</a>
+                    </li>
+                </ul>
+                <div class="clearB" />
+            </div>
+        </footer>
+        <!-- footer end -->
+        <!--Thank you MSG-->
+        <div class="popup-overlay">
+            <div class="popup_div">
+                <h2>Thank you. You will receive the webinar link in your email. Until then, you can browse our program</h2>
+            </div>
+        </div>
+        <!--Thank you MSG END-->
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        <script src="{!URLFOR($Resource.NMentor_Resources,'js/jquery.flexslider.js')}"></script>
+        <script src="{!URLFOR($Resource.NMentor_Resources,'js/easy-responsive-tabs.js')}"></script>
+        <!-- our faculty slider -->
+        <script src="{!URLFOR($Resource.NMentor_Resources,'js/slick.js')}" type="text/javascript" charset="utf-8"></script>
+        <script src="{!URLFOR($Resource.NMentor_Resources,'js/custom-script.js')}" type="text/javascript" charset="utf-8"></script>
+        <script src="{!URLFOR($Resource.NMentor_Resources,'js/jquery.singlePageNav.js')}"></script>
+        <script>
+            $(".menuClick").click(function(){
+               $("header").addClass("fixed-header");
+            });
+            
+            
+            $(".dropbtn").click(function(){
+               $(".dropdown-content").toggleClass("submenu-show");
+            });
+            
+            $('body').on('keypress','.onlyAlphabets', function(event) {
+                var inputValue = event.which;
+                if(!((inputValue >= 65 && inputValue <= 122 && inputValue != 92 && inputValue != 94 && inputValue != 93 && inputValue != 91) || inputValue == 46 ) && (inputValue != 32 && inputValue != 0 )) { 
+                    event.preventDefault(); 
+                }
+            });
+
+            $('.limitedChar').change(function(){
+                var inputValue = $(".limitedChar").val();
+                if(!inputValue.startsWith('6') && !inputValue.startsWith('7') && !inputValue.startsWith('8') && !inputValue.startsWith('9')) 
+                { 
+                    $('#frm_contactno_error').fadeIn();
+                    hideerr();
+                }
+            });
+            
+            // Prevent console.log from generating errors in IE for the purposes of the demo
+            if ( ! window.console ) console = { log: function(){} };
+            // The actual plugin
+            $('.single-page-nav').singlePageNav({
+                offset: $('.single-page-nav').outerHeight(),
+                filter: ':not(.external)',
+                updateHash: true,
+                beforeStart: function() {
+                    console.log('begin scrolling');
+                },
+                onComplete: function() {
+                    console.log('done scrolling');
+                }
+            });
+            
+            $(document).ready(function () {
+                $('#horizontalTab').easyResponsiveTabs({
+                    type: 'default', //Types: default, vertical, accordion           
+                    width: 'auto', //auto or any width like 600px
+                    fit: true,   // 100% fit in a container
+                    closed: 'accordion', // Start closed if in accordion view
+                    activate: function(event) { // Callback function if tab is switched
+                    var $tab = $(this);
+                    var $info = $('#tabInfo');
+                    var $name = $('span', $info);
+                    $name.text($tab.text());
+                    $info.show();
+                    }
+                });
+                
+                //Home Slider
+                $('.flexslider').flexslider({
+                    animation: "slide",
+                    start: function(slider) {
+                        $('body').removeClass('loading');
+                    }
+                });
+            });
+        </script>
+        <script>
+            $(window).load(function(){
+                // fade in #back-top
+                $(function () {
+                    $(window).scroll(function () {
+                        if ($(this).scrollTop() > 300) {
+                            $('#myBtn').fadeIn();
+                        } else {
+                            $('#myBtn').fadeOut();
+                        }
+                    });
+                    // scroll body to 0px on click
+                    $('#myBtn').click(function () {
+                        $('body,html').animate({
+                            scrollTop: 0
+                        }, 1600);
+                        return false;
+                    });
+                });
+            });
+
+            function getTimeRemaining(endtime) {
+                var t = Date.parse(endtime) - Date.parse(new Date());
+                var seconds = Math.floor((t / 1000) % 60);
+                var minutes = Math.floor((t / 1000 / 60) % 60);
+                var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+                var days = Math.floor(t / (1000 * 60 * 60 * 24));
+                return {
+                    'total': t,
+                    'days': days,
+                    'hours': hours,
+                    'minutes': minutes,
+                    'seconds': seconds
+                };
+            }
+
+            function initializeClock(id, endtime) {
+                var clock = document.getElementById(id);
+                var daysSpan = clock.querySelector('.days');
+                var hoursSpan = clock.querySelector('.hours');
+                var minutesSpan = clock.querySelector('.minutes');
+                var secondsSpan = clock.querySelector('.seconds');
+                function updateClock() {
+                    var t = getTimeRemaining(endtime);
+                    daysSpan.innerHTML = t.days;
+                    hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+                    minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                    secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+                    if (t.total <= 0) {
+                    clearInterval(timeinterval);
+                    }
+                }
+                updateClock();
+                var timeinterval = setInterval(updateClock, 1000);
+            }
+
+            function hideerr(){
+                setTimeout(function(){ 
+                    $('.errormsg').fadeOut();
+                }, 3000);
+            }
+
+            var s = '05-11-2019 00:09:00';
+            var d = new Date(s);
+            var deadline = new Date(Date.parse(d));
+            console.log(deadline);
+            initializeClock('clockdiv', deadline);
+            $(window).load(function(){
+                $('.cookidiv').fadeIn(1000);
+            });
+            $('.btn-close-cooki').click(function(){
+                $('.cookidiv').fadeOut(500);
+            });
+        </script>
+    </div>
+</apex:page>

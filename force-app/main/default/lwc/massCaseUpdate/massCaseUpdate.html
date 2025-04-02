@@ -1,0 +1,44 @@
+<template>
+		<lightning-card>
+			<div class="slds-m-left_xx-large slds-m-right_xx-large slds-m-top_xx-small slds-m-bottom_xx-large">
+				<lightning-textarea label="Case Numbers" onchange={handleNoChange} required=true></lightning-textarea>
+				<lightning-textarea label="Comment" onchange={handleCommentChange}></lightning-textarea>
+					{error}
+				<c-custom-lookup-comp icon-name="standard:queue"
+                         s-object-api-name="group"
+                         label="Case Owner (Queue)"
+                         onlookupupdate={lookupRecord}                       
+                         placeholder="type here..."></c-custom-lookup-comp>
+					<div class="slds-align_absolute-center">
+							OR
+					</div>
+				<c-custom-lookup-comp icon-name="standard:user"
+                         s-object-api-name="user"
+                         label="Case Owner (User)"
+                         onlookupupdate={lookupRecord}                       
+                         placeholder="type here..."></c-custom-lookup-comp>
+   			<br/>
+        <lightning-record-edit-form
+            object-api-name="Case" >
+            <lightning-input-field field-name="Status" onchange={handleStatusChange}></lightning-input-field>
+            <lightning-input-field field-name="nm_Category__c" onchange={handleCategoryChange}></lightning-input-field>
+						<lightning-input-field field-name="sub_categories__c" onchange={handleSubcatChange}></lightning-input-field>
+						<lightning-input-field field-name="Tech_Issue__c" onchange={handleTechChange}></lightning-input-field>
+            <lightning-input-field field-name="Expected_Close_Date__c" onchange={handleECDChange}></lightning-input-field>            
+    		</lightning-record-edit-form>
+				<lightning-button
+                class="slds-m-top_small slds-align_absolute-center"
+                variant="brand"
+                onclick={handleSubmit}
+                name="update"
+                label="Update"
+            >
+        </lightning-button> 
+			</div>
+				<template if:true={showSpinner}>
+								<div>
+        					<lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+    						</div>
+				</template>
+    </lightning-card>
+</template>

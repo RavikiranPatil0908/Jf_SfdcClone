@@ -1,0 +1,103 @@
+.studentDetails .table-label {
+    color: #B8B5B5;
+}
+
+.studentDetails .row.m-b-0 {
+    margin-bottom: 0px;
+}
+
+.card .header.p-b-0.p-t-0.p-l-0.p-r-0 {
+    padding: 0px;
+}
+
+.bg-steel-blue {
+    background-color: #337ab7;
+}
+
+/* .br-l-2 {
+    border-left: 2px solid #337ab7;
+} */
+
+.PaymentMode:not(:checked) + label { 
+    font-size: 18px;
+}
+
+.PaymentMode:checked + label { 
+    font-size: 18px;
+}
+
+.rm-m-b.m-b-0 {
+    margin-bottom: 0px
+}
+
+.form-group .form-line .form-label {
+    top: -10px;
+}
+
+@media (min-width: 992px) {
+    .paymentSection {
+        padding-left: 120px;
+    }
+
+    .text-align {
+        text-align: left;
+    }
+
+    .br-l-2 {
+        border-left: 2px solid #337ab7;
+    }
+}
+
+.btn-custom {
+    border-bottom: 5px solid #285e8e;
+    position: relative;
+    margin-right: 5px;
+}
+
+.btn-custom:hover {
+    top: 0.5px;
+    border-bottom-width: 2.5px;
+}
+
+.btn-custom:active {
+    top: 5px;
+    border-bottom: 0;
+}
+
+.pointer { 
+    cursor: pointer; 
+}
+
+@media (max-width: 991px) {
+    .br-b-2 {
+        border-bottom: 2px solid #337ab7;
+    }
+
+    .text-align {
+        text-align: center;
+    }
+
+}
+
+/* @media (max-width: 690px) { */
+@media only screen and (min-width: 373px) and (max-width: 690px)  {
+    .form-group .form-line .form-label.installemt-label {
+        top: -30px;
+    }
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1551px)  {
+    .form-group .form-line .form-label.installemt-label {
+        top: -30px;
+    }
+}
+
+@media (max-width: 372px) {
+    .form-group .form-line .form-label.installemt-label {
+        top: -50px;
+    }
+
+    .form-group.installemt-group {
+        margin-top: 20px;
+    }
+}

@@ -1,0 +1,181 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" cache="false" applyHtmlTag="false" applyBodyTag="false">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+    <title>Sign In | Bootstrap Based Admin Template - Material Design</title>
+   
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css"/>
+
+    <!-- Bootstrap Core Css -->
+    <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+
+    <!-- Waves Effect Css -->
+    <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/node-waves/waves.css" rel="stylesheet" />
+
+    <!-- Animation Css -->
+    <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/animate-css/animate.css" rel="stylesheet" />
+
+    <!-- Custom Css -->
+    <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/css/style.css" rel="stylesheet"/>
+   
+</head>
+
+<style>
+    .navbar {
+        height: 12%;
+    }
+    .container-fluid {
+    padding-right: 45px;
+    padding-left: 17px;
+    }
+    .navbar-header {
+    padding: 4px 7px;
+}
+    .login-page {
+        background-color: #fff;
+        padding-left: 0;
+     
+        max-width: 360px;
+        margin: 5% auto;
+        overflow-x: hidden;
+    }
+   
+    .login-page .login-box .msg {
+    margin-bottom: 14px;
+
+        }
+    .login-box{
+        margin-top: 40%;
+    }
+    .input-group {
+    width: 100%;
+    margin-bottom: 7px;
+}
+.m-b--20 {
+    margin-bottom: -14px;
+}
+.card .body .col-xs-12 {
+    margin-bottom: 0px;
+    color: rgb(24, 22, 22);
+}
+.label-primary {
+    background-color: #1f91f3;
+    margin-left: 65px;
+}
+.label-rounded {
+        border-radius: 20%; 
+        height: 29px;   
+        width: 200px ;
+        padding: 7px 10px; 
+        display: inline-block;
+        font-size: larger;
+    }
+    @media (min-width: 414px) {
+    .navbar-right {
+        float: right !important;
+        margin-right: -6px;
+        margin-top: 25px;
+    }
+ }
+@media (max-width: 300px) {
+    .navbar .navbar-header {
+        display: revert;
+        margin-bottom: -6px;
+        width: calc(100% + 30px);
+    }
+}
+.effect-10 {
+    border: 0; 
+    padding: 7px 15px; 
+    margin-left: 40px;
+    width: 250px;
+    border: 1px solid #ccc; 
+    position: relative; 
+    background: transparent;
+}
+
+.btn1, .btn1:hover, .btn1:active, .btn1:focus {
+    background-color: white;
+    width: 250px;
+    margin-left: 40px;
+    color: #0da5e1;
+    border: 2px solid #0da5e1; 
+    border-radius: 5px; 
+}
+</style>    
+  <nav class="navbar">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive" /> 
+          
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <!-- Call Search -->
+                <li> <button class="btn btn-block bg-blue waves-effect" type="submit">Sign-Up Here</button></li>
+               
+            </ul>
+        </div>
+    </div>
+</nav>
+<body class="login-page">
+   
+    <div class="login-box">
+        <div class="card">
+             
+            <div class="body">
+                <div class="col-xs-12"></div>
+                <label class="label label-primary label-rounded text">ACCOUNT LOGIN</label>
+                <h5 class="msg">Access Your Registration Number </h5>
+                <form id="sign_in" method="POST">
+                  
+                    <input class="effect-10" type="text" placeholder="Input Your Registration Number"/>
+                 
+
+                    <div class="row">
+                        <div class="col-xs-12 m-t-15">
+                            <button type="submit" class="btn1">
+                                Verify with Mobile OTP
+                              </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 m-t-15">
+                            <button type="submit" class="btn1">
+                                Verify with Email OTP
+                              </button>
+                        </div>
+                    </div>
+                    <div class="row m-t-15 m-b--20">
+                        <div class="col-xs-12 text-center">
+                        <h5>Don't have an Account?  <a href="https://ngasce--dev6.sandbox.my.salesforce-sites.com/SignUp">Click Here</a> to Enroll Now</h5>   
+                        </div>
+                    </div>
+                    
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jquery Core Js -->
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core Js -->
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/bootstrap/js/bootstrap.js"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/node-waves/waves.js"></script>
+
+    <!-- Validation Plugin Js -->
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/jquery-validation/jquery.validate.js"></script>
+
+    <!-- Custom Js -->
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/admin.js"></script>
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/pages/examples/sign-in.js"></script>
+</body>
+
+</apex:page>

@@ -1,0 +1,28 @@
+<!--
+  @description       : 
+  @author            : @vickysahu
+  @group             : 
+  @last modified on  : 09-02-2024
+  @last modified by  : @vickysahu
+-->
+<apex:page >
+    <html>
+        <apex:includeLightning />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+        <body>
+            <div id="LightningComponentid" />
+            <script>
+                var id = "{!$CurrentPage.parameters.id}";
+                $Lightning.use("c:VideoVerificationTaskApp", function () {                    //Aura App
+                    $Lightning.createComponent("c:videoVerificationTask",                     //lightning component
+                        { recordId: id, isClassic: true },
+                        "LightningComponentid",
+                        function (cmp) {
+                            console.log('LWC Componenet added in VF page');
+                        });
+                });
+            </script>
+        </body>
+    </html>
+</apex:page>

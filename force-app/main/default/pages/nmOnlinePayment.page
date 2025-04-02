@@ -1,0 +1,14 @@
+<apex:page controller="nmOnlinePayment" sidebar="false">
+
+<apex:form >
+    <h1>Hi Neeraj Chauhan</h1>
+    
+    <div>
+    	<apex:commandButton value="Make Payment" action="{!MakePayment}" />
+    	
+    	<div>
+    		{!strResponseBody}
+    	</div>
+    </div>
+</apex:form>
+</apex:page>

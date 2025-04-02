@@ -1,0 +1,86 @@
+<apex:page standardController="Dispatch_Order__c" recordSetvar="order" extensions="MassFedexShipmentController" id="page">
+ 
+  
+  <apex:includeScript value="{!$Resource.restexplorer_scripts}" />
+  <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/modernizr-2.8.3-respond-1.4.2.min.js')}"/>
+  <apex:form id="wizard">
+ 
+  <apex:sectionHeader title="Mass Update Wizard" subtitle="Step {!step} of 4"/>
+
+      <apex:pageBlock id="step1" title="Step 1. Confirm records to be updated" mode="edit" rendered="{!step='1'}">
+            <apex:pagemessages escape="false"></apex:pagemessages>
+            <apex:pageBlockSection >
+            <apex:pageBlockTable var="a" value="{!selected}">
+                <apex:column value="{!a.DispatchID__c}"/>
+                 <apex:column value="{!a.Name}"/>
+               <apex:column value="{!a.Opportunity__c}"/>
+                <apex:column value="{!a.Order_Type__c}"/>
+                <apex:column value="{!a.Status_Of_Dispatch__c}"/>
+                <apex:column value="{!a.Fed_Ex_Shipment_Created__c}"/>
+                <apex:column value="{!a.Program__c}"/>
+                 <apex:column value="{!a.Name_Of_Other_Courier_Service__c}"/>
+                 <apex:column value="{!a.Semester__c}"/>  
+                 <apex:column value="{!a.Learning_Center_Name__c}"/>
+                  <apex:column value="{!a.Student_Number__c }"/> 
+                  
+                 
+                                
+            </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:panelGrid columns="2">
+            </apex:panelGrid>
+          <apex:pageBlockButtons >
+              <apex:commandButton action="{!cancel}" value="Previous" id="CancelbtnId"/>
+              <apex:commandButton action="{!step2}" value="Next" id="NextbtnId"/>
+          </apex:pageBlockButtons>
+      </apex:pageBlock> 
+      
+      <apex:pageBlock id="step2" title="Step 2. Specify the new value for field - {!fieldName}" mode="edit" rendered="{!step='2'}">
+         <apex:pagemessages escape="false"></apex:pagemessages>
+      <!--  <apex:selectList id="pickList1" value="{!valueToUpdate}" size="1" styleClass="ModifiedInformationCenterName" >
+        <apex:selectOptions value="{!LC}"/>
+         </apex:selectList> 
+       -->
+             <apex:pageBlockButtons >
+              <apex:commandButton action="{!step1}" value="Previous"/>
+              <apex:commandButton action="{!step3}" value="Next"/>
+              <apex:commandButton action="{!cancel}" value="Cancel" onclick="return confirmCancel()" immediate="true" style="margin-left: 2em"/>
+             </apex:pageBlockButtons>
+      </apex:pageBlock> 
+      
+      <apex:pageBlock id="step3" title="Step 3. Confirmation" mode="edit" rendered="{!step='3'}">
+          <apex:pagemessages escape="false"></apex:pagemessages>
+          <apex:pageBlockButtons >
+              <apex:commandButton action="{!step2}" value="Previous"/>
+              <apex:commandButton action="{!step4}" value="Create Fedex Shipment"/>
+              <apex:commandButton action="{!cancel}" value="Cancel" onclick="return confirmCancel()" immediate="true" style="margin-left: 2em"/>
+          </apex:pageBlockButtons>
+      </apex:pageBlock> 
+      
+        <apex:pageBlock id="step4" title="Step 4. Results" mode="edit" rendered="{!step='4'}">
+          <apex:pagemessages escape="false"></apex:pagemessages>
+          <apex:pageBlockButtons >
+              <apex:commandButton action="{!cancel}" value="Done"/>
+          </apex:pageBlockButtons>
+      </apex:pageBlock> 
+      
+     <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min_.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"/>
+     </apex:form>
+     
+   <script type="text/javascript">
+   
+    $(document).ready(function(){
+   
+    $('.ModifiedInformationCenterName> option:first-child').text('Learning Center');
+    
+   
+    });
+    </script>
+</apex:page>

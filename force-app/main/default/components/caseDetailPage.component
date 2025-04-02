@@ -1,0 +1,294 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 29-10-2024
+  @last modified by  : @BK
+-->
+<apex:component access="global" controller="CreateCasePageController"  allowDML="true">
+    <apex:attribute access="global" name="recordId" type="ID" description="Record Id" assignTo="{!caseId}" />
+    
+    <apex:actionFunction reRender="CaseDetailSection,hiddenFieldSectionOnCase" name="RerenderCaseSection" oncomplete="hideInnerLoader();"/>
+
+    <apex:outputPanel styleClass="hiddenFieldSectionOnCase" id="hiddenFieldSectionOnCase">
+        <input type="hidden" value="{!errorMsg}" id="errorMsgOnCase" class="errorMsgOnCase"/>
+    </apex:outputPanel>
+
+    <apex:outputPanel styleClass="card" id="CaseDetailSection" layout="block">
+        <div class="header">
+            <div class="row clearfix">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                    <apex:outputPanel rendered="{!IF(!CaseWrapper.isFeedback && !CaseWrapper.isOpen,true,false)}" layout="none">
+                        <a href="/EnrollmentForm?nav=ticket" title="back">
+                            <i class="material-icons" style="font-size:35px; padding-top:10px;">keyboard_backspace</i>
+                        </a>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(CaseWrapper.isFeedback || CaseWrapper.isOpen,true,false)}" layout="none">
+                        <a href="javascript:void(0);" onclick="backBtn();" title="back">
+                            <i class="material-icons" style="font-size:35px; padding-top:10px;">keyboard_backspace</i>
+                        </a>
+                    </apex:outputPanel>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12">
+                    <h1 style="color:#035b7f; font-weight: bold; font-size: 24px;">Ticket #{!caseWrapper.caseNumber}</h1>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <h3 style="color:#035b7f; font-weight: bold; font-size: 18px;">{!caseWrapper.Subject}</h3>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                    Opened : <c:FormattedDateTime datetimeValue="{!caseWrapper.createdDate}" datetimeFormat="EEE MMM d, yyyy" />
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
+                    Status : {!caseWrapper.Status}
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                    Expected Close Date : <c:FormattedDateTime datetimeValue="{!caseWrapper.expectedCloseDate}" datetimeFormat="EEE MMM d, yyyy" /> 
+                </div>
+                <apex:outputPanel rendered="{!!CaseWrapper.isFeedback}" layout="none">
+                    <apex:outputPanel id="OpenCase" rendered="{!CaseWrapper.isOpen}" layout="block"  >
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 row clearfix">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+                                <a href="javascript:void(0);" class="btn btn-default waves-effect pgSubmit btn-lg btn-custom" id="addComment"
+                                    onclick="setActionType('AddComment','Add Comment')">Add Comment</a>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <a href="javascript:void(0);" class="btn btn-danger waves-effect pgSubmit btn-lg btn-custom" id="closeTicket"
+                                    onclick="setActionType('CloseTicket' ,'Add a closing comment')">Close Ticket</a>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                    <apex:outputPanel id="ClosedCase" rendered="{!!CaseWrapper.isOpen}" layout="block"  >
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 row clearfix">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+                            <a href="javascript:void(0);" class="btn btn-default waves-effect pgSubmit btn-lg btn-custom" id="ReOpenTicket"
+                            onclick="setActionType('ReOpen','Add reopening Comment')">ReOpen</a>  
+                            </div>
+                            <apex:inputHidden id="closedDate" value="{!caseWrapper.closedDate}" html-class="reopen"/>
+                        </div>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+                
+            </div>
+        </div>
+        <div class="body row clearfix">
+            <!-- Spinner -->
+            <div class="loader-overlay hidden">
+                <div class="loader">
+                    <div class="preloader">
+                        <div class="spinner-layer">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Spinner -->
+            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12">
+                <div class="hidden" id="commentBox">
+                    <apex:actionRegion >
+                        <div class="row clearfix hidden reOpenReasonSection">
+                            <apex:outputLabel for="reasonForReopen" styleClass="form-label" value="">
+                                <apex:outputText style="color:red; font-weight:bold" value="* " /> Reason for Re-Opening Case
+                            </apex:outputLabel>
+                            <apex:selectList value="{!objComment.reasonForReOpen}" styleClass="form-control reasonForReopen commentField" multiselect="false" size="1" id="reasonForReopen">
+                                <apex:selectOption itemValue="" itemLabel="--None--"/>
+                                <apex:selectOption itemValue="Not happy with the resolution" itemLabel="Not happy with the resolution"/>
+                                <apex:selectOption itemValue="Additional information needed" itemLabel="Additional information needed"/>
+                                <apex:selectOption itemValue="New Query" itemLabel="New Query"/>
+                                <apex:selectOption itemValue="Erroneously closed by the counsellor" itemLabel="Erroneously closed by the counsellor"/>
+                                <apex:selectOption itemValue="Erroneously closed by system" itemLabel="Erroneously closed by system"/>
+                            </apex:selectList> 
+                        </div>
+                        <div class="row clearfix">
+                            <apex:outputLabel for="commentInput" styleClass="form-label" value="">
+                                <apex:outputText style="color:red; font-weight:bold" value=" *" />
+                            </apex:outputLabel>
+                            <apex:inputTextarea id="commentInput" value="{!objComment.comment}" styleClass="form-control notnull commentField" rows="3" />
+                            <br />
+                            <apex:inputHidden id="actionType" value="{!objComment.actionType}" html-class="commentField" />
+                        </div> 
+                        
+                        <div class="row clearfix">
+                            <input type="checkbox" id="commentAttBox" name="checkbox" class="radio-col-blue attcheckbox" />
+                            <label for="commentAttBox">Do you want to attach related files/screenshots?</label>
+                        </div>
+        
+                        <div class="row clearfix attachmentblock hidden" id="AddAttachment">
+                            <div class="dz-message">
+                                <h5>File size should be less than 3 MB</h5>
+                            </div>
+                    
+                            <div class="fallback">
+                                <input name="file" id="commentFileInput" type="file" class="commentField" multiple="true"/>
+                            </div>
+                            <br />
+                        </div>
+
+                        <div class="row clearfix">
+                            <a href="javascript:void(0);" onclick="hideCommentBox()" class="btn btn-default waves-effect pgSubmit btn-lg btn-custom" > Cancel </a> &nbsp;&nbsp;&nbsp;
+                            <apex:commandLink styleClass="btn btn-red pgSubmit btn-lg btn-custom " id="submit"
+                                onclick="if(validateCaseForm('commentBox')) return false;" action="{!addCaseComment}" value="Submit" oncomplete="triggerCommentSubmitResponse();"/>
+                        </div>
+                    </apex:actionRegion>
+                    <hr />
+                </div>
+
+                <div class="row clearfix">
+                    <h6 class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="font-weight: bold; color:#035b7f; display: inline-block; width: 50%; font-size: 15px;">Description :</h6>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="p-3 border rounded bg-light text-wrap" style="word-break: break-word; max-width: 100%; font-size: 14px;">
+                            {!caseWrapper.description}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row clearfix">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 category" style="font-weight: bold; color:#035b7f; display: inline-block; font-size: 15px;">
+                        Category : {!caseWrapper.category}
+                    </div>
+
+                    <apex:outputPanel rendered="{!!ISBLANK(caseWrapper.subCategory)}" styleClass="col-lg-6 col-md-6 col-sm-12 col-xs-12 sub-category" 
+                        style="font-weight: bold; color:#035b7f; display: inline-block; font-size: 15px;" layout="block">
+                        Sub-Category : {!caseWrapper.subCategory}
+                    </apex:outputPanel>
+
+                    <apex:outputPanel rendered="{!!ISBLANK(caseWrapper.otherCategory)}" styleClass="col-lg-6 col-md-6 col-sm-12 col-xs-12 other-category" 
+                        style="font-weight: bold; color:#035b7f; display: inline-block; font-size: 15px;" layout="block">
+                        Sub-Category : {!caseWrapper.otherCategory}
+                    </apex:outputPanel>
+                    
+                </div>
+
+                <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 escalation-level" style="font-weight: bold; color:#035b7f;font-size: 15px; ">
+                        Escalation Level : {!caseWrapper.escalationLevel}
+                    </div>
+                </div>
+
+                <apex:outputPanel styleClass="NavigationTabs" id="activityPanel">
+                    <c:CaseDetailsTab recordId="{!caseId}" />
+                </apex:outputPanel>
+            </div>
+        </div>                    
+    </apex:outputPanel>
+
+    <script>
+        $(document).ready(function() {
+            console.log('caseId 2 ==> {!caseId}');
+            $('.attcheckbox').change(function() {
+                if ($(this).is(':checked')) {
+                    $('.attachmentblock').removeClass('hidden'); // Show the attachment block
+                } else {
+                    $('.attachmentblock').addClass('hidden'); // Hide the attachment block
+                }
+            });
+
+            $('#commentFileInput').change(function() {
+                let files = $('#commentFileInput').get(0).files;
+                $.each(files, function (index, file) {
+                    // Check file size (limit to 3MB)
+                    if (file.size > 3 * 1024 * 1024) {
+                        window.showNotificationMsg('bg-red', `File ${file.name} is too large. Maximum size is 3MB.`);
+                        $('#commentFileInput').val('');
+                    }
+                });
+            });
+
+        });
+
+        function backBtn() {
+            if (typeof window.openCaseListSection === 'function') {
+                window.openCaseListSection();
+            }
+        }
+
+        function showCommentBox() {
+            console.log("show commentbox.");
+            $('#commentBox').removeClass('hidden');
+        }
+
+        function hideCommentBox(){
+            $('.reOpenReasonSection').addClass('hidden');
+            $('.reasonForReopen').removeClass('notnull');
+            $('#commentBox').addClass('hidden');
+        }
+        // add Action Type to the commentBox
+        function setActionType(action, placeholder) {
+            $('[id$=actionType]').val(action); 
+            $(".commentField").attr("placeholder",placeholder);
+            if(action === 'ReOpen'){
+                let closedDate = new Date($('[id$=closedDate]').val());
+                let currentDate = new Date();
+                closedDate.setHours(0, 0, 0, 0);
+                currentDate.setHours(0, 0, 0, 0);
+                const diffTime = currentDate - closedDate;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                console.log("Difference in days: " + diffDays);    
+                if (diffDays > 3) {
+                    window.showNotificationMsg('bg-red', 'Reopening is only allowed within 3 days of case closure.');
+                    return true;
+                }
+                $('.reOpenReasonSection').removeClass('hidden');
+                $('.reasonForReopen').addClass('notnull');
+
+            }
+            showCommentBox();
+            console.log("Set Action Type: " + action); 
+            return false;
+        }
+         
+
+        function validateCaseForm(section) {
+            $('.loader-overlay').removeClass('hidden');
+            if (window.validateForm(`[id$=${section}]`) === 0) {
+                console.log("Form is valid. Proceeding to the next step.");
+                return false; // allow form submission
+            } else {
+                $('.loader-overlay').addClass('hidden');
+                window.showNotificationMsg('bg-red', 'Kindly Enter the Comment');
+                console.log("Form validation failed.");
+                return true; // Prevent form submission if validation fails
+            }
+        }
+
+        function triggerCommentSubmitResponse() {
+            $('.loader-overlay').removeClass('hidden');
+            let fileInput = $('#commentFileInput');
+            if (fileInput.get(0).files.length > 0) {
+                console.log('File selected: ', fileInput.get(0).files[0].name);
+                let files = $('#commentFileInput').get(0).files;
+                let caseId = '{!caseId}';
+                window.uploadFiles(files, caseId).then(() => {
+                    reRenderSections();
+                });
+            } else {
+                // No files selected, call RerenderCaseSection directly
+                reRenderSections();
+            }
+        }
+
+        function reRenderSections() {
+            let actionType = $('[id$=actionType]').val();
+            if(actionType === 'CloseTicket' || actionType === 'ReOpen') {
+                window.ReRenderCaseRecordSection();
+            }
+            RerenderCaseSection();
+        }
+
+        function hideInnerLoader() {
+            let errorResposne = $('.errorMsgOnCase').val();
+            if(errorResposne !== '') {
+                window.showNotificationMsg('bg-red', errorResposne);
+            }
+            $('.commentField').val('');
+            $('.loader-overlay').addClass('hidden');
+        }
+
+    </script>
+</apex:component>

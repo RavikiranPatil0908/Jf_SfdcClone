@@ -1,0 +1,7 @@
+<apex:page sidebar="false" >
+    <h1>1st report</h1>
+    <iframe width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=d89d615d-4ac9-46aa-90d4-39281fc57d29&autoAuth=true&ctid=d1f14348-f1b5-4a09-ac99-7ebf213cbc81&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly93YWJpLXNvdXRoLWVhc3QtYXNpYS1yZWRpcmVjdC5hbmFseXNpcy53aW5kb3dzLm5ldC8ifQ%3D%3D" frameborder="0" allowFullScreen="true"></iframe>
+    <br />
+    <h1>2nd report</h1>
+    <iframe width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=3f4e47ba-8bfb-4aa6-a66d-f27010351d07&autoAuth=true&ctid=d1f14348-f1b5-4a09-ac99-7ebf213cbc81&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly93YWJpLXNvdXRoLWVhc3QtYXNpYS1yZWRpcmVjdC5hbmFseXNpcy53aW5kb3dzLm5ldC8ifQ%3D%3D" frameborder="0" allowFullScreen="true"></iframe>
+</apex:page>

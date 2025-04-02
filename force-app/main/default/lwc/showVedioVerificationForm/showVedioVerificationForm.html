@@ -1,0 +1,159 @@
+<!--
+  @description       : 
+  @author            : @vickysahu
+  @group             : 
+  @last modified on  : 11-08-2024
+  @last modified by  : @vickysahu
+-->
+<template>
+    <lightning-card>
+        <br>
+        <lightning-combobox
+            label={dobLabel}
+            value={dobVerification}
+            placeholder="Select an option"
+            options={dobOptions}
+            data-value="Question2"
+            onchange={handleChange} required="true">
+        </lightning-combobox><br>
+        
+        <template if:true={question2}>
+            <lightning-combobox
+                label={enrollmentLabel}
+                value={enrollmentVerification}
+                placeholder="Select an option"
+                options={enrollmentOption}
+                data-value="Question3"
+                onchange={handleChange} required="true">
+            </lightning-combobox><br>
+        </template>
+        
+        <template if:true={question3}>
+            <lightning-combobox
+                label={durationLabel}
+                value={programDurationVerification}
+                placeholder="Select an option"
+                options={programDurationOptions}
+                data-value="Question4"
+                onchange={handleChange} required="true">
+            </lightning-combobox><br>
+        </template>
+        
+        <!-- <template if:true={hasLoan}></template> -->
+        <template if:true={question4}>
+            <lightning-combobox
+                label={loanLabel}
+                value={loanAgreementVerification}
+                placeholder="Select an option"
+                options={disAgreeOption}
+                data-value="Question5"
+                onchange={handleChange} required="true">
+            </lightning-combobox><br>
+        </template>
+        
+
+        <template if:true={question5}>
+            <lightning-combobox
+                label={questionLabel.question5}
+                value={examFeesVerification}
+                placeholder="Select an option"
+                options={notAgreeOptions}
+                data-value="Question6"
+                onchange={handleChange} required="true">
+            </lightning-combobox> <br>
+        </template>
+        
+
+        <template if:true={question6}>
+            <lightning-combobox
+                label={validityLabel}
+                value={programValidityVerification}
+                placeholder="Select an option"
+                options={notAgreeOptions}
+                data-value="Question7"
+                onchange={handleChange} required="true">
+            </lightning-combobox><br>
+        </template>
+        
+
+        <template if:true={question7}>
+            <lightning-combobox
+                label={questionLabel.question7}
+                value={passingMarksVerification}
+                placeholder="Select an option"
+                options={notAgreeOptions}
+                data-value="Question8"
+                onchange={handleChange} required="true">
+            </lightning-combobox><br>
+        </template>
+        
+        <template if:true={question8}>
+            <lightning-combobox
+                label={questionLabel.question8}
+                value={examMalpracticeVerification}
+                placeholder="Select an option"
+                options={disAgreeOption}
+                data-value="Question10"
+                onchange={handleChange} required="true">
+            </lightning-combobox><br>
+        </template>
+
+        <template if:true={question9}>
+            <lightning-combobox
+                label={questionLabel.question9}
+                value={specialCaseStudent}
+                placeholder="Select an option"
+                options={notAgreeOptions}
+                data-value="Question10"
+                onchange={handleChange} required="true">
+            </lightning-combobox><br>
+        </template>
+        
+
+        <template if:true={question10}>
+            <lightning-combobox
+                label={questionLabel.question10}
+                value={placementServicesVerification}
+                placeholder="Select an option"
+                options={placementServicesOptions}
+                data-value="Question11"
+                onchange={handleChange} required="true">
+            </lightning-combobox><br>
+        </template>
+        
+
+        <template if:true={question11}>
+            <lightning-combobox
+                label={questionLabel.question11}
+                value={engagementVerification}
+                placeholder="Select an option"
+                options={notAgreeOptions}
+                data-value="Question12"
+                onchange={handleChange} required="true">
+            </lightning-combobox><br>
+            
+        </template>
+        
+        <template if:true={question12}>
+            <!-- <lightning-formatted-rich-text value={lastDateLabel}></lightning-formatted-rich-text> -->
+            <lightning-combobox
+                label={lastDateLabel}
+                value={cancellationDateVerification}
+                placeholder="Select an option"
+                options={notAgreeOptions}
+                data-value=""
+                onchange={handleChange} required="true">
+            </lightning-combobox><br>
+        </template>
+        
+
+        <p>Please provide any additional feedback or comments regarding the information provided during your interaction with the candidates.</p><br>
+        
+        <lightning-textarea name="input1" value={comments} label="Additional Comments" data-value="Comment" onchange={handleChange} ></lightning-textarea>
+
+        <br>
+        <p>Please make sure you go through the policies available on the student portal under student resource book:- Student portal > Student support > Know your policy > SRB. Please be aware that the University has not established any WhatsApp groups. Students who join any groups do so at their own risk. Any program related queries students are expected to raise via tickets or schedule a call back through the student portal only</p></br>
+        <p>The verification process is now completed. I will proceed with confirming your admission. You should receive a welcome email with your student number within 24-48 hours. A transcript of today’s conversation will be available in the call verification section of the application form. </p></br>
+        <p>Welcome to NMIMS Centre for Distance and Online Education and Happy learning with us. </p>
+    </lightning-card>
+</template>

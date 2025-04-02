@@ -1,0 +1,10 @@
+.progressLoader {
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    border-radius: 2rem;
+}
+
+.slds-einstein-header {
+    border-bottom: 1px solid #9edaff !important;
+}

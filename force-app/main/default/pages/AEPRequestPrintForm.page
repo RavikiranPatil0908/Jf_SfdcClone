@@ -1,0 +1,133 @@
+<apex:page id="pageId" showHeader="false" sidebar="false" standardStylesheets="false" renderAs="pdf" controller="AEPRequestPrintFormController"
+    cache="false">
+    <apex:form >
+        <apex:include pageName="Bootstrapheader" />
+        <style type="text/css">
+            @page {
+                padding-top: 10px;
+                @top-center {
+                    content: element(header);
+                }
+                @bottom-left {
+                    content: element(footer);
+                }
+            }
+        </style>
+        <br />
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                    <center>
+                        <img src="{!URLFOR($Resource.NMIMS_Banner_v2,'')}" width="75%" />
+                    </center>
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+            <center>
+                <h2>{!objAEPRequest.Subject__c}</h2>
+            </center>
+        </div>
+        <div class="container">
+            <table style="align:center;  width:670px;">
+                <thead>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td style="width: 50px; padding:5px; " width="50%">Registration No: {!objAEPRequest.RegistrationNumber__c}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50px; padding:5px;" width="50%">Candidate Name: {!objAEPRequest.StudentName__c}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50px; padding:5px; " width="50%">Program Name: {!IF(objAccount != null, objAccount.nmStudent_Program__c, objLead.nm_ProgramName__c) }</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50px;padding:5px; " width="50%">Reasons: {!objAEPRequest.Reason_For_Exemption__c}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50px; padding:5px;" width="50%">Linked In Profile: {!objAEPRequest.Linkedin_Url__c} </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50px; padding:5px;" width="50%">Academic Qualification : </td>
+                    </tr>
+
+                    <table style="border:1px solid black;border-collapse:collapse; align:center; text-align:center; width:650px;">
+                        <tr>
+                            <td style="border:1px solid black; padding:10px;" width="10%">Course</td>
+                            <td style="border:1px solid black; padding:10px;" width="10%">Year of completion</td>
+                            <td style="border:1px solid black; padding:10px;" width="20%">Institution</td>
+                            <td style="border:1px solid black; padding:10px;" width="30%">Board/University</td>
+                            <td style="border:1px solid black; padding:10px;" width="10%">% Marks</td>
+                        </tr>
+
+                        <apex:outputPanel layout="none" rendered="{!if(objAccount.nm_NameofSchool__c != null || objLead.nm_NameofSchool__c != null , true ,false)}">
+                            <tr>
+                                <td style="border:1px solid black; padding:10px;" width="10%">10th</td>
+                                <td style="border:1px solid black; padding:10px;" width="10%">{!IF(objAccount != null, objAccount.nm_YearofCompletion__c, objLead.nm_YearofCompletion__c)}</td>
+                                <td style="border:1px solid black; padding:10px;" width="20%">{!IF(objAccount != null, objAccount.nm_NameofSchool__c, objLead.nm_NameofSchool__c)}</td>
+                                <td style="border:1px solid black; padding:10px;" width="30%">{!IF(objAccount != null, objAccount.nm_NameofBoard__c, objLead.nm_NameofBoard__c)}</td>
+                                <td style="border:1px solid black; padding:10px;" width="10%">{!IF(objAccount != null, objAccount.nm_10thPercentage__c, objLead.nm_10thPercentage__c)}</td>
+                            </tr>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="none" rendered="{!if(objAccount.nm_NameofSchool12__c != null || objLead.nm_NameofSchool12__c != null , true ,false)}">
+                            <tr>
+                                <td style="border:1px solid black; padding:10px;" width="10%">12th</td>
+                                <td style="border:1px solid black; padding:10px;" width="10%">{!IF(objAccount != null, objAccount.nm_YearofCompletion12__c, objLead.nm_YearofCompletion12__c)}</td>
+                                <td style="border:1px solid black; padding:10px;" width="20%">{!IF(objAccount != null, objAccount.nm_NameofSchool12__c, objLead.nm_NameofSchool12__c)}</td>
+                                <td style="border:1px solid black; padding:10px;" width="30%">{!IF(objAccount != null, objAccount.nm_NameofBoard12__c, objLead.nm_NameofBoard12__c)}</td>
+                                <td style="border:1px solid black; padding:10px;" width="10%">{!IF(objAccount != null, objAccount.nm_12thPercentage__c, objLead.nm_12thPercentage__c)}</td>
+                            </tr>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="none" rendered="{!if(objAccount.nm_DiplomaSchoolCollegeUniversityname__c != null || objLead.nm_DiplomaSchoolCollegeUniversityname__c != null , true ,false)}">
+                            <tr>
+                                <td style="border:1px solid black; padding:10px;" width="10%">Diploma</td>
+                                <td style="border:1px solid black; padding:10px;" width="10%">{!IF(objAccount != null, objAccount.nm_DiplomaYearOfCompletion__c, objLead.nm_DiplomaYearOfCompletion__c)}</td>
+                                <td style="border:1px solid black; padding:10px;" width="20%">{!IF(objAccount != null, objAccount.nm_DiplomaName__c, objLead.nm_DiplomaName__c)}</td>
+                                <td style="border:1px solid black; padding:10px;" width="30%">{!IF(objAccount != null, objAccount.nm_DiplomaSchoolCollegeUniversityname__c, objLead.nm_DiplomaSchoolCollegeUniversityname__c)}</td>
+                                <td style="border:1px solid black; padding:10px;" width="10%">{!IF(objAccount != null, objAccount.nm_ResultDiploma__c, objLead.Result_Diploma__c)}</td>
+                            </tr>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="none" rendered="{!if(objAccount.nm_NameofUniversity__c != null || objLead.nm_NameofUniversity__c != null , true ,false)}">
+                            <tr>
+                                <td style="border:1px solid black; padding:10px;" width="10%">Bachelor</td>
+                                <td style="border:1px solid black; padding:10px;" width="10%">{!IF(objAccount != null, objAccount.nm_YearofCollegeCompletion__c, objLead.nm_YearofCollegeCompletion__c)}</td>
+                                <td style="border:1px solid black; padding:10px;" width="20%">{!IF(objAccount != null, objAccount.nm_NameOfCollege__c, objLead.nm_NameOfCollege__c)}</td>
+                                <td style="border:1px solid black; padding:10px;" width="30%">{!IF(objAccount != null, objAccount.nm_NameofUniversity__c, objLead.nm_NameofUniversity__c)}</td>
+                                <td style="border:1px solid black; padding:10px;" width="10%">{!IF(objAccount != null, objAccount.Percentage_Bachlor__c, objLead.nm_BachelorsDegreePercentage__c)}</td>
+                            </tr>
+                        </apex:outputPanel>
+                    </table>
+                    <tr>
+                        <td style="width: 50px;padding:5px; " width="50%">Certifications / Presentations - Details: </td>
+                    </tr>
+                    <!-- <div style="page-break-after: always">
+                    </div> -->
+                    <tr>
+                        <td style="width: 50px;padding:5px; padding-top: 35px " width="50%">Work Experience:</td>
+                    </tr>
+                    <apex:outputPanel layout="none" rendered="{!if(workExperienceLength > 0 , true ,false)}">
+                    <table style="border:1px solid black;border-collapse:collapse; align:center; text-align:center; width:650px;">
+                        <tr>
+                            <th style="border:1px solid black; padding:10px;" width="30%">Company</th>
+                            <th style="border:1px solid black; padding:10px;" width="40%">Designation</th>
+                            <th style="border:1px solid black; padding:10px;" width="30%">Experience (Months)</th>
+                        </tr>
+                        <apex:repeat value="{!lstWorkExperience}" var="workExperienceObj">
+                            <tr>
+                                <td style="border:1px solid black; padding:10px;" width="30%">{!workExperienceObj.nm_CompanyName__c}</td>
+                                <td style="border:1px solid black; padding:10px;" width="40%">{!workExperienceObj.nm_Designation__c}</td>
+                                <td style="border:1px solid black; padding:10px;" width="30%">{!workExperienceObj.nm_TotalMonths__c}</td>
+                            </tr>
+                        </apex:repeat>
+                    </table>
+                    </apex:outputPanel>
+                    <tr>
+                        <td style="width: 50px;padding:5px; " width="50%">Additional Information (if any)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </apex:form>
+</apex:page>

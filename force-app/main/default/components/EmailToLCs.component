@@ -1,0 +1,46 @@
+<apex:component controller="EmailToLCsController" access="global">
+    <style>
+        .table {
+        border: 1px solid black;
+    }
+    </style>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" />
+    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js" html-integrity="sha256-TkEcmf5KSG2zToAaUzkq6G+GWezMQ4lEtaBiyaq6Jb4="
+        html-crossorigin="anonymous" />
+    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"
+        html-integrity="sha256-kIiM3UOTsgRqR7ellGKPpjPN7/z88uz28qIiwk/cVsc=" html-crossorigin="anonymous" />
+  
+    <apex:attribute access="global" name="slotId" assignTo="{!interviewSlotId}" type="ID" description="Interview ID"/>    
+    <br />
+   
+
+    <table class="table" align="center" border="0" cellpadding="0" cellspacing="0" style="width:700px;" width="700">
+        <thead>
+            <tr>
+                <th style="border: solid 1px #000; padding: 10px;">LC Name</th>
+                <th style="border: solid 1px #000; padding: 10px;">Information Center</th>
+                <th style="border: solid 1px #000; padding: 10px;">Program</th>
+                <th style="border: solid 1px #000; padding: 10px;">Registration Number</th>
+                <th style="border: solid 1px #000; padding: 10px;">Account Name</th>
+                <th style="border: solid 1px #000; padding: 10px;">Email ID</th>
+                <th style="border: solid 1px #000; padding: 10px;"> Mobile Number</th>
+                <th style="border: solid 1px #000; padding: 10px;">Interview Meeting Id</th>
+            </tr>
+        </thead>
+        <apex:repeat value="{!lstAccountDetail}" var="objacc">
+            <tr>
+                <td style="border: solid 1px #000; padding: 10px;">{!objacc.LC_Name__c}</td>                
+                <td style="border: solid 1px #000; padding: 10px;">{!objacc.nm_Centers__c}</td>               
+                <td style="border: solid 1px #000; padding: 10px;">{!objacc.nm_ChooseaProgram__c}</td>              
+                <td style="border: solid 1px #000; padding: 10px;">{!objacc.nm_RegistrationNumber__c }</td>              
+                <td style="border: solid 1px #000; padding: 10px;">{!objacc.FirstName}</td>              
+                <td style="border: solid 1px #000; padding: 10px;">{!objacc.PersonEmail}</td> 
+                <td style="border: solid 1px #000; padding: 10px;">{!objacc.PersonMobilePhone}</td>              
+                <td style="border: solid 1px #000; padding: 10px;">{!objacc.Interview_Meeting_Id__c}</td>            
+                
+                
+            </tr>
+            </apex:repeat> 
+    </table>
+  
+</apex:component>

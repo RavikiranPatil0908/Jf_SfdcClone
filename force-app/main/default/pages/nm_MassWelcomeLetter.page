@@ -1,0 +1,228 @@
+<!--
+  @File Name          : nm_MassWelcomeLetter.page
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 11-09-2024
+  @Modification Log   : 
+  Ver       Date            Author                  Modification
+  1.0    14/1/2020   @BK     Initial Version
+-->
+<apex:page title="Welcome Letter" Controller="Mass_Welcome" renderAs="pdf" >
+	<script type="text/javascript" src="/js/functions.js"></script>
+	<script src="/soap/ajax/11.1/connection.js"></script>	
+
+	<body onload="init()">
+		<apex:repeat value="{!lstToDisplay}" var="account">
+			<div style="page-break-after: always; margin-left : 23px; margin-right: 25px; font-size: 16px;">
+				<p>
+					<br />
+					<br />
+					<br />
+
+				</p>
+				<p>
+				</p>
+				<table style="width: 100%">
+					<tr>
+						<td style="white-space: nowrap">
+							<apex:outputText value="{0,date,MMMM dd, yyyy}">
+								<apex:param value="{!TODAY()}" />
+							</apex:outputText>
+						</td>
+					</tr>
+					<br/>
+					<tr>
+						<td style="white-space:nowrap;">
+							Dear&nbsp;
+							<apex:outputField value="{!account.Salutation}" />
+							<apex:outputField value="{!account.name}" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<apex:outputField value="{!account.nm_StudentNo__c}" />
+						</td>
+					</tr>
+				</table>
+				<div style="width: 100%; line-height: 18px; word-spacing: 25px">
+					<p align="justify">
+						On behalf of SVKM’s NMIMS Deemed-to-be-University and the entire faculty and staff at
+						<b>NMIMS Centre for Distance and Online Education</b>, I am thrilled to welcome you to
+						<b>NMIMS Online</b>. I wish you the very best as you embark on your upskilling journey with our
+						<b>
+							<apex:outputField value="{!Account.nmStudent_Program__c}" />
+						</b>. You are now part of the
+						<b>NMIMS legacy</b>, one fostered over decades of honing excellence in higher education.
+					</p>
+				</div>
+				<div style="width: 100%; line-height: 18px; word-spacing: 25px">
+					<p align="justify">
+						<b>SVKM’s NMIMS Deemed-to-be-University has a NAAC (A+)</b> rating and is a multidisciplinary institution encompassing
+						<b>diverse fields</b> and this rich amalgamation of academic offerings ensures a
+						<b>well-rounded learning environment</b>. What
+						<b>sets NMIMS apart</b> is its unwavering commitment to
+						<b>academic rigor</b> and the university's
+						<b>faculty</b> comprised of renowned scholars and industry experts who bring immense
+						<b>real-world experience</b> into the classroom to ensure students are equipped with the skills and expertise
+						necessary to
+						<b>thrive</b> in their chosen fields.Moreover, the university has various institutions under
+						 its umbrella with AACSB Accreditation and those ranked highly by various independent bodies like Forbes Magazine, India Today, etc.
+					</p>
+				</div>
+				<div style="width: 100%; line-height: 18px; word-spacing: 25px">
+					<p align="justify">
+						<b>The NMIMS School of Business Management (SBM)</b> has consistently ranked among
+						<b>India's top B-schools</b> for several years due to its industry focused programs, quality of education, faculty
+						expertise, and overall student experience.
+					</p>
+				</div>
+
+				<div style="width: 100%; line-height: 18px; word-spacing: 25px">
+					<p align="justify">
+						<b>NMIMS Centre for Distance and Online Education</b> carries the same ethos forward to its online and distance
+						programs to ensure that students studying via these mediums are imparted with an undiluted learning experience.
+						A degree from NMIMS CDOE will definitely bring forth
+						<b>positive career outcomes</b> for you.
+					</p>
+					<p align="justify">
+						The
+						<b>
+							<apex:outputField value="{!Account.nmStudent_Program__c}" /> at NMIMS Online
+						</b> is designed for ambitious individuals like yourselves who are seeking to elevate their careers while
+						balancing the demands of work and personal life. We are committed to providing you with the resources and
+						guidance you need to excel in your studies and achieve your professional goals with:
+					</p>
+				</div>
+				<div style="width: 100%; line-height: 18px; word-spacing: 25px">
+					<ul style="margin: 1px; padding: 0;">
+						<li>
+							<p>
+								<b>An Industry Focused Curriculum:</b>
+								<br/>Our
+								<b>innovative curriculum</b>, developed by renowned business faculty, equips you with the critical thinking,
+								analytical, and leadership skills essential for success in today's dynamic business environment.
+							</p>
+							
+						</li>
+						<li>
+							
+							<p>
+								<b>Programs Designed for the Digital Learner:</b>
+								<br/>The
+								<b>online format</b> of the program offers flexibility and convenience, allowing you to participate
+								in engaging learning activities and collaborate with classmates
+								<b>anytime anywhere</b>.
+							</p>
+						</li>
+					</ul>
+				</div>
+				<br/>
+				<br/>
+				<br/>
+		
+
+				<div style="width: 100%; line-height: 16px; word-spacing: 25px">
+					<ul style="margin: 1px;padding: 0;">	
+						<li>
+							<p>
+								<b>A Comprehensive Student Zone and Mobile App:</b>
+								<br/>We utilise a
+								<b>state-of-the-art online learning platform</b> that fosters interactive discussions, real-world case
+								studies, and collaborative projects. We encourage you to explore the
+								<b>Student Zone and mobile app</b> and familiarise yourself with its features and functions.
+								Your login credentials for the Student Zone are as follows:
+							</p>
+							
+						</li>
+					</ul>
+				</div>
+				<div style="width: 100%; line-height: 8px; word-spacing: 25px;">
+					<p><span style="margin-right: -12px;"></span><b>- </b> User ID (SAP ID): {!account.nm_StudentNo__c}</p>
+				</div>
+				<div style="width: 100%; line-height: 12px; word-spacing: 25px;">
+					<p><span style="margin-right: -12px;"></span><b>- </b> Password: {!account.nm_NewPassword__c}</p>
+				</div>
+				
+				<div style="width: 100%; line-height: 16px; word-spacing: 25px">
+					<ul style="margin: 1px;padding: 0;">
+						<li>
+							<p>
+								<b>Dedicated Student Support and Service:</b>
+								<br/>Throughout your program, you will be supported by a
+								<b>responsive and solution-focused</b> team:
+								<b>student mentors</b> who are vested in your
+								<b>academic</b> success and
+								<b>counsellors</b> who shall assist you with service queries.
+							</p>
+						</li>
+					</ul>
+				
+				</div>
+				<div style="width: 100%; line-height: 0px; word-spacing: 25px">
+					<b >Important Information:</b>
+				</div>
+				<div style="width: 100%; line-height: 16px; word-spacing: 25px">
+					
+						
+						<ul style="margin: 1px;padding: 0;">
+							<li>
+								<p align="justify" style="line-height: 16px">
+									<b style="text-align: left;">75% engagement online</b>
+									<br/>The UGC (University Grants Commission of India) requires every online learner to have minimum 75% engagement on the student
+									zone/mobile app per term. Students are not allowed to appear for Term End Examinations if this criteria
+									isn’t fulfilled. To understand how you can ensure 75% engagement please visit
+									<b>Student Portal > Quick Links > Learner Engagement.</b>
+								</p>
+							</li>
+							<li>
+								<p align="justify" style="line-height: 16px;">
+									<b style="text-align: left;">Student Resource Book (SRB)</b>
+									<br/>Success in your studies starts with knowing the ground rules! University policies outline your rights and responsibilities.
+									We recommend familiarising yourself with them as the counselling process may or may not have covered
+									all the rules and processes. They're easily accessible through the Student Resource Book (SRB) on
+									the student zone or app
+									<b>Student Portal > Student Support > Know Your Policy</b>. Consider it your guidebook to a smooth academic
+									journey. If you have any queries therein, our support team is here to help you.
+								</p>
+							</li>
+							<li>
+								
+								<p align="justify" style="line-height: 16px">
+									<b style="text-align: left;">1 Connect : Student Support Tool by NMIMS Online</b>
+									<br/>The Student Zone and Mobile App host a dedicated student support tool, titled,
+									<b>“1 Connect”</b>. The tool allows you to seamlessly share your concerns with the support team. Raising
+									your concern via the tool shall ensure a faster solution as compared to emails or calls and is designed
+									for effective timely resolution.</p>
+							</li>
+							<li>
+								
+								<p align="justify" style="line-height: 16px">
+									<b style="text-align: left;">Sync Notifications and Alerts</b>
+									<br/>We also encourage you to keep notifications on the Student Zone and Mobile App active and remain alert so that you do not
+									miss out on any important dates or events related to the program. The Mobile App also allows you
+									to sync notifications with your calendar seamlessly.</p>
+							</li>
+						</ul>
+				
+				</div>
+				<div style="width: 100%; line-height: 10px; word-spacing: 25px">
+					<p>A great learning experience awaits you.<br /><br />
+						<br />Welcome to <b>NMIMS Online</b>. We are excited to be a part of your academic journey!<br /><br />
+						<br />Sincerely,
+					</p>
+				</div>
+			    <div style="width: 100%; line-height: 16px; word-spacing: 25px">
+					<p> 
+						<apex:image url="{!$Resource.Director_Signature_img}" width="120" height="100"/>
+						<br /> <b>Director, </b>
+						<br /> Dr. Priya Mathew<br />
+						<br /><b>NMIMS Centre for Distance and Online Education</b>
+						<br /><b>Upskill. Upgrade. Uninterrupted.</b>
+					</p>
+				</div>
+			</div>
+		</apex:repeat>
+	</body>
+</apex:page>

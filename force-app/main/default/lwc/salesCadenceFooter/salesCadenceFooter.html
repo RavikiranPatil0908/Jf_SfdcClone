@@ -1,0 +1,44 @@
+<!--
+  @File Name          : salesCadenceFooter.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 07-07-2020
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    28/6/2020   @BK     Initial Version
+-->
+<template>
+    <!-- Message Toast Starts here-->
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant} auto-close="true"
+    auto-close-error-warning="true"></c-lwc-custom-toast>
+    <!-- Message Toast Ends here-->
+    <footer class="slds-utility-bar_container" aria-label="Utility Bar">
+        <h2 class="slds-assistive-text">Utility Bar</h2>
+        <ul class="slds-utility-bar">
+            <li class={callBarItemClass}>
+                <button class="slds-button slds-utility-bar__action" aria-pressed="false" data-key="call" disabled={isEmpty}
+                    onclick={handleEventClick}>
+                    <lightning-icon class="slds-button__icon_left" icon-name="utility:call" alternative-text="Call"
+                        title="Call" size="x-small"></lightning-icon>
+                    <span class="slds-utility-bar__text">Call</span>
+                </button>
+            </li>
+            <li class={historyBarItemClass}>
+                <button class="slds-button slds-utility-bar__action" aria-pressed="false" data-key="history" disabled={isEmpty}
+                    onclick={handleEventClick}>
+                    <lightning-icon class="slds-button__icon_left" icon-name="utility:clock" alternative-text="History"
+                        title="History" size="x-small"></lightning-icon>
+                    <span class="slds-utility-bar__text">History</span>
+                </button>
+            </li>
+        </ul>
+        <template if:true={togglePhone}>
+            <c-utility-call-panel utility-panel={callVal} lead={lead} onchange={handleChange}></c-utility-call-panel>
+        </template>
+        <template if:true={toggleHistory}>
+            <c-utility-history-panel utility-panel={historyVal} lead-description={leadDescription} onchange={handleChange} has-rendered={hasRendered}></c-utility-history-panel>
+        </template>
+    </footer>
+</template>

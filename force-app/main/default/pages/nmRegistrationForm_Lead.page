@@ -1,0 +1,352 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 03-04-2024
+  @last modified by  : @BK
+-->
+<apex:page renderAs="pdf" controller="nmPrintPreviewController_Lead"> 
+    <div style="width:98%; margin:5px auto;font:Normal 12px/30px Helvetica Narrow,sans-serif;">
+        <p style="float: right;">
+          <p style="margin-right;text-align: right;">
+            <d>&#160;</d> <d style="float:right :text-align: right;:height:16px;margin-top:5px;font-size:100%;font:Normal 25px/30px;"><apex:outputField value="{!objLead.nm_RegistrationNo__c}"/> <br> </br><apex:outputField value="{!objLead.nm_Program__r.Name}"/> </d>
+           </p>
+          </p>
+        <div style="width:100%; border:3px solid #000000; background:#ffffff;">
+         
+            <!-- Header Start -->
+           
+            <div style="height:16px; margin-top:5px;line-height:20%;">
+                <apex:outputText value="Date: {0,date,dd-MM-yyyy}" style="float:right; margin-right:50px;">
+                
+                   <apex:param value="{!TODAY()}" />
+               </apex:outputText>
+                 
+            </div>
+            <apex:outputPanel rendered="{!objLead.IC_Name__c == 'RateGain Travel Technologies Ltd.'}">
+                <div style="line-height: 70%">
+                <img src="{!URLFOR($Resource.NmimsGlobalCenter,'CorporateLogo/NGCDOE-Logo-PNG-847x332.png')}" width="45%" style="margin-left:23%;"/>
+                </div>
+                <div style="margin:10px 0;font-size:15px;line-height: 70%">
+                    <center><b>NMIMS GLOBAL - CENTRE FOR DISTANCE AND ONLINE EDUCATION</b></center>                 
+                </div>   
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!objLead.IC_Name__c != 'RateGain Travel Technologies Ltd.'}">
+                <div style="line-height: 70%">
+                    <img src="{!URLFOR($Resource.Images,'images/logo.png')}" width="45%" style="margin-left:23%;"/>
+                </div>
+                <div style="margin:10px 0;font-size:15px;line-height: 70%">
+                    <center><b>NMIMS CENTRE FOR DISTANCE AND ONLINE EDUCATION</b></center>                 
+                </div>   
+            </apex:outputPanel>  
+                
+            <div style="margin:10px 0;font-size:13px;margin-top:0px;">
+                <center><b>Admission Form</b></center>                              
+            </div>
+            <apex:image url="{!objLead.nm_StudentImageUrl__c}" height="90" style="margin-left:550px;" rendered="{!IF(objLead.nm_StudentImageUrl__c!=null,true,false)}"/>       
+            <table width="100%" border="0">
+                <tr>
+                    <td width="20%"><b>Registration No:</b></td>
+                    <td width="80%">{!objLead.nm_RegistrationNo__c}</td>
+                </tr>
+            </table>
+              
+            <div style="padding:15px;margin-top:0px;">
+                <div style="padding-left:5px;margin:10px;font-size:13px;background-color:silver">
+                    <b>Personal Details</b>
+                </div>
+                <table width="100%">
+                    <tr>
+                        <td width="20%"><b>Salutation:</b></td>
+                        <td width="30%">{!objLead.Salutation}</td>
+                        <td width="20%"><b>Name:</b></td>
+                        <td>{!objLead.FirstName}&nbsp;{!objLead.LastName}</td>
+                    </tr>
+                   
+                    <tr>
+                        <td width="20%"><b>Date of Birth:</b></td>
+                        <td width="30%"> <apex:outputText styleClass="ot" value="{0, date, dd '/' MM '/' yyyy}">
+                                <apex:param value="{!objLead.nm_DateOfBirth__c}" /> 
+                            </apex:outputText></td>
+                        <td width="20%"><b>Gender:</b></td>
+                        <td>{!objLead.nm_Gender__c}</td>
+                        
+                    </tr>
+                     <tr>
+                        <td width="20%"><b>Marital Status:</b></td>
+                        <td width="30%">{!objLead.nm_MaritalStatus__c}</td>
+                        <td width="20%"><b>Father's name:</b></td>
+                        <td>{!objLead.Father_Name__c}</td>
+                    </tr>
+                     <tr>
+                        <td width="20%"><b>Mother's Name:</b></td>
+                        <td width="30%">{!objLead.Mother_Name__c}</td>
+                        <td width="20%"><b>Spouse Name:</b></td>
+                        <td>{!objLead.nm_SpouseName__c}</td>
+                    </tr>  
+                     <tr>
+                        <td width="20%"><b>Blood Group:</b></td>
+                        <td width="30%">{!objLead.nm_BloodGroup__c}</td>
+                        <td width="20%"><b>Category:</b></td>
+                        <td>{!objLead.nm_Category__c}</td>
+                    </tr>  
+                     <tr>
+                       <!-- <td width="20%"><b>Others-Specify:</b></td>
+                        <td width="30%"> {!objLead.nm_OtherCategory__c}</td>
+                         -->
+                        <td width="30%"><b>Other Blood Group:</b></td>
+                        <td width="30%">{!objLead.nm_OtherBloodGroup__c}</td>
+                   
+                        <td width="20%"><b>Nationality:</b></td>
+                        <td>{!objLead.nm_Nationality__c}</td>
+                    </tr>
+                    <tr>
+                        <td width="20%"><b>Domicile:</b></td>
+                        <td>{!objLead.nm_Domicile__c}</td>
+                         <td width="20%"><b>Batch Name:</b></td>
+                        <td>{!objLead.nmm_BatchName__c}</td>
+                    </tr>
+                 </table>
+                    <div style="padding-left:5px;margin:10px 0;font-size:13px;background-color:silver;">
+                        <b>Address of Communication</b>
+                    </div>
+                    <table width="100%">
+                    <tr>
+                        <td width="20%" style="vertical-align:top;"><b>Billing Address:</b></td>
+                        <td>{!objLead.nm_HouseNumber__c}&nbsp;{!objLead.Street}&nbsp;
+                         {!objLead.nm_LocalityName__c}&nbsp;{!objLead.nm_NearestLandmark__c}&nbsp;{!objLead.City}
+                        &nbsp;{!objLead.State}&nbsp;{!objLead.Country}&nbsp;{!objLead.PostalCode}
+                        </td>
+                       
+                        <td width="20%" style="vertical-align:top;"><b>Permanent Address:</b></td>
+                        <td>{!objLead.nm_HouseNumber_P__c}&nbsp;{!objLead.nm_Street_P__c}&nbsp;
+                        {!objLead.nm_LocalityName_P__c}&nbsp;{!objLead.nm_NearestLandmark_P__c}&nbsp;
+                        {!objLead.nm_StateProvince_P__c}&nbsp;{!objLead.nm_City_P__c}&nbsp;
+                        {!objLead.nm_Country_P__c} &nbsp; {!objLead.nm_PostalCode_P__c}
+                        
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%" style="vertical-align:top;"><b>Shipping Address:</b></td>
+                        <td>{!objLead.House_No_Name_Shipping__c}&nbsp;{!objLead.Shipping_Street__c}&nbsp;
+                        {!objLead.Locality_Name_Shipping__c}&nbsp;{!objLead.Nearest_LandMark_Shipping__c}&nbsp;
+                        {!objLead.State_Province_Shipping__c}&nbsp;{!objLead.Shipping_City__c}&nbsp;
+                        {!objLead.Country_Shipping__c} &nbsp; {!objLead.Zip_Postal_Code_Shipping__c}
+                        
+                        </td>
+                        <td width="20%"><b>STD Code:</b></td>
+                        <td width="30%">{!objLead.nm_STDCode__c}</td>
+                        
+                    </tr>
+                     <tr>
+                        <td width="20%"><b>Mobile Number:</b></td>
+                        <td width="30%">{!objLead.MobilePhone}</td>
+                        <td width="20%"><b>Primary Email:</b></td>
+                        <td>{!objLead.Email}</td>
+                    </tr>
+                    <tr>
+                        <td width="20%"><b>Alternate Email:</b></td>
+                        <td width="30%">{!objLead.nm_SecondryEmail__c}</td>
+                        <td width="20%"><b>Phone Number:</b></td>
+                        <td>{!objLead.Phone}</td>
+                    </tr>
+                        
+                 <!--
+                    <tr>
+                       <td width="20%"><b>Alternate Email:</b></td>
+                        <td width="30%">{!objLead.nm_SecondryEmail__c}</td>
+                    </tr>
+                  -->
+                </table>
+              </div>  
+         </div>
+         
+         <div style="page-break-after: always;"></div>
+          <div style="width:98%; margin:5px auto;font:Normal 12px/30px Helvetica Narrow,sans-serif;">
+        <p style="float: right;">
+          <p style="margin-right;text-align: right;">
+             <d>&#160;</d> <d style="float:right :text-align: right top;:height:16px;margin-top:5px;font-size:100%;font:Normal 25px/30px;"><apex:outputField value="{!objLead.nm_RegistrationNo__c}"/> <br> </br><apex:outputField value="{!objLead.nm_Program__r.Name}"/> </d>
+           </p>
+          </p>
+         
+         <div style="width:100%; border:3px solid #000000; background:#ffffff;">
+          
+          <div style="padding:15px;">
+            
+            <div style="padding-left:5px;margin:10px 0;font-size:13px;background-color:silver;">
+                <b>Academic Information</b>
+            </div>
+            
+            <table width="100%">
+                 <tr>
+                        <td width="25%"><b>SSC/10th %:</b></td>
+                        <td width="25%">{!objLead.nm_10thPercentage__c}</td>
+                        <td width="25%"><b>SSC/10th Board:</b></td>
+                        <td width="25%">{!objLead.nm_NameofBoard__c}</td>
+                </tr>
+                <tr>
+                        <td width="25%"><b>Year of Completion(10th):</b></td>
+                        <td width="25%">{!objLead.nm_YearofCompletion__c}</td>
+                        <td width="25%"><b>Name of School(10th):</b></td>
+                        <td width="25%">{!objLead.nm_NameofSchool__c}</td>
+                </tr>
+                <tr>
+                    <td colspan="4"><hr/></td>
+                </tr>
+                <tr>
+                        <td width="25%"><b>Diploma / 12th:</b></td>
+                        <td width="25%">{!objLead.nm_Class12OrDiploma__c}</td>    
+                        <td width="25%"></td>    
+                        <td width="25%"></td>    
+                </tr>
+               
+                <tr>
+                        <td width="25%"><b><apex:outputLabel value="{!IF(objLead.nm_Class12OrDiploma__c == 'Diploma','Diploma Name:','HSC/12th %:')}"></apex:outputLabel></b></td>
+                        <td width="25%"><apex:outputLabel value="{!IF(objLead.nm_Class12OrDiploma__c == 'Diploma',objLead.nm_DiplomaName__c,objLead.nm_12thPercentage__c)}"></apex:outputLabel></td>
+                        <td width="25%"><b><apex:outputLabel value="{!IF(objLead.nm_Class12OrDiploma__c == 'Diploma','School/College/Universuty Name:','HSC/12th Board:')}"></apex:outputLabel></b></td>
+                        <td width="25%"><apex:outputLabel value="{!IF(objLead.nm_Class12OrDiploma__c == 'Diploma',objLead.nm_DiplomaSchoolCollegeUniversityname__c,objLead.nm_NameofBoard12__c)}"></apex:outputLabel></td>
+                </tr>
+                
+                <tr>
+                        <td width="25%"><b><apex:outputLabel value="{!IF(objLead.nm_Class12OrDiploma__c == 'Diploma','Diploma %:','Year of Completion(12th):')}"></apex:outputLabel></b></td>
+                        <td width="25%"><apex:outputLabel value="{!IF(objLead.nm_Class12OrDiploma__c == 'Diploma',objLead.Result_Diploma__c,objLead.nm_YearofCompletion12__c)}"></apex:outputLabel></td>
+                        <td width="25%"><b><apex:outputLabel value="{!IF(objLead.nm_Class12OrDiploma__c == 'Diploma','Diploma Stream:','Name of School(12th):')}"></apex:outputLabel></b></td>
+                        <td width="25%"><apex:outputLabel value="{!IF(objLead.nm_Class12OrDiploma__c == 'Diploma',objLead.nm_StreamDiploma__c,objLead.nm_NameofSchool12__c)}"></apex:outputLabel></td>
+                </tr>
+                <tr>
+                        <td width="25%"><b><apex:outputLabel value="{!IF(objLead.nm_Class12OrDiploma__c == 'Diploma','Duration of Diploma(In Years):','Stream (12th):')}"></apex:outputLabel></b></td>
+                        <td width="25%"><apex:outputLabel value="{!IF(objLead.nm_Class12OrDiploma__c == 'Diploma',objLead.nm_DurationOfDiploma__c,objLead.nm_Stream__c)}"></apex:outputLabel></td>
+                        <td width="25%"><b><apex:outputLabel value="Year of Completion(Diploma):" rendered="{!IF(objLead.nm_Class12OrDiploma__c == 'Diploma',true,false)}"></apex:outputLabel></b></td>
+                        <td width="25%"><apex:outputLabel value="{!objLead.nm_DiplomaYearOfCompletion__c}" rendered="{!IF(objLead.nm_Class12OrDiploma__c == 'Diploma',true,false)}"></apex:outputLabel></td>
+                </tr>
+               
+                <tr>
+                    <td colspan="4"><hr/></td>
+                </tr>
+                <tr>
+                        <td width="25%"><b>Bachelors Degree Name:</b></td>
+                        <td width="25%">{!objLead.nm_BachelorsDegreeName__c}</td>
+                        <td width="25%"><b>Specialization:</b></td>
+                        <td width="25%">{!objLead.nm_Specialization__c}</td>
+                        
+                </tr>
+                <tr>
+                        <td width="25%"><b>College Name:</b></td>
+                        <td width="25%">{!objLead.nm_NameOfCollege__c}</td>
+                        <td width="25%"><b>University Name:</b></td>
+                        <td width="25%">{!objLead.nm_NameofUniversity__c}</td>
+                        
+                </tr>
+                 <tr>
+                        <td width="25%"><b>Bachelors Degree %:</b></td>
+                        <td width="25%">{!objLead.nm_BachelorsDegreePercentage__c}</td>
+                        <td width="25%"><b>Graduation Degree Mode:</b></td>
+                        <td width="25%">{!objLead.nm_GraduationDegreeMode__c}</td>
+                        
+                </tr>
+                <tr>
+                        <td width="25%"><b>Year of Completion:</b></td>
+                        <td width="25%">{!objLead.nm_YearofCollegeCompletion__c}</td>
+                        <td width="25%"></td>
+                        <td width="25%"></td>
+                </tr>
+                
+            </table>   
+            <div style="padding-left:5px;margin:10px 0;font-size:13px;background-color:silver;">
+                <b>Work Experience:</b>
+            </div> 
+            
+            <apex:repeat value="{!lstworkexpr}" var="v">
+               
+                <table width="100%">
+                    <tr>
+                         <td width="20%"><b>Total Work Experience:</b></td>
+                         <td width="20%">{!v.Total_Work_Experience__c}</td>
+                         <td width ="20%"><b> Industry :</b></td>
+                         <td width="20%">{!v.Industry__c}</td>
+                    </tr>
+                    
+                    <tr>
+                        <td width="20%"><b>Company Name:</b></td>
+                        <td width="30%">{!v.nm_CompanyName__c}</td>
+                         <td width="20%"><b>Department:</b></td>
+                        <td>{!v.Department__c}</td>
+                    </tr>
+                    <tr>
+                        <td width="20%"><b>Designation:</b></td>
+                        <td width="30%" >{!v.nm_Designation__c}</td>
+                    </tr>              
+                </table>
+            </apex:repeat>
+        </div>   
+    </div> 
+    
+    <div style="page-break-after: always;"></div>
+     <div style="width:98%; margin:5px auto;font:Normal 12px/30px Helvetica Narrow,sans-serif;">
+        <p style="float: right;">
+          <p style="margin-right;text-align: right;">
+             <d>&#160;</d> <d style="float:right :text-align: right top;:height:16px;margin-top:5px;font-size:100%;font:Normal 25px/30px;"><apex:outputField value="{!objLead.nm_RegistrationNo__c}"/> <br> </br><apex:outputField value="{!objLead.nm_Program__r.Name}"/></d>
+           </p>
+          </p>
+    <div style="width:100%; border:3px solid #000000; background:#ffffff;">
+          <div style="padding:15px;">
+              <div style="padding-left:5px;margin:10px 0;font-size:13px;background-color:silver; ">
+                <b>Program Details</b>
+            </div>
+         
+            
+            <table width="100%" border="0">
+                <tr>
+                    <td width="20%"><b>Program Name:</b></td>
+                    <td width="80%">{!objLead.nm_ProgramName__c}</td>
+                </tr>
+                <tr>
+                    <td width="20%" valign="top"><b>Eligibility:</b></td>
+                    <td width="80%" >{!objLead.nm_Eligibility_Criteria_Ref__c}</td>
+                </tr>
+            </table>
+         
+          
+                        <div style="padding-left:5px;margin:10px 0;font-size:13px;background-color:silver; ">
+                <b>Information Center</b>
+            </div>  
+            <table width="100%">
+                <tr>
+                    <td width="20%" valign="top"><b>Information Center:</b></td>
+                    <td colospan="3" valign="top">{!objLead.IC_Name__c}</td>
+                </tr>
+                <br/>
+                <br/>
+           </table>
+                       <div class="section-title">Declaration</div>
+                <p>
+                   I hereby declare that the information furnished by me in the Admission 
+                    form is true and correct to the best of my knowledge. I am aware that my 
+                    candidature and/or admission at NGA-SCE ({!objLead.nmm_BatchName__c}) and subsequent  
+                    process can be cancelled unilaterally by NMIMS at any stage if the 
+                    information furnished by me is found to be incorrect and in such a case all 
+                    the fees paid by me will be forfeited and will not be refunded to me.
+                </p>
+                <br/>
+            <table width="100%">
+            <tr>
+                <td width="20%"><b>Date : </b></td>
+                <td width="30%">{!objdate}</td>
+                <td width="20%"><b>Signature : </b></td>      
+                <td ></td>
+            </tr>
+            </table>        
+            <table width="100%">
+            <tr>                
+                <td width="20%"><b>Place : </b></td>
+                <td >{!city}</td>
+                          
+            </tr>
+            </table>
+            
+         </div>
+    </div>          
+    </div>
+    </div>
+    </div>
+</apex:page>

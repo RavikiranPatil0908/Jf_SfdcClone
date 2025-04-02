@@ -1,0 +1,123 @@
+<apex:page standardController="Account" recordSetvar="order" extensions="MassAccountupdate" >
+ 
+    <apex:includeScript value="{!$Resource.restexplorer_scripts}" />
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/modernizr-2.8.3-respond-1.4.2.min.js')}"/>
+    <apex:form id="wizard">
+    
+    <apex:sectionHeader title="Mass Account update value" subtitle="Step {!step} of 4"/>
+
+        <apex:pageBlock id="step1" title="Step 1. Confirm records to be mass update" mode="edit" rendered="{!step='1'}">
+            <apex:pagemessages escape="false"></apex:pagemessages>
+            <apex:pageBlockSection >
+            <apex:pageBlockTable var="a" value="{!selected}">
+                <apex:column value="{!a.FirstName}"/>
+                <apex:column value="{!a.LastName}"/>
+                <apex:column value="{!a.nm_StudentStatus__c}"/>
+                <apex:column value="{!a.PersonEmail}"/>
+                <apex:column value="{!a.PersonMobilePhone}"/>
+                <apex:column value="{!a.nm_Centers__c}"/>               
+                <apex:column value="{!a.Owner.FirstName}"/>    
+                <apex:column value="{!a.Owner.LastName}"/>  
+                <apex:column value="{!a.Counselor_Profile__c}"/>               
+                
+            </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:panelGrid columns="2">
+            </apex:panelGrid>
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!cancel}" value="Previous" id="CancelbtnId"/>
+                <apex:commandButton action="{!step2}" value="Next" id="NextbtnId"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock> 
+      
+        <apex:pageBlock id="step2" title="Step 2. Specify Field to Update value for Account" mode="edit" rendered="{!step='2'}">
+            <apex:pagemessages escape="false"></apex:pagemessages>
+            <!-- <apex:inputField value="{!numberOfPage}" styleClass="numonly" /> -->
+            <span style="text-align:center"><apex:selectList id="Programs" value="{!AccountFieldAction}" style="padding:5px; display: block;margin: 0 auto;" styleClass="form-control notnull" multiselect="false" size="1">
+                                  <apex:selectOptions value="{!ActionList}"/>
+
+                <!--
+                <apex:selectOption itemValue="Owner" itemLabel="Lead Owner"/>
+                -->
+            </apex:selectList></span>
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!step1}" value="Previous"/>
+                <apex:commandButton action="{!step3}" value="Next"/>
+                <apex:commandButton action="{!cancel}" value="Cancel" onclick="return confirmCancel()" immediate="true" style="margin-left: 2em"/>
+            </apex:pageBlockButtons>
+      </apex:pageBlock> 
+      
+      <apex:pageBlock id="step3" title="Step 3. Confirmation" mode="edit" rendered="{!step='3'}">
+          <apex:pagemessages escape="false"></apex:pagemessages>
+
+          <span style="text-align:center">
+            <apex:outputPanel rendered="{!IF(AccountFieldAction =='Status',true,false)}">
+               <apex:selectList id="pickList1" value="{!Status}" size="1" styleClass="ModifiedLeadStatus" >
+               <!--
+                  <apex:selectOptions value="{!AllLeadStatus}"/>
+                  -->
+                    <apex:selectOption itemValue="Not Contacted - Old" itemLabel="Not Contacted - Old"/>
+                     <apex:selectOption itemValue="Parked Leads" itemLabel="Parked Leads"/>
+
+               </apex:selectList>
+            </apex:outputPanel>
+         </span>
+         
+         <span style="text-align:center">
+            <apex:outputPanel rendered="{!IF(AccountFieldAction =='CPprofile',true,false)}">
+               <apex:selectList id="pickList2" value="{!CPprofile}" size="1" styleClass="ModifiedLead" >
+                  <apex:selectOptions value="{!AllCPprofile}"/>
+               </apex:selectList>
+            </apex:outputPanel>
+         </span>  
+         
+         <span style="text-align:center">
+            <apex:outputPanel rendered="{!IF(AccountFieldAction =='Center',true,false)}">
+               <apex:selectList id="pickList3" value="{!Center}" size="1" styleClass="ModifiedLeadStatusCenter" >
+                  <apex:selectOptions value="{!AllCenter}"/>
+               </apex:selectList>
+            </apex:outputPanel>
+         </span>
+
+          <apex:pageBlockButtons >          
+              <apex:commandButton action="{!step2}" value="Previous"/>
+              <apex:commandButton action="{!step4}" value="Mass Update Account"/>
+              <apex:commandButton action="{!cancel}" value="Cancel" onclick="return confirmCancel()" immediate="true" style="margin-left: 2em"/>
+          </apex:pageBlockButtons>
+      </apex:pageBlock> 
+      
+        <apex:pageBlock id="step4" title="Step 4. Results" mode="edit" rendered="{!step='4'}">
+          <apex:pagemessages escape="false"></apex:pagemessages>
+          <br/>
+          <!--
+          <span style="text-align:center"><a href="{!returnUrl}" target="_blank" download="mergedAirwaybill.pdf" style="btn btn-primary">Click here to download!</a></span>
+          -->
+          <apex:pageBlockButtons >
+              <apex:commandButton action="{!cancel}" value="Done"/>
+          </apex:pageBlockButtons>
+      </apex:pageBlock> 
+      
+     <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min_.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}"/>
+     </apex:form>
+   
+   <script type="text/javascript">
+   
+    $(document).ready(function(){
+        
+    });
+
+    function openInNewTab(url) {
+        var win = window.open(url, '_blank');
+        win.focus();
+    }
+
+
+    </script>
+</apex:page>

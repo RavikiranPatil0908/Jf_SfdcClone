@@ -1,0 +1,34 @@
+.card-break {
+    border-top: 1px solid rgb(221, 219, 218);
+    padding: 0;
+    cursor: pointer;
+}
+
+.list-block-top {
+    border-top: 1px solid rgb(221, 219, 218);
+    
+}
+
+.list-block-bottom {
+    border-bottom: 1px solid rgb(221, 219, 218);
+}
+
+.font-header-size {
+    font-size: .8125rem;
+}
+
+.align-logo{
+    padding-right: .95rem !important;
+    padding-left: .95rem !important;
+}
+
+.scroll-heigth {
+    max-height: 400px;
+}
+
+.filterPanel {
+    position: absolute;
+    left: 10.5rem;
+    top: 48px;
+    width: 15rem;
+}

@@ -1,0 +1,13 @@
+<apex:page controller="nmUploadDocuments" tabStyle="Account">
+<apex:includeScript value="{!URLFOR($Resource.Scripts,'scripts/jquery-1.8.2.min.js')}"/>
+    
+    <apex:sectionHeader subtitle="Upload Profile Image" title="Account"/>
+    
+    <div style="margin-bottom:40px;">
+        <a href="/{!accountId}" style="float:left;"><b>Student Name:</b> {!accountName}</a>
+    </div>
+    
+
+     <apex:iframe src="{!$Label.DOCUMENT_SERVER}uploadPhotoForm?accountId={!recordId}&uid={!AccountUId}"  height="400px"/>
+    
+</apex:page>

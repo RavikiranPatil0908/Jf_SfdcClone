@@ -1,0 +1,47 @@
+<!--
+  @description       : 
+  @author            : shubhranshu
+  @group             : 
+  @last modified on  : 06-03-2021
+  @last modified by  : shubhranshu
+  Modifications Log 
+  Ver   Date         Author        Modification
+  1.0   05-28-2021   shubhranshu   Initial Version
+-->
+<apex:page standardController="Dispatch_Order__c" renderAs="PDF">
+<table style="width: 100%;">
+    <tbody>
+    <tr>
+        <td style="width: 265px;"><img src="{!URLFOR($Resource.Images,'images/logo.png')}" width="50%" style="margin-left:3%;"/>
+        </td>
+        <td style="text-align: right; width: 467px;">
+            Date: 
+            <apex:outputText value="{0,date, dd'/'MM'/'yyyy}">
+                <apex:param value="{!TODAY()}" /> 
+            </apex:outputText>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<hr />
+<br />
+    <div  style="text-align: center;"> 
+        <p>{!Dispatch_Order__c.Program__c} (Semester - {!Dispatch_Order__c.Semester__c})</p>
+    </div>
+    <br />
+    <div  style="text-align: right;"> 
+        Tracking Number: <apex:outputField value="{!Dispatch_Order__c.Tracking_Number__c}"></apex:outputField>
+    </div>
+    <br />
+    <div  style="text-align: left;padding-right: 70%"> 
+       <apex:outputField value="{!Dispatch_Order__c.Address__c}"></apex:outputField>
+    </div>
+    
+    <br />
+    <div  style="text-align: left;padding-left: 70%"> 
+        <apex:outputField value="{!Dispatch_Order__c.From_Address__c}"></apex:outputField>
+     </div>
+    
+
+<p>&nbsp;</p>
+</apex:page>

@@ -1,0 +1,962 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 09-04-2024
+  @last modified by  : @Ravi
+-->
+<apex:component access="global" controller="FormPageController">
+    <apex:attribute access="global" name="recordId" type="ID" description="Account Record Id" assignTo="{!accountId}" />
+
+    <style>
+        .btn-custom {
+            border-bottom: 5px solid #285e8e;
+            position: relative;
+            margin-right: 5px;
+        }
+
+        .btn-custom:hover {
+            top: 0.5px;
+            border-bottom-width: 2.5px;
+        }
+
+        .btn-custom:active {
+            top: 5px;
+            border-bottom: 0;
+        }
+
+        .body .row.m-b-0 {
+            margin-bottom: 0px;
+        }
+
+        .studentDetails .table-label {
+            color: #B8B5B5;
+        }
+
+        @media print {
+
+            body,
+            .no-print {
+                visibility: hidden;
+            }
+
+            #section-to-print {
+                visibility: visible;
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+        }
+    </style>
+
+    <apex:outputPanel id="formReview">
+        <div class="container-fluid">
+            <div styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="header p-b-0 b-b-n">
+                        <div class="row clearfix">
+                            <div class="col-xs-12 col-sm-6">
+                                <h5>Details</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="body row studentDetails">
+                        <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <span class="table-label">Registration ID</span>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <span>{!objAccount.nm_RegistrationNumber__c}</span>
+                            </div>
+                        </div>
+                        <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <span class="table-label">Status</span>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <span>{!objAccount.nm_StudentStatus__c}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="
+                    margin: 5px auto;
+                    font:
+                        Normal 12px/30px Helvetica Narrow,
+                        sans-serif;
+                " id="section-to-print">
+                <div style="border: 3px solid #000000; background: #ffffff">
+                    <!-- Header Start -->
+
+                    <div style="height: 16px; margin-top: 5px; line-height: 20%">
+                        <apex:outputText value="Date: {0,date,dd-MM-yyyy}" style="float: right; margin-right: 50px">
+                            <apex:param value="{!TODAY()}" />
+                        </apex:outputText>
+                    </div>
+                    <div style="line-height: 70%">
+                        <img src="{!URLFOR($Resource.Images,'images/logo.png')}" width="50%" style="margin-left: 23%" />
+                    </div>
+                    <div style="
+                            margin: 10px 0;
+                            font-size: 15px;
+                            line-height: 70%;
+                        ">
+                        <center>
+                            <b>NMIMS CENTRE FOR DISTANCE AND ONLINE EDUCATION</b>
+                        </center>
+                    </div>
+
+                    <div style="margin: 10px 0; font-size: 13px; margin-top: 0px">
+                        <center><b>Admission Form</b></center>
+                    </div>
+                    <apex:image url="{!objAccount.nm_StudentImageUrl__c}" height="90" style="
+                            display: block;
+                            margin-left: auto;
+                            margin-right: auto;
+                        " rendered="{!IF(objAccount.nm_StudentImageUrl__c!=null,true,false)}" />
+                    <table width="100%" border="0">
+                        <tr>
+                            <td width="20%" style="padding: 15px;"><b>Registration No:</b></td>
+                            <td width="80%">{!objAccount.nm_RegistrationNumber__c}</td>
+                        </tr>
+                    </table>
+
+                    <div style="padding: 15px; margin-top: 0px">
+                        <div style="
+                                padding-left: 5px;
+                                margin: 10px;
+                                font-size: 13px;
+                                background-color: silver;
+                            ">
+                            <b>Personal Details</b>
+                        </div>
+
+                        <table width="100%">
+                            <tr>
+                                <td width="20%"><b>Salutation:</b></td>
+                                <td width="30%">{!objAccount.Salutation}</td>
+                                <td width="20%"><b>Name:</b></td>
+                                <td>
+                                    {!objAccount.FirstName}&nbsp;{!objAccount.LastName}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width="20%"><b>Date of Birth:</b></td>
+                                <td width="30%">
+                                    <apex:outputText styleClass="ot" value="{0, date, dd '/' MM '/' yyyy}">
+                                        <apex:param value="{!objAccount.nm_DateOfBirth__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td width="20%"><b>Gender:</b></td>
+                                <td>{!objAccount.nm_Gender__c}</td>
+                            </tr>
+                            <tr>
+                                <td width="20%"><b>Marital Status:</b></td>
+                                <td width="30%">
+                                    {!objAccount.nm_MaritialStatus__c}
+                                </td>
+                                <td width="20%"><b>Father's name:</b></td>
+                                <td>{!objAccount.Father_Name__c}</td>
+                            </tr>
+                            <tr>
+                                <td width="20%"><b>Mother's Name:</b></td>
+                                <td width="30%">{!objAccount.Mother_Name__c}</td>
+                                <td width="20%"><b>Spouse Name:</b></td>
+                                <td>{!objAccount.nm_SpouseName__c}</td>
+                            </tr>
+                            <tr>
+                                <td width="20%"><b>Blood Group:</b></td>
+                                <td width="30%">{!objAccount.nm_BloodGroup__c}</td>
+                                <td width="20%"><b>Category:</b></td>
+                                <td>{!objAccount.nm_Category__c}</td>
+                            </tr>
+                            <tr>
+                                <td width="20%"><b>Nationality:</b></td>
+                                <td>{!objAccount.nm_Nationality__c}</td>
+                                <td width="20%"><b>Domicile:</b></td>
+                                <td>{!objAccount.nm_Domicile__c}</td>
+                            </tr>
+                            <tr>
+                                <apex:outputPanel rendered="{!IF(objAccount.nm_Nationality__c == 'Indian' && (objAccount.Adhar_Card_Number__c !=  null && objAccount.Adhar_Card_Number__c != ''),true,false)}">
+                                    <td width="20%"><b>Aadhar Number:</b></td>
+                                    <td>{!objAccount.Adhar_Card_Number__c}</td>
+                                </apex:outputPanel>
+                            </tr>
+                        </table>
+                        <div style="
+                                padding-left: 5px;
+                                margin: 10px 0;
+                                font-size: 13px;
+                                background-color: silver;
+                            ">
+                            <b>Address of Communication</b>
+                        </div>
+
+                        <table width="100%">
+                            <tr>
+                                <td width="20%" style="vertical-align: top">
+                                    <b>Shipping Address:</b>
+                                </td>
+                                <td>
+                                    {!objAccount.House_No_Name_Shipping_Account__c}&nbsp;{!objAccount.Shipping_Street__c}&nbsp;
+                                    {!objAccount.Locality_Name_Shipping__c}&nbsp;{!objAccount.City_Shipping_Account__c}<br />
+                                    &nbsp;{!objAccount.State_Province_Shipping__c}&nbsp;{!objAccount.Country_Shipping__c}&nbsp;{!objAccount.Zip_Postal_Code_Shipping__c}
+                                </td>
+                                <td width="20%" style="vertical-align: top">
+                                    <b>Locality:</b>
+                                </td>
+                                <td style="vertical-align: top">
+                                    {!objAccount.Locality__c}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width="20%"><b>Mobile Number:</b></td>
+                                <td width="30%">{!objAccount.PersonMobilePhone}</td>
+                                <td width="20%"><b>Primary Email:</b></td>
+                                <td>{!objAccount.PersonEmail}</td>
+                            </tr>
+                            <tr>
+                                <td width="20%"><b>STD Code:</b></td>
+                                <td width="30%">{!objAccount.nm_STDCode__c}</td>
+                                <td width="20%"><b>Phone Number:</b></td>
+                                <td>{!objAccount.Phone}</td>
+                            </tr>
+                            <tr>
+                                <td width="20%" style="vertical-align: top">
+                                    <b>Permanent Address:</b>
+                                </td>
+                                <td>
+                                    {!objAccount.nm_HouseNumber_P__c}&nbsp;{!objAccount.nm_Street__c}&nbsp;
+                                    {!objAccount.nm_LocalityName_P__c}&nbsp;{!objAccount.nm_City__c}<br />
+                                    &nbsp;{!objAccount.nm_StateProvince__c}&nbsp;
+                                    {!objAccount.nm_Country__c} &nbsp;
+                                    {!objAccount.nm_PostalCode__c}
+                                </td>
+                                <td width="20%"><b>Alternate Email:</b></td>
+                                <td width="30%">
+                                    {!objAccount.nm_SecondryEmail__c}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div style="padding: 15px">
+                        <div style="
+                                padding-left: 5px;
+                                margin: 10px 0;
+                                font-size: 13px;
+                                background-color: silver;
+                            ">
+                            <b>Program Details</b>
+                        </div>
+
+                        <table width="100%" border="0">
+                            <tr>
+                                <td width="20%"><b>Program Name:</b></td>
+                                <td width="30%">
+                                    <apex:outputLabel value="{!IF(objAccount.nm_Program__r.Specialisation__c == 'MBA',objAccount.nm_Program__r.Bachelor_Specialization__c,objAccount.nm_Program__r.nm_ProgramName__c)}" />
+                                    <!-- <apex:outputLabel value="{!IF(objAccount.nm_Program__r.Specialisation__c != 'MBA','MBA (WX)',objAccount.nm_ChooseaProgram__c)}" /> -->
+                                </td>
+
+                                <td width="20%"><b>Program Type :</b></td>
+                                <td width="30%">
+                                    <apex:outputLabel value="{!IF(objAccount.Program_Type__c == 'M.Sc.','M.Sc. (Applied Finance)',objAccount.nm_ChooseaProgram__c)}" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width="20%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Program_Type__c == 'MBA',true,false)}">
+                                        <b>Program Specialisation Type:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="30%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Program_Type__c == 'MBA',true,false)}">
+                                        {!objAccount.nm_Program__r.Form_Specialisation__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+
+
+
+                            <tr>
+                                <!-- <td width="20%"><b>Batch Preference:</b></td>
+                                <td width="30%">{!objAccount.nm_Interview_Slot_Preference__c}</td> -->
+
+                                <td width="20%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Program_Type__c == 'MBA (WX)',true,false)}">
+                                        <b>Program Specialisation Type:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="30%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Program_Type__c == 'MBA (WX)',true,false)}">
+                                        {!objAccount.Specialization_Type__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="20%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Program_Type__c == 'MBA (WX)',true,false)}">
+                                        <b>Program Specialisation Preference
+                                            1:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="30%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Program_Type__c == 'MBA (WX)',true,false)}">
+                                        <apex:repeat value="{!mapOfIdVsProgram}" var="key">
+                                            <apex:outputText rendered="{!key==objAccount.nm_Program__c}">
+                                                {!mapOfIdVsProgram[objAccount.nm_Program__c].nm_ProgramName__c}
+                                            </apex:outputText>
+                                        </apex:repeat>
+                                    </apex:outputPanel>
+                                </td>
+
+                                <td width="20%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Program_Type__c == 'MBA (WX)',true,false)}">
+                                        <b>Program Specialisation Preference
+                                            2:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="30%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Program_Type__c == 'MBA (WX)',true,false)}">
+                                        <apex:repeat value="{!mapOfIdVsProgram}" var="key">
+                                            <apex:outputText rendered="{!key==objAccount.nm_Program2__c}">
+                                                {!mapOfIdVsProgram[objAccount.nm_Program2__c].nm_ProgramName__c}
+                                            </apex:outputText>
+                                        </apex:repeat>
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td width="20%" valign="top">
+                                    <b>Eligibility:</b>
+                                </td>
+                                <td width="30%">
+                                    {!objAccount.Eligibility_Criteria_Ref__c}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%" valign="top">
+                                    <b>Academic Bank of Credits Identification Number (ABC ID):</b>
+                                </td>
+                                <td width="30%">
+                                    {!objAccount.ABCID__c}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%" valign="top">
+                                    <b>Distance Education Bureau Identification Number (DEB ID):</b>
+                                </td>
+                                <td width="30%">
+                                    {!objAccount.DEBID__c}
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div style="
+                                padding-left: 5px;
+                                margin: 10px 0;
+                                font-size: 13px;
+                                background-color: silver;
+                            ">
+                            <b>Academic Information</b>
+                        </div>
+                        <table width="100%">
+                            <tr>
+                                <td width="25%"><b>10th %:</b></td>
+                                <td width="25%">
+                                    {!objAccount.nm_10thPercentage__c}
+                                </td>
+                                <td width="25%"><b>10th Board:</b></td>
+                                <td width="25%">
+                                    {!objAccount.nm_NameofBoard__c}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <b>Name of School(10th):</b>
+                                </td>
+                                <td width="25%">
+                                    {!objAccount.nm_NameofSchool__c}
+                                </td>
+                                <td width="25%">
+                                    <b>Year of Completion(10th):</b>
+                                </td>
+                                <td width="25%">
+                                    {!objAccount.nm_YearofCompletion__c}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <hr />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%"><b>Diploma / 12th:</b></td>
+                                <td width="25%">
+                                    {!objAccount.nm_Class12OrDiploma__c}
+                                </td>
+                                <td width="25%"></td>
+                                <td width="25%"></td>
+                            </tr>
+
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == '12th Grade' || objAccount.nm_Class12OrDiploma__c == 'XII/HSC',true,false)}">
+                                        <b>12th %:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == '12th Grade' || objAccount.nm_Class12OrDiploma__c == 'XII/HSC',true,false)}">
+                                        {!objAccount.nm_12thPercentage__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == '12th Grade' || objAccount.nm_Class12OrDiploma__c == 'XII/HSC',true,false)}">
+                                        <b>12th Board:</b>
+                                    </apex:outputPanel>
+                                    </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == '12th Grade' || objAccount.nm_Class12OrDiploma__c == 'XII/HSC',true,false)}">
+                                        {!objAccount.nm_NameofBoard12__c}
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == '12th Grade' || objAccount.nm_Class12OrDiploma__c == 'XII/HSC',true,false)}">
+                                        <b>Year of Completion(12th):</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == '12th Grade' || objAccount.nm_Class12OrDiploma__c == 'XII/HSC',true,false)}">
+                                        {!objAccount.nm_YearofCompletion12__c}
+                                    </apex:outputPanel>    
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == '12th Grade' || objAccount.nm_Class12OrDiploma__c == 'XII/HSC',true,false)}">
+                                        <b>Name of School(12th):</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == '12th Grade' || objAccount.nm_Class12OrDiploma__c == 'XII/HSC',true,false)}">
+                                        {!objAccount.nm_NameofSchool12__c}
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == '12th Grade' || objAccount.nm_Class12OrDiploma__c == 'XII/HSC',true,false)}">
+                                        <b>Stream (12th):</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == '12th Grade' || objAccount.nm_Class12OrDiploma__c == 'XII/HSC',true,false)}">
+                                        {!objAccount.nm_Stream__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == 'Diploma',true,false)}">
+                                        <b>Diploma %:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == 'Diploma',true,false)}">
+                                        {!objAccount.nm_ResultDiploma__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == 'Diploma',true,false)}">
+                                        <b>Diploma Name:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == 'Diploma',true,false)}">
+                                        {!objAccount.nm_DiplomaName__c}
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == 'Diploma',true,false)}">
+                                        <b>School/College/Universuty Name:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == 'Diploma',true,false)}">
+                                        {!objAccount.nm_DiplomaSchoolCollegeUniversityname__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == 'Diploma',true,false)}">
+                                        <b>Diploma Stream:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == 'Diploma',true,false)}">
+                                        {!objAccount.nm_StreamDiploma__c}
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == 'Diploma',true,false)}">
+                                        <b>Duration of Diploma(In Years):</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == 'Diploma',true,false)}">
+                                        {!objAccount.nm_DurationOfDiploma__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == 'Diploma',true,false)}">
+                                        <b>Year of Completion(Diploma): </b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Class12OrDiploma__c == 'Diploma',true,false)}">
+                                        {!objAccount.nm_DiplomaYearOfCompletion__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+
+
+
+                            <tr>
+                                <td colspan="4">
+                                    <hr />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <b>Bachelors Degree Name:</b>
+                                </td>
+                                <td width="25%">
+                                    {!objAccount.nm_BachelorsDegreeName__c}
+                                </td>
+                                <td width="25%"><b>Specialization:</b></td>
+                                <td width="25%">
+                                    {!objAccount.nm_Specialization__c}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%"><b>College Name:</b></td>
+                                <td width="25%">
+                                    {!objAccount.nm_NameOfCollege__c}
+                                </td>
+                                <td width="25%"><b>University Name:</b></td>
+                                <td width="25%">
+                                    <apex:outputLabel value="{!IF(objAccount.nm_NameofUniversity__c == 'Other',objAccount.Other_University_Name__c,objAccount.nm_NameofUniversity__c)}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%"><b>Year of Completion:</b></td>
+                                <td width="25%">
+                                    {!objAccount.nm_YearofCollegeCompletion__c}
+                                </td>
+                                <td width="25%"><b>Bachelors Degree %:</b></td>
+                                <td width="25%">
+                                    {!objAccount.Percentage_Bachlor__c}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <b>Graduation Degree Mode:</b>
+                                </td>
+                                <td width="25%">
+                                    {!objAccount.nm_GraduationDegreeMode__c}
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td colspan="4">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        <hr />
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        <b>Name of Program:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        {!objAccount.Name_of_Program1__c}
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        <b>Name of College:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        {!objAccount.Name_of_College1__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        <b>Name of University:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        {!objAccount.Name_of_University1__c}
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        <b>Year of Passing:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        {!objAccount.Year_of_Passing1__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        <b>Duration of Program (Months):</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        {!objAccount.Duration_of_Program1__c}
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        <b>Percentage:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        {!objAccount.Percentage1__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        <b>Graduation Degree Mode:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                        {!objAccount.Graduation_Degree_Mode1__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+
+
+                            
+
+                            <!-- <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}"> -->
+                            <tr>
+                                <td colspan="4">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        <hr />
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        <b>Name of Program:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        {!objAccount.Name_of_Program2__c}
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        <b>Name of College:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        {!objAccount.Name_of_College2__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        <b>Name of University:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        {!objAccount.Name_of_University2__c}
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        <b>Year of Passing:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        {!objAccount.Year_of_Passing2__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        <b>Duration of Program (Months):</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        {!objAccount.Duration_of_Program2__c}
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        <b>Percentage:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        {!objAccount.Percentage2__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        <b>Graduation Degree Mode:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                        {!objAccount.Graduation_Degree_Mode2__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+
+                            <!-- <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}"> -->
+                            <tr>
+                                <td colspan="4">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                        <hr />
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                        <b>Name of Program:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}"> 
+                                        {!objAccount.Name_of_Program3__c}
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                        <b>Name of College:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                        {!objAccount.Name_of_College3__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                        <b>Name of University:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                        {!objAccount.Name_of_University3__c}
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                        <b>Year of Passing:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                        {!objAccount.Year_of_Passing3__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                        <b>Duration of Program (Months):</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                        {!objAccount.Duration_of_Program3__c}
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                        <b>Percentage:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                        {!objAccount.Percentage3__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                        <b>Graduation Degree Mode:</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                        {!objAccount.Graduation_Degree_Mode3__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div style="
+                                padding-left: 5px;
+                                margin: 10px 0;
+                                font-size: 13px;
+                                background-color: silver;
+                            ">
+                            <b>Work Experience</b>
+                        </div>
+
+                        <!-- To Show Work Experieence for the Degree Program -->
+                        <apex:outputPanel rendered="{!IF(objAccount.Reason__c == '' || objAccount.Reason__c == null,true,false)}">
+                            <apex:variable value="{!1}" var="count" />
+                            <apex:variable value="{!lstWorkExperience.size}" var="WEsize" />
+                            <table width="100%">
+                                <tr>
+                                    <td width="25%">
+                                        <b>Total Work Experience:</b>
+                                    </td>
+                                    <td width="25%">
+                                        {!objAccount.Total_Work_Experience__c}
+                                    </td>
+                                    <td width="25%"></td>
+                                    <td width="25%"></td>
+                                </tr>
+                            </table>
+
+                            <apex:repeat value="{!lstWorkExperience}" var="v">
+                                <table width="100%">
+                                    <tr>
+                                        <td width="25%">
+                                            <b>Company Name:</b>
+                                        </td>
+                                        <td width="25%">
+                                            {!v.nm_CompanyName__c}
+                                        </td>
+                                        <td width="25%"><b>Department:</b></td>
+                                        <td width="25%">
+                                            <apex:outputText value="{!IF(v.nm_Department__c == 'Others',v.Department__c,v.nm_Department__c)}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="25%"><b>Designation:</b></td>
+                                        <td width="25%">
+                                            <apex:outputText value="{!IF(v.nm_Designation__c == 'Others',v.nm_OtherDesignation__c,v.nm_Designation__c)}" />
+                                        </td>
+                                        <td width="25%"><b> Industry :</b></td>
+                                        <td width="25%">
+                                            <apex:outputText value="{!IF(v.Industry__c == 'Others',v.OtherIndustry__c,v.Industry__c)}" />
+                                        </td>
+                                    </tr>
+                                    <apex:outputPanel rendered="{!IF(WEsize != count,true,false)}">
+                                        <tr>
+                                            <td colspan="4">
+                                                <hr />
+                                            </td>
+                                        </tr>
+                                    </apex:outputPanel>
+                                </table>
+                                <apex:variable value="{!count + 1}" var="count" />
+                            </apex:repeat>
+                        </apex:outputPanel>
+
+                        <table width="100%">
+                            <tr>
+                                <apex:outputPanel rendered="{!IF(objAccount.nm_Other_Reason__c != '' && objAccount.nm_Other_Reason__c != null,true,false)}">
+                                    <td width="25%">
+                                        <b>Reason For Not working:</b>
+                                    </td>
+                                    <td width="25%">{!objAccount.nm_Other_Reason__c}</td>
+                                </apex:outputPanel>
+                                <td width="25%"><b>LinkedIn URL:</b></td>
+                                <td width="25%">{!objAccount.LinkedIn_URL__c}</td>
+                                <apex:outputPanel rendered="{!IF(objAccount.nm_Other_Reason__c == '' || objAccount.nm_Other_Reason__c == null,true,false)}">
+                                    <td width="25%"></td>
+                                    <td width="25%"></td>
+                                </apex:outputPanel>
+                            </tr>
+                        </table>
+
+                        <div align="center" draggable="false" style="margin-top: 5px">
+                            <button type="button" onClick="PrintMe('section-to-print');" class="btn btn-primary waves-effect no-print btn-custom">Print</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </apex:outputPanel>
+
+    <script>
+        
+        function PrintMe(DivID) {
+            $('.no-print').css("display","none");
+            var disp_setting="toolbar=yes,location=no,";
+            disp_setting+="directories=yes,menubar=yes,";
+            disp_setting+="scrollbars=yes,width=650, height=600, left=100, top=25";
+            var content_vlue = document.getElementById(DivID).innerHTML;
+            var docprint=window.open("","",disp_setting);
+            docprint.document.open();
+            docprint.document.write('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"');
+            docprint.document.write('"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">');
+            docprint.document.write('<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">');
+            docprint.document.write('<head><title>My Title</title>');
+            docprint.document.write('<style type="text/css">body{ margin:0px;');
+            docprint.document.write('font-family:verdana,Arial;color:#000;');
+            docprint.document.write('font-family:Verdana, Geneva, sans-serif; font-size:12px;}');
+            docprint.document.write('a{color:#000;text-decoration:none;} </style>');
+            docprint.document.write('</head><body onLoad="self.print()"><center>');
+            docprint.document.write(content_vlue);
+            docprint.document.write('</center></body></html>');
+            docprint.document.close();
+            docprint.focus();
+            $('.no-print').removeAttr("style");
+        }
+    </script>
+</apex:component>

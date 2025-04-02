@@ -1,0 +1,807 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 07--12--2024
+  @last modified by  : @Ravi
+-->
+<apex:component access="global" controller="DocumentPageController" allowDML="true">
+
+    <apex:attribute access="global" name="recordId" type="ID" description="Record Id" assignTo="{!objectId}" />
+    <apex:attribute access="global" name="objType" type="String" description="Object Type" assignTo="{!objectType}"/>
+
+    <style>
+        .card .header.p-b-0.p-t-0.p-l-0.p-r-0 {
+            padding: 0px;
+        }
+
+        .bg-steel-blue {
+            background-color: #337ab7;
+        }
+
+        .studentDetails .row.m-b-0, .studentDetails .panel-section.m-b-0 {
+            margin-bottom: 0px;
+        }
+
+        .panel-heading .panel-title.panel-header { 
+            font-size: 14px;
+        }
+
+        .form-group .form-line .form-label {
+            top: -10px;
+        }
+
+        .btn-custom {
+            border-bottom: 5px solid #285e8e;
+            position: relative;
+            margin-right: 5px;
+        }
+
+        .btn-custom:hover {
+            top: 0.5px;
+            border-bottom-width: 2.5px;
+        }
+
+        .btn-custom:active {
+            top: 5px;
+            border-bottom: 0;
+        }
+
+        .text-color {
+            color: #337ab7;
+        }
+
+    </style>
+
+    <div class="container-fluid">
+        <p>Please unblock this page from your browser to continue uploading your documents safely. Documents once uploaded will go under verification by NCDOE admission Committee.</p>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="body">
+                    <h2 class="card-inside-title">Your Details</h2>
+                    <div class="row studentDetails">
+                        <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span class="table-label">Registration ID</span></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!objStudentDetails.studentNo}</span></div>
+                        </div>
+                        <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span class="table-label">Applicant Name</span></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!objStudentDetails.studentName}</span></div>
+                        </div>
+                        <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span class="table-label">Program Category</span></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!objStudentDetails.programCategory}</span></div>
+                        </div>
+                        <apex:outputPanel rendered="{!!ISBLANK(objStudentDetails.program)}" layout="none">
+                            <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span class="table-label">Program Name</span></div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!objStudentDetails.program}</span></div>
+                            </div>
+                        </apex:outputPanel>
+
+                        <apex:outputPanel rendered="{!!ISBLANK(objStudentDetails.programSpecialisaton)}" layout="none">
+                            <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span class="table-label">Specialisation</span></div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!objStudentDetails.programSpecialisaton}</span></div>
+                            </div>
+                        </apex:outputPanel>
+
+                        <apex:outputPanel rendered="{!!ISBLANK(objStudentDetails.eligibility)}" layout="none">
+                            <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span class="table-label">Eligibility Criteria</span></div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!objStudentDetails.eligibility}</span></div>
+                            </div>
+                        </apex:outputPanel>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 Documet_Upload_Mode">
+            <div class="card">
+                <div class="body DocumentForm" id="DocumentForm">
+                    <span class="data-table hidden">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="col-md-3">Document Name</th>
+                                    <th class="col-md-3">Document Status</th>
+                                    <th class="col-md-3">Reason</th>
+                                    <th class="col-md-3">Mode Of Upload</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <apex:repeat value="{!lstDocuments}" var="objdoc" id="documentsData">
+                                    <tr>
+                                        <td><p class=""><apex:outputPanel styleClass="font-bold col-pink" rendered="{!objdoc.isMandatory}">*</apex:outputPanel> {!objdoc.name}</p></td>
+                                        <td style="color: {!objdoc.statusColorCode}">{!objdoc.status}</td>
+                                        <td>{!objdoc.resonForIncorrect}</td>
+                                        <td>{!objdoc.documentMode}</td>
+                                    </tr>
+                                </apex:repeat>
+                            </tbody>
+                        </table>
+                    </span>
+                    <span class="instructions">
+                        <h2 class="card-inside-title">IMPORTANT INSTRUCTIONS (Read the Instructions Carefully and Scroll Down to Upload the Documents)</h2>
+                        <p>For every document you need to select a mode to upload from the 3 options provided as below: </p>
+                        <p> <b>Option 1</b>: Gazetted Office Attestation / Notarized by a Notary Public 
+                            <br/><b>Option 2</b>: Upload via DigiLocker 
+                            <br/><b>Option 3</b>: Upload Self-Attested Now <span class="text-color">with either Submit Gazetted / Notarized or Present Originals to the nearest Learning Centre / Examination Centre prior to the exam registration of Semester 2 or within 1 year from the date of admission whichever is earlier.</span>
+                        </p>
+                        <p><b>DOCUMENT VERIFICATION COMPLIANCE</b></p>
+                        <p>Kindly note that your <b>admission will be PROVISIONAL</b> if you have selected <b>Option 3</b> as a mode to upload for any one or more of the mandatory documents.</p>
+                        <p>If you select <b>Option 3</b>, you will be required to either submit the photocopies with <b>Gazetted Officer attestation / Notarized by Notary Public</b> or complete the <b>physical verification of all the documents</b> submitted at the time of admission with their original documents by <b>personally visiting the Learning Centre / Examination Centre</b> prior to the <b>examination registration of Semester 2 or within 1 year</b> from the date of admission whichever is earlier.</p>
+                        <p class="text-color">Failure to comply with this requirement will result in the University reserving the right to cancel the admission without any prior further notice and fees paid will not be refunded by the University.</p>
+                        <div class="modeOfUploadInstructions">
+                            <p><b>FREQUENTLY ASKED QUESTIONS</b></p>
+                            <div class="row clearfix studentDetails">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel-section m-b-0">
+                                    <div class="panel-group" id="accordion_1" role="tablist" aria-multiselectable="true">
+
+                                        <div class="panel panel-primary">
+                                            <div class="panel-heading" role="tab" id="headingOne_1">
+                                                <h4 class="panel-title panel-header">
+                                                    <a role="button" data-toggle="collapse" data-parent="#accordion_1" href="#collapseOne_1" aria-expanded="false" aria-controls="collapseOne_1">
+                                                        Attestation/Notarization Requirement:
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseOne_1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne_1">
+                                                <div class="panel-body">
+                                                    All documents must be either:
+                                                    <ul>
+                                                        <li><b>Attested by a Gazetted Officer</b>, or</li>
+                                                        <li><b>Notarized by a Notary Public</b>.</li>
+                                                    </ul>
+                                                    Documents that do not meet these criteria will not be accepted. 
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="panel panel-primary">
+                                            <div class="panel-heading" role="tab" id="headingTwo_1">
+                                                <h4 class="panel-title panel-header">
+                                                    <a role="button" data-toggle="collapse" data-parent="#accordion_1" href="#collapseTwo_1" aria-expanded="false" aria-controls="collapseTwo_1">
+                                                        Who is a Gazetted Officer?
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseTwo_1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo_1">
+                                                <div class="panel-body">
+                                                    A Gazetted Officer is a government officer who is authorized to certify documents. Examples include Magistrates, Judges, Principals of Government Colleges, and Officers of the Armed Forces or Other officials who hold a position of authority in government institutions.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-primary">
+                                            <div class="panel-heading" role="tab" id="headingThree_1">
+                                                <h4 class="panel-title panel-header">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_1" href="#collapseThree_1" aria-expanded="false" aria-controls="collapseThree_1">
+                                                        What is a Notary Public?
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseThree_1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree_1">
+                                                <div class="panel-body">
+                                                    A Notary Public is a legally authorized individual who can certify documents. They verify the authenticity of documents and add a notarial seal, stamp and signature.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-primary">
+                                            <div class="panel-heading" role="tab" id="headingFour_1">
+                                                <h4 class="panel-title panel-header">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_1" href="#collapseFour_1" aria-expanded="false" aria-controls="collapseFour_1">
+                                                        How to Get Documents Attested or Notarized?
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseFour_1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour_1">
+                                                <div class="panel-body">
+                                                    <ul>
+                                                        <li>For <b>Gazetted Officer Attestation</b>: Take the original documents and photocopies to a Gazetted Officer. The officer should sign and stamp each photocopy. Find mentioned below the details which should be available on the stamp of the Gazetted Officer:
+                                                            <ol>
+                                                                <li><b>Name of the Officer</b>: Full name of the Gazetted Officer.</li>
+                                                                <li><b>Designation</b>: The official title or position of the Gazetted Officer.</li>
+                                                                <li><b>Department/Organization</b>: The name of the government department or organization the officer belongs to. </li>
+                                                                <li><b>Location</b>: The address or location of the office, including city and state. </li>
+                                                                <li><b>Date</b>: The date on which the document was notarized (this may be added manually if not included in the stamp)</li>
+                                                                <li><b>Signature</b>: The Gazetted Officer's handwritten signature (in addition to the stamp).</li>
+                                                            </ol>
+                                                        </li>
+                                                        <li>For <b>Notarization</b>: Take your documents to a licensed Notary Public. The Notary will verify the documents and apply a notarial seal, stamp and signature. Find mentioned below the details which should be available on the stamp of the Notary:
+                                                            <ol>
+                                                                <li><b>Notary's Name</b>: The full name of the Notary Public who is performing the notarization.</li>
+                                                                <li><b>Designation</b>: The official title, such as "Notary Public."</li>
+                                                                <li><b>State or Jurisdiction</b>: The state, region, or jurisdiction in which the Notary Public is authorized to act.</li>
+                                                                <li><b>Notary Registration Number</b>: A unique identification number issued to the Notary Public by the state or governing body.</li>
+                                                                <li><b>Commission Expiry Date</b>: The expiration date of the Notary Public's commission, which indicates how long the Notary is authorized to notarize documents.</li>
+                                                                <li><b>Seal or Stamp Image</b>: The official seal or emblem, which might include a coat of arms, state emblem, or other official insignia depending on local regulations.</li>
+                                                                <li><b>Date of Notarization</b>: The date on which the document was notarized (this may be added manually if not included in the stamp).</li>
+                                                                <li><b>Signature of the Notary</b>: The Notary Public’s handwritten signature (in addition to the stamp).</li>
+                                                            </ol>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-primary">
+                                            <div class="panel-heading" role="tab" id="headingFive_1">
+                                                <h4 class="panel-title panel-header">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_1" href="#collapseFive_1" aria-expanded="false" aria-controls="collapseFive_1">
+                                                        How to Upload Documents with DigiLocker (Option 2)?
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseFive_1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive_1">
+                                                <div class="panel-body">
+                                                    <ul>
+                                                        <li>Please make sure you have added the required documents in your DigiLocker account before selecting Option 2 against a document</li>
+                                                        <li>On clicking ‘Fetch Documents from DigiLocker’,  you will be asked to provide your registered DigiLocker account information for login.</li>
+                                                        <li>Once you have done the login, you will need to tick-mark the checkboxes against the documents you have selected to upload via DigiLocker.</li>
+                                                        <li>After moving to the next step, you will be re-directed back to the documents submission page, where you will have to select the right document against the list of documents fetched via DigiLocker</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-primary">
+                                            <div class="panel-heading" role="tab" id="headingSix_1">
+                                                <h4 class="panel-title panel-header">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_1" href="#collapseSix_1" aria-expanded="false" aria-controls="collapseSix_1">
+                                                        How to Self-Attest Your Documents?
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseSix_1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix_1">
+                                                <div class="panel-body">
+                                                    <ul>
+                                                        <li>Take a photocopy of the original document.</li>
+                                                        <li>On each photocopy, simply write "Self-attested."</li>
+                                                        <li>Sign and mention date. Ensure that your signature is clear and matches the one on your official documents.</li>
+                                                        <li>Include your name clearly in block letters.</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-primary">
+                                            <div class="panel-heading" role="tab" id="headingSeven_1">
+                                                <h4 class="panel-title panel-header">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_1" href="#collapseSeven_1" aria-expanded="false" aria-controls="collapseSeven_1">
+                                                        Uploading the Documents:  
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseSeven_1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven_1">
+                                                <div class="panel-body">
+                                                    <ul>
+                                                        <li>Scan or take a clear photograph of the gazetted/self-attested or notarized documents.</li>
+                                                        <li>Ensure the scanned copies or photos are clear, readable, and show the signature, date, stamp, or seal prominently.</li>
+                                                        <li>Upload the certified/self-attested copies within the specified deadline.</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-primary">
+                                            <div class="panel-heading" role="tab" id="headingEight_1">
+                                                <h4 class="panel-title panel-header">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_1" href="#collapseEight_1" aria-expanded="false" aria-controls="collapseEight_1">
+                                                        Verification:  
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseEight_1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight_1">
+                                                <div class="panel-body">
+                                                    Documents will be reviewed for proper attestation or notarization and eligibility check. Submissions that do not meet the requirements may be rejected.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 documentUploadSection">
+            <div class="card">
+                <div class="header p-b-0 b-b-n p-t-0 p-l-0 p-r-0">
+                    <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue">
+                        <li class="active" id="InterivewFormTab">
+                            <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                <span class="list-group-item-heading font-18 font-bold">SELECT FILES FOR DOCUMENTS TO UPLOAD</span>
+                            </a>
+                        </li>                     
+                    </ul>
+                </div>
+                <apex:outputPanel styleClass="body table-responsive docmentStatus" layout="block" rendered="{!isRecordExists}">
+                    <apex:actionRegion >
+                        <table class="table table-hover">
+                            <thead>
+                                <tr> 
+                                    <apex:outputPanel layout="none">
+                                        <th class="col-md-3">Document Name</th>
+                                        <th class="col-md-3">Document Status</th>
+                                        <th class="col-md-3">Reason</th>
+                                        <th class="col-md-3">Mode Of Upload</th>
+                                        <apex:outputPanel rendered="{!showOldDocument}" layout="none">
+                                        <th class="col-md-2">Old Documents</th>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <apex:repeat value="{!lstDocuments}" var="objdoc" id="documents">
+                                    <tr>
+                                        <td><p class=""><apex:outputPanel styleClass="font-bold col-pink" rendered="{!objdoc.isMandatory}">*</apex:outputPanel> {!objdoc.name}</p></td>
+                                        <td style="color: {!objdoc.statusColorCode}">{!objdoc.status}</td>
+                                        <td>{!objdoc.resonForIncorrect}</td>
+                                        <apex:outputPanel rendered="{!objdoc.showUpload}" layout="none">
+
+                                            <apex:outputPanel rendered="{!!isDocumentFetched}" layout="none">
+                                                <td>
+                                                    <select class="form-control modeOfUpload" multiselect="false" size="1" style="width:99%;"
+                                                        data-name="{!objdoc.name}" data-type="{!objdoc.objType}" data-id="{!objdoc.recordId}" data-isMandatory="{!objdoc.isMandatory}">
+                                                        <option value="">--None--</option>
+                                                        <apex:outputPanel rendered="{!IF(objdoc.name != 'Student Photograph', true, false)}" layout="none">
+                                                            <option value="Upload Gazetted / Notarized Document"> Upload Gazetted / Notarized Document</option>
+                                                            <option value="Upload via DigiLocker"> Upload via DigiLocker</option>
+                                                            <apex:outputPanel rendered="{!!objdoc.showoldDocLink}" layout="none">    
+                                                            <option value="Upload Self-Attested Now"> Upload Self-Attested Now( Read Instructions )</option>
+                                                            </apex:outputPanel>
+                                                        </apex:outputPanel>
+                                                        <apex:outputPanel rendered="{!IF(objdoc.name == 'Student Photograph', true, false)}" layout="none">
+                                                            <option value="Upload Photo Image File"> Upload Photo Image File</option>
+                                                        </apex:outputPanel>
+                                                    </select>
+                                                </td>
+                                            </apex:outputPanel>
+
+                                            <apex:outputPanel layout="none" rendered="{!isDocumentFetched}">
+                                                <apex:outputPanel rendered="{!objdoc.selectedMode == 'Upload via DigiLocker'}" layout="none">
+                                                    <td>
+                                                        <select class="form-control mappedDocument {!IF(objdoc.name == 'Photo ID proof','photo-id-proof','')}" multiselect="false" size="1" style="width:99%;" 
+                                                            data-name="{!objdoc.name}" data-type="{!objdoc.objType}" data-id="{!objdoc.recordId}">
+                                                            <option value="">--None--</option>
+                                                        </select>
+                                                    </td>
+                                                </apex:outputPanel>
+
+                                                <apex:outputPanel rendered="{!objdoc.selectedMode != 'Upload via DigiLocker'}}" layout="none">
+                                                    <td>{!objdoc.documentMode}</td>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                            
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!!objdoc.showUpload}" layout="none">
+                                            <td>
+                                                <a href="{!objdoc.link}" class="btn btn-primary waves-effect waves-light btn-custom" target="_blank">
+                                                <i class="material-icons">preview</i>
+                                                    <span>View File</span>
+                                                </a>
+                                            </td>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!objdoc.showoldDocLink}" layout="none">
+                                            <td>
+                                                <a href="{!objdoc.oldLink}" class="btn btn-primary waves-effect waves-light btn-custom" target="_blank">
+                                                <i class="material-icons">preview</i>
+                                                    <span>View File</span>
+                                                </a>
+                                            </td>
+                                        </apex:outputPanel>
+                                      
+                                    </tr>  
+                                </apex:repeat>
+                            </tbody>
+                        </table>
+                        <div class="hidden-fieldSection">
+                            <apex:inputHidden id="UpdateDocumentListFromDigiLocker" value="{!jsonDocumentList}" />
+                            <apex:inputHidden id="UpdateDocumentListMode" value="{!jsonDocumentModeList}" />
+                        </div>
+                        <div class="row clearfix">
+                            <apex:outputPanel rendered="{!!hideSubmitButton}">
+                            <div class="col-md-12">
+                                <apex:commandButton styleClass="btn btn-primary btn-lg btn-custom" id="saveFetchedDocumentDetails"
+                                    value="Submit" action="{!saveFileLinks}" onclick="return validateFileUpload();" rendered="{!isDocumentFetched}"
+                                >
+                                </apex:commandButton>
+
+                                <apex:outputPanel rendered="{!!isDocumentFetched}">
+                                    <apex:commandButton styleClass="btn btn-primary btn-lg btn-custom formSubmitButton"
+                                        value="Submit" action="{!submitUploadMode}" onclick="return submitForm();">
+                                    </apex:commandButton>
+
+                                    <a href="javascript:void(0);" class="btn btn-primary btn-lg dummySubmitButton hidden" disabled="disabled">Submit</a>
+                                </apex:outputPanel>
+                            </div>
+                           </apex:outputPanel>
+                        </div>
+                    </apex:actionRegion>
+                </apex:outputPanel>
+                <div class="body hidden" id="uploadPage" >
+                    <a href="javascript:void(0);" class="btn btn-primary waves-effect waves-light btn-custom showPreview" >
+                        <i class="material-icons">arrow_back</i>
+                        <span>Back</span>
+                    </a>
+                    <apex:iframe html-class="p-t-5" scrolling="true" src="{!$Label.Student_Zone_Base_Url}salesforce/uploadDocumentForm?{!IF(objType='Lead','type=leads&leadId','accountId')}={!recordId}&uid={!recordId}"  height="800px" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade in" id="DigiLockerFormModal" tabindex="-1" role="dialog" style="display: none;">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="largeModalLabel">Enter Your DigiLocker Details</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Please enter your DigiLocker account details below to take you to the login page and upload the selected documents from DigiLocker.</p>
+                    <div class="row clearfix p-t-10" id="DigiLockerForm">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <apex:outputlabel styleClass="form-label " value="Enter Full Name">
+                                        <apex:outputText style="color:red;font-style:bold" value=" *"/>
+                                    </apex:outputLabel>
+                                    <apex:inputText styleClass="form-control notnull digilockerMode" id="FullName" value="{!objDocumentDetails.studentName}"/>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <apex:outputlabel styleClass="form-label " value="Enter Email Id">
+                                        <apex:outputText style="color:red;font-style:bold" value=" *"/>
+                                    </apex:outputLabel>
+                                    <apex:inputText styleClass="form-control notnull digilockerMode emailValidation" id="emailId" value="{!objDocumentDetails.studentEmail}"/>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <apex:outputlabel styleClass="form-label " value="Enter Mobile Number">
+                                        <apex:outputText style="color:red;font-style:bold" value=" *"/>
+                                    </apex:outputLabel>
+                                    <apex:inputText styleClass="form-control notnull digilockerMode mobileNoValidation" id="mobileNumber" value="{!objDocumentDetails.studentMobile}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-default btn-lg btn-custom waves-effect" onclick="clearFields();" data-dismiss="modal">CLOSE</a>
+                    <apex:commandButton styleClass="btn btn-primary btn-lg btn-custom waves-effect"
+                        value="PROCEED TO DIGILOCKER" action="{!submitUploadMode}" onclick="return submitDigiLockerForm();">
+                    </apex:commandButton>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SweetAlert Plugin Js -->
+    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.0/sweetalert2.all.min.js"/>
+
+    <script>
+        $(document).ready(function (e) { 
+            showUpload('{!formSubmitResponse.isFormSubmitted}');
+
+            $('body').on('click','.showPreview', function() {
+                $('.docmentStatus').removeClass('hidden');
+                $('#uploadPage').addClass('hidden');
+                $('.instructions').removeClass('hidden');
+                $('.data-table').addClass('hidden');
+            });
+
+            // $('.modeOfDocument').change(function() {
+            //     toggleUploadMode($(this).val(), 'trigger');
+            // });
+
+            $('body').find('.form-control').focusout(function () {
+                // let elem = $(this);
+                if ($(this).parents('.form-group').hasClass('form-float')) {
+                    if ($(this).val() == '') { $(this).parents('.form-line').removeClass('focused'); }
+                }
+                else {
+                    $(this).parents('.form-line').removeClass('focused');
+                }
+            });
+
+            $('body').on('change', '.notnull', function(e) {
+                $(this).closest('div.form-group').children('span.error').remove();
+            });
+
+            $('body').on('keypress', '.notnull', function(e) {
+                $(this).closest('div.form-group').children('span.error').remove();
+            });
+
+            $('body').on('change','.emailValidation', function(){
+                if(!isValidEmailAddress($(this).val())){
+                    showHtmlMessage('warning','Please enter a valid email address.');
+                    $(this).val("");
+                }
+            });
+
+            $('body').on('change','.mobileNoValidation', function(){
+                let mobileNumberValue = $(this).val();
+                let lastdigits = mobileNumberValue.slice(-4);
+                console.log(lastdigits);
+                let pattern = "^(?!(\\d)\\1{8})";
+                pattern = new RegExp(pattern);
+                if(!pattern.test(mobileNumberValue)){  
+                    showHtmlMessage('warning','Please Enter Valid Mobile Number');
+                    $(this).val("");
+                }else if( (mobileNumberValue.length >10 && lastdigits != '0000') || mobileNumberValue.length < 10){
+                    showHtmlMessage('warning','Please enter a valid 10 digit mobile number.');
+                    $(this).val("");
+                }
+            });
+
+            $('body').on('change','.modeOfUpload', function() {
+
+                $('.formSubmitButton').val('Submit');
+                $('.dummySubmitButton').addClass('hidden');
+
+                $('.modeOfUpload').each(function(i, obj) {
+                    if($(obj).val() === 'Upload via DigiLocker'){ 
+                        $('.formSubmitButton').val('Fetch Documents from DigiLocker');
+                        $('.dummySubmitButton').removeClass('hidden');
+                    }
+                });
+            });
+            
+            console.log('isDocumentFetched ==> {!isDocumentFetched}');
+
+            if('{!msgHandler.message}' !== '') {
+                showHtmlMessage('{!msgHandler.status}','{!msgHandler.message}', '{!msgHandler.refreshPage}');
+            }
+
+            loadFetchedDocuments();
+        });
+
+        function formatFormData() {
+            let documents = [];
+            let isMandatoryFlag = false;
+            $('.modeOfUpload').each(function(i, obj) {
+                if($(obj).val() && $(obj).val() !== '--None--'){ 
+                    // let isMandatory = ($(obj).data("isMandatory") === true || $(obj).data("isMandatory") === 'true');
+                     let isMandatory = $(obj).closest('tr').find('.col-pink').length > 0;
+                    const document = {
+                        recordId: $(obj).data("id"),
+                        name: $(obj).data("name"),
+                        objType: $(obj).data("type"),
+                        modeOfUpload: $(obj).val(),
+                        isMandatory: isMandatory
+                    }
+                    documents.push(document);
+                }
+            });
+            if(documents.length > 0) {
+                let jsonArray = JSON.stringify(documents);
+                console.log(jsonArray);
+                $('[id$=UpdateDocumentListMode]').val(jsonArray);
+            }
+        }
+
+        // function submitForm() {
+        //     let modeSelected = false;
+        //     let isDigiLockerSelected = false;
+        //     $('.modeOfUpload').each(function(i, obj) {
+        //         if($(obj).val() && $(obj).val() !== '--None--'){ 
+        //             modeSelected = true;
+        //             isDigiLockerSelected = $(obj).val() === 'Upload via DigiLocker' || isDigiLockerSelected ? true : false;
+        //         }
+        //     });
+
+
+        //     if(!modeSelected) {
+        //         showHtmlMessage('warning','Kindly select the mode of Document Upload');
+        //         return false;
+        //     }
+
+        //     if(isDigiLockerSelected) {
+        //         $('[id$=FullName]').val('{!objStudentDetails.studentName}');
+        //         $('[id$=emailId]').val('{!objStudentDetails.studentEmail}');
+        //         $('[id$=mobileNumber]').val('{!objStudentDetails.studentMobileNo}');
+        //         $('#DigiLockerFormModal').modal({
+        //             backdrop: 'static',
+        //             keyboard: false
+        //         });
+        //         return false;
+        //     }
+
+        //     formatFormData();
+        //     $('.page-loader-wrapper').show();
+        //     return true;
+        // }
+
+            function submitForm() {
+                let allMandatorySelected = true;  // To ensure all mandatory documents have a mode selected
+                let isDigiLockerSelected = false;
+                $('.modeOfUpload').each(function(i, obj) {
+                    let isMandatory = $(obj).closest('tr').find('.col-pink').length > 0;  // Check if the document is mandatory
+                    let selectedMode = $(obj).val();  
+
+                    // If the document is mandatory and no mode is selected, set flag to false
+                    if (isMandatory) {
+                        if (!selectedMode || selectedMode === '--None--') {
+                            allMandatorySelected = false;
+                        }
+                    }
+
+                    // Check if DigiLocker is selected for any document
+                    if (selectedMode === 'Upload via DigiLocker') {
+                        isDigiLockerSelected = true;
+                    }
+                });
+
+                // Show a warning if any mandatory document is missing an upload mode
+                if (!allMandatorySelected) {
+                    showHtmlMessage('warning', 'Please select the mode of upload for all mandatory documents.');
+                    return false;
+                }
+
+                // Handle DigiLocker mode selection by opening the modal
+                if (isDigiLockerSelected) {
+                    $('[id$=FullName]').val(`{!objStudentDetails.studentName}`);
+                    $('[id$=emailId]').val('{!objStudentDetails.studentEmail}');
+                    $('[id$=mobileNumber]').val('{!objStudentDetails.studentMobileNo}');
+                    $('#DigiLockerFormModal').modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                    return false;
+                }
+
+                // Format form data and show loader on submission
+                formatFormData();
+                $('.page-loader-wrapper').show();
+                return true;
+            }
+
+
+        function submitDigiLockerForm() {
+            if(validateForm(`#DigiLockerForm`) === 1) { 
+                return false;
+            }
+
+            formatFormData();
+
+            $('.page-loader-wrapper').show();
+            return true;
+        }
+
+        function validateForm(id) {
+            var flag = 0;
+            $(id).find('.notnull').each(function () {
+                if(!$(this).prop('disabled')) {
+                    if($(this).val() !=null){
+                        if ($(this).val().trim().length == 0) {
+                            flag = 1;
+                            console.log('Id Required Value --'+$(this).attr('id'));
+                            $(this).focus();
+                            $(this).closest('div.form-group').children('span.error').remove();
+                            $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+                        }else if($(this).attr('type') == 'radio') {
+                            var attrName = $(this).attr('name');
+                            console.log('radio btn checked'+$("input[name='"+attrName+"']:checked").val());
+                            if(!$("input[name='"+attrName+"']:checked").val()) {
+                                flag = 1;
+                                console.log('Id Required Value --'+$(this).attr('id'));
+                                $(this).focus();
+                                $(this).siblings('span.error').remove();
+                                $(this).siblings('label').after('<br/> <span class="error" style="color:red;font-size: 13px;">Please enter value.</span>');
+                            }
+                        }
+                    }else{
+                        flag = 1;
+                        console.log('Id Required Value --'+$(this).attr('id'));
+                        $(this).focus();
+                        $(this).closest('div.form-group').children('span.error').remove();
+                        $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');    
+                    }
+                }
+            });
+            return flag;  
+        }
+
+        function loadFetchedDocuments() {
+            $('.table-columnHead').html('Mode Of Upload');
+            if('{!isDocumentFetched}' === 'true' && '{!JsonMapOfFetchedFiles}' !== '') {
+                $('.table-columnHead').html('Select DigiLocker Documents to Upload');
+                console.log('values fetched from API');
+                const mapOfFiles = JSON.parse('{!JsonMapOfFetchedFiles}');
+                for (var key in mapOfFiles) {
+                    const option = { 
+                        value: key,
+                        text : mapOfFiles[key]
+                    }
+                    if(mapOfFiles[key] === 'PAN Verification Record') {
+                        $('body').find('.mappedDocument').not('.photo-id-proof').append($('<option>', option));
+                    } else {
+                        $('body').find('.mappedDocument').append($('<option>', option));
+                    }
+                }
+            }
+        } 
+        
+
+        function validateFileUpload() {
+            let documents = [];
+            $('.mappedDocument').each(function(i, obj) {
+                if($(obj).val() != '' && $(obj).val() != null && $(obj).val() !== '--None--'){ 
+                    const document = {
+                        recordId: $(obj).data("id"),
+                        name: $(obj).data("name"),
+                        objType: $(obj).data("type"),
+                        fileId: $(obj).val()
+                    }
+                    documents.push(document);
+                }
+            });
+            if(documents.length > 0) {
+                let jsonArray = JSON.stringify(documents);
+                $('[id$=UpdateDocumentListFromDigiLocker]').val(jsonArray);
+                $('.page-loader-wrapper').show();
+                return true;
+            }
+            return false;
+        }
+
+        function showUpload(isFormSubmitted) {
+            if(isFormSubmitted === 'true') {
+                $('.docmentStatus').addClass('hidden');
+                $('#uploadPage').removeClass('hidden');
+                $('.instructions').addClass('hidden');
+                $('.data-table').removeClass('hidden');
+            } 
+        }
+
+        function handlePreview() {
+            $('.documentUploadSection').removeClass('hidden');
+        }
+
+        function isValidEmailAddress(emailAddress) {
+            // var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+            let pattern = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g);
+            // alert( pattern.test(emailAddress) );
+            return pattern.test(emailAddress);
+        }
+
+        function clearFields() {
+            $('.digilockerMode').val('');
+        }
+
+        function showHtmlMessage(status,message,refreshPage) {
+            if(/<\/?[a-z][\s\S]*>/i.test(message)) {
+                swal({
+                    title: "Important Message!",
+                    html: message,
+                    type: status
+                },
+                function() { 
+                    reloadPage(refreshPage);
+                });
+            } else {
+                swal({
+                    title: "Important Message!",
+                    text: message,
+                    type: status
+                },
+                function() { 
+                    reloadPage(refreshPage);
+                });
+            }
+        }
+
+        function reloadPage(refreshPage) { 
+            if(refreshPage === 'true') {
+                location.reload();
+            }
+        }
+        
+    </script>
+</apex:component>

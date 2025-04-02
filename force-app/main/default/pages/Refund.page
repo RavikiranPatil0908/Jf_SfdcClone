@@ -1,0 +1,1664 @@
+<!--
+  @Page Name          : Refund.page
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 05-01-2023
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author                 Modification
+  ==============================================================================
+  1.0    10/8/2019, 3:32:24 PM   @BK     Initial Version
+-->
+<apex:page sidebar="false" showHeader="false" id="refundpage" controller="RefundRequestController" standardStylesheets="false" cache="false" action="{!updateDateOfCancellation}">
+   <apex:form >
+   <apex:include pageName="Bootstrapheader"/>
+   <apex:define name="custom-style">
+      <style>
+        @media print {
+          html, body {
+            height:100%; 
+            margin: 0 !important; 
+            padding: 0 !important;
+            overflow: hidden;
+            font-size: 14px;
+          }
+        }
+
+        .bold-text {
+          color:#aa1f24;
+          font-weight: bold;
+        }
+         .custPopup{
+            background-color: white;
+            border-width: 2px;
+            border-style: solid;
+            z-index: 9999;
+            left: 50%;
+            padding:10px;
+            position: absolute;
+            /* These are the 3 css properties you will need to change so the popup
+            displays in the center of the screen. First set the width. Then set
+            margin-left to negative half of what the width is. You can add
+            the height property for a fixed size pop up if you want.*/
+            width: 500px;
+            margin-left: -250px;
+            top:100px;
+        }
+        .popupBackground{
+            background-color:black;
+            opacity: 0.20;
+            filter: alpha(opacity = 20);
+            position: absolute;
+            width: 1000%;
+            height: 1000%;
+            top: 0;
+            left: 0;
+            z-index: 9998;
+        }
+        .msg-error {
+        color: #c65848;
+      }
+      .g-recaptcha.error {
+        border: solid 2px #c64848;
+        padding: .2em;
+        width: 19em;
+      }
+
+      #overlay {
+        display: none;
+        opacity: 0;
+      }
+
+      #overlay.show{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 1;
+        position: fixed;
+        z-index: 5000;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.75);
+        animation: fade 0.5s ease-in-out;
+        cursor: progress;
+      }
+
+
+      @keyframes fade {
+        from {opacity: 0;}
+        to {opacity: 1;}
+      }
+
+      .spinner {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 5px solid white;
+        border-top: 5px solid transparent;
+        animation: rotate 1s linear infinite;
+      }
+
+      @keyframes rotate {
+        from {transform: rotate(0);}
+        to {transform: rotate(360deg);}
+      }
+         .modal-backdrop{height:100%;background:transparent;z-index:0}#searchModal .modal-dialog{position:absolute;margin:0 auto;transform:translate(-50%, -50%);top:50%;left:50%;width:100%;max-width:600px}#searchModal .modal-dialog .modal-content{border:none;background:transparent;border-radius:0;outline:none;text-align:center;box-shadow:none}#searchModal .modal-dialog .modal-content form{width:100%}#searchModal .modal-dialog .modal-content form .form-control{width:85%;border:none;outline:none;border-radius:0;display:inline-block;border-bottom:2px solid #d02630;background-color:transparent;color:#fff;font-family:"Aller";font-size:1.5em;padding-bottom:10px;height:auto;box-shadow:none}#searchModal .modal-dialog .modal-content form button{color:#fff;background:transparent;outline:none;font-size:2em;border:none;width:10%;vertical-align:middle}.overlay{background:rgba(0,0,0,0.7);width:100%;height:100%;position:absolute;left:0;top:0;z-index:1}.popup-wrapper{display:block;padding:0 15px;overflow:auto;-moz-transition-duration:.25s;-o-transition-duration:.25s;-webkit-transition-duration:.25s;transition-duration:.25s;-moz-transition-timing-function:ease-out;-o-transition-timing-function:ease-out;-webkit-transition-timing-function:ease-out;transition-timing-function:ease-out}.popup-wrapper .modal-dialog{position:absolute;left:50%;top:50%;-webkit-transform:translate(-50%, -50%);-moz-transform:translate(-50%, -50%);-ms-transform:translate(-50%, -50%);-o-transform:translate(-50%, -50%);transform:translate(-50%, -50%);margin:0}.popup-wrapper .modal-dialog.modal-sm{width:300px}.popup-wrapper .modal-dialog .modal-content{border-radius:0;-moz-border-radius:0;-webkit-border-radius:0}.popup-wrapper .modal-dialog .modal-content .modal-header{background:#d02630;border:none;font:normal 1.000em "Calibri-bold";color:#fff}.popup-wrapper .modal-dialog .modal-content .modal-body{min-height:100px}.popup-wrapper .modal-dialog .modal-content .modal-footer{border-color:#ddd}.popup-wrapper .modal-dialog .modal-content .modal-footer.text-center{text-align:center !important}.popup-wrapper .modal-dialog .modal-content .modal-footer .btn{font:normal 0.889em "Calibri-bold";color:#fff;text-transform:uppercase;background:#16659c;border-color:#fff;min-width:130px;padding:12px 20px}@media (max-width: 767px){.popup-wrapper .modal-dialog .modal-content .modal-footer .btn{display:block;margin:0 auto}}.popup-wrapper .modal-dialog .modal-content .modal-footer .btn:hover{background-color:#d02630}
+      </style>
+    </apex:define>
+   <br />
+   <div class="container">
+    <div class="row">
+      <div class="col-sm-3"></div>
+      <div class="col-sm-6">
+        <center><img src="{!URLFOR($Resource.Images,'images/logo.png')}" width="75%"/></center>
+      </div>
+      <div class="col-sm-3"></div>
+    </div>
+    <center><h2>Refund</h2></center>
+   </div>
+   <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-9"></div>
+      <div class="col-sm-3">
+        <!-- <h5>Date <u>&nbsp;{!DAY(TODAY())}-{!MONTH(TODAY())}-{!YEAR(TODAY())}&nbsp;</u></h5> -->
+      </div>
+    </div>
+    <div class="container"> 
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-check">
+            ( please &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="form-check-input" type="checkbox" checked="checked" disabled="true" />
+            <label class="form-check-label" for="defaultCheck2">
+              whichever applicable)
+            </label>
+          </div>
+          <div class="form-check">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<apex:inputCheckbox value="{!admCancel}"  disabled="true" styleClass="form-check-input"/>
+            <label class="form-check-label" for="defaultCheck2">
+            Admission Cancellation
+            </label>
+          </div>
+          <div class="form-check">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<apex:inputCheckbox value="{!regCancel}" disabled="true" styleClass="form-check-input"/>
+            <label class="form-check-label" for="defaultCheck2">
+            Registration Cancellation
+            </label>
+          </div>
+          <div class="form-check">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<apex:inputCheckbox value="{!excessref}" disabled="true" styleClass="form-check-input"/>
+            <label class="form-check-label" for="defaultCheck2">
+            Excess Refund
+            </label>
+          </div>
+          <div class="form-check">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<apex:inputCheckbox value="{!appRejected}" disabled="true" styleClass="form-check-input"/>
+            <label class="form-check-label" for="defaultCheck2">
+              Admission Rejected
+            </label>
+          </div>
+        </div>
+        <div class="col-sm-6"></div>
+      </div>
+    </div>
+    <!-- <br /> -->
+    <apex:inputHidden value="{!refund.Refund_transfer_Mode__c}" id="paymentMode" />
+    <apex:inputHidden id="hdnNameOfAccountHolder" value="{!NameOfAccountHolder}" />
+    <apex:inputHidden id="hdnTypeOfRelationship" value="{!TypeOfRelationship}" />
+    <apex:inputHidden id="hdnTypeOfAccount" value="{!TypeOfAccount}" />
+    <apex:inputHidden id="hdnIFSCCode" value="{!IFSCCode}" />
+    <apex:inputHidden id="hdnMICRCode" value="{!MICRCode}" />
+    <apex:inputHidden id="hdnAccountNumber" value="{!AccountNumber}" />
+    <apex:inputHidden id="hdnAccountNumberConfirm" value="{!AccountNumberConfirm}" />
+    <apex:inputHidden id="hdnNameOfTheBank" value="{!NameOfTheBank}" />
+    <apex:inputHidden id="hdnBankBranch" value="{!BankBranch}" />
+    <apex:inputHidden id="hdnCancelChequeDocument" value="{!CancelChequeDocument}" />
+     
+    <!-- <script src="https://www.google.com/recaptcha/api.js"></script> -->
+
+    <div id="overlay" class="show" style="display: none">
+      <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+      <table class="table table-bordered">
+        <thead>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Registration / Student Number</td>
+            <td>{!RefNumber }</td>
+          </tr>
+          <tr>
+            <td>Student Name</td>
+            <td>{! refund.Account__r.Name}</td>
+          </tr>
+          <tr>
+            <td>Student Email ID (as per records)</td>
+            <td>{! refund.Account__r.PersonEmail}</td>
+          </tr>
+          <tr>
+            <td>Student Mobile Number (as per records)</td>
+            <td>{! refund.Account__r.PersonMobilePhone}</td>
+          </tr>
+          <tr>
+            <td>Program Name</td>
+            <td>{!refund.Account__r.nmStudent_Program__c}</td>
+          </tr>
+          <!-- <tr>
+            <td>Authorized Enrolment Partner</td>
+            <td>{!refund.Account__r.nm_Centers__r.Name}</td>
+          </tr> -->
+          <tr>
+            <td>Reason (applicable for Admissions / Registration Cancellation)</td>
+            <td> 
+                <span id="RRLabel" style="display:none;">Hiii</span>
+                <apex:inputField id="fnsal" value="{!refund.Reason_For_Refund__c}" styleClass="form-control notnull ModifyFirstOptionForreason refundReason"/><br/>
+                <apex:inputField id="otherReason" value="{!refund.Other_Reason_For_Refund__c}" styleClass="form-control otherRefundReason" style="display:none;" html-placeholder="Other Reason"/>
+            </td>
+          </tr>
+          <tr>
+            <td>Refund amount to be transferred to</td>
+            <td>     
+              <apex:outputPanel rendered="{!AND( OR(showOption == 'Source',showOption == 'Source & NEFT',showOption == '',refund.Refund_transfer_Mode__c == 'Same A/c from which payment was made'),refund.Refund_transfer_Mode__c != 'NEFT')}">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="RTransferType" value="Same A/c from which payment was made"/>
+                <label class="form-check-label" for="defaultCheck2">
+                  Same A/c from which payment was made
+                </label>
+              </div>
+              </apex:outputPanel>
+              <!-- <div class="form-check">
+                <input class="form-check-input" type="radio" name="RTransferType" value="Demand Draft / Cheque"/>
+                <label class="form-check-label" for="defaultCheck2" >
+                Demand Draft / Cheque
+                </label>
+              </div> -->
+              <apex:outputPanel rendered="{!AND(OR(showOption == 'NEFT',showOption == 'Source & NEFT',showOption == '',refund.Refund_transfer_Mode__c == 'NEFT'), refund.Refund_transfer_Mode__c != 'Same A/c from which payment was made')}">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="RTransferType" value="NEFT"/>
+                <label class="form-check-label" for="defaultCheck2" >
+                NEFT
+                </label>
+              </div>
+              </apex:outputPanel>
+              <div id="NEFTShow" style="display: none;margin-top: 10px">
+                <div id="NEFTOnlyShow">
+                <!-- <apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(AccountNumber)), NOT(ISBLANK(IFSCCode)), NOT(ISBLANK(NameOfAccountHolder)), NOT(ISBLANK(TypeOfRelationship)), NOT(ISBLANK(NameOfTheBank)),NOT(ISBLANK(BankBranch)), NOT(ISBLANK(NameOfTheBank)), NOT(ISBLANK(TypeOfAccount)))}">
+                <div class="form-group row">
+                  <label for="AccountNumber3" class="col-sm-4 col-form-label">Account Number</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="AccountNumber3" value="{!AccountNumber}" readonly="{!AccountNumber}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="IFSCCode3" class="col-sm-4 col-form-label">IFSC Code</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="IFSCCode3" readonly="{!IFSCCode}" value="{!IFSCCode}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="NameOfAccountHolder3" class="col-sm-4 col-form-label">Name Of Account Holder</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="NameOfAccountHolder3" readonly="{!NameOfAccountHolder}" value="{!NameOfAccountHolder}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="TypeOfRelationship3" class="col-sm-4 col-form-label">Type Of Relationship</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="TypeOfRelationship3" readonly="{!TypeOfRelationship}" value="{!TypeOfRelationship}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="NameOfTheBank3" class="col-sm-4 col-form-label">Name of the Bank</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="NameOfTheBank3" readonly="{!NameOfTheBank}" value="{!NameOfTheBank}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="MICRCode3" class="col-sm-4 col-form-label">MICR Coder</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="MICRCode3" readonly="{!MICRCode}" value="{!MICRCode}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="BankBranch3" class="col-sm-4 col-form-label">Bank Branch</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="BankBranch3" readonly="{!BankBranch}" value="{!BankBranch}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="TypeOfAccount3" class="col-sm-4 col-form-label">Type Of Account</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="TypeOfAccount3" readonly="{!TypeOfAccount}" value="{!TypeOfAccount}" />
+                  </div>
+                </div>
+              </apex:outputPanel> -->
+              <apex:outputPanel rendered="{!checkRefundStatus}" layout="none">
+                <button class="btn btn-primary editBankDetails" type="button">{!ButtonName}</button>
+              </apex:outputPanel>
+              </div>
+              <!-- <div id="NEFTEdit">
+                <div class="form-group required-label">
+                  <apex:inputSecret styleClass="form-control numberonly" onchange="validateNEFTForm()" id="AccountNumberEdit" html-placeholder="Account Number"
+                  />
+                </div>
+                <div class="form-group required-label">
+                  <apex:inputText styleClass="form-control is-invalid numberonly" onkeyup="accountNumberValidation(); validateNEFTForm()" onchange=""
+                    id="AccountNumberConfirmEdit" html-placeholder="Account Number Confirm" />
+                  <div class="invalid-feedback">
+                    Account Number does not match with Account Number Confirm
+                  </div>
+                </div>
+                <div class="form-group required-label">
+                  <apex:inputText styleClass="form-control" id="IFSCCodeEdit" onkeypress="validateNEFTForm()" onblur="getBankDetails()" onkeydown="validateNEFTForm()" onchange="validateNEFTForm()"
+                    html-placeholder="IFSC Code" />
+                </div>
+                <div class="form-group required-label">
+                  <apex:inputText styleClass="form-control" id="NameOfAccountHolderEdit" onfocus="validateNEFTForm()" onblur="validateNEFTForm()" onkeypress="validateNEFTForm()" onkeydown="validateNEFTForm()" onchange="validateNEFTForm()"
+                    html-placeholder="Name Of Account Holder" />
+                </div>
+                <div class="form-group required-label">
+                  <select id="TypeOfRelationshipEdit" onchange="validateNEFTForm()" class="custom-select">
+                    <option value="">Type Of Relationship</option>
+                    <option value="Self">Self</option>
+                    <option value="Parent (Father/Mother)">Parent (Father/Mother)</option>
+                    <option value="Spouse">Spouse</option>
+                  </select>
+                </div>
+                <div class="form-group required-label">
+                  <apex:inputText styleClass="form-control" html-readOnly="true" id="NameOfTheBankEdit" html-placeholder="Name of the Bank"
+                  />
+                </div>
+                <div class="form-group required-label">
+                  <apex:inputText styleClass="form-control" html-readOnly="true" id="BankBranchEdit" html-placeholder="Bank Branch"
+                  />
+                </div>
+                <div class="form-group required-label">
+                  <apex:inputText styleClass="form-control" html-readOnly="true" id="MICRCodeEdit" html-placeholder="MICR Code" />
+                </div>
+                <div class="form-group required-label">
+                  <select id="TypeOfAccountEdit" onchange="validateNEFTForm()" class="custom-select">
+                    <option value="">Type Of Account</option>
+                    <option value="Current">Current</option>
+                    <option value="Savings">Savings</option>
+                  </select>
+                </div>
+                <p>Upload Cancel Cheque.</p>
+                <input onchange="ValidateSize(this); validateNEFTForm()" type="file" id="cancelCheque" Class="form-control-file file" accept=".png,.jpg,.jpeg"
+                />
+                <br/>
+                <ul>
+                  <li>Maximum file size allowed is 1 Mb.</li>
+                  <li>File Format allowed is png,jpg,jpeg.</li>
+                </ul>
+                <br/>
+                <span class="msg-error error"></span>
+                <div id="recaptcha" class="g-recaptcha" data-sitekey="{!$Label.reCaptchaSiteKey}"></div>
+                <br/>
+                <br/>
+                <div class="row">
+                  <div class="col">
+                    <input type="button" class="form-control btn btn-danger disabled" id="saveNEFT" value="Save" onclick="GO(); return false;"
+                       />
+                  </div>
+                  <div class="col">
+                    <button type="button" id="cancelNEFT" class="form-control btn btn-primary">Cancel</button>
+                  </div>
+                </div>
+
+              </div>  -->
+              </div>
+              
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <apex:actionFunction action="{!saveNEFTDetails}" name="call" />
+    <apex:actionFunction action="{!SaveDetail}" name="callValidateSaveDetails" status="myAjaxStatus" />
+    <apex:actionFunction action="{!showModalPopupHandler}" name="showNEFTPopupHandler" status="myAjaxStatus" />
+    <apex:actionFunction action="{!hideModalPopupHandler}" name="hideNEFTPopupHandler" status="myAjaxStatus"/>
+    
+    <apex:pageBlock id="thePageBlock">
+      <apex:actionFunction action="{!saveStudentSignature}" name="saveStudentSignatureHandler" status="myAjaxStatus" oncomplete="" reRender="thePageBlock"/>
+            <script>
+            let sigAlert = "{!sigAlert}";
+            if (sigAlert) {
+                alert(sigAlert);
+              
+            }
+            </script>            
+        </apex:pageBlock>
+    <apex:inputHidden value="{!sigAlert}" id="sigAlert" html-class="sigAlert"/>
+    <apex:actionStatus id="myAjaxStatus" >
+        <apex:facet name="start" >
+            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">
+                  &nbsp;
+            </div>
+            <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+              <div style="display: inline-block; padding: 2px; background-color: #fff; width: 125px;">
+                <img src="/img/loading.gif" style="float: left; margin: 8px;" />
+                <span style="display: inline-block; padding: 10px;">Please Wait...</span>
+              </div>
+            </div>
+                          </apex:facet>
+    </apex:actionStatus>
+
+    
+       
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6">
+          <apex:image id="blah" url="{!IF(checkRefundStatus || (studentSignatureDocument=='' || studentSignatureDocument==null),'#',studentSignatureDocument)}" alt="signature" style="height: 80px;width: 300px;"/>
+          <p style="margin-top:-15px">______________________________________________</p>
+          <!-- <p>{!studentSignatureDocument}</p> -->
+          <p>Student Signature</p>
+        </div>
+        
+        <div class="col-sm-6 hideContent">
+          <apex:outputPanel rendered="{!checkRefundStatus}">
+            <p>Upload signature.</p>
+            <input onchange="ValidateSize(this)" type="file" id="file" Class="form-control-file file notnull signature" accept=".png,.jpg,.jpeg"/><br/>
+            <ul>
+                <li>Maximum file size allowed is 1 Mb.</li>
+                <li>File Format allowed is png,jpg,jpeg.</li>
+            </ul>
+          </apex:outputPanel>
+        </div>
+      </div>
+    </div>
+       
+    <center><h6><u>For office use only</u></h6></center><br />
+    <div class="container">
+      <div class="row">
+        <p>Date of Registration / Admission _____________________________<u>&nbsp;{!RegistrationDate}&nbsp;</u>___________________________________________________________________</p>
+        <apex:outputPanel rendered="{!IF((refund.Type_of_Refund__c != '' && refund.Type_of_Refund__c != null) && refund.Type_of_Refund__c != 'Excess Refund',true,false)}">
+        <p>Date of Cancellation _______________________________________<u>&nbsp;{!DateOfCancellation}&nbsp;</u>________________________________________________________________________</p>
+        <!-- <p>Last date for application for Cancellation ______________________<u>&nbsp;{!LastDate}&nbsp;</u>_______________________________________________________________</p> -->
+        <p>Stage _______________________________________<u><apex:outputText value="{!refund.Account__r.nm_StudentStatus__c}" /></u>______________________________________________________________</p>
+        </apex:outputPanel>
+      </div>
+    </div>
+       
+      <apex:outputPanel rendered="{!IF((refund.Type_of_Refund__c != '' && refund.Type_of_Refund__c != null) && refund.Type_of_Refund__c != 'Excess Refund',true,false)}">
+      <div class="container">
+        <apex:outputPanel rendered="{!IF( len(refund.Description_for_addition_Deduction__c) > 0 || refund.Description_for_addition_Deduction__c !=null,true,false)}">
+        <p>Description for addition Deduction _____________________________<u>&nbsp;<apex:outputText value="{!refund.Description_for_addition_Deduction__c}" />&nbsp;</u>___________________________________________</p>
+        </apex:outputPanel>
+        <div class="row">
+          <div class="col-md-4"> 
+            <p>Amount Received:</p>
+            <p>(-) Deductions: </p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Administrative charges:</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Study Kit charges: </p>    
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional Charges: </p>
+          </div>
+          <div class="col-md-4"> 
+            <br />
+            <br /><br />
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_________<u><apex:outputText value="{0, number, ###,###,###,###,##0.00}"><apex:param value="{!refund.Addmission_Deduction__c}"/>
+            </apex:outputText></u>_____________</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;___________<u><apex:outputText value="{0, number, ###,###,###,###,##0.00}">
+            <apex:param value="{!refund.Study_Kit_Charge__c}"/>
+            </apex:outputText></u>____________</p>     
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;___________<u><apex:outputText value="{0, number, ###,###,###,###,##0.00}">
+            <apex:param value="{!refund.Additional_Deduction__c}"/>
+            </apex:outputText></u>___________</p>  
+          </div>
+          <div class="col-md-4"> 
+            <p >________<u><apex:outputText value="{0, number, ###,###,###,###,##0.00}">
+            <apex:param value="{!refund.Total_Refund_Amount__c}"/>
+            </apex:outputText></u>____________</p>
+          </div>
+        </div>
+      </div>
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!IF((refund.Type_of_Refund__c != '' && refund.Type_of_Refund__c != null) && refund.Type_of_Refund__c != 'Excess Refund',false,true)}">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-3">
+              <p style= "display: {!If(excessref ,'none','') }">Amount Received:</p>
+              <p style= "display: {!If(!excessref ,'none','') }">Excess Amount Received:</p>
+              <apex:outputPanel rendered="{!IF(refund.Additional_Deduction__c!=null && refund.Additional_Deduction__c!=0,true,false)}">
+                  <p>(-) Deductions: </p>
+                  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional Charges: </p>
+              </apex:outputPanel>
+            </div>
+            <div class="col-sm-6"></div>
+              <div class="col-sm-3">
+                  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_______<u><apex:outputText value="{0, number, ###,###,###,###,##0.00}"><apex:param value="{!refund.Total_Refund_Amount__c}"/></apex:outputText></u>______</p>
+                  <apex:outputPanel rendered="{!IF(refund.Additional_Deduction__c!=null && refund.Additional_Deduction__c!=0,true,false)}">
+                      <br/><br/><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_______<u><apex:outputText value="{0, number, ###,###,###,###,##0.00}"><apex:param value="{!refund.Additional_Deduction__c}"/></apex:outputText></u>_________</p>  
+                  </apex:outputPanel>
+              </div>
+            </div>
+        </div>
+      </apex:outputPanel>
+       
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-3"></div>
+          <div class="col-sm-3"></div>
+          <div class="col-sm-3">
+            <p>  Refund Amount</p>
+          </div>
+          <div class="col-sm-3">
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;______<u><apex:outputText value="{0, number, ###,###,###,###,##0.00}"><apex:param value="{!refund.Total_amount_to_refund__c}"/></apex:outputText></u>________</p>
+          </div>
+        </div>
+      </div>
+      
+      <br/><br/>
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-3">
+            <p>___________________________________</p>
+            <p>DIRECTOR</p>
+          </div>
+          <div class="col-sm-3">
+            <p>___________________________________</p>
+            <p>REGISTRAR</p>
+          </div>
+          <div class="col-sm-3">
+            <p>___________________________________</p>
+            <p>HEAD – ACCOUNTS</p>
+          </div>
+          <div class="col-sm-3">
+            <p>__________________________________________</p>
+            <p> VICECHANCELLOR</p>
+          </div>
+        </div>
+      </div>
+      <apex:inputHidden value="{!studentSignatureDocument}" id="signatureImage" html-class="signatureImage"/>
+      <apex:outputPanel rendered="{!IF(LastDateforCancellation >= TODAY(),true,IF(excessref ||regCancel,true,false))}">
+        <!-- <apex:commandButton id="submitpagebutton" style="background-color: #008CBA;color:white; font-size: 26px;" value="Submit" onclick="if(!validateForm()) return false;" action="{!SaveDetail}" rendered="{!checkRefundStatus}" /> -->
+          <apex:actionregion >
+              <apex:outputPanel rendered="{!checkRefundStatus && !isNOCRequired}">
+                <br /><br />
+              <input type="button" id="submitpagebutton"  style="background-color: #008CBA;color:white; font-size: 26px;display: block; margin: auto;" value="Submit" onclick="validateForm(); return false;" />
+            </apex:outputPanel>
+          </apex:actionregion>
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!IF(LastDateforCancellation >= TODAY(),false,IF(excessref || regCancel,false,true))}">
+          <apex:outputText value="Cancellation Window Closed" styleClass="bold-text"/>          
+      </apex:outputPanel>
+      <apex:commandButton id="printpagebutton" style="background-color: #008CBA;color:white; font-size: 26px;" value="Print" onclick="printpage();" rendered="{!!checkRefundStatus && allowPrint}" />
+      <br /><br /><br /><br /><br /><br /><br /><br /><hr />
+   </div>
+
+   <apex:outputPanel rendered="{!IF(errorMsg != null || errorMsg != '',true,false)}" >
+    <script>
+        Swal({
+            type: 'info',
+            title: '{!errorMsg}'
+        }).then(function(){ 
+            window.location.href = window.location.href;
+        });
+
+
+    </script>
+
+   
+   </apex:outputPanel>
+    <!-- <apex:outputPanel id="tstpopup">
+      <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}" />
+      <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
+        
+        <div class="form-group required-label">
+          <apex:inputText styleClass="form-control" onchange="validateNEFTForm()"  id="AccountNumberEdit" html-placeholder="Account Number" />
+        </div>
+        <div class="form-group required-label">
+          <apex:inputText styleClass="form-control is-invalid" onkeyup="accountNumberValidation(); validateNEFTForm()" onchange=""  id="AccountNumberConfirmEdit" html-placeholder="Account Number Confirm" />
+          <div  class="invalid-feedback">
+            Account Number does not match
+          </div>
+          <div  class="valid-feedback">
+             Account Number match
+          </div>
+        </div>
+        <div class="form-group required-label">
+          <apex:inputText styleClass="form-control" id="IFSCCodeEdit" onblur="getBankDetails()" onkeydown="validateNEFTForm()" onchange="validateNEFTForm()" html-placeholder="IFSC Code" />
+        </div>
+        <div class="form-group required-label">
+          <apex:inputText styleClass="form-control" id="NameOfAccountHolderEdit" onkeydown="validateNEFTForm()" onchange="validateNEFTForm()" html-placeholder="Name Of Account Holder" />
+        </div>
+        <div class="form-group required-label">
+          <apex:inputText styleClass="form-control" html-readOnly="true" id="NameOfTheBankEdit" html-placeholder="Name of the Bank" />
+        </div>
+        <div class="form-group required-label">
+          <apex:inputText styleClass="form-control" html-readOnly="true" id="MICRCodeEdit"  html-placeholder="MICR Code" />
+        </div>
+        <div class="form-group required-label">
+          <select id="TypeOfAccountEdit" onchange="validateNEFTForm()" class="custom-select">
+            <option value="">Type Of Account</option>
+            <option value="Current">Current</option>
+            <option value="Savings">Savings</option>
+          </select>
+        </div>
+        <p>Upload Cancel Cheque.</p>
+        <input onchange="ValidateSize(this)" type="file" id="cancelCheque" Class="form-control-file file notnull" accept=".png,.jpg,.jpeg"
+        />
+        <br/>
+        <ul>
+          <li>Maximum file size allowed is 1 Mb.</li>
+          <li>File Format allowed is png,jpg,jpeg.</li>
+        </ul> -->
+        <!-- <button type="button" onclick="uploadAttachment()">Submit Cancel Cheque</button> -->
+        <!-- <br/> -->
+        <!-- <div id="recaptcha" class="g-recaptcha" data-sitekey="{!$Label.reCaptchaSiteKey}"></div>
+        <div class="col-md-6 col-md-offset-3">
+          <span class="msg-error error"></span>
+        </div> -->
+        <!-- <html>
+        <head>
+          <title>reCAPTCHA demo: Explicit render after an onload callback</title>
+          <script type="text/javascript">
+            var onloadCallback = function(event) {
+              // event.preventDefault();
+              console.log(event)
+              console.log(window.event)
+              console.log(window)
+              grecaptcha.render('html_element', {
+                'sitekey' : '6LfMoZUbAAAAAB0KhWd4jFei8zKcwvhqWYQC8Wo8'
+              });
+              // grecaptcha.reset(
+              //   'html_element', {
+              //   'sitekey': '6LfMoZUbAAAAAB0KhWd4jFei8zKcwvhqWYQC8Wo8'
+              // }
+              // )
+            };
+          </script>
+        </head>
+        <body> -->
+          <!-- <form action="?" method="POST">
+            <br />
+          </form> -->
+          <!-- <div id="html_element"></div>
+          <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+              async="" defer="">
+          </script>
+        </body>
+      </html> -->
+      <!-- <span class="msg-error error"></span>
+        <br/>
+        <br/>
+        <apex:commandButton styleClass="btn btn-danger disabled" id="saveNEFT" value="Save" onclick="if(!GO()) return false;"   action="{!closePopup}"  rerender="tstpopup" />
+      </apex:outputPanel>
+    </apex:outputPanel> -->
+</apex:form> 
+  <apex:outputPanel id="nocVerification">
+      <apex:outputPanel rendered="{!isNOCRequired}" styleClass="regNoVerify" style="display:block;">
+        <div class="modal popup-wrapper" >
+          <div class="modal-dialog" style="min-width: 50%">
+            <div class="modal-content" style="border-radius: 10px;">
+                <apex:form >
+                <div class="modal-header">
+                    <h5 class="modal-title">Noc!</h5>
+                </div>
+                <div class="modal-body">
+                  <apex:outputText value="{!refund.NOC_Text__c}" escape="false"></apex:outputText>
+                </div>
+                <div class="modal-footer">
+                  <button  class="btn btn-danger  pull-left" type="button" id="otpLogout" onclick="alert('Please raise a ticket via the student portal and let us know the reason for the disagreement.\nTo raise a ticket visit >student portal> student support> connect with us> Raise a ticket.');window.location.reload()" 
+                  >No</button>
+                  <apex:commandButton value="I Agree" styleClass="btn btn-primary pull-right" action="{!nocAgreed}" id="verifyRegBtn"
+                  />
+                </div>
+              </apex:form>
+            </div>
+          </div>
+        </div>
+        <div id="backdrop" style="position: fixed;width: 100%;height: 100%;top: 0;right: 0;bottom: 0;left: 0;background: rgba(0,0,0,0.7);z-index: 990;"></div>
+      </apex:outputPanel>
+  </apex:outputPanel>
+  <apex:outputPanel id="addNEFTDetails">
+    <apex:outputPanel rendered="{!(showNEFTModal && checkRefundStatus)}" styleClass="regNoVerify" style="display:block;">
+      <div class="modal popup-wrapper" >
+        <div class="modal-dialog" style="min-width: 50%; height: 80vh">
+          <div class="modal-content" style="border-radius: 10px;">
+              <apex:form >
+              <div class="modal-header">
+                  <h5 class="modal-title">NEFT Details!</h5>
+              </div>
+              <div class="modal-body">
+                <div id="NEFTReadonly" style="{!IF(ButtonName == 'view Bank Details', 'display:block', 'display:none')}">
+                <div class="form-group row">
+                  <label for="AccountNumber3" class="col-sm-4 col-form-label">Account Number</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="AccountNumber3" value="{!AccountNumber}" readonly="{!AccountNumber}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="IFSCCode3" class="col-sm-4 col-form-label">IFSC Code</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="IFSCCode3" readonly="{!IFSCCode}" value="{!IFSCCode}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="NameOfAccountHolder3" class="col-sm-4 col-form-label">Name Of Account Holder</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="NameOfAccountHolder3" readonly="{!NameOfAccountHolder}" value="{!NameOfAccountHolder}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="TypeOfRelationship3" class="col-sm-4 col-form-label">Type Of Relationship</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="TypeOfRelationship3" readonly="{!TypeOfRelationship}" value="{!TypeOfRelationship}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="NameOfTheBank3" class="col-sm-4 col-form-label">Name of the Bank</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="NameOfTheBank3" readonly="{!NameOfTheBank}" value="{!NameOfTheBank}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="MICRCode3" class="col-sm-4 col-form-label">MICR Coder</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="MICRCode3" readonly="{!MICRCode}" value="{!MICRCode}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="BankBranch3" class="col-sm-4 col-form-label">Bank Branch</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="BankBranch3" readonly="{!BankBranch}" value="{!BankBranch}" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="TypeOfAccount3" class="col-sm-4 col-form-label">Type Of Account</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="TypeOfAccount3" readonly="{!TypeOfAccount}" value="{!TypeOfAccount}" />
+                  </div>
+                </div>
+                <apex:outputPanel rendered="{!isCancelChequeViewNeeded}">
+                  <div class="form-group row">
+                    <label for="cancelCheque3" class="col-sm-4 col-form-label">cancel Cheque</label>
+                    <div class="col-sm-8">
+                      <img src="{!CancelChequeDocument}" height="100px" width="200px"/>
+                      <!-- <input type="text" class="form-control" id="TypeOfAccount3" readonly="{!TypeOfAccount}" value="{!TypeOfAccount}" /> -->
+                    </div>
+                  </div>
+                </apex:outputPanel>
+              </div>
+                
+                <div id="NEFTEdit" style="{!IF(ButtonName != 'view Bank Details', 'display:block', 'display:none')}">
+                  <!--  -->
+                  <div class="form-row">
+                  <div class="form-group required-label  col-md-6">
+                    <apex:inputSecret styleClass="form-control numberonly neftValue" onchange="validateNEFTForm()" id="AccountNumberEdit" html-placeholder="Account Number"
+                    />
+                  </div>
+                  <div class="form-group required-label  col-md-6">
+                    <apex:inputText styleClass="form-control is-invalid numberonly neftValue" onkeyup="accountNumberValidation(); validateNEFTForm()" onchange=""
+                      id="AccountNumberConfirmEdit" html-placeholder="Account Number Confirm" />
+                    <div class="invalid-feedback">
+                      Account Number does not match with Account Number Confirm
+                    </div>
+                  </div>
+                  </div>
+                  <div class="form-group required-label">
+                    <apex:inputText styleClass="form-control neftValue" id="NameOfAccountHolderEdit" onfocus="validateNEFTForm()" onblur="validateNEFTForm()" onkeypress="validateNEFTForm()" onkeydown="validateNEFTForm()" onchange="validateNEFTForm()"
+                      html-placeholder="Name Of Account Holder" />
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group required-label  col-md-6">
+                      <apex:inputText styleClass="form-control neftValue" id="IFSCCodeEdit" onkeypress="validateNEFTForm()" onblur="getBankDetails()" onkeydown="validateNEFTForm()" onchange="validateNEFTForm()"
+                        html-placeholder="IFSC Code" />
+                    </div>
+                    <div class="form-group required-label  col-md-6">
+                      <apex:inputText styleClass="form-control neftValue" html-readOnly="true" id="BankBranchEdit" html-placeholder="Bank Branch"
+                      />
+                    </div>
+
+                  </div>
+                  <div class="form-row"> 
+                    <div class="form-group required-label col-md-6">
+                      <select id="TypeOfRelationshipEdit" onchange="validateNEFTForm()" class="custom-select neftValue">
+                        <option value="">Type Of Relationship</option>
+                        <option value="Self">Self</option>
+                        <option value="Parent (Father/Mother)">Parent (Father/Mother)</option>
+                        <option value="Spouse">Spouse</option>
+                      </select>
+                    </div>
+                    <div class="form-group required-label col-md-6">
+                      <select id="TypeOfAccountEdit" onchange="validateNEFTForm()" class="custom-select neftValue">
+                        <option value="">Type Of Account</option>
+                        <option value="Current">Current</option>
+                        <option value="Savings">Savings</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group required-label col-md-6">
+                      <apex:inputText styleClass="form-control neftValue" html-readOnly="true" id="NameOfTheBankEdit" html-placeholder="Name of the Bank"
+                      />
+                    </div>
+                    
+                    <div class="form-group required-label col-md-6">
+                      <apex:inputText styleClass="form-control neftValue" html-readOnly="true" id="MICRCodeEdit" html-placeholder="MICR Code" />
+                    </div>
+                  </div>
+                  
+                  
+                  <apex:outputPanel id="someId">
+                    <!-- <p>isNeedToVerifyNEFTDetails {!isNeedToVerifyNEFTDetails} </p>
+                    <p>isNEFTDetailsVerified {!isNEFTDetailsVerified} </p>
+                    <p>isOnlyReadmeForNEFT {!isOnlyReadmeForNEFT} </p>
+                    <apex:commandButton value="checking" action="{!checkDebug}" oncomplete="onCom()" reRender="someId"  />
+                    <button type="button" onclick="validateFormValue()">ccc</button> -->
+          
+                      <apex:inputHidden value="{!refund.Refund_transfer_Mode__c}" id="paymentMode" />
+                      <apex:inputHidden id="hdnNameOfAccountHolder" value="{!NameOfAccountHolder}" />
+                      <apex:inputHidden id="hdnTypeOfRelationship" value="{!TypeOfRelationship}" />
+                      <apex:inputHidden id="hdnTypeOfAccount" value="{!TypeOfAccount}" />
+                      <apex:inputHidden id="hdnIFSCCode" value="{!IFSCCode}" />
+                      <apex:inputHidden id="hdnMICRCode" value="{!MICRCode}" />
+                      <apex:inputHidden id="hdnAccountNumber" value="{!AccountNumber}" />
+                      <apex:inputHidden id="hdnAccountNumberConfirm" value="{!AccountNumberConfirm}" />
+                      <apex:inputHidden id="hdnNameOfTheBank" value="{!NameOfTheBank}" />
+                      <apex:inputHidden id="hdnBankBranch" value="{!BankBranch}" />
+                      <apex:inputHidden id="hdnCancelChequeDocument" value="{!CancelChequeDocument}" />
+                      <apex:inputHidden id="hdnIsNeedToVerifyNEFTDetails" value="{!isNeedToVerifyNEFTDetails}" />
+                      <apex:inputHidden id="hdnIsNEFTDetailsVerified" value="{!isNEFTDetailsVerified}" />
+                      <apex:inputHidden id="hdnIsOnlyReadmeForNEFT" value="{!isOnlyReadmeForNEFT}" />
+                        <script>
+                          
+                          console.log("{!isOnlyReadmeForNEFT}", 'isOnlyReadmeForNEFT outside');
+                            console.log("{!isNeedToVerifyNEFTDetails}", 'isNeedToVerifyNEFTDetails outside');
+                            console.log("{!isNEFTDetailsVerified}", 'isNEFTDetailsVerified outside');
+                            // validateFormValue();
+                          function onCom() {
+                            console.log('tttt')
+                            console.log(!!"{!isOnlyReadmeForNEFT}", 'isOnlyReadmeForNEFT', $('[id$=hdnIsOnlyReadmeForNEFT]').val());
+                            console.log('isNeedToVerifyNEFTDetails', '{!isNeedToVerifyNEFTDetails}',  $('[id$=hdnIsNeedToVerifyNEFTDetails]').val())
+                            console.log('isNEFTDetailsVerified', '{!isNEFTDetailsVerified}',  $('[id$=hdnIsNEFTDetailsVerified]').val())
+                            let isOnlyReadmeForNEFT = $('[id$=hdnIsOnlyReadmeForNEFT]').val() == 'true' ? true : false;
+                            if (isOnlyReadmeForNEFT) {
+                              let allNeftfield = document.querySelectorAll(".neftValue");
+                              console.log(allNeftfield)
+                              allNeftfield.forEach(element => {
+                                element.setAttribute("disabled", "true");
+                              });
+                            } 
+                            if ($('[id$=hdnIsNEFTDetailsVerified]').val() == 'true') {
+                              alert('NEFT Details verified and Saved.')
+                              // window.location.reload();
+                              let refundId = '{!refundId}'
+                              window.location.replace('/apex/Refund?id='+refundId);
+                            }
+
+                            validateNEFTForm();
+                          }
+                        </script>
+                      
+                      <apex:outputPanel rendered="{!(!isNeedToVerifyNEFTDetails && !isNEFTDetailsVerified) }">
+                  <apex:outputPanel id="st">
+                      <div class="form-row">
+                    <div class="form-group  col-md-6">
+                      <p>Upload Cancel Cheque.</p>
+                      <input onchange="ValidateSize(this); validateNEFTForm()" type="file" id="cancelCheque" Class="form-control-file file" accept=".png,.jpg,.jpeg"
+                      />
+                      <br/>
+                      <ul>
+                        <li>Maximum file size allowed is 1 Mb.</li>
+                        <li>File Format allowed is png,jpg,jpeg.</li>
+                      </ul>
+                    </div>
+                    
+                    <div class="form-group  col-md-6">
+                      <img src="" id="img_url" alt="No Image" width="200" height="100" />
+                    </div>
+                  </div>
+                      </apex:outputPanel>
+                
+                       
+                      <br/>
+                      
+                    </apex:outputPanel>
+                    
+                  </apex:outputPanel>
+                <span class="msg-error error"></span>
+                <div id="recaptcha" class="g-recaptcha" data-sitekey="{!$Label.reCaptchaSiteKey}"></div>
+                <script src='https://www.google.com/recaptcha/api.js'></script>
+
+                <script>
+                  var onloadCallback = function() {
+                    console.log('on caomplete called --> ');
+                    console.log(grecaptcha);
+                      grecaptcha.render('recaptcha', {'sitekey' : "{!$Label.reCaptchaSiteKey}"});
+                  };
+                  </script>
+                  
+               
+                  
+                  
+                  <br/>
+                  <br/>
+                  <!-- <div class="row">
+                    <div class="col">
+                      <input type="button" class="form-control btn btn-danger disabled" id="saveNEFT" value="Save" onclick="GO(); return false;"
+                         />
+                    </div>
+                    <div class="col">
+                      <button type="button" id="cancelNEFT" class="form-control btn btn-primary">Cancel</button>
+                    </div>
+                  </div> -->
+  
+                  <!--  -->
+                </div>
+              </div>
+              <div class="modal-footer">
+                <apex:outputPanel id="NeftButtonSection">
+                <!-- <button  class="btn btn-danger  pull-left" type="button" id="otpLogout" 
+                >Cancel</button>
+                <apex:commandButton value="Submit" styleClass="btn btn-primary pull-right" id="submitNEFTDetails" action="{!nocAgreed}" disabled="true"
+                /> -->
+                
+                <button type="button" id="cancelNEFT" class="btn btn-primary" >Cancel</button>
+                <apex:outputPanel rendered="{!ButtonName == 'view Bank Details'}">
+                  <apex:commandButton styleClass="btn btn-danger" value="Edit Bank Details" action="{!switchButtonName}" />
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!(ButtonName != 'view Bank Details' && !isNeedToVerifyNEFTDetails)}">
+                  <input type="button" class="btn btn-danger disabled" id="saveNEFT" value="Save" onclick="GOOTOO(); return false;" disabled="true"
+                           />
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!(isNeedToVerifyNEFTDetails && ButtonName != 'view Bank Details')}">
+                        <input class="btn btn-primary disabled" type="button" onclick="callNext()" id="nextButton" value="NEXT" disabled="true"   / >
+                        <apex:actionFunction action="{!onHandleVerifyBankDetails}" oncomplete="onCom()" name="calln" reRender="someId,st,NeftButtonSection" status="myAjaxStatus" />
+                        <apex:actionStatus id="myAjaxStatus" >
+                          <apex:facet name="start" >
+                              <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">
+                                  &nbsp;
+                              </div>
+                              <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+                                  <div style="display: inline-block; padding: 2px; background-color: #fff; width: 125px;">
+                                      <img src="/img/loading.gif" style="float: left; margin: 8px;" />
+                                      <span style="display: inline-block; padding: 10px;">Please Wait...</span>
+                                  </div>
+                              </div>
+                          </apex:facet>
+                      </apex:actionStatus>
+                      </apex:outputPanel>
+                    </apex:outputPanel>
+              </div>
+            </apex:form>
+          </div>
+        </div>
+      </div>
+      <div id="backdrop" style="position: fixed;width: 100%;height: 100%;top: 0;right: 0;bottom: 0;left: 0;background: rgba(0,0,0,0.7);z-index: 990;"></div>
+    </apex:outputPanel>
+</apex:outputPanel>
+<script src="../../soap/ajax/45.0/connection.js" type="text/javascript"></script>
+<script src="../../soap/ajax/45.0/apex.js" type="text/javascript"></script>
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<!-- <apex:includeScript value="{! $Resource.googleRecaptchaJS}"/> -->
+
+<script type="text/javascript">
+    $(document).ready(function() {
+      $('.ModifyFirstOptionForreason > option:first-child').text('Reason For Refund');
+
+      // $('input[type=radio][name=RTransferType]').prop('checked', false);
+      
+      let CancelChequeDocument= "{!CancelChequeDocument}";
+      let modeOFpayment = '{!refund.Refund_transfer_Mode__c}';
+      console.log('CancelChequeDocument', CancelChequeDocument);
+      if(!CancelChequeDocument && (modeOFpayment == 'NEFT' || '{!showOption}' == 'NEFT') && ('{!isNeedToVerifyNEFTDetails}' != 'true' && '{!isNEFTDetailsVerified}' != 'true')) {
+       $(".signature").prop("disabled", true);
+      } else {
+       $(".signature").removeAttr('disabled');
+      }
+
+      $('[id$=fnsal]').change(function(){
+          let val = $(this).val();
+          if(val == 'Other'){
+            $('[id$=otherReason]').show();
+            $('[id$=otherReason]').addClass('notnull');
+          }else{
+            $('[id$=otherReason]').hide();
+            $('[id$=otherReason]').removeClass('notnull');
+            $('[id$=otherReason]').val('');
+          }
+      });
+
+
+      if( $('[id$=fnsal]').val() != null ){
+          $('[id$=fnsal]').trigger('change');
+      }
+
+      let admCancel = {!admCancel};
+      let regCancel = {!regCancel};
+      let excessref = {!excessref};
+      let appRejected = {!appRejected};
+
+      //to Filter for excess Refund
+      console.log(excessref);
+      if(excessref){
+          let excessVal = "Excess Payment Made";
+          $("[id$=fnsal]").val(excessVal); 
+          $('#RRLabel').empty().text(excessVal);
+          $("[id$=fnsal]").hide();
+          $("#RRLabel").show();
+      }else if(appRejected) {
+          let excessVal = "Admission rejected";
+          $("[id$=fnsal]").val(excessVal); 
+          $('#RRLabel').empty().text(excessVal);
+          $("[id$=fnsal]").removeClass('notnull')
+          $("[id$=fnsal]").hide();
+          $("#RRLabel").show();
+      }
+      else if('{!checkRefundStatus}' == 'false') {
+        console.log('inside ')
+          $('#RRLabel').empty().text( $("[id$=fnsal]").val());
+          $("[id$=fnsal]").hide();
+          $("#RRLabel").show();
+      }
+
+
+      if(!excessref){
+          //to filter between Admission & Registartion Cancellation
+          let admArray = ["Registered for Full time program","Loan Rejected","Specialization not available","Not Eligible as per NGA-SCE","Excess Payment Made"];
+          let regArray = ["Registered for Regular / Full time program","Change of Profile (Specialization not available)","Excess Payment Made"];
+          $("select[name*='fnsal'] > option").each(function() {
+              if(admCancel && $.inArray($(this).text(), admArray ) != -1){
+                  $(this).remove();
+              }else if(regCancel && $.inArray($(this).text(), regArray ) != -1){
+                  $(this).remove();
+              }
+          });
+      }
+
+
+      if($('[id$=paymentMode]').val()){
+        console.log('Inside defautl ---- paymentMode ' + $('[id$=paymentMode]').val() )
+        console.log($('[id$=paymentMode]').val() )
+          let val = $('[id$=paymentMode]').val();
+          $('input:radio[name="RTransferType"][value="'+ val +'"]').attr('checked',true);
+          if (val == 'NEFT') {
+            $('#NEFTShow').show();
+            $('input[name=RTransferType]').attr("disabled",true);
+          } else {
+            $('#NEFTShow').hide();
+          }
+      }
+      
+      $('input[type=radio][name=RTransferType]').change(function() {
+        console.log(this.value)
+        console.log('Inside defautl ----')
+          $('[id$=paymentMode]').val(this.value);
+      });
+
+      // $('#NEFTEdit').hide();
+
+      $('[id$=AccountNumberEdit]').on("cut copy paste", function (e) {
+          e.preventDefault();
+        });
+      $('[id$=AccountNumberConfirmEdit]').on("cut copy paste", function (e) {
+          e.preventDefault();
+        });
+
+        $('.numberonly').keypress(function (e) {    
+          let charCode = (e.which) ? e.which : event.keyCode    
+          if (String.fromCharCode(charCode).match(/[^0-9]/g))    
+            return false;                        
+        }); 
+
+
+      // $('[id$=saveNEFT]').attr('disabled', 'true')
+      
+    });
+    $('input[type=radio][name=RTransferType]').change(function () {
+        console.log(this.value)
+        console.log('Inside not defautl ----')
+
+        if(this.value == 'NEFT') {
+        console.log('Inside not defautl NEFT--- ----')
+          $('#NEFTShow').show();
+        } else {
+          $('#NEFTShow').hide();
+        }
+        $('[id$=paymentMode]').val(this.value);
+         let CancelChequeDocument= "{!CancelChequeDocument}";
+      let modeOFpayment = '{!refund.Refund_transfer_Mode__c}';
+      console.log('CancelChequeDocument', CancelChequeDocument);
+      if(!CancelChequeDocument && (this.value == 'NEFT') && ('{!isNeedToVerifyNEFTDetails}' != 'true' && '{!isNEFTDetailsVerified}' != 'true')) {
+       $(".signature").prop("disabled", true);
+      } else {
+       $(".signature").removeAttr('disabled');
+      }
+      });
+
+    $('.editBankDetails').on('click', () => {
+      console.log(this)
+      console.log(this.innerText)
+      // $('#NEFTOnlyShow').hide();
+      // $('#NEFTEdit').show();
+      let buttonText = $(".editBankDetails").text();
+      // if (buttonText === 'view Bank Details') {
+      //   $(".NEFTEdit").hide();
+      //   $(".NEFTReadonly").show();
+        
+      // } else {
+      //   $(".NEFTEdit").show();
+      //   $(".NEFTReadonly").edit();
+        
+      // }
+      showNEFTPopupHandler();
+
+      $(".signature").prop("disabled", true);
+   
+    })
+    $('#cancelNEFT').on('click', () => {
+      hideNEFTPopupHandler();
+    })
+
+    function accountNumberValidation() {
+      console.log("this");
+      // $('[id$=AccountNumberConfirmEdit]').on("input", function () {
+        console.log(this);
+         var pattern = /^\d+$/;
+         var accountNumberOnlyNumber = pattern.test($('[id$=AccountNumberEdit]').val());
+         var AccountNumberConfirmEditOnlyNumber = pattern.test($('[id$=AccountNumberConfirmEdit]').val());
+      console.log(pattern.test('11f'));
+        if(($('[id$=AccountNumberEdit]').val()).trim() === ($('[id$=AccountNumberConfirmEdit]').val()).trim() && $('[id$=AccountNumberEdit]').val().length > 2 && accountNumberOnlyNumber && AccountNumberConfirmEditOnlyNumber   ) {
+          console.log("match")
+          $('[id$=AccountNumberConfirmEdit]').removeClass('is-invalid')
+          return true;
+        } else {
+          $('[id$=AccountNumberConfirmEdit]').addClass('is-invalid')
+          return false;
+          
+        }
+        
+      // })
+    }
+
+    function GOOTOO() {
+      // $('#overlay').show();
+      GO();
+    }
+
+    function GO() {
+      // event.preventDefault();
+      //  $('#overlay').show();
+      // initiatedLoader();
+       let flag = 0;
+      var $captcha = $('#recaptcha'),
+        response = grecaptcha.getResponse();
+        console.log($captcha)
+      var ss = $('#html_element')
+      // var rres = ss.getResponse();
+      console.log(ss)
+      console.log('response '+response);
+      if (response.length === 0) {
+        $('.msg-error').text("reCAPTCHA is mandatory");
+        if (!$captcha.hasClass("error")) {
+          $captcha.addClass("error");
+        }
+        console.log('$captcha ---> ' + $captcha)
+        flag = 1;
+      } else {
+        $('.msg-error').text('');
+        $captcha.removeClass("error");
+        // alert( 'reCAPTCHA marked' );
+        // saveNEFTValidate();
+        let selOption = $('[id$=TypeOfAccountEdit]').val();
+        if (accountNumberValidation() && (selOption === 'Current' || selOption === 'Savings') 
+        && $('[id$=NameOfAccountHolderEdit]').val().trim() != null && $('[id$=NameOfAccountHolderEdit]').val().trim() != ''
+        && $('[id$=TypeOfRelationshipEdit]').val().trim() != null && $('[id$=TypeOfRelationshipEdit]').val().trim() != ''
+        && $('[id$=IFSCCodeEdit]').val().trim() != null  && $('[id$=IFSCCodeEdit]').val().trim() != ''
+        && $('[id$=AccountNumberEdit]').val().trim() != null && $('[id$=AccountNumberEdit]').val().trim() != ''
+        && $('[id$=NameOfTheBankEdit]').val().trim() != null && $('[id$=NameOfTheBankEdit]').val().trim() != ''
+        && $('[id$=BankBranchEdit]').val().trim() != null && $('[id$=BankBranchEdit]').val().trim() != ''
+        ) {
+          console.log("return true")
+          flag = 0;
+
+        } else {
+          flag = 1;
+        }
+        if (flag == 0 && $('#cancelCheque').length > 0 && $('#cancelCheque').get(0).files.length != 0) {
+         
+          // initiatedLoader();
+        // $('[id$=overlay]').show()
+        console.log('call --> ')
+          // if (!uploadAttachment('cancelCheque')) {
+           
+          //   flag = 1;
+          // }
+          // $('[id$=overlay]').removeClass('show')
+        } else {
+          flag = 1;
+        }
+      }
+      // $('#overlay').hide();
+      // $('#overlay').removeClass('show')
+      console.log("$('#overlay').removeClass('show') ----" + flag)
+      console.log("flag -----> " + flag)
+      if (flag == 1) {
+        // return false
+      } else {
+        console.log('-------------> ')
+        $('[id$=NameOfAccountHolder3]').val($('[id$=NameOfAccountHolderEdit]').val());
+        $('[id$=TypeOfRelationship3]').val($('[id$=TypeOfRelationshipEdit]').val());        
+        $('[id$=TypeOfAccount3]').val($('[id$=TypeOfAccountEdit]').val());
+        $('[id$=IFSCCode3]').val($('[id$=IFSCCodeEdit]').val());
+        $('[id$=MICRCode3]').val($('[id$=MICRCodeEdit]').val());
+        $('[id$=AccountNumber3]').val($('[id$=AccountNumberEdit]').val());
+        $('[id$=AccountNumberConfirm3]').val($('[id$=AccountNumberConfirmEdit]').val());
+        $('[id$=NameOfTheBank3]').val($('[id$=NameOfTheBankEdit]').val());
+        $('[id$=BankBranch3]').val($('[id$=BankBranchEdit]').val());
+        // $('#NEFTEdit').hide();
+        // $('#NEFTOnlyShow').show();
+        $('input[type=radio][name=RTransferType]').prop('checked', false);
+        initiatedLoader();
+        uploadAttachment('cancelCheque');
+        // call();
+        // window.location.reload();
+        // return true
+      }
+    }
+
+    function promiseLoader() {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve('updating...');
+          }, 7500);
+        });
+      }
+
+      async function initiatedLoader() {
+        console.log('initiatedLoader called')
+        $('#overlay').show();
+        const result = await promiseLoader();
+        console.log(result);
+        $('#overlay').hide();
+      }
+
+    function saveNEFTValidate() {
+      
+      let flag = 0;
+      
+      let selOption = $('[id$=TypeOfAccountEdit]').val();
+      if (accountNumberValidation() && (selOption === 'Current' || selOption === 'Savings') && $('[id$=TypeOfAccountEdit]').val() && $('[id$=IFSCCodeEdit]').val() && $('[id$=AccountNumberEdit]').val()  && $('[id$=NameOfTheBankEdit]').val() && $('[id$=TypeOfRelationshipEdit]').val() && $('[id$=BankBranchEdit]').val()) {
+        console.log("return true")
+        flag = 0;
+        
+      }
+      if (flag == 0 && $('#cancelCheque').length > 0 && $('#cancelCheque').get(0).files.length != 0) {
+        // this.initiatedLoader();
+        // $('[id$=overlay]').show()
+        // $('[id$=overlay]').css("display", "block")
+
+        console.log('call --> ')
+
+        
+        // if (!uploadAttachment('cancelCheque')) {
+        //   flag = 1;
+        // }
+        // $('[id$=overlay]').removeClass('show')
+      }
+
+      console.log("flag -----> " + flag)
+      if (flag == 1) {
+        return false 
+      } else {
+        return true
+      }
+    }
+    
+    function validateNEFTForm() {
+      console.log('validateNEFTForm trigger')
+      console.log( "NameOfAccountHolderEdit " + $('[id$=NameOfAccountHolderEdit]').val().length )
+      let selOption = $('[id$=TypeOfAccountEdit]').val();
+      console.log($('[id$=TypeOfAccountEdit]').val()  === 'Current' ? true : false);
+        let savNeft = $('[id$=saveNEFT]');
+      if (validateFormValue() ) {
+        savNeft.removeClass('btn-danger')
+        savNeft.removeClass('disabled')
+        savNeft.addClass('btn-success')
+        console.log("validate")
+        console.log("inside true")
+        console.log($('[id$=AccountNumber2]').val())
+        $('[id$=hdnNameOfAccountHolder]').val($('[id$=NameOfAccountHolderEdit]').val());
+        $('[id$=hdnTypeOfRelationship]').val($('[id$=TypeOfRelationshipEdit]').val());
+        $('[id$=hdnTypeOfAccount]').val($('[id$=TypeOfAccountEdit]').val());
+        $('[id$=hdnIFSCCode]').val($('[id$=IFSCCodeEdit]').val());
+        $('[id$=hdnMICRCode]').val($('[id$=MICRCodeEdit]').val());
+        $('[id$=hdnAccountNumber]').val($('[id$=AccountNumberEdit]').val());
+        $('[id$=hdnAccountNumberConfirm]').val($('[id$=AccountNumberConfirmEdit]').val());
+        $('[id$=hdnNameOfTheBank]').val($('[id$=NameOfTheBankEdit]').val());
+        $('[id$=hdnBankBranch]').val($('[id$=BankBranchEdit]').val());
+        console.log($('[id$=hdnAccountNumber]').val())
+
+      } else {
+        console.log('Not Validate')
+        savNeft.removeClass('btn-success')
+        savNeft.addClass('btn-danger')
+        savNeft.addClass('disabled')
+        savNeft.attr('disabled', 'true')
+      }
+    }
+
+
+    function validateFormValue() {
+      let selOption = $('[id$=TypeOfAccountEdit]').val();
+      let selOptionRelation = $('[id$=TypeOfRelationshipEdit]').val();
+      let isNeedToVerifyNEFTDetails = $('[id$=hdnIsNeedToVerifyNEFTDetails]').val() == 'true' ? true : false;
+        let isNEFTDetailsVerified =  $('[id$=hdnIsNEFTDetailsVerified]').val() == 'true' ? true : false;
+        console.log('isNeedToVerifyNEFTDetails', isNeedToVerifyNEFTDetails, '{!isNeedToVerifyNEFTDetails}',  $('[id$=hdnIsNeedToVerifyNEFTDetails]').val())
+        console.log('isNEFTDetailsVerified', isNEFTDetailsVerified, '{!isNEFTDetailsVerified}',  $('[id$=hdnIsNEFTDetailsVerified]').val())
+      if(accountNumberValidation() 
+        && (selOption === 'Current' || selOption === 'Savings') 
+        && (selOptionRelation === 'Self' || selOptionRelation === 'Parent (Father/Mother)' || selOptionRelation === 'Spouse' )
+        // && $('#cancelCheque').get(0).files.length != 0 
+        && $('[id$=NameOfAccountHolderEdit]').val().length > 0 
+        // && $('[id$=NameOfAccountHolderEdit]').val().length > 0 
+        && $('[id$=IFSCCodeEdit]').val().length > 2 
+        && $('[id$=AccountNumberEdit]').val().length > 2 
+        && $('[id$=NameOfTheBankEdit]').val().length > 2 
+        && $('[id$=BankBranchEdit]').val().length > 2) 
+      {
+        if (isNeedToVerifyNEFTDetails) {
+            console.log('inside --> isNeedToVerifyNEFTDetails')
+            // $('#nextButton').prop("disabled", false);
+            document.querySelector("[id$='nextButton']").removeAttribute("disabled");
+            $("[id$='nextButton']").removeClass('disabled');
+            return true
+          }
+          if ((!isNEFTDetailsVerified && $('#cancelCheque').get(0).files.length != 0 ) || isNEFTDetailsVerified) {
+            let savB = document.querySelector("[id$='saveNEFT']"); 
+            console.log(savB);
+            document.querySelector("[id$='saveNEFT']").removeAttribute("disabled");
+            return true
+          }
+        console.log('validated success')
+            // $("[id$='saveNEFT']").removeClass('disabled');
+       return false;
+      } else 
+      {
+        return false;
+      }
+    }
+
+    function getBankDetails() {
+      fetch('https://ifsc.razorpay.com/' + $('[id$=IFSCCodeEdit]').val() )
+        .then(response => response.json())
+        .then(data => {
+          $('[id$=NameOfTheBankEdit]').val(data.BANK);
+          $('[id$=BankBranchEdit]').val(data.BRANCH);
+          $('[id$=MICRCodeEdit]').val(data.MICR);
+          
+          console.log(data)});
+    }
+
+    function callNext() {
+      validateNEFTForm();
+      var $captcha = $('#recaptcha'),
+      response = grecaptcha.getResponse();
+      if (response.length === 0) {
+        $('.msg-error').text("reCAPTCHA is mandatory");
+        if (!$captcha.hasClass("error")) {
+          $captcha.addClass("error");
+        }
+      } else {
+        $('.msg-error').text('');
+        $captcha.removeClass("error");
+          calln();
+        }
+    }
+
+
+    function validateForm() {
+      console.log('validateForm called')
+        var flag = 0;
+        let msg = [];
+        $('body').find('.notnull').each(function () {
+          console.log(this , $(this).val());
+            if($(this).val() !=null){
+                if ($(this).val().trim().length == 0) {
+                    flag = 1;
+                    if($(this).hasClass('file')){
+                      console.log(this);
+                      msg.push('Please upload signature.');
+                    }else if($(this).hasClass('refundReason')){
+                      msg.push('Please select the refund reason.');
+                    }else {
+                      msg.push('Please enter value.');
+                    }
+                }
+                
+            }else{
+                flag = 1;
+                msg.push('Please enter value.');
+            }
+        });
+
+        if($('[id$=paymentMode]').val() == 'NEFT') {
+          let NameOfAccountHolder = "{!NameOfAccountHolder}";
+          let TypeOfRelationship = "{!TypeOfRelationship}"
+          let TypeOfAccount = "{!TypeOfAccount}"
+          let IFSCCode  = "{!IFSCCode}"
+          let AccountNumber = "{!AccountNumber}"
+          let NameOfTheBank = "{!NameOfTheBank}" 
+          let BankBranch = "{!BankBranch}" 
+          let CancelChequeDocument = "{!CancelChequeDocument}"
+          console.log('NameOfAccountHolder --> ' + NameOfAccountHolder)
+          console.log('TypeOfRelationship --> ' + TypeOfRelationship)
+          console.log('TypeOfAccount --> ' + TypeOfAccount)
+          console.log('IFSCCode --> ' + IFSCCode)
+          console.log('AccountNumber --> ' + AccountNumber)
+          console.log('NameOfTheBank --> ' + NameOfTheBank)
+          console.log('CancelChequeDocument --> ' + CancelChequeDocument)
+          if ( (TypeOfAccount === 'Current' || TypeOfAccount === 'Savings')
+            && NameOfAccountHolder.trim() != null && NameOfAccountHolder.trim() != ''
+            && TypeOfRelationship.trim() != null && TypeOfRelationship.trim() != ''
+            && IFSCCode.trim() != null && IFSCCode.trim() != ''
+            && AccountNumber.trim() != null && AccountNumber.trim() != ''
+            && NameOfTheBank.trim() != null && NameOfTheBank.trim() != ''
+            && ((CancelChequeDocument.trim() != null && CancelChequeDocument.trim() != '') || ('{!isNEFTDetailsVerified}' == 'true'))
+            && (TypeOfRelationship === 'Self' || TypeOfRelationship === 'Parent (Father/Mother)' || TypeOfRelationship === 'Spouse' )
+          ) {
+            console.log("NEFT form")
+          } else {
+            flag = 1;
+            msg.push('Please enter NEFT Details.');
+          }
+        }
+
+        if(msg.length > 0) {
+          alert(msg.join("\r"));
+        }
+
+        let radioBtnVal = $('input[name=RTransferType]:checked').val();
+        if(radioBtnVal == null){
+            flag = 1;
+            alert('Select Refund amount transfer mode.');
+        }
+
+        // if(flag == 0 && $('#file').length > 0 && $('#file').get(0).files.length != 0) {
+        //     if(!uploadAttachment()) {
+        //       flag = 1;
+        //     }
+        // }
+
+        console.log(flag);
+        if(flag == 1){
+            // return false;
+            console.log('Form not validate')
+        }else{
+            // return true;
+            callValidateSaveDetails();
+        }
+    }
+
+
+    function printpage() {
+      if($('[id$=fnsal]').val()){
+        let val = $('[id$=fnsal]').val();
+        if( val == 'Other' ){
+          val = $('[id$=otherReason]').val();
+          $('[id$=otherReason]').hide();
+        }
+        $('#RRLabel').empty().text(val);
+        $('#RRLabel').show();
+        $('[id$=fnsal]').hide();
+        $('[id$=printpagebutton]').hide();
+        window.print();
+        $('[id$=printpagebutton]').show();
+        $('[id$=fnsal]').show();
+        if( val == 'Other' ){
+            $('[id$=otherReason]').show();
+        }
+        $('#RRLabel').hide();
+        $('[id$=fnsal]').trigger('change');
+      }
+    }
+
+
+    var attachment;
+    var attachmentName;
+    var fileSize;
+    var positionIndex;
+    var doneUploading;
+
+    function previewFile(file) {
+        // $('[id$=studPhoto]').attr('src','{!URLFOR($Resource.No_Profile_Image)}');
+        var validFileExtensions = [".jpg", ".jpeg", ".png", ".JPG", ".JPEG", ".PNG"];
+        var FileSize = file.files[0].size / 1024 / 1024; // in KB
+        var sFileName = file.value;
+        if (sFileName.length > 0) {
+            var blnValid = false;
+            for (var j = 0; j < validFileExtensions.length; j++) {
+                var sCurExtension = validFileExtensions[j];
+                if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                    blnValid = true;
+                    console.log('blnValid in loop-->'+blnValid);
+                    break;
+                }
+            }
+            console.log('blnValid-->'+blnValid);
+            if(!blnValid) {
+                alert('Invalid File Format, ' + sFileName + ' is invalid, allowed extension are: '+ validFileExtensions.join(", "));
+                $(file).val('');
+                return false;
+            }else if (FileSize > 1) {
+                alert('Invalid File, File size exceeds 1 MB');
+                $(file).val('');
+                return false;
+            }
+
+            //To set the object URLs of the file in the image.
+            console.log(file.id)
+            if(file.id == 'file') {
+              
+              $('[id$=blah]').attr('src', window.URL.createObjectURL(file.files[0]));
+            }  else if(file.id == 'cancelCheque') {
+                $('[id$=img_url]').attr('src', window.URL.createObjectURL(file.files[0]));
+                console.log(window.URL.createObjectURL(file.files[0]));
+              }
+            return true;
+        }
+
+        return false;
+    }
+
+    // To encode the image base64 string.
+    function ValidateSize(profileimage) {
+      // initiatedLoader();
+      $('#overlay').show();
+      var maxFileSize = 4350000;      
+      var maxStringSize = 6000000;
+        if(profileimage.id == 'file') {
+
+          $('[id$=blah]').attr('src', '');
+        } else if(profileimage.id == 'cancelCheque') {
+            $('[id$=img_url]').attr('src', '');
+        }
+
+        var file = profileimage.files[0];
+        if(file != undefined && previewFile(profileimage)) {
+          if(file.size <= maxFileSize) {
+            attachmentName = file.name;
+                var fileReader = new FileReader();
+                fileReader.onloadend = function(e) {
+                  attachment = window.btoa(this.result);  //Base 64 encode the file before sending it
+                  positionIndex=0;
+                  fileSize = attachment.length;
+                  console.log("Total Attachment Length: " + fileSize);
+                  doneUploading = false;
+                  if (profileimage.id == 'file') {
+                    // initiatedLoader();
+                      uploadAttachment('file');
+                    } else {
+                      $('#overlay').hide();
+                    }
+                }
+                fileReader.onerror = function(e) {
+                  $('#overlay').hide();
+                    alert('Invalid File, There was an error reading the file.  Please try again.');
+                }
+                fileReader.onabort = function(e) {
+                  $('#overlay').hide();
+                    alert('Invalid File, There was an error reading the file.  Please try again.');
+                }
+                fileReader.readAsBinaryString(file);  //Read the body of the file
+            } else {
+              $('#overlay').hide();
+                alert('Invalid File, File size exceeds 1 MB');
+            }
+        } else {
+          $('#overlay').hide();
+            attachment = '';
+        }
+        
+    }   
+
+    //Method to send a file to be attached to the Account bound to the page by the standardController
+    //Sends parameters: Account Id, Attachment (body), Attachment Name, and the Id of the Attachment if it exists to the controller   
+
+    function uploadAttachmentaa() {
+      console.log($('#cancelCheque')[0].files)
+      console.log($('#cancelCheque'))
+      if ($('#cancelCheque')[0].files.length > 0) {
+        // $('[id$=hdnNameOfTheBank]').val($('[id$=CancelChequeDocument]').val());
+        // CancelChequeDocument
+            alert("uploaded Cancel Cheque")
+          }
+    }
+    function uploadAttachment(fieldId) {
+      console.log('uploadedAttachment called --> ', attachment)
+        if(attachment) {
+          
+          // initiatedLoader();
+            var attachmentBody = "";
+            var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000 characters
+            if(fileSize <= positionIndex + chunkSize) {
+                attachmentBody = attachment.substring(positionIndex);
+                doneUploading = true;
+            } else {
+                attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+            }
+            console.log("Uploading " + attachmentBody.length + " chars of " + fileSize);
+            attachmentName = generateFileName(attachmentName);
+            console.log("attachmentName "+ attachmentName);
+            
+
+            // var Result = 'st'
+            var Result = sforce.apex.execute("UploadStudentProfileDocument", "uploadFile", {attachmentBody:attachmentBody, file_name:attachmentName});
+
+            if(Result.length > 0) {
+                let objResult = Result[0];
+                console.log('objResult -->'+ objResult);
+                if(objResult) {
+                  $('#overlay').hide();
+                     if (fieldId == 'cancelCheque') {
+                        $('[id$=hdnCancelChequeDocument]').val(encodeURI(objResult));
+                        console.log(encodeURI(objResult))
+                    alert("uploaded Cancel Cheque")
+                    call();
+
+                  } else if(fieldId == 'file') {
+                    $('.signatureImage').val(encodeURI(objResult));
+                    saveStudentSignatureHandler();
+                    // alert('Signature uploaded')
+
+                  }
+                    return true;
+                }else {
+                  $('#overlay').hide();
+                    alert('Invalid Details, Internal error occured. Kindly try again later');
+                    return false;
+                }
+            }else {
+              $('#overlay').hide();
+                return false;
+            }
+        } else{
+          $('#overlay').hide();
+            return false;
+        }
+    }
+
+    function generateFileName(filename) {
+        if(filename) {
+            var fileExtension = '.' + filename.split('.').pop();
+            var result = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for ( var i = 0; i < 7; i++ ) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return '{!RefNumber}_' + result + fileExtension.toLowerCase();
+        } else{
+            return null;
+        }
+    }
+</script>
+</apex:page>

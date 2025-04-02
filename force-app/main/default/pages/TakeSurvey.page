@@ -1,0 +1,219 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 09-21-2023
+  @last modified by  : @BK
+  Modifications Log 
+  Ver   Date         Author   Modification
+  1.0   02-20-2021   @BK   Initial Version
+-->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" controller="SurveyController" cache="false" applyBodyTag="false" docType="html-5.0">
+    <head>
+        <style>
+
+            
+
+            .Processingview
+            {
+                position: fixed;
+                background: url('{!URLFOR($Resource.Icon)}');
+                background-repeat: no-repeat;
+                background-position: center;           
+                width:  100%;
+                height: 100%;
+                z-index: 1004;
+                left: 3%;
+                top: 1%;
+            
+            }
+            .required
+            {
+                border: 2px solid #c00 !important;
+            }
+        
+            .overlay
+            {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            background-color: rgba(0,0,0,0.5);
+            }
+            .poup
+            {
+                position: fixed;
+                top: 30%;
+                width: 40%;
+                margin-left: 30%;
+                z-index: 11;
+            }
+            .messageCell
+            {
+                color:Black !important;
+            }
+            .LateFee
+            {
+                Color: red;
+                float: right;
+                margin-right: 4%;
+                font-style: italic;
+                font-family:Trebuchet MS;
+            }
+
+            label {
+                margin-bottom: 0px;
+                margin-left: 2px;
+                margin-right: 10px;
+            }
+
+            <apex:outputText value="{!objSurvey.Survey_Container_CSS__c}" />
+        </style>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+       
+        <title>NMIMS Distance Education: Take Survey</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/chosen.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/style.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/vars.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css.map')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css.map')}"/>
+    </head>
+    <body>
+        <nav class="headerNavigation">
+            <div class="container">
+               <div class="logoImg">
+                   <a href="#"><apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive"/></a>
+                </div>          
+            </div>
+        </nav>
+        <!-- Breadcrumb & Social Icons -->
+        <div class="topSocialWrapper">
+            <div class="container">
+                <div class="shareIcons">
+                    <ul>
+                        <li><a href="https://plus.google.com/u/0/116325782206816676798" class="icon-google-plus"></a></li>
+                        <li><a href="https://twitter.com/NMIMS_SCE" class="icon-twitter"></a></li>
+                        <li><a href="https://www.facebook.com/NMIMSSCE" class="icon-facebook"></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--/ Bredcrums & Social Icons --> 
+        <!-- Banner -->
+        <div class="container"><div class="bannerIns"></div></div>
+        <!--/ Banner -->
+        <div id="survey_container">   
+            <apex:form id="theForm"   >
+                <div class="tab-wrapper">
+                    <div class="container">
+                        <div class="tab-content">
+                            <div class="" style="background-color: #e4e4e4">
+                                <div class="form-wrapper" style="padding-top: 5px;">
+                                    <apex:outputPanel id="seeSurvey" rendered="{!!thankYouRendered}" style="font-size: x-large;">
+                                        <apex:outputField value="{!objSurvey.Survey_Header__c}"/>
+                                        <h1><apex:outputField value="{!objSurvey.Name}" rendered="{!objSurvey.Hide_Survey_Name__c == false}" /></h1>
+                                    </apex:outputPanel>
+                                    <apex:pageMessages />
+
+                                    <apex:pageBlock rendered="{!!thankYouRendered}" > 
+                                        <style>
+                                        table.radioClass > input[type=radio] {
+                                            margin-left: 10px !important;
+                                        }
+                                        </style>
+                                        <div id="qList">
+                                            <apex:repeat value="{!allQuestions}" var="qPreview" id="aQPreview">
+                                                <div id="{!qPreview.id}" >
+                                                    <h1 class="question" style="margin-bottom: 5px;">
+                                                        <span style="font-family:Calibri ;font-size: 60%;font-weight:bold; "> 
+                                                            <span class="questionNumber">{!qPreview.orderNumber}</span>
+                                                            <font family="calibri "> {!qPreview.question} <apex:outputPanel rendered="{!qPreview.required}" style="color:red;">*</apex:outputPanel></font>
+                                                        </span>
+                                                    </h1>
+                                                    <apex:outputPanel styleClass="form-group" rendered="{!qPreview.renderSelectRadio}">
+                                                        <div id="radio"> 
+                                                            <span style="font-family:Calibri ">
+                                                                <apex:selectRadio layout="pageDirection" rendered="{!qPreview.renderSelectRadio}" value="{!qPreview.selectedOption}"  >
+                                                                <apex:selectOptions value="{!qPreview.singleOptions}" />
+                                                                </apex:selectRadio>
+                                                            </span>
+                                                        </div>
+                                                    </apex:outputPanel>
+                                                    
+                                                    <apex:outputPanel styleClass="form-group" rendered="{!qPreview.renderSelectCheckboxes}">
+                                                        <div id="checkbox">     
+                                                            <span style="font-family:Calibri ">      
+                                                                <apex:selectCheckboxes layout="pageDirection" rendered="{!qPreview.renderSelectCheckboxes}" value="{!qPreview.selectedOptions}" >
+                                                                    <apex:selectOptions value="{!qPreview.multiOptions}" />
+                                                                </apex:selectCheckboxes> 
+                                                            </span>
+                                                        </div>
+                                                    </apex:outputPanel>
+
+                                                    <apex:outputPanel styleClass="form-group" rendered="{!qPreview.renderFreeText}">
+                                                        <div id="text"> 
+                                                            <span style="font-family:Calibri ">
+                                                                <apex:inputTextArea cols="100" rows="1" rendered="{!qPreview.renderFreeText}" value="{!qPreview.choices}"/>  
+                                                            </span>
+                                                        </div>
+                                                    </apex:outputPanel>
+
+                                                    <apex:outputPanel styleClass="form-group" rendered="{!qPreview.renderSelectRow}">
+                                                        <div id="row">
+                                                            <span style="font-family:Calibri ">
+                                                                <apex:selectRadio rendered="{!qPreview.renderSelectRow}" value="{!qPreview.selectedOption}" styleClass="radioClass">
+                                                                    <font family="calibri "><apex:selectOptions value="{!qPreview.rowOptions}"/></font>
+                                                                </apex:selectRadio>
+                                                            </span>
+                                                        </div>
+                                                    </apex:outputPanel>            
+                                                    <!-- IN ORDER TO ADD A QUESTION TYPE YOU MUST CHANG THE JAVASCRIPT BELOW AS WELL -->
+                                                </div>  
+                                                <!-- qPreview.id -->
+                                            </apex:repeat>
+                                        </div> 
+                                        <!-- qList -->
+                                    </apex:pageBlock>
+
+                                    <apex:outputPanel rendered="{!!thankYouRendered}">
+                                        <apex:outputPanel rendered="{!isInternal}" >
+                                            {!$Label.LABS_SF_Answer_as}: 
+                                            <apex:selectRadio value="{!anonymousAnswer}">
+                                                <apex:selectOptions value="{!anonymousOrUser}" />
+                                                <apex:actionSupport event="onchange" rerender="hiddenAnonymousAnswer"/>
+                                            </apex:selectRadio>
+                                            <apex:inputHidden value="{!anonymousAnswer}" id="hiddenAnonymousAnswer"/>
+                                            <BR />
+                                        </apex:outputPanel>
+                                        <apex:commandButton action="{!submitResults}" value="{!$Label.LABS_SF_SubmitSurvey}" rerender="theForm,seeSurvey" />
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!thankYouRendered}">
+                                        <script type="text/javascript">
+                                            setTimeout(function(){
+                                                window.location.href = 'http://online.nmims.edu';
+                                            },5000);
+                                        </script>
+                                        <apex:outputText value="{!objSurvey.Thank_You_Text__c}"  escape="false"  />
+                                    </apex:outputPanel>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:form>
+        </div>
+    </body>
+
+</apex:page>

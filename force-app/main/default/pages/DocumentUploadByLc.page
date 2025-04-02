@@ -1,0 +1,28 @@
+<!--
+  @description       : 
+  @author            : @Ravi
+  @group             : 
+  @last modified on  : 06--11--2024
+  @last modified by  : @Ravi
+-->
+<apex:page showHeader="true" sidebar="true">
+    <html>
+    <apex:includeLightning />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <body>
+        <div id="LightningComponentid" />
+        <script>
+            $Lightning.use("c:DocumentUploadByLcvfApp", function () {                    //Aura App
+                $Lightning.createComponent("c:DocumentUploadByLc",                     //lightning component
+                    { isClassic: true },
+                    "LightningComponentid",
+                    function (cmp) {
+                        console.log('LWC Component added in VF page');
+                    });
+            });
+        </script>
+    </body>
+
+    </html>
+</apex:page>

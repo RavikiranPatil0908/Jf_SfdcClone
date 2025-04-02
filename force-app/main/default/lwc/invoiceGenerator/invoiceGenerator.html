@@ -1,0 +1,164 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 21-05-2024
+  @last modified by  : @BK
+  Modifications Log 
+  Ver   Date         Author   Modification
+  1.0   06-08-2021   @BK   Initial Version
+-->
+<template>
+    <!-- Message Toast Starts here-->
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant}
+        auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+    <!-- Message Toast Ends here-->
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon class="slds-align_absolute-center" icon-name="standard:user"
+                        alternative-text={centerName} size="medium" title={centerName}></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <a href="javascript:void(0);" class="slds-card__header-link" title=centerName}>
+                            <span>Hello {centerName}</span>
+                        </a>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="slds-text-heading_medium slds-var-p-top_small">Upload 
+                <span lwc:if={isInvoice}> Invoice</span>
+                <span lwc:else> Credit Note</span>
+            </div>
+            <div class="slds-text-body_small slds-var-p-vertical_x-small">AEP Invoice Details.</div>
+
+
+            <!-- Form begins here -->
+            <template if:true={checkData}>
+                <div class="slds-form" role="list">
+                    <div class="slds-form__row slds-var-p-top_small">
+                        <template lwc:if={isInvoice}>
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_horizontal slds-hint-parent">
+                                    <span class="slds-form-element__label">Invoice Number</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">{objAEPInvoice.Invoice_Number__c}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_horizontal slds-hint-parent">
+                                    <span class="slds-form-element__label">Invoice Date</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">{objAEPInvoice.Invoice_Date__c}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        
+                        <template lwc:else>
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_horizontal slds-hint-parent">
+                                    <span class="slds-form-element__label">Credit Note Number</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">{objAEPInvoice.Debit_Date__c}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_horizontal slds-hint-parent">
+                                    <span class="slds-form-element__label">Credit Note Date</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">{objAEPInvoice.Debit_Number__c}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="slds-form__row slds-var-p-top_small">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_horizontal slds-hint-parent">
+                                <span class="slds-form-element__label">
+                                    <span lwc:if={isInvoice}>Invoice </span> 
+                                    <span lwc:else>Credit Note </span> 
+                                    Month</span>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__static">{objAEPInvoice.Pay_Month__c}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_horizontal slds-hint-parent">
+                                <span class="slds-form-element__label">
+                                    <span lwc:if={isInvoice}>Invoice </span> 
+                                    <span lwc:else>Credit Note </span> 
+                                    Year</span>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__static">{objAEPInvoice.Payment_Year__c}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <template if:true={isAlreadyUploaded}>
+                        <div class="slds-form__row slds-var-p-top_small">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_horizontal slds-hint-parent">
+                                    <span class="slds-form-element__label">Attachment</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <span lwc:if={isInvoice}>Invoice </span> 
+                                            <span lwc:else>Credit Note </span> Already Uploaded</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-form__item" role="listitem"></div>
+                        </div>
+                    </template>
+                    
+
+                    <template if:false={isAlreadyUploaded}>
+                        <div class="slds-form__row slds-var-p-top_small">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_horizontal slds-hint-parent">
+                                    <lightning-input type="file" label="Attachment" accept="image/png, image/jpg, application/pdf" onchange={handleUploadFinished}></lightning-input>
+                                </div>
+                                <template if:true={fileData}>
+                                    <p>{fileData.filename}</p>
+                                </template>
+                            </div>
+                            <div class="slds-form__item" role="listitem"></div>
+                        </div>
+
+                        <div class="slds-form__row slds-var-p-top_small">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_horizontal slds-hint-parent">
+                                    <button class="slds-button slds-button_brand" onclick={handleClick}>Submit</button>
+                                </div>
+                            </div>
+                            <div class="slds-form__item" role="listitem"></div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <template if:false={checkData}>
+                <article class="slds-card slds-card_boundary ">
+                    <div class="slds-card__body slds-card__body_inner">
+                        <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                            <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt="" />
+                            <div class="slds-text-color_weak">
+                                <h3 class="slds-text-heading_medium">No Details Found.</h3>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </template>
+        </div>
+    </article>
+</template>

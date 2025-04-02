@@ -1,0 +1,101 @@
+<apex:page standardController="Campaign" renderAs="PDF" applyHtmlTag="false" showHeader="false">
+    <head>
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/logo.png')}"/>
+        <!--<apex:stylesheet value="{!URLFOR($Resource.test,'1470421835000.jpg')}"/>-->
+        
+        <style > 
+             @page 
+             {
+                 size: A4;
+                 border:1px solid black;
+             }
+        </style>
+    </head> 
+<body > 
+<apex:form > 
+    <apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive" /> 
+    
+     <!--<apex:image url="{!URLFOR($Resource.test,'1470421835000.jpg')}" styleClass="img-responsive" /> -->  
+    <hr/>
+
+<apex:pageBlock mode="maindetail">
+
+<!---
+<apex:detail relatedList="false" subject="{!AccId}" relatedListHover="false" showChatter="false"/>
+---->
+    <table width="100%" style ="font-size:14px;" cellspacing="8" cellpadding="8">
+   
+        <tr>
+            <td width="20%"><b>Campaign Name</b></td> 
+            <td width="30%">:&nbsp;&nbsp;{!Campaign.Name}</td>
+            <td width="20%"><b>Campaign Owner</b></td>
+            <td>:&nbsp;&nbsp;{!Campaign.Owner.Name}</td>
+        </tr>
+        <tr>
+            <td width="20%"><b>Sender Name</b></td>
+          <!--  <td width="30%">:&nbsp;&nbsp;{!Campaign.MailXLA__MailXLA_Email_Sender_Name__c}</td> -->
+             <td width="20%"><b>Sender Email</b></td>
+           <!-- <td>:&nbsp;&nbsp;{!Campaign.MailXLA__MailXLA_Sender_Email__c}</td>  -->         
+        </tr>
+        <!-- <tr>
+            <td width="20%"><b>Sent</b></td>
+            <td width="30%">:&nbsp;&nbsp;{!Campaign.MailXLA__MailXLA_TotalSent__c}</td>
+             <td width="20%"><b>Subject</b></td>
+            <td>:&nbsp;&nbsp;{!Campaign.MailXLA__MailXLA_Email_Subject__c}</td>           
+        </tr>
+         <tr>
+            <td width="20%"><b>Delivered</b></td>
+            <td width="30%">:&nbsp;&nbsp;{!Campaign.MailXLA__MailXLA_TotalDelivered__c}</td>
+             <td width="20%"><b>Bounced</b></td>
+            <td>:&nbsp;&nbsp;{!Campaign.MailXLA__MailXLA_TotalBounced__c}</td>           
+        </tr>-->
+          <tr>
+            <td width="20%"><b>Drive Month</b></td>
+            <td width="30%">:&nbsp;&nbsp;{!Campaign.Drive_Month__c}</td>
+             <td width="20%"><b>Drive Year</b></td>
+            <td>:&nbsp;&nbsp;{!Campaign.Drive_Year__c}</td>          
+        </tr>
+          <tr>
+            <td width="20%"><b>Activity Type</b></td>
+            <td width="30%">:&nbsp;&nbsp;{!Campaign.Activity_Type__c}</td>
+             <td width="20%"><b>Month</b></td>
+            <td>:&nbsp;&nbsp;{!Campaign.Month__c}</td>           
+        </tr>
+        
+         <tr>
+            <td width="20%"><b>Start Date</b></td>
+            <td width="30%">:&nbsp;&nbsp;<apex:outputText value="{0,date,dd'/'MM'/'yyyy}"><apex:param value="{!Campaign.StartDate}"/> </apex:outputText></td>
+             <td width="20%"><b>End Date</b></td>
+            <td>:&nbsp;&nbsp;<apex:outputText value="{0,date,dd'/'MM'/'yyyy}"><apex:param value="{!Campaign.EndDate}"/> </apex:outputText></td>           
+        </tr>
+        
+          
+         <tr>
+            <td width="25%"><b>Net Budget Allocated</b></td>
+            <td width="20%">:&nbsp;&nbsp;{!value(text(Campaign.Net_Budget_Allocated__c))}</td>
+             <td width="30%"><b>Agency Commission Percent</b></td>
+            <td>:&nbsp;&nbsp;{!value(text(Campaign.Agency_Commission_Percent__c))}%</td>           
+        </tr>
+         <tr>
+            <td width="20%"><b>Tax Percent</b></td>
+            <td width="30%">:&nbsp;&nbsp;{!value(text(Campaign.Tax_Percent__c))}%</td>
+             <td width="20%"><b>Taxes</b></td>
+            <td>:&nbsp;&nbsp;{!value(text(Campaign.Taxes__c))}</td>           
+        </tr>
+         <tr>
+            <td width="20%"><b>Agency Commission</b></td>
+            <td width="30%">:&nbsp;&nbsp;{!Campaign.Agency_Commission__c}</td>
+             <td width="20%"><b>Total</b></td>
+            <td>:&nbsp;&nbsp;{!Campaign.Total__c}</td>           
+        </tr>
+        <tr>
+            <td width="20%"><b>Agency</b></td>
+            <td width="30%">:&nbsp;&nbsp;{!Campaign.Agency__c}</td>           
+        </tr>
+        
+    </table> 
+                 
+</apex:pageBlock>
+</apex:form>
+</body>
+</apex:page>

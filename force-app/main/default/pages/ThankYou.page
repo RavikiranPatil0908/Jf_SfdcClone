@@ -1,0 +1,153 @@
+<apex:page showHeader="false" standardStylesheets="false" controller="BasicInfoOfStudent" cache="false">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0 , user-scalable=no"></meta>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title><apex:outputText value="{!objWebinar.Page_Title__c}" escape="false" /></title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+      
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/chosen.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/style.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/vars.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css.map')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css.map')}"/>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            history.pushState(null, null, 'ThankYou');
+            window.addEventListener('popstate', function () {
+                history.pushState(null, null, 'ThankYou');
+            });
+        </script>
+       
+      <style>
+        body {
+            padding-top: 15px;
+        }
+        
+        </style>
+    </head>
+        <!-- Hidden Fields: Start-->
+        <apex:form >
+            <apex:inputHidden id="hdnDate" value="{!objWebinar.Event_Date__c}" />
+            <apex:inputHidden id="hdnStartTime" value="{!objWebinar.Start_Time__c}" />
+            <apex:inputHidden id="hdnEndTime" value="{!objWebinar.End_Time__c}" />
+        </apex:form>
+        <!-- Hidden Fields: End -->
+
+        <!-- Top Header : START -->
+        
+        <nav class="navbar navbar-light bg-faded">
+          <a class="navbar-brand" style="padding:0px 15px" href="#">
+            <apex:image url="{!URLFOR($Resource.NGA_Logo)}" styleClass="img-responsive" rendered="{!objWebinar.Logo__c == 'NGA Logo'}"/>
+            <apex:image url="{!URLFOR($Resource.SasLogo)}" styleClass="img-responsive" rendered="{!objWebinar.Logo__c == 'NGA-SAS Logo'}"/>
+          </a>
+        </nav>
+        <div class="clearfix"/>
+        <div style="width:100%;height:10px;background-color:#d2232a;margin-top:30px;"/>
+        
+        <!-- Top Header : END -->
+        
+        <div class="clearfix"/>
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="background-color:#1e73be;margin-top:10px;color:#ffffff;padding:10px;text-align:center">
+            <h2><apex:outputText value="{!objWebinar.Heading__c}" escape="true" /></h2>
+            <h3 id="eventDateTime"><!-- script push datetime here --></h3>
+        </div>
+        <div class="clearfix"/>
+        
+        <!-- Form: START -->
+        
+        <br/>
+        <div class="container">
+            <div style="text-align:center">
+                <div id="messagePanel1">
+                    <apex:outputPanel rendered="{!IF($CurrentPage.parameters.isDuplicate =='true',true,false)}"><apex:outputText value="{!objWebinar.Duplicate_Message__c}" escape="false" /></apex:outputPanel> 
+                    <apex:outputPanel rendered="{!IF($CurrentPage.parameters.isDuplicate =='false',true,false)}">
+                        <h2 id="thankYouMessage"><apex:outputText value="{!objWebinar.Thankyou_Message__c}" escape="false" /> </h2>
+                        <br/><br/> 
+                        <h2><apex:outputPanel rendered="{!objWebinar.Send_Confirmation_Mail__c}">Confirmation mail will be sent to your registered email id shortly.</apex:outputPanel></h2>
+                    </apex:outputPanel>
+                </div>
+                <div id="messagePanel2" style="display:none;">
+                    <h2><apex:outputText value="{!objWebinar.Closure_Messge__c}" escape="false" /></h2>
+                </div>
+            </div>
+            <br/>
+            <div class="clearfix"></div>
+            <div class="row">
+                <apex:variable var="c" value="{!0}" />
+                <apex:repeat value="{!YoutubeLinks}" var="Yl">
+                    <apex:variable var="c" value="{!c+1}" />
+                    <apex:outputText value="</div><br/><div class='clearfix'></div><div class='row'>" rendered="{!MOD(c, 4)==0}" escape="false"/>
+                    <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+                        <p style="font-size:17px;">
+                        <b><apex:outputText value="{!Yl.Title__c}" escape="false" /></b>
+                        </p>
+                        <apex:outputText value="<br/>" rendered="{!IF(LEN(Yl.Title__c) < 50,true,false)}" escape="false"/>
+                        <apex:iframe width="100%" height="100%" src="{!Yl.Youtube_Link__c}" frameborder="0"/>
+                    </div>  
+                </apex:repeat>
+            </div>
+        </div>
+        
+        <!-- Form: END -->
+        
+        <div class="clearfix"/>
+        <div style="width:100%;height:10px;background-color:#d2232a;margin-top:30px;"/>
+        
+        
+        <!--All java script  -->
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    
+        <script>
+
+        $(document).ready(function(){
+        /* date time dispaly */
+        var eventDate = $('[id$=hdnDate]').val();
+        var startTime = $('[id$=hdnStartTime]').val();
+        var endTime = $('[id$=hdnEndTime]').val(); 
+        var endDateTime = moment(eventDate).format('DD/MM/YYYY');
+        endDateTime = moment(endDateTime +' '+ endTime,'DD/MM/YYYY HH:mm:ss');
+        eventDate = moment(eventDate);
+        eventDate = eventDate.format('Do MMMM YYYY').replace( /(\d)(st|nd|rd|th)/g, '$1<sup>$2</sup>' );
+        startTime = moment(startTime,'HH:mm:ss');
+        startTime = startTime.format('h:mm A');
+        endTime = moment(endTime,'HH:mm:ss');
+        endTime = endTime.format('h:mm A');
+        var dateTime = 'Date: '+eventDate+' | Time: '+startTime+' – '+endTime;
+        var dateTimeM = ' ' + eventDate + ' at ' + startTime;
+        $('#eventDateTime').html(dateTime);
+        $('#thankYouMessage').append(dateTimeM);
+        
+        if(moment().isAfter(endDateTime)){
+            $('[id$=messagePanel1]').hide();
+            $('[id$=messagePanel2]').show();
+        }
+
+        /* date time dispaly end */
+
+        
+
+        });
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '146694735869022');
+      fbq('track', 'PageView');
+      fbq('track', 'Lead');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=146694735869022&ev=PageView&noscript=1"
+    /></noscript>
+
+</apex:page>

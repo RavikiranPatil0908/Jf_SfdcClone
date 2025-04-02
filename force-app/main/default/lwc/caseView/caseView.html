@@ -1,0 +1,271 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 05--03--2025
+  @last modified by  : @Ravi
+-->
+<template>
+	<div class="slds-var-m-horizontal_xx-large slds-var-m-top_xx-small slds-var-m-bottom_xx-large">
+		<div class="top-nav">
+			<ul class="slds-list_horizontal">
+				<template iterator:it={navLst}>
+					<a key={it.value} style="color:white;" data-id={it.value} onclick={handleNav}>
+						<h2>&nbsp;{it.value}&nbsp;</h2>
+					</a>
+					<div if:false={it.last} key={it.value} style="color:white;"> >> </div>
+				</template>
+			</ul>
+		</div>
+		<template if:true={accDetails}>
+			<div style="box-shadow: 1px 1px 4px lightgray;">
+				<h6> <img src={accDetails.url} alt="User Profile" height="3px" width="30px" /> &nbsp; {accName} &nbsp; |
+					&nbsp; {accDetails.email} &nbsp;| &nbsp; {accDetails.mobile} &nbsp; | &nbsp; {accDetails.program}
+					&nbsp; | &nbsp; {accDetails.sno} | &nbsp; {accDetails.validity}</h6>
+			</div>
+		</template>
+		<template if:false={isFeedback}>
+			<template if:true={caseLst}>
+				<div class="slds-var-m-top_x-small slds-m-bottom_xx-large">
+					<div class="slds-grid slds-wrap">
+						<div class="slds-col slds-size_2-of-12">
+							<button class="slds-button" onclick={goBack}>
+								<lightning-icon icon-name="utility:back" size="medium"
+									alternative-text="back"></lightning-icon>
+							</button>
+						</div>
+						<div class="slds-col slds-size_10-of-12">
+							<h1>Ticket #{caseLst.CaseNumber} </h1>
+						</div>
+					</div>
+					<h1> {caseLst.Subject} </h1> <br />
+					<div style="width: 100%; display: table;">
+						<div style="display: table-row">
+							<div style="width: 20rem; display: table-cell;">
+								<h4> Opened: <lightning-formatted-date-time
+										value={caseLst.CreatedDate}></lightning-formatted-date-time></h4>
+							</div>
+							<div style="width: 20rem; display: table-cell;">
+								<h4> Status: {caseLst.Student_Status__c} </h4>
+							</div>
+							<div style="width: 50rem; display: table-cell;">
+								<template if:true={isOpen}>
+									<h4> Expected Close Date: <lightning-formatted-date-time
+											value={caseLst.Expected_Close_Date__c}></lightning-formatted-date-time></h4>
+								</template>
+								<template if:false={isOpen}>
+									<h4> Closed Date: <lightning-formatted-date-time
+											value={caseLst.ClosedDate}></lightning-formatted-date-time></h4>
+								</template>
+							</div>
+							<template if:true={isOpen}>
+								<div style="width: 12rem; display: table-cell;">
+									<button class="border slds-button" onclick={handleAddComment}> Add Comment </button>
+								</div>
+								<div style="width: 10rem; display: table-cell;">
+									<lightning-button variant="destructive" label="Close Ticket"
+										onclick={handleCloseCase}></lightning-button>
+								</div>
+							</template>
+							<template if:false={isOpen}>
+								<div style="width: 10rem; display: table-cell;">
+									<lightning-button variant="destructive-text" disabled={isReopen} label="Reopen"
+										onclick={reopenCase}></lightning-button>
+								</div>
+							</template>
+						</div>
+					</div>
+					<hr />
+					<div class="slds-align_absolute-center">
+						<div class="slds-size_2-of-3">
+							<template if:true={addComment}>
+								<div class="slds-grid slds-wrap">
+									<template if:true={reopen}>
+										<div class="slds-col slds-size_1-of-2 slds-var-m-bottom_x-small">
+											<lightning-combobox
+												name="progress"
+												label="Reason for Re-Opening Case"
+												value={reason}
+												placeholder="Select ..."
+												options={reOpenReasons}
+												required={reopen}
+												onchange={handleReasonChange}></lightning-combobox>
+										</div>
+									</template>
+									<div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
+										<lightning-textarea class="topText" placeholder={placeholder}
+											onchange={handleCommentChange} required="required"></lightning-textarea>
+										<h5> {error} </h5>
+									</div>
+									<div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
+										<p> Total File size should be less than 3 MB (pdf, png, jpg, jpeg) </p>
+										<lightning-input type="file" class="text" label="Attachment"
+											onchange={handleFileUploaded} accept={acceptedFormats}
+											variant="destructive-text" multiple>
+										</lightning-input>
+										
+										<div class="container">
+											<template for:each={filesUploaded} for:item="file">
+												<lightning-pill key={file.Title} label={file.Title}
+													data-fid={file.Title} onremove={handleRemove}
+													class="slds-text-body_small"></lightning-pill>
+											</template>
+										</div>
+									</div>
+									<template if:true={close}>
+										<template if:true={isAdmissionCancellation}>
+											<div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
+											<lightning-checkbox-group options={cboptions} value={disclaimerflag} onchange={handleChange}></lightning-checkbox-group>
+										<p>By closing this ticket, I confirm that my admission cancellation request will be withdrawn, and I will continue as an enrolled student.
+										</p>	
+										</div>
+										</template>
+									</template>
+									<div class="slds-col slds-size_1-of-1">
+										<lightning-button variant="destructive" label="Submit" onclick={handleSubmit} disabled={buttonstatus}>
+										</lightning-button>
+									</div>
+								</div>
+								<hr />
+							</template>
+							<template if:false={hideDescription}>
+								<h4> Description: </h4>
+								<div style="white-space: pre-line; font-size: 18px; color: black;"> {caseLst.Description}
+								</div>
+								<br />
+							</template>
+							<div style="width: 100%; display: table;">
+								<div style="display: table-row">
+									<div style="width: 300px; display: table-cell;">
+										<h4> Category : {caseLst.Student_Category__c} </h4>
+									</div>
+									<div style="width: 50px; display: table-cell;"></div>
+									<div style="width: 400px; display: table-cell;">
+										<h4> Sub-Category : {caseLst.Student_Sub_Categories__c} </h4>
+									</div>
+								</div>
+							</div>
+							<template if:true={showEscalationLevel}>
+								<h4> Escalation Level: </h4>
+								<div style="white-space: pre-line; font-size: 18px; color: black;"> {caseLst.Escalation_Level__c}
+								</div>
+							</template>
+							<br />
+							<template if:true={hideDescription}>
+                                <div style="width: 100%; display: table;">
+									<div style="display: table-row">
+										<div style="width: 300px; display: table-cell;">
+											<h4> Proposed Research Topic : {caseLst.Proposed_Research_Topic__c} </h4>
+										</div>
+										<div style="width: 50px; display: table-cell;"></div>
+										<div style="width: 400px; display: table-cell;">
+											<h4> Research Objective : {caseLst.Research_Objective__c} </h4>
+										</div>
+									</div>
+									<br />
+									<div style="display: table-row">
+										<div style="width: 300px; display: table-cell;">
+											<h4> Problem Statement : {caseLst.Problem_Statament__c} </h4>
+										</div>
+										<div style="width: 50px; display: table-cell;"></div>
+										<div style="width: 400px; display: table-cell;">
+											<h4> Relevance of Research : {caseLst.Relevance_of_Research__c} </h4>
+										</div>
+									</div>
+									<br />
+									<div style="display: table-row">
+										<div style="width: 300px; display: table-cell;">
+											<h4> Business Issue : {caseLst.Business_Issues__c} </h4>
+										</div>
+										<div style="width: 50px; display: table-cell;"></div>
+										<div style="width: 400px; display: table-cell;">
+											<h4> Research Hypothesis : {caseLst.Research_Hypothis__c} </h4>
+										</div>
+									</div>
+									<br />
+									<div style="display: table-row">
+										<div style="width: 300px; display: table-cell;">
+											<h4> Proposed Research Methodology : {caseLst.Proposed_Research__c} </h4>
+										</div>
+										<div style="width: 50px; display: table-cell;"></div>
+										<div style="width: 400px; display: table-cell;">
+											<h4> Expected Outcomes and Implications : {caseLst.Expected_Outcomes_and_Implications__c} </h4>
+										</div>
+									</div>
+								</div>
+                            </template>
+							<br />
+							<lightning-tabset class="tab-active slds-tabs_large">
+								<lightning-tab label="Activity">
+									<c-case-view-msg-lst-comp record-id={recordId} acc-name={accName}></c-case-view-msg-lst-comp>
+								</lightning-tab>
+								<lightning-tab label="Attachments">
+									<c-case-view-attachment-comp record-id={recordId}  ></c-case-view-attachment-comp>
+								</lightning-tab>
+								<lightning-tab label="Scheduled Calls" aria-describedby="scheduleCallTootip" aria-disabled="true" onactive={showToolTip}>
+									<c-case-view-call-comp record-id={recordId} obj-account={accDetails} obj-case={caseDetail}></c-case-view-call-comp>
+								</lightning-tab>
+							</lightning-tabset>
+						</div>
+					</div>
+				</div>
+			</template>
+		</template>
+
+		<template if:true={isFeedback}>
+			<template if:true={caseLst}>
+				<div class="slds-var-m-top_x-small slds-m-bottom_xx-large">
+					<div class="slds-grid slds-wrap">
+						<div class="slds-col slds-size_2-of-12">
+							<button class="slds-button" onclick={goBack}>
+								<lightning-icon icon-name="utility:back" size="medium"
+									alternative-text="back"></lightning-icon>
+							</button>
+						</div>
+						<div class="slds-col slds-size_10-of-12">
+							<h1> {caseLst.Subject} </h1>
+						</div>
+					</div>
+					<br />
+
+					<div style="width: 100%; display: table;">
+						<div style="display: table-row">
+							<div style="width: 220px; display: table-cell;">
+								<h4> Opened: <lightning-formatted-date-time
+										value={caseLst.CreatedDate}></lightning-formatted-date-time></h4>
+							</div>
+							<div style="width: 400px; display: table-cell;">
+								<h4> Status: {caseLst.Student_Status__c} </h4>
+							</div>
+						</div>
+					</div>
+					<hr />
+					<div class="slds-align_absolute-center">
+						<div class="slds-size_2-of-3">
+							<h4> Description: </h4>
+							<p> {caseLst.Description} </p>
+							<br />
+							<div style="width: 100%; display: table;">
+								<div style="display: table-row">
+									<div style="width: 220px; display: table-cell;">
+										<h4> Category: {caseLst.Student_Category__c} </h4>
+									</div>
+									<div style="width: 400px; display: table-cell;">
+										<h4> Sub-Category: {caseLst.Student_Sub_Categories__c} </h4>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</template>
+			<br />
+		</template>
+	</div>
+	<template if:true={showSpinner}>
+		<div>
+			<lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+		</div>
+	</template>
+	
+</template>

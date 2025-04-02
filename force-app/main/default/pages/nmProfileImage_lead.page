@@ -1,0 +1,14 @@
+<apex:page controller="nmUploadDocuments_lead" tabStyle="Lead">
+<apex:includeScript value="{!URLFOR($Resource.Scripts,'scripts/jquery-1.8.2.min.js')}"/>
+    
+    <apex:sectionHeader subtitle="Upload Profile Image" title="Lead"/>
+    
+    <div style="margin-bottom:40px;">
+        <a href="/{!leadId}" style="float:left;"><b>Student Name:</b> {!leadName}</a>
+    </div>
+    
+    
+<!-- <apex:iframe src="http://studentzone-ngasce.nmims.edu:4001/Student/ProfileImage.aspx?leadId={!leadId}&uid={!LeadUId}&type=lead"/> -->
+     <apex:iframe src="{!$Label.DOCUMENT_SERVER}uploadPhotoForm?leadId={!leadId}&uid={!LeadUId}&type=lead"  height="400px"/> 
+    
+</apex:page>

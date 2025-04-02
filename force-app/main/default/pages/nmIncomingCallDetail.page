@@ -1,0 +1,42 @@
+<apex:page controller="nmIncomingCallDetail" tabStyle="Lead">
+	<style type="text/css">
+		.clsoverlay
+		{
+			position: absolute; 
+			width: 100%;
+			height: 100%;
+			background-color: #5A595A;
+			z-index: 1000;
+			-moz-opacity: 0.1;opacity: .10;filter: alpha(opacity=10); 
+		}
+	</style>
+    <apex:form id="frm">
+        <apex:sectionHeader subtitle="Incoming Call" title="Incoming call detail"/>
+        
+        <apex:pageBlock >
+            <div>
+                <apex:outputPanel id="pnlDetail">
+                    <div class="dvRow">
+                        <b>Enter call summary</b><br/>
+                        <apex:inputTextarea value="{!callSummary}" style="width:600px; height:60px; margin-top:5px;"/>
+                    </div>
+                    
+                    <div style="margin-top:5px;">
+                        <apex:commandButton value="Save Call" action="{!SaveDetails}" style="width:170px; height:30px;"/>
+                        <apex:commandButton value="Save Call & Create Task" action="{!SaveDetails}" reRender="frm" style="width:170px; height:30px; margin-left:10px;">
+                            <apex:param name="isFollowUp" value="True"/>
+                        </apex:commandButton>
+                        <apex:commandButton value="Back" action="{!BackToLead}" style="width:60px; height:30px; margin-left:10px;"/>
+                    </div>
+                </apex:outputPanel>
+            </div>                        
+        </apex:pageBlock>
+    </apex:form>
+    
+    <div style="border:1px solid #f8f8f8; border-top:3px solid #e39321; background:#FFFFFF; border-radius:4px; height: 300px; overflow-y: scroll;">
+       	<div style="border-bottom: 2px solid #e39321; margin: 10px;"><h1>Lead/Account Detail</h1></div>
+       	<div style="overflow:hidden; height: 1070px;">
+   			<iframe src="/{!strCallerId}?isdtp=vw" scrolling="false" id="ifr1" width="100%" height="2500px" style="border:0px; margin-top:-215px;"/>
+   		</div>
+    </div>
+</apex:page>

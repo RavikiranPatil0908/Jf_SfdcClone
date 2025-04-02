@@ -1,0 +1,4322 @@
+[
+    {
+       "Name":"Acharya Nagarjuna University",
+       "type":"State University"
+    },
+    {
+       "Name":"Adikavi Nannaya University",
+       "type":"State University"
+    },
+    {
+       "Name":"Andhra University",
+       "type":"State University"
+    },
+    {
+       "Name":"Centurion University of Technology and Management",
+       "type":"Private University"
+    },
+    {
+       "Name":"Damodaram Sanjivayya National Law University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. B.R. Ambedkar University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dravidian University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. Y.S.R. Horticultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. N.T.R. University of Health Sciences (Formerly Andhra Pradesh University of Health Sciences)",
+       "type":"State University"
+    },
+    {
+       "Name":"Gandhi Institute of Technology and Management (GITAM)",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Jawaharlal Nehru Technological University",
+       "type":"State University"
+    },
+    {
+       "Name":"Koneru Lakshmaiah Education Foundation",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Krishna University",
+       "type":"State University"
+    },
+    {
+       "Name":"The National Sanskrit University ( formerly Rashtriya Sanskrit Vidyapeeth)",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Rayalaseema University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sri Krishnadevaraya University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sri Padmavati Mahila Vishwavidyalayam",
+       "type":"State University"
+    },
+    {
+       "Name":"Sri Sathya Sai Institute of Higher Learning",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Sri Venkateswara University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sri Venkateswara Vedic University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sri Venkateswara Veterinary University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sri Venkateswara Institute of Medical Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"SRM University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Vignan's Foundation for Science, Technology and Research",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Vikrama Simhapuri University",
+       "type":"State University"
+    },
+    {
+       "Name":"VIT-AP University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Yogi Vemana University",
+       "type":"State University"
+    },
+    {
+       "Name":"Apex Professional University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Arunachal University of Studies",
+       "type":"Private University"
+    },
+    {
+       "Name":"Arunodaya University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Himalayan University",
+       "type":"Private University"
+    },
+    {
+       "Name":"North East Frontier Technical University",
+       "type":"Private University"
+    },
+    {
+       "Name":"North Eastern Regional Institute of Science & Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Rajiv Gandhi University",
+       "type":"Central University"
+    },
+    {
+       "Name":"The Global University",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Indira Gandhi Technological & Medical Sciences University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Venkateshwara Open University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Assam Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Assam Don Bosco University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Assam Down Town University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Assam University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Assam Rajiv Gandhi University of Co-operative Management",
+       "type":"State University"
+    },
+    {
+       "Name":"Assam Science & Technology University",
+       "type":"State University"
+    },
+    {
+       "Name":"Assam Women's University",
+       "type":"State University"
+    },
+    {
+       "Name":"Bodoland University",
+       "type":"State University"
+    },
+    {
+       "Name":"Cotton University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dibrugarh University",
+       "type":"State University"
+    },
+    {
+       "Name":"Gauhati University",
+       "type":"State University"
+    },
+    {
+       "Name":"Krishna Kanta Handique State Open University",
+       "type":"State University"
+    },
+    {
+       "Name":"Kumar Bhaskar Varma Sanskrit & Ancient Studies University",
+       "type":"State University"
+    },
+    {
+       "Name":"Mahapurusha Srimanta Sankaradeva Viswavidyalaya",
+       "type":"Private University"
+    },
+    {
+       "Name":"National Law University and Judicial Academy",
+       "type":"State University"
+    },
+    {
+       "Name":"Srimanta Sankaradeva University of Health Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Tezpur University",
+       "type":"Central University"
+    },
+    {
+       "Name":"The Assam Kaziranga University",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Assam Royal Global University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Amity University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Aryabhatta knowledge University",
+       "type":"State University"
+    },
+    {
+       "Name":"Babasaheb Bhimrao Ambedkar Bihar University",
+       "type":"State University"
+    },
+    {
+       "Name":"Bhupendra Narayan Mandal University",
+       "type":"State University"
+    },
+    {
+       "Name":"Bihar Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Central University of South Bihar",
+       "type":"Central University"
+    },
+    {
+       "Name":"Chanakya National Law University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. C.V. Raman University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Gopal Narayan Singh University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Jai Prakash Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Kameshwar Singh Darbhanga Sanskrit Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"K.K. University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Lalit Narayan Mithila University",
+       "type":"State University"
+    },
+    {
+       "Name":"Magadh University",
+       "type":"State University"
+    },
+    {
+       "Name":"Mahatma Gandhi Central University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Maulana Mazharul Haque Arabic & Persian University",
+       "type":"State University"
+    },
+    {
+       "Name":"Munger University",
+       "type":"State University"
+    },
+    {
+       "Name":"Nalanda University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Nalanda Open University",
+       "type":"State University"
+    },
+    {
+       "Name":"Nava Nalanda Mahavihara",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Patna University",
+       "type":"State University"
+    },
+    {
+       "Name":"Purnea University",
+       "type":"State University"
+    },
+    {
+       "Name":"Rajendra Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sandip University",
+       "type":"Private University"
+    },
+    {
+       "Name":"T.M. Bhagalpur University",
+       "type":"State University"
+    },
+    {
+       "Name":"Veer Kunwar Singh University",
+       "type":"State University"
+    },
+    {
+       "Name":"Ayush and Health Sciences University of Chhattisgarh",
+       "type":"State University"
+    },
+    {
+       "Name":"Bastar Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Atal Bihari Vajpayee Vishwavidyalaya ( formerly Bilaspur Vishwavidyalaya)",
+       "type":"State University"
+    },
+    {
+       "Name":"Chhattisgarh Kamdhenu Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Chhattisgarh Swami Vivekanand Technical University",
+       "type":"State University"
+    },
+    {
+       "Name":"Hemchand Yadav Vishwavidyalaya(formerly Durg Vishwavidyalaya)",
+       "type":"State University"
+    },
+    {
+       "Name":"Guru Ghasidas Vishwavidyalaya",
+       "type":"Central University"
+    },
+    {
+       "Name":"Hidayatullah National Law University",
+       "type":"State University"
+    },
+    {
+       "Name":"ICFAI University ,Sikkim",
+       "type":"Private University"
+    },
+    {
+       "Name":"International Institute of Information Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"ISBM University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Indira Gandhi Krishi Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Indira Kala Sangeet Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"ITM University, Madhya Pradesh",
+       "type":"Private University"
+    },
+    {
+       "Name":"Kushabhau Thakre Patrakarita Avam Jansanchar Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Kalinga University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Maharishi University of Management and Technology",
+       "type":"Private University"
+    },
+    {
+       "Name":"MATS University",
+       "type":"Private University"
+    },
+    {
+       "Name":"O.P. Jindal University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Pt. Ravishankar Shukla University",
+       "type":"State University"
+    },
+    {
+       "Name":"Pt. Sundarlal Sharma (Open) University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sarguja University",
+       "type":"State University"
+    },
+    {
+       "Name":"Shri Rawatpura Sarkar University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Goa University",
+       "type":"State University"
+    },
+    {
+       "Name":"Ahmedabad University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Anand Agricultural Univerisity",
+       "type":"State University"
+    },
+    {
+       "Name":"Anant National University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Atmiya University",
+       "type":"Private University"
+    },
+    {
+       "Name":"AURO University of Hospitality and Management",
+       "type":"Private University"
+    },
+    {
+       "Name":"Bhakta Kavi Narsinh Mehta University",
+       "type":"State University"
+    },
+    {
+       "Name":"Calorx Teacher�s University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Central University of Gujarat",
+       "type":"Central University"
+    },
+    {
+       "Name":"Centre for Environmental Planning and Technology University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Charotar University of Science & Technology",
+       "type":"Private University"
+    },
+    {
+       "Name":"Children's University",
+       "type":"State University"
+    },
+    {
+       "Name":"C.U. Shah University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Dharmsinh Desai University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dhirubhai Ambani Institute of Information and Communication Technology",
+       "type":"Private University"
+    },
+    {
+       "Name":"Dr. Babasaheb Ambedkar Open University",
+       "type":"State University"
+    },
+    {
+       "Name":"Ganpat University",
+       "type":"Private University"
+    },
+    {
+       "Name":"G.L.S. University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Gokul Global University",
+       "type":"Private University"
+    },
+    {
+       "Name":"GSFC University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Gujarat Ayurveda University",
+       "type":"State University"
+    },
+    {
+       "Name":"Gujarat National Law University",
+       "type":"State University"
+    },
+    {
+       "Name":"Gujarat Technological University",
+       "type":"State University"
+    },
+    {
+       "Name":"Gujarat University",
+       "type":"State University"
+    },
+    {
+       "Name":"Gujarat University of Transplantation Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Gujarat Vidyapith",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Gujarat Forensic Sciences University",
+       "type":"State University"
+    },
+    {
+       "Name":"Hemchandracharya North Gujarat University",
+       "type":"State University"
+    },
+    {
+       "Name":"Indian Institute of Public Health",
+       "type":"Private University"
+    },
+    {
+       "Name":"Indian Institute of Teacher Education",
+       "type":"State University"
+    },
+    {
+       "Name":"Indrashil University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Indus University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Institute of Infrastructure Technology Research and Management",
+       "type":"State University"
+    },
+    {
+       "Name":"Institute of Advanced Research",
+       "type":"Private University"
+    },
+    {
+       "Name":"ITM-Vocational University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Junagarh Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Kadi Sarva Vishwavidyalaya",
+       "type":"Private University"
+    },
+    {
+       "Name":"Kamdhenu University",
+       "type":"State University"
+    },
+    {
+       "Name":"Karnavati University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Krantiguru Shyamji Krishna Verma Kachchh University",
+       "type":"State University"
+    },
+    {
+       "Name":"Lakulish Yoga University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Maharaja Krishnakumarsinhji Bhavnagar University",
+       "type":"State University"
+    },
+    {
+       "Name":"The Maharaja Sayajirao University of Baroda",
+       "type":"State University"
+    },
+    {
+       "Name":"Marwadi University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Navsari Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Nirma University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Navrachana University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Pandit Deendayal Petroleum University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Parul University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Plastindia International University",
+       "type":"Private University"
+    },
+    {
+       "Name":"P.P. Savani University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Raksha Shakti University",
+       "type":"State University"
+    },
+    {
+       "Name":"R.K. University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Rai University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sankalchand Patel University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sardar Krushinagar Dantiwada Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sardar Patel University",
+       "type":"State University"
+    },
+    {
+       "Name":"Saurashtra University",
+       "type":"State University"
+    },
+    {
+       "Name":"Shree Somnath Sanskrit University",
+       "type":"State University"
+    },
+    {
+       "Name":"Shri Govind Guru University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sumandeep Vidyapeeth",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Swarnim Gujarat Sports University",
+       "type":"State University"
+    },
+    {
+       "Name":"Swarnim Startup & Innovation University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Team Lease Skills University",
+       "type":"Private University"
+    },
+    {
+       "Name":"UKA Tarsadia University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Veer Narmad South Gujarat University",
+       "type":"State University"
+    },
+    {
+       "Name":"Al-Falah University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Ansal University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Apeejay Stya University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Ashoka University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Bhagat Phool Singh Mahila Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Baba Mast Nath University",
+       "type":"Private University"
+    },
+    {
+       "Name":"BML Munjal University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Central University of Haryana",
+       "type":"Central University"
+    },
+    {
+       "Name":"Chaudhary Bansi Lal University",
+       "type":"State University"
+    },
+    {
+       "Name":"Chaudhary Devi Lal University",
+       "type":"State University"
+    },
+    {
+       "Name":"Chaudhary Ranbir Singh University",
+       "type":"State University"
+    },
+    {
+       "Name":"Choadhary Charan Singh Haryana Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Deenbandhu Chhotu Ram University of Science & Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"G.D. Goenka University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Guru Jambeshwar University of Science and Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Shri Vishwakarma Skill University",
+       "type":"State University"
+    },
+    {
+       "Name":"IILM University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Indira Gandhi University",
+       "type":"State University"
+    },
+    {
+       "Name":"Jagan Nath University",
+       "type":"Private University"
+    },
+    {
+       "Name":"K.R. Mangalam University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Kurukshetra University",
+       "type":"State University"
+    },
+    {
+       "Name":"Lingaya�s Vidyapeeth",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Lala Lajpat Rai University of Veterinary & Animal Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Maharana Pratap Horticultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Maharishi Dayanand University",
+       "type":"State University"
+    },
+    {
+       "Name":"Maharishi Markandeshwar",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Maharishi Markandeshwar University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Manav Rachna International Institute of Research & Studies",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Manav Rachna University",
+       "type":"Private University"
+    },
+    {
+       "Name":"M.V.N. University",
+       "type":"Private University"
+    },
+    {
+       "Name":"National Brain Research Centre",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"National Dairy Research Institute",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"National Institute of Food Technology, Entrepreneurship & Management",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"NIILM University",
+       "type":"Private University"
+    },
+    {
+       "Name":"O.P. Jindal Global University",
+       "type":"Private University"
+    },
+    {
+       "Name":"PDM University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Pt. Bhagwat Dayal Sharma University of Health Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Shree Guru Gobind Singh Tricentenary University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Starex University",
+       "type":"Private University"
+    },
+    {
+       "Name":"State University of Performing and Visual Arts",
+       "type":"State University"
+    },
+    {
+       "Name":"The Northcap University",
+       "type":"Private University"
+    },
+    {
+       "Name":"World University of Design",
+       "type":"Private University"
+    },
+    {
+       "Name":"J. C. Bose University of Science & Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Abhilashi University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Arni University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Alakh Prakash Goyal Shimla University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Baddi University of Emerging Sciences & Technology",
+       "type":"Private University"
+    },
+    {
+       "Name":"Bahra University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Career Point University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Central University of Himachal Pradesh",
+       "type":"Central University"
+    },
+    {
+       "Name":"Chitkara University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Dr. Y.S.Parmar University of Horticulture & Forestry",
+       "type":"State University"
+    },
+    {
+       "Name":"Eternal University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Chaudhary Sarwan Kumar Himachal Pradesh Krishi Vishvavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Himachal Pradesh National Law University",
+       "type":"State University"
+    },
+    {
+       "Name":"Himachal Pradesh University",
+       "type":"State University"
+    },
+    {
+       "Name":"Himachal Pradesh Technical University",
+       "type":"State University"
+    },
+    {
+       "Name":"ICFAI , Meghalaya",
+       "type":"Private University"
+    },
+    {
+       "Name":"I.E.C. (India Education Centre) University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Indus International University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Jaypee University of Information Technology",
+       "type":"Private University"
+    },
+    {
+       "Name":"Maharaja Agrasen University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Manav Bharti University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Shoolini University of Biotechnology and Management Sciences",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sri Sai University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Baba Ghulam Shah Badshah University",
+       "type":"State University"
+    },
+    {
+       "Name":"Central Institute of Buddhist Studies",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Central University of Kashmir",
+       "type":"Central University"
+    },
+    {
+       "Name":"Central University of Jammu",
+       "type":"Central University"
+    },
+    {
+       "Name":"Cluster University of Jammu",
+       "type":"State University"
+    },
+    {
+       "Name":"Cluster University of Srinagar",
+       "type":"State University"
+    },
+    {
+       "Name":"Islamic University of Science & Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Sher-e-Kashmir University of Agricultural Science & Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Shri Mata Vaishno Devi University",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Jammu",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Kashmir",
+       "type":"State University"
+    },
+    {
+       "Name":"Rabindranath Tagore University (Formerly AISECT University)",
+       "type":"Private University"
+    },
+    {
+       "Name":"ARKA Jain University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Binod Bihari Mahto Koylanchal University",
+       "type":"State University"
+    },
+    {
+       "Name":"Birla Institute of Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Birsa Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Central University of Jharkhand",
+       "type":"Central University"
+    },
+    {
+       "Name":"Dr. Shyama Prasad Mukherjee University",
+       "type":"State University"
+    },
+    {
+       "Name":"Jharkhand Rai University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Jharkhand Raksha Shakti University",
+       "type":"State University"
+    },
+    {
+       "Name":"Kolhan University",
+       "type":"State University"
+    },
+    {
+       "Name":"Nilamber-Pitamber University",
+       "type":"State University"
+    },
+    {
+       "Name":"National University of Study & Research in Law",
+       "type":"State University"
+    },
+    {
+       "Name":"Pragyan International University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Ranchi University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sai Nath University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sarla Birla University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sido Kanhu Murmu University",
+       "type":"State University"
+    },
+    {
+       "Name":"ICFAI University, Mizoram",
+       "type":"Private University"
+    },
+    {
+       "Name":"Usha Martin University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Vinoba Bhave University",
+       "type":"State University"
+    },
+    {
+       "Name":"YBN University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Alliance University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Azim Premji University",
+       "type":"Private University"
+    },
+    {
+       "Name":"B.L.D.E University",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Bangalore University",
+       "type":"State University"
+    },
+    {
+       "Name":"Bengaluru Central University",
+       "type":"State University"
+    },
+    {
+       "Name":"Bengaluru North University",
+       "type":"State University"
+    },
+    {
+       "Name":"Central University of Karnataka",
+       "type":"Central University"
+    },
+    {
+       "Name":"Christ University",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"CMR University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Davangere University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dayanand Sagar University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Garden City University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Gulbarga University",
+       "type":"State University"
+    },
+    {
+       "Name":"Indian Institute of Science",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"JSS Academy of Higher Education & Research",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Jain University",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"JSS Science & Technology University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Jawaharlal Nehru Centre for Advanced Scientific Research",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Kannada University",
+       "type":"State University"
+    },
+    {
+       "Name":"Karnataka State Law University",
+       "type":"State University"
+    },
+    {
+       "Name":"Karnataka State Open University",
+       "type":"State University"
+    },
+    {
+       "Name":"Karnataka State Rural Development and Panchayat Raj University",
+       "type":"State University"
+    },
+    {
+       "Name":"Karnataka State Akkamahadevi Women's University",
+       "type":"State University"
+    },
+    {
+       "Name":"Karnatak University",
+       "type":"State University"
+    },
+    {
+       "Name":"Karnataka Veterinary, Animal & Fisheries Sciences University",
+       "type":"State University"
+    },
+    {
+       "Name":"Karnataka Sanskrit University",
+       "type":"State University"
+    },
+    {
+       "Name":"Karnataka Folklore University",
+       "type":"State University"
+    },
+    {
+       "Name":"KLE Academy of Higher Education & Research",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"KLE Technological University",
+       "type":"Private University"
+    },
+    {
+       "Name":"KSGH Music and Performing Arts University",
+       "type":"State University"
+    },
+    {
+       "Name":"Kuvempu University",
+       "type":"State University"
+    },
+    {
+       "Name":"Mangalore University",
+       "type":"State University"
+    },
+    {
+       "Name":"Manipal Academy of Higher Education",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Ramaiah University of Applied Sciences",
+       "type":"Private University"
+    },
+    {
+       "Name":"National law School of India University",
+       "type":"State University"
+    },
+    {
+       "Name":"NITTE",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"PES University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Presidency University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Rai Technology University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Rajiv Gandhi University of Health Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Rani Channamma University",
+       "type":"State University"
+    },
+    {
+       "Name":"Reva University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sharnbasva University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sri Devraj Urs Academy of Higher Education and Research",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Sri Siddhartha Academy of Higher Education",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Srinivas University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Swami Vivekananda Yoga Anusandhana Samsthana",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"The University of Trans-Disciplinary Health Sciences and Technology",
+       "type":"Private University"
+    },
+    {
+       "Name":"Tumkur University",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Agricultural Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Horticultural Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Mysore",
+       "type":"State University"
+    },
+    {
+       "Name":"Visveswaraiah Technological University",
+       "type":"State University"
+    },
+    {
+       "Name":"Vijayanagara Sri Krishnadevaraya University",
+       "type":"State University"
+    },
+    {
+       "Name":"Yenepoya University",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"A.P.J. Abdul Kalam Technological University",
+       "type":"State University"
+    },
+    {
+       "Name":"Central University of Kerala",
+       "type":"Central University"
+    },
+    {
+       "Name":"Chinmaya Vishwavidyapeeth",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Cochin University of Science & Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Indian Institute of Space Science and Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Kannur University",
+       "type":"State University"
+    },
+    {
+       "Name":"Kerala Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Kerala Kalamandalam",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Kerala University of Fisheries & Ocean Studies",
+       "type":"State University"
+    },
+    {
+       "Name":"Kerala University of Health Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Kerala Veterinary & Animal Sciences University",
+       "type":"State University"
+    },
+    {
+       "Name":"Mahatma Gandhi University",
+       "type":"State University"
+    },
+    {
+       "Name":"National University of Advanced Legal Studies (NUALS)",
+       "type":"State University"
+    },
+    {
+       "Name":"Sree Sankaracharya University of Sanskrit",
+       "type":"State University"
+    },
+    {
+       "Name":"Thunchath Ezhuthachan Malayalam University",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Calicut",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Kerala",
+       "type":"State University"
+    },
+    {
+       "Name":"A.K.S. University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Atal Bihari Vajpayee Hindi Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Avantika University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Awadesh Pratap Singh University",
+       "type":"State University"
+    },
+    {
+       "Name":"Barkatullah Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Bhabha University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Devi Ahilya Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. A.P.J. Abdul Kalam University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Dr. B.R. Ambedkar University of Social Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. Harisingh Gour Vishwavidyalaya",
+       "type":"Central University"
+    },
+    {
+       "Name":"G.H. Raisoni University",
+       "type":"Private University"
+    },
+    {
+       "Name":"ITM University, Gujarat",
+       "type":"Private University"
+    },
+    {
+       "Name":"Jagran Lakecity University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Jawaharlal Nehru Krishi Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Jaypee University of Engineering & Technology",
+       "type":"Private University"
+    },
+    {
+       "Name":"Jiwaji University",
+       "type":"State University"
+    },
+    {
+       "Name":"Lakshmibai National Institute of Physical Education",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"LNCT University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Madhya Pradesh Medical Science University",
+       "type":"State University"
+    },
+    {
+       "Name":"Madhyanchal Professional University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Maharaja Chhatrasal Bundelkhand Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Mahatma Gandhi Chitrakoot Gramodaya Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"M.P.Bhoj (open) University",
+       "type":"State University"
+    },
+    {
+       "Name":"Maharishi Mahesh Yogi Vedic Vishwavidyalaya",
+       "type":"Private University"
+    },
+    {
+       "Name":"Maharishi Panini Sanskrit Evam Vedic Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Makhanlal Chaturvedi Rashtriya Patrakarita National University of Journalism",
+       "type":"State University"
+    },
+    {
+       "Name":"Malwanchal University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Mandsaur University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Medi-Caps University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Nanaji Deshmukh Pashu Chikitsa Vigyan Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"National Law Institute University",
+       "type":"State University"
+    },
+    {
+       "Name":"Oriental University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Pandit S.N. Shukla University",
+       "type":"State University"
+    },
+    {
+       "Name":"People�s University",
+       "type":"Private University"
+    },
+    {
+       "Name":"P.K. University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Raja Mansingh Tomar Music & Arts University",
+       "type":"State University"
+    },
+    {
+       "Name":"Rajiv Gandhi Proudyogiki Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Rani Durgavati Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"RKDF University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Rajmata Vijayaraje Scindia Krishi Vishwa Vidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Rabindranath Tagore University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Renaissance University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sage University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sanchi University of Buddhist-Indic Studies",
+       "type":"State University"
+    },
+    {
+       "Name":"Sarvepalli Radhakrishnan University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Shri Vaishnav Vidyapeeth Vishwavidyalaya",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sri Satya Sai University of Technology & Medical Sciences",
+       "type":"Private University"
+    },
+    {
+       "Name":"Swami Vivekananda University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Symbiosis University of Applied Sciences",
+       "type":"Private University"
+    },
+    {
+       "Name":"Techno Global University",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Indira Gandhi National Tribal University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Vikram University",
+       "type":"State University"
+    },
+    {
+       "Name":"VIT Bhopal University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Ajeenkya D.Y. Patil University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Bharati Vidyapeeth",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Central Institute of Fisheries Education",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"D.Y. Patil Educational Society",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"D.Y. Patil International University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Datta Meghe Institute of Medical Sciences",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Deccan College of Post Graduate and Research Institute",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Dr. Babasaheb Ambedkar Marathwada University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. Babasaheb Ambedkar Technological University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. D.Y. Patil Vidyapeeth",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Dr. Punjabrao Deshmukh Krishi Vidyapeeth",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. Vishwanath Karad MIT World Peace University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Flame University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Gokhale Institute of Politics & Economics",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Gondwana University",
+       "type":"State University"
+    },
+    {
+       "Name":"Homi Bhabha National Institute",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Indira Gandhi Institute of Development Research",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Defence Institute of Advanced Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Institute of Chemical Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"International Institute for Population Sciences",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Kavi Kulguru Kalidas Sanskrit Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Konkan Krishi Vidyapeeth",
+       "type":"State University"
+    },
+    {
+       "Name":"Krishna Institute of Medical Sciences",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Maharashtra Animal & Fishery Sciences University",
+       "type":"State University"
+    },
+    {
+       "Name":"Maharashtra National Law University",
+       "type":"State University"
+    },
+    {
+       "Name":"Maharashtra University of Health Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Mahatma Gandhi Antarrashtriya Hindi Vishwavidyalaya",
+       "type":"Central University"
+    },
+    {
+       "Name":"Mahatma Phule Krishi Vidyapeeth",
+       "type":"State University"
+    },
+    {
+       "Name":"Marathwada Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"MGM Institute of Health Sciences",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"MIT Art Design & Technology University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Narsee Monjee Institute of Management Studies",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Kavayitri Bahinabai Chaudhari North Maharashtra University",
+       "type":"State University"
+    },
+    {
+       "Name":"DY Patil Deemed to be University",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Pravara Institute of Medical Sciences",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Sanjay Ghodawat University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Savitribai Phule Pune University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sant Gadge Baba Amravati University",
+       "type":"State University"
+    },
+    {
+       "Name":"Shivaji University",
+       "type":"State University"
+    },
+    {
+       "Name":"Smt. Nathibai Damodar Thackersey Women's University",
+       "type":"State University"
+    },
+    {
+       "Name":"Solapur University",
+       "type":"State University"
+    },
+    {
+       "Name":"Spicer Adventist University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Swami Ramanand Teerth Marathwada University",
+       "type":"State University"
+    },
+    {
+       "Name":"SYMBIOSIS International",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Symbiosis Skills and Open University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Tata Institute of Fundamental Research",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Tata Institute of Social Sciences",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"The Rashtrasant Tukadoji Maharaj Nagpur University",
+       "type":"State University"
+    },
+    {
+       "Name":"Tilak Maharashtra Vidyapeeth",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"University of Mumbai",
+       "type":"State University"
+    },
+    {
+       "Name":"Vishwakarma University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Yashwant Rao Chavan Maharashtra Open University",
+       "type":"State University"
+    },
+    {
+       "Name":"Central Agricultural University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Manipur University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Manipur Technical University",
+       "type":"State University"
+    },
+    {
+       "Name":"Manipur University of Culture",
+       "type":"State University"
+    },
+    {
+       "Name":"Sangai International University",
+       "type":"Private University"
+    },
+    {
+       "Name":"CMJ University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Martin Luther Christian University",
+       "type":"Private University"
+    },
+    {
+       "Name":"North Eastern Hill University",
+       "type":"Central University"
+    },
+    {
+       "Name":"ICFAI , Tripura",
+       "type":"Private University"
+    },
+    {
+       "Name":"University of Science & Technology",
+       "type":"Private University"
+    },
+    {
+       "Name":"University of Technology & Management",
+       "type":"Private University"
+    },
+    {
+       "Name":"William Carey University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Mizoram University",
+       "type":"Central University"
+    },
+    {
+       "Name":"ICFAI University, Uttarakhand",
+       "type":"Private University"
+    },
+    {
+       "Name":"Nagaland University",
+       "type":"Central University"
+    },
+    {
+       "Name":"St. Joseph University",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Global Open University",
+       "type":"Private University"
+    },
+    {
+       "Name":"ICFAI University, Jharkhand",
+       "type":"Private University"
+    },
+    {
+       "Name":"Berhampur University",
+       "type":"State University"
+    },
+    {
+       "Name":"Biju Patnaik University of Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Birla Global University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Central University of Orissa",
+       "type":"Central University"
+    },
+    {
+       "Name":"Fakir Mohan University",
+       "type":"State University"
+    },
+    {
+       "Name":"Gangadhar Meher University",
+       "type":"State University"
+    },
+    {
+       "Name":"Kalinga Institute of Industrial Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Kalinga Institute of Social Sciences",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Khallikote University",
+       "type":"State University"
+    },
+    {
+       "Name":"North Orissa University",
+       "type":"State University"
+    },
+    {
+       "Name":"Odisha State Open University",
+       "type":"State University"
+    },
+    {
+       "Name":"Orissa University of Agriculture & Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Rama Devi Women�s University",
+       "type":"State University"
+    },
+    {
+       "Name":"Ravenshaw University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sambalpur University",
+       "type":"State University"
+    },
+    {
+       "Name":"Shiksha �O� Anusandhan",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Shri Jagannath Sanskrit Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Sri Sri University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Utkal University",
+       "type":"State University"
+    },
+    {
+       "Name":"Utkal University of Culture",
+       "type":"State University"
+    },
+    {
+       "Name":"Veer Surendra Sai Institute of Medical Sciences and Research",
+       "type":"State University"
+    },
+    {
+       "Name":"Veer Surendra Sai University of Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Xavier University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Adesh University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Akal University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Baba Farid University of Health Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Central University of Punjab",
+       "type":"Central University"
+    },
+    {
+       "Name":"Chandigarh University",
+       "type":"Private University"
+    },
+    {
+       "Name":"C.T. University",
+       "type":"Private University"
+    },
+    {
+       "Name":"D.A.V. University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Desh Bhagat University",
+       "type":"Private University"
+    },
+    {
+       "Name":"GNA University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Guru Angad Dev Veterinary & Animal Sciences University",
+       "type":"State University"
+    },
+    {
+       "Name":"Guru Kashi University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Guru Nanak Dev University",
+       "type":"State University"
+    },
+    {
+       "Name":"Guru Ravidas Ayurved University",
+       "type":"State University"
+    },
+    {
+       "Name":"Lovely Professional University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Maharaja Ranjit Singh Punjab Technical University",
+       "type":"State University"
+    },
+    {
+       "Name":"Punjab Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Punjabi University",
+       "type":"State University"
+    },
+    {
+       "Name":"Rayat Bahra University",
+       "type":"Private University"
+    },
+    {
+       "Name":"RIMT University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sant Baba Bhag Singh University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sant Longowal Institute of Engineering and Technology (SLIET)",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Sri Guru Granth Sahib World University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sri Guru Ram Das University of Health Sciences",
+       "type":"Private University"
+    },
+    {
+       "Name":"Thapar Institute of Engineering & Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"I.K. Gujaral Punjab Technical University",
+       "type":"State University"
+    },
+    {
+       "Name":"The Rajiv Gandhi National University of Law",
+       "type":"State University"
+    },
+    {
+       "Name":"Banasthali Vidyapith",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Bhagwant University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Bhartiya Skill Development University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Bhupal Nobles University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Birla Institute of Technology and Science",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Central University of Rajasthan",
+       "type":"Central University"
+    },
+    {
+       "Name":"Dr. Bhimrao Ambedkar Law University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. K.N. Modi University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Geetanjali University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Govind Guru Tribal University",
+       "type":"State University"
+    },
+    {
+       "Name":"Haridev Joshi University of Journalism and Mass Communication",
+       "type":"State University"
+    },
+    {
+       "Name":"Homoeopathy University",
+       "type":"Private University"
+    },
+    {
+       "Name":"ICFAI University, Meghalaya",
+       "type":"Private University"
+    },
+    {
+       "Name":"IIHMR University",
+       "type":"Private University"
+    },
+    {
+       "Name":"IIS",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Institute of Advanced Studies in Education",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Jagadguru Ramanandacharya Rajasthan Sanskrit University",
+       "type":"State University"
+    },
+    {
+       "Name":"Jai Narain Vyas University",
+       "type":"State University"
+    },
+    {
+       "Name":"Jain Vishva Bharati Institute",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Jaipur National University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Janardan Rai Nagar Rajasthan Vidyapeeth",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Jodhpur National University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Jayoti Vidyapeeth Women�s University",
+       "type":"Private University"
+    },
+    {
+       "Name":"J.K. Lakshmipat University",
+       "type":"Private University"
+    },
+    {
+       "Name":"J.E.C.R.C. University",
+       "type":"Private University"
+    },
+    {
+       "Name":"LNM Institute of Information Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Madhav University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Maharaja Ganga Singh University",
+       "type":"State University"
+    },
+    {
+       "Name":"Maharana Pratap University of Agriculture & Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Maharishi Dayanand Saraswati University",
+       "type":"State University"
+    },
+    {
+       "Name":"Mahatma Jyoti Rao Phoole University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Mahatma Gandhi University of Medical Sciences & Technology",
+       "type":"Private University"
+    },
+    {
+       "Name":"Maharaj Vinayak Global University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Maharaja Surajmal Brij University",
+       "type":"State University"
+    },
+    {
+       "Name":"Maharishi Arvind University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Manipal University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Maulana Azad University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Mewar University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Mody University of Science and Technology",
+       "type":"Private University"
+    },
+    {
+       "Name":"Mohan Lal Sukhadia University",
+       "type":"State University"
+    },
+    {
+       "Name":"National Law University",
+       "type":"State University"
+    },
+    {
+       "Name":"NIMS University Rajasthan",
+       "type":"Private University"
+    },
+    {
+       "Name":"NIIT University",
+       "type":"Private University"
+    },
+    {
+       "Name":"OPJS University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Pacific Academic of Higher Education & Research University (PAHER)",
+       "type":"Private University"
+    },
+    {
+       "Name":"Pacific Medical University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Poornima University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Pratap University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Raffles University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Swami Keshwanand Rajasthan Agriculture University",
+       "type":"State University"
+    },
+    {
+       "Name":"Rajasthan Ayurveda University",
+       "type":"State University"
+    },
+    {
+       "Name":"Rajasthan Technical University",
+       "type":"State University"
+    },
+    {
+       "Name":"Rajasthan University of Health Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Rajasthan University of Veterinary & Animal Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Rajasthan ILD Skills University (RISU)",
+       "type":"State University"
+    },
+    {
+       "Name":"Raj Rishi Bhartrihari Matsya University",
+       "type":"State University"
+    },
+    {
+       "Name":"R.N.B. Global University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sai Tirupati University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sangam University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sardar Patel University of Police , Security & Criminal Justice",
+       "type":"State University"
+    },
+    {
+       "Name":"Pandit Deendayal Upadhyaya Shekhawati University",
+       "type":"State University"
+    },
+    {
+       "Name":"Shri Jagdish Prasad Jhabarmal Tibrewala University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Shridhar University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Singhania University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sir Padmapat Singhania University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Suresh Gyan Vihar University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sunrise University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Tantia University",
+       "type":"Private University"
+    },
+    {
+       "Name":"University of Kota",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Engineering & Management",
+       "type":"Private University"
+    },
+    {
+       "Name":"University of Rajasthan",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Technology",
+       "type":"Private University"
+    },
+    {
+       "Name":"Vardhman Mahaveer Open University",
+       "type":"State University"
+    },
+    {
+       "Name":"Vivekananda Global University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Eastern Institute for Integrated Learning in Management University (EIILM)",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sikkim- Manipal University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sikkim University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Shri Ramasamy Memorial University",
+       "type":"Private University"
+    },
+    {
+       "Name":"ICFAI University, Nagaland",
+       "type":"Private University"
+    },
+    {
+       "Name":"Vinayaka Missions Sikkim University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Academy of Maritime Education and Training",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Alagappa University",
+       "type":"State University"
+    },
+    {
+       "Name":"Amrita Vishwa Vidyapeetham",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Anna University",
+       "type":"State University"
+    },
+    {
+       "Name":"Annamalai University",
+       "type":"State University"
+    },
+    {
+       "Name":"Avinashilingam Institute for Home Science & Higher Education for Women",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"B. S. Abdur Rahman Crescent Institute Of Science And Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Bharath Institute of Higher Education & Research",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Bharathiar University",
+       "type":"State University"
+    },
+    {
+       "Name":"Bharathidasan University",
+       "type":"State University"
+    },
+    {
+       "Name":"Central University of Tamil Nadu",
+       "type":"Central University"
+    },
+    {
+       "Name":"Chennai Mathematical Institute",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Chettinad Academy of Research and Education (CARE)",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Dr. M.G.R. Educational and Research Institute",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Gandhigram Rural Institute",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Hindustan Institute of Technology and Science (HITS)",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Indian Maritime University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Kalasalingam Academy of Research and Higher Education",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Karpagam Academy of Higher Education",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Karunya Institute of Technology and Sciences",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Madurai Kamraj University",
+       "type":"State University"
+    },
+    {
+       "Name":"Manonmaniam Sundarnar University",
+       "type":"State University"
+    },
+    {
+       "Name":"Meenakshi Academy of Higher Education and Research",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Mother Teresa Women's University",
+       "type":"State University"
+    },
+    {
+       "Name":"Noorul Islam Centre for Higher Education",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Periyar Maniammai Institute of Science & Technology (PMIST)",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Periyar University",
+       "type":"State University"
+    },
+    {
+       "Name":"Ponnaiyah Ramajayam Institute of Science & Technology (PRIST)",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"S.R.M. Institute of Science and Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Sathyabama Institute of Science and Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Saveetha Institute of Medical and Technical Sciences",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Shanmugha Arts, Science, Technology, Research & Academy (SASTRA)",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Sri Chandrasekharendra Saraswathi Viswa Mahavidyalaya",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Sri Ramachandra Institute of Higher Education and Research",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"St. Peter�s Institute of Higher Education and Research",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Tamil Nadu Teacher Education University",
+       "type":"State University"
+    },
+    {
+       "Name":"Tamil University",
+       "type":"State University"
+    },
+    {
+       "Name":"Tamilnadu Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Tamilnadu Dr. Ambedkar Law University",
+       "type":"State University"
+    },
+    {
+       "Name":"Tamilnadu Dr. M.G.R. Medical University",
+       "type":"State University"
+    },
+    {
+       "Name":"Tamil Nadu Dr. J. Jayalalithaa Fisheries University",
+       "type":"State University"
+    },
+    {
+       "Name":"Tamil Nadu Dr. J. Jayalalithaa Music and Fine Arts University",
+       "type":"State University"
+    },
+    {
+       "Name":"Tamil Nadu National Law School",
+       "type":"State University"
+    },
+    {
+       "Name":"Tamil Nadu Open University",
+       "type":"State University"
+    },
+    {
+       "Name":"Tamil Nadu Physical Education and Sports University",
+       "type":"State University"
+    },
+    {
+       "Name":"Tamilnadu Veterinary & Animal Sciences University",
+       "type":"State University"
+    },
+    {
+       "Name":"Thiruvalluvar University",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Madras",
+       "type":"State University"
+    },
+    {
+       "Name":"Vel Tech Rangarajan Dr. Sagunthala R & D Institute of Science and Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Vel�s Institute of Science, Technology & Advanced Studies",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Vellore Institute of Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Vinayaka Mission�s Research Foundation",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Acharya N. G. Ranga Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. B.R. Ambedkar Open University",
+       "type":"State University"
+    },
+    {
+       "Name":"ICFAI Foundation for Higher Education",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Jawaharlal Nehru Architecture and Fine Arts University",
+       "type":"State University"
+    },
+    {
+       "Name":"Kakatiya University",
+       "type":"State University"
+    },
+    {
+       "Name":"Kaloji Narayan Rao University of Health Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Maulana Azad National Urdu University",
+       "type":"Central University"
+    },
+    {
+       "Name":"NALSAR University of Law",
+       "type":"State University"
+    },
+    {
+       "Name":"Nizam's Institute of Medical Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Osmania University",
+       "type":"State University"
+    },
+    {
+       "Name":"Palamuru University",
+       "type":"State University"
+    },
+    {
+       "Name":"Potti Sreeramulu Telugu University",
+       "type":"State University"
+    },
+    {
+       "Name":"Professor Jayashankar Telangana State Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Rajiv Gandhi University of Knowledge Technologies",
+       "type":"State University"
+    },
+    {
+       "Name":"Satavahana University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sri Konda Laxman Telangana State Horticultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sri P.V. Narsimha Rao Telangana Veterinary University",
+       "type":"State University"
+    },
+    {
+       "Name":"Telangana University",
+       "type":"State University"
+    },
+    {
+       "Name":"English and Foreign Languages University",
+       "type":"Central University"
+    },
+    {
+       "Name":"University of Hyderabad",
+       "type":"Central University"
+    },
+    {
+       "Name":"ICFAI University, Raipur",
+       "type":"Private University"
+    },
+    {
+       "Name":"Maharaja Bir Bikram University",
+       "type":"State University"
+    },
+    {
+       "Name":"Tripura University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Aligarh Muslim University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Allahabad State University",
+       "type":"State University"
+    },
+    {
+       "Name":"Babasaheb Bhimrao Ambedkar University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Banaras Hindu University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Banda University of Agriculture & Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Bareilly International University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Bennett University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Bhatkhande Music Institute",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Bundelkhand University",
+       "type":"State University"
+    },
+    {
+       "Name":"Babu Banarasi Das University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Central Institute of Higher Tibetan Studies",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Chandra Shekhar Azad University of Agriculture & Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Chhatrapati Shahuji Maharaj University",
+       "type":"State University"
+    },
+    {
+       "Name":"Chaudhary Charan Singh University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dayalbagh Educational Institute",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Deen Dayal Upadhyay Gorakhpur University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. A.P.J. Abdul Kalam Technical University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr Ram Manohar Lohia Awadh University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. Ram Manohar Lohiya National Law University",
+       "type":"State University"
+    },
+    {
+       "Name":"Era University",
+       "type":"Private University"
+    },
+    {
+       "Name":"G.L.A. University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Galgotias University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Gautam Buddha University",
+       "type":"State University"
+    },
+    {
+       "Name":"Harcourt Butler Technical University",
+       "type":"State University"
+    },
+    {
+       "Name":"IIMT University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Indian Veterinary Research Institute",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"IFTM University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Integral University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Invertis University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Jagadguru Rambhadracharya Handicapped University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Jananayak Chandrashekhar University",
+       "type":"State University"
+    },
+    {
+       "Name":"Jaypee Institute of Information Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Jaypee University",
+       "type":"Private University"
+    },
+    {
+       "Name":"J.S. University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Khwaja Moinuddin Chishti Language University",
+       "type":"State University"
+    },
+    {
+       "Name":"King George's Medical University",
+       "type":"State University"
+    },
+    {
+       "Name":"Madan Mohan Malaviya University of Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"M.J.P.Rohilkhand University",
+       "type":"State University"
+    },
+    {
+       "Name":"Mahatma Gandhi Kashi Vidyapith",
+       "type":"State University"
+    },
+    {
+       "Name":"Maharishi University of Information Technology",
+       "type":"Private University"
+    },
+    {
+       "Name":"Mangalayatan University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Mohammad Ali Jauhar University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Monad University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Narendra Deo University of Agriculture & Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Nehru Gram Bharati",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Noida International University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Rajiv Gandhi National Aviation University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Rama University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Rani Lakshmi Bai Central Agricultural University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Sam Higginbottom University of Agriculture, Technology And Sciences",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Sampurnanand Sanskrit Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Sanskriti University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Santosh University",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Sardar Vallabh Bhai Patel University of Agriculture & Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Sharda University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Shiv Nadar University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Shobit Institute of Engineering & Technology",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Shobhit University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Shri Ramswaroop Memorial University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Siddharth University",
+       "type":"State University"
+    },
+    {
+       "Name":"Swami Vivekanand Subharti University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Shri Venkateshwara University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Teerthanker Mahaveer University",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Glocal University",
+       "type":"Private University"
+    },
+    {
+       "Name":"University of Lucknow",
+       "type":"State University"
+    },
+    {
+       "Name":"Uttar Pradesh Pandit Deen Dayal Upadhyaya Pashu Chikitsa Vigyan Vishwavidyalaya Evam Go-Anusandhan Sansthan",
+       "type":"State University"
+    },
+    {
+       "Name":"U.P. Rajarshi Tandon Open University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. Shakuntala Misra National Rehabilitation University",
+       "type":"State University"
+    },
+    {
+       "Name":"Uttar Pradesh University of Medical Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Allahabad",
+       "type":"Central University"
+    },
+    {
+       "Name":"Veer Bahadur Singh Purvanchal University",
+       "type":"State University"
+    },
+    {
+       "Name":"Bhagwant Global University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Dev Sanskriti Vishwavidyalaya",
+       "type":"Private University"
+    },
+    {
+       "Name":"DIT University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Doon University",
+       "type":"State University"
+    },
+    {
+       "Name":"Forest Research Institute",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"G.B. Pant University of Agriculture & Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Graphic Era",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Graphic Era Hill University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Gurukul Kangri Vidyapeeth",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Hemwati Nandan Bahuguna Garhwal University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Hemwati Nandan Bahuguna Medical Education University",
+       "type":"State University"
+    },
+    {
+       "Name":"Himalayan Garhwal University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Himgiri Zee University",
+       "type":"Private University"
+    },
+    {
+       "Name":"IMS Unison University",
+       "type":"Private University"
+    },
+    {
+       "Name":"ICFAI University, Himachal Pradesh",
+       "type":"Private University"
+    },
+    {
+       "Name":"Kumaun University",
+       "type":"State University"
+    },
+    {
+       "Name":"Motherhood University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Quantum University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Ras Bihari Bose Subharti University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Shri Guru Ram Rai University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sri Dev Suman Uttarakhand University",
+       "type":"State University"
+    },
+    {
+       "Name":"Swami Rama Himalayan University",
+       "type":"Private University"
+    },
+    {
+       "Name":"University of Patanjali",
+       "type":"Private University"
+    },
+    {
+       "Name":"University of Petroleum and Energy Studies",
+       "type":"Private University"
+    },
+    {
+       "Name":"Uttarakhand Ayurved University",
+       "type":"State University"
+    },
+    {
+       "Name":"Uttarakhand Open University",
+       "type":"State University"
+    },
+    {
+       "Name":"Uttarakhand Sanskrit University",
+       "type":"State University"
+    },
+    {
+       "Name":"Uttarakhand Technical University",
+       "type":"State University"
+    },
+    {
+       "Name":"Uttarakhand Aawasiya Viswavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Uttaranchal University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Veer Chandra Singh Garhwali Uttarakhand University of Horticulture & Forestry",
+       "type":"State University"
+    },
+    {
+       "Name":"Adamas University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Aliah University",
+       "type":"State University"
+    },
+    {
+       "Name":"Bankura University",
+       "type":"State University"
+    },
+    {
+       "Name":"Bidhan Chandra Krishi Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Brainware University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Cooch Behar Panchanan Barma University",
+       "type":"State University"
+    },
+    {
+       "Name":"Diamond Harbour Women�s University",
+       "type":"State University"
+    },
+    {
+       "Name":"Indian Association for the Cultivation of Science (IACS)",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Jadavpur University",
+       "type":"State University"
+    },
+    {
+       "Name":"JIS University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Kazi Nazrul University",
+       "type":"State University"
+    },
+    {
+       "Name":"Maulana Abul Kalam Azad University of Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Netaji Subhas Open University",
+       "type":"State University"
+    },
+    {
+       "Name":"Rabindra Bharati University",
+       "type":"State University"
+    },
+    {
+       "Name":"Raiganj University",
+       "type":"State University"
+    },
+    {
+       "Name":"Ramakrishna Mission Vivekananda Educational and Research Institute",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Seacom Skills University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sidho-Kanho-Birsha University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sister Nivedita University",
+       "type":"Private University"
+    },
+    {
+       "Name":"St. Xavier's University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Techno India University",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Neotia University",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Sanskrit College and University",
+       "type":"State University"
+    },
+    {
+       "Name":"The West Bengal National University of Juridical Science",
+       "type":"State University"
+    },
+    {
+       "Name":"The West Bengal University of Health Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"West Bengal University of Teachers' Training, Education Planning and Administration",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Burdwan",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Calcutta",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Engineering and Management",
+       "type":"Private University"
+    },
+    {
+       "Name":"University of Gour Banga",
+       "type":"State University"
+    },
+    {
+       "Name":"University of Kalyani",
+       "type":"State University"
+    },
+    {
+       "Name":"University of North Bengal",
+       "type":"State University"
+    },
+    {
+       "Name":"Uttar Banga Krishi Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Vidyasagar University",
+       "type":"State University"
+    },
+    {
+       "Name":"Visva-Bharati",
+       "type":"Central University"
+    },
+    {
+       "Name":"West Bengal State University",
+       "type":"State University"
+    },
+    {
+       "Name":"West Bengal University of Animal & Fishery Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. B. R. Ambedkar University Delhi",
+       "type":"State University"
+    },
+    {
+       "Name":"Delhi Pharmaceutical Sciences & Research University",
+       "type":"State University"
+    },
+    {
+       "Name":"Delhi Technological University",
+       "type":"State University"
+    },
+    {
+       "Name":"Guru Gobind Singh Indraprastha Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Indian Agricultural Research Institute",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Indian Institute of Foreign Trade",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Indian Law Institute",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Indira Gandhi National Open University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Indira Gandhi Delhi Technical University for Women",
+       "type":"State University"
+    },
+    {
+       "Name":"Indraprastha Institute of Information Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Institute of Liver and Biliary Sciences (ILBS)",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Jamia Hamdard",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Jamia Millia Islamia",
+       "type":"Central University"
+    },
+    {
+       "Name":"Jawaharlal Nehru University",
+       "type":"Central University"
+    },
+    {
+       "Name":"National Institute of Educational Planning and Administration",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"National Museum Institute of Art History , Conservation and Museum of Science",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Central Sanskrit University",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Shri Lal Bahadur Shastri National Sanskrit University",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"South Asian University",
+       "type":"Central University"
+    },
+    {
+       "Name":"TERI School of Advanced Studies",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"University of Delhi",
+       "type":"Central University"
+    },
+    {
+       "Name":"Panjab University",
+       "type":"State University"
+    },
+    {
+       "Name":"Punjab Engineering College",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Pondicherry University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Sri Balaji Vidyapeeth",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"School of Planning and Architecture, Vijayawada",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Arunachal Pradesh",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology, Guwahati",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Silchar",
+       "type":"National Importance"
+    },
+    {
+       "Name":"All India Institute of Medical Sciences, Patna",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology, Patna",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Patna",
+       "type":"National Importance"
+    },
+    {
+       "Name":"All India Institute of Medical Sciences, Raipur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Raipur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"All India Institute of Medical Sciences, Delhi",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology, Delhi",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Delhi",
+       "type":"National Importance"
+    },
+    {
+       "Name":"School of Planning & Architecture, New Delhi",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology Goa",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology Gandhinagar",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Sardar Vallabhbhai National Institute of Technology",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Kurukshetra",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology, Mandi",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Hamirpur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Srinagar",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Jamshedpur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Karnataka",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Science Education and Research, Thiruvananthapuram",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Calicut",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Sree Chitra Tirunal Institute for Medical Sciences and Technology",
+       "type":"National Importance"
+    },
+    {
+       "Name":"All India Institute of Medical Sciences, Bhopal",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Atal Bihari Vajpayee-Indian Institute of Information Technology and Management",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Science Education & Research (IISER), Bhopal",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology, Indore",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Maulana Azad National Institute of Technology",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Pandit Dwarka Prasad Mishra Indian Institute of Information Technology & Manufacturing Jabalpur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"School of Planning & Architecture, Bhopal",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Science Education & Research (IISER) Pune",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology, Bombay",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Visvesvaraya National Institute of Technology",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Manipur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Meghalaya",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Mizoram",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Nagaland",
+       "type":"National Importance"
+    },
+    {
+       "Name":"All India Institute of Medical Sciences, Bhubaneswar",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology Bhubaneswar",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology Rourkela",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Jawaharlal Institute of Postgraduate Medical Education & Research",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology Puducherry",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Dr. B. R. Ambedkar National Institute of Technology",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Science Education & Research (IISER), Mohali",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology, Ropar",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Pharmaceutical Education and Research (NIPER) S.A.S. Nagar",
+       "type":"National Importance"
+    },
+    {
+       "Name":"All India Institute of Medical Sciences, Jodhpur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology, Jodhpur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Malaviya National Institute of Technology",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Sikkim",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Academy of Scientific & Innovative Research",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Dakshina Bharat Hindi Prachar Sabha",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Design and Manufacturing",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology, Madras",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Tiruchirappalli",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Rajiv Gandhi National Instiute of Youth Development, Sriperumbudur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology, Hyderabad",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Warangal",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Agartala",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Allahabad",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology (BHU)",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology ,Kanpur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Motilal Nehru National Institute of Technology",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Rajiv Gandhi Institute of Petroleum Technology",
+       "type":"National Importance"
+    },
+    {
+       "Name":"All India Institute of Medical Sciences, Rishikesh",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology, Roorkee",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Uttarakhand",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Science Education and Research, Kolkata",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology, Kharagpur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Statistical Institute",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Durgapur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Engineering Science and Technology, Shibpur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Footwear Design and Development Institute",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Sri City",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Guwahati",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Vadodara",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Sonepat",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Una",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Ranchi",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Dharwad",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Kottayam",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Nagpur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Pune",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Manipur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Kota",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Tiruchirappalli",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Lucknow",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology, Kalyani",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Information Technology Design and Manufacturing, Kurnool",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Acharaya N. G. Ranga Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"Jawaharlal Nehru Technological University, Hyderabad",
+       "type":"State University"
+    },
+    {
+       "Name":"Jawaharlal Nehru Technological University, Kakinada",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. Abdul Haq Urdu University",
+       "type":"State University"
+    },
+    {
+       "Name":"Madhabdev University",
+       "type":"State University"
+    },
+    {
+       "Name":"Bhattadev University",
+       "type":"State University"
+    },
+    {
+       "Name":"Sri Sri Aniruddhdeva Sports University",
+       "type":"State University"
+    },
+    {
+       "Name":"Majuli University of Culture",
+       "type":"State University"
+    },
+    {
+       "Name":"Patliputra University",
+       "type":"State University"
+    },
+    {
+       "Name":"Bihar Animal Sciences University",
+       "type":"State University"
+    },
+    {
+       "Name":"Atal Bihari Bajpayee Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Netaji Subhas University of Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Ambedkar University Delhi (AUD)",
+       "type":"State University"
+    },
+    {
+       "Name":"Birsa Munda Tribal University",
+       "type":"State University"
+    },
+    {
+       "Name":"Gujarat Biotechnology University",
+       "type":"State University"
+    },
+    {
+       "Name":"Shri Krishna AYUSH University",
+       "type":"State University"
+    },
+    {
+       "Name":"Maharishi Balmiki Sanskrit University",
+       "type":"State University"
+    },
+    {
+       "Name":"Gurugram University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. B.R. Ambedkar National Law University",
+       "type":"State University"
+    },
+    {
+       "Name":"Atal Medical and Research\nUniversity (Formerly Himachal Pradesh University of Health Sciences)",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. Shyama Prasad University",
+       "type":"State University"
+    },
+    {
+       "Name":"Jharkhand University of Technology",
+       "type":"State University"
+    },
+    {
+       "Name":"Mandya University",
+       "type":"State University"
+    },
+    {
+       "Name":"Bengaluru Dr. B. R. Ambedkar School of Economics University",
+       "type":"State University"
+    },
+    {
+       "Name":"Maharani Cluster University",
+       "type":"State University"
+    },
+    {
+       "Name":"Akkamahadevi women's University\n(Formerly known as \"Karnataka State Women's University)",
+       "type":"State University"
+    },
+    {
+       "Name":"Mahatma Gandhi University, Kerala",
+       "type":"State University"
+    },
+    {
+       "Name":"Mahatma Gandhi University, Meghalaya",
+       "type":"Private University"
+    },
+    {
+       "Name":"University of Ladakh",
+       "type":"State University"
+    },
+    {
+       "Name":"Chhindwara University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dharmashastra National Law University",
+       "type":"State University"
+    },
+    {
+       "Name":"Madhya Pradesh Pashu Chikitsa Vigyan Vishwavidyalaya",
+       "type":"State University"
+    },
+    {
+       "Name":"Maharashtra National Law University, Mumbai",
+       "type":"State University"
+    },
+    {
+       "Name":"Maharashtra National Law University, Nagpur",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. Homi Bhabha State University",
+       "type":"State University"
+    },
+    {
+       "Name":"Dhanamanjuri University",
+       "type":"State University"
+    },
+    {
+       "Name":"National Sports University",
+       "type":"Central University"
+    },
+    {
+       "Name":"International Institute of Information Technology (IIIT), Chhattisgarh",
+       "type":"State University"
+    },
+    {
+       "Name":"International Institute of Information Technology (IIIT), Karnataka",
+       "type":"State University"
+    },
+    {
+       "Name":"International Institute of Information Technology (IIIT), Odhisa",
+       "type":"State University"
+    },
+    {
+       "Name":"International Institute of Information Technology (IIIT), Telangana",
+       "type":"State University"
+    },
+    {
+       "Name":"Rama Devi Women's University",
+       "type":"State University"
+    },
+    {
+       "Name":"The Maharaja Bhupinder Singh Punjab Sports University",
+       "type":"State University"
+    },
+    {
+       "Name":"Jagat Guru Nanak Dev Punjab State Open University",
+       "type":"State University"
+    },
+    {
+       "Name":"Bikaner Technical University",
+       "type":"State University"
+    },
+    {
+       "Name":"Swami Keshwanand Rajasthan Agricultural University",
+       "type":"State University"
+    },
+    {
+       "Name":"National Law University, Orissa",
+       "type":"State University"
+    },
+    {
+       "Name":"National Law University, Rajasthan",
+       "type":"State University"
+    },
+    {
+       "Name":"National Law University, Delhi",
+       "type":"State University"
+    },
+    {
+       "Name":"Sikkim State University",
+       "type":"State University"
+    },
+    {
+       "Name":"Rajiv Gandhi University of Knowledge Technologies, Telangana",
+       "type":"State University"
+    },
+    {
+       "Name":"Rajiv Gandhi University of Knowledge Technologies, Andhra Pradesh",
+       "type":"State University"
+    },
+    {
+       "Name":"National Academy of Legal Studies & Research University (NALSAR University of Law)",
+       "type":"State University"
+    },
+    {
+       "Name":"Jawaharlal Nehru Technological University, Anantpur",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. Ram Manohar Lohia Institute of Medical Sciences",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. B.R. Ambedkar University, Uttar Pradesh",
+       "type":"State University"
+    },
+    {
+       "Name":"Dr. B.R. Ambedkar University, Andhra Pradesh",
+       "type":"State University"
+    },
+    {
+       "Name":"Bharatiya Engineering Science and Technology Innovation University",
+       "type":"Private University"
+    },
+    {
+       "Name":"KREA University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Saveetha Amaravati University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Krishnaguru Adhyatmik Visvavidyalaya",
+       "type":"Private University"
+    },
+    {
+       "Name":"Al-Karim University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Mata Gujri University",
+       "type":"Private University"
+    },
+    {
+       "Name":"AAFT University of Media and Arts",
+       "type":"Private University"
+    },
+    {
+       "Name":"Dr. C.V. Raman University, Bilaspur, Chhattisgarh",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Institute of Chartered Financial Analysts of India University (ICFAI), Chhatttisgarh",
+       "type":"Private University"
+    },
+    {
+       "Name":"ITM University ,  Chhattisgarh",
+       "type":"Private University"
+    },
+    {
+       "Name":"K.K.Modi University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Bhagwan Mahavir University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Bhaikaka University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Gujarat Maritime University",
+       "type":"Private University"
+    },
+    {
+       "Name":"ITM (SLS) Baroda University",
+       "type":"Private University"
+    },
+    {
+       "Name":"J.G. University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Shreyarth University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Silver Oak University",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Charutar Vidya Mandal(CVM) University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Amity University, Gurgaon",
+       "type":"Private University"
+    },
+    {
+       "Name":"Om Sterling Global University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Rishihood University",
+       "type":"Private University"
+    },
+    {
+       "Name":"SRM University, Haryana",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Institute of Chartered Financial Analysts of India University (ICFAI) Solan Distt., Himachal Pradesh",
+       "type":"Private University"
+    },
+    {
+       "Name":"Amity University, Ranchi, Jharkhand",
+       "type":"Private University"
+    },
+    {
+       "Name":"Rabindranath Tagore University(Formerly AISECT University)",
+       "type":"Private University"
+    },
+    {
+       "Name":"Capital University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Netaji Subhas University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Radha Govind University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Ram Krishna Dharmarth Foundation University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Ramchandra Chandravansi University",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Institute of Chartered Financial Analysts of India University (ICFAI), Ranchi, Jharkhand",
+       "type":"Private University"
+    },
+    {
+       "Name":"Adichunchanagiri University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Khaja Bandanawaz University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Shri Dharmasthala Manjunatheshwara University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sri Sathya Sai University for Human Excellence",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Institute of Chartered Financial Analysts of India University (ICFAI), Tura , Meghalaya",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Institute of Chartered Financial Analysts of India University (ICFAI), Mizoram",
+       "type":"Private University"
+    },
+    {
+       "Name":"Amity University, Maharajpura Dang, Gwalior",
+       "type":"Private University"
+    },
+    {
+       "Name":"Dr. C. V. Raman University, Khandwa, Madhya Pradesh",
+       "type":"Private University"
+    },
+    {
+       "Name":"I.E.S University",
+       "type":"Private University"
+    },
+    {
+       "Name":"ITM University, Gwalior , Madhya Pradesh",
+       "type":"Private University"
+    },
+    {
+       "Name":"Mansarovar Global University",
+       "type":"Private University"
+    },
+    {
+       "Name":"SAM Global University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sanjeev Agrawal Global Educational University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sardar Patel University, Balaghat, Madhya Pradesh",
+       "type":"Private University"
+    },
+    {
+       "Name":"Shri Krishna University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Swami Vivekanand University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Amity University, Panvel, Mumbai, Maharashtra",
+       "type":"Private University"
+    },
+    {
+       "Name":"Chhatrapati Shivaji Maharaj University",
+       "type":"Private University"
+    },
+    {
+       "Name":"D.Y.Patil University",
+       "type":"Private University"
+    },
+    {
+       "Name":"MGM University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Somaiya Vidyavihar University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sri Balaji University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Vijaybhoomi University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Bir Tikendrajit University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Manipur International University",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Institute of Chartered Financial Analysts of India University (ICFAI) Dimapur, Nagaland",
+       "type":"Private University"
+    },
+    {
+       "Name":"AIPH University",
+       "type":"Private University"
+    },
+    {
+       "Name":"ASBM University",
+       "type":"Private University"
+    },
+    {
+       "Name":"C.V. Raman Global University",
+       "type":"Private University"
+    },
+    {
+       "Name":"GIET University(formerly known as Gandhi Institute of Engineering and Technology)",
+       "type":"Private University"
+    },
+    {
+       "Name":"Amity University, Jaipur, Rajasthan",
+       "type":"Private University"
+    },
+    {
+       "Name":"Apex University",
+       "type":"Private University"
+    },
+    {
+       "Name":"The Institute of Chartered Financial Analysts of India University (ICFAI) Jaipur , Rajasthan",
+       "type":"Private University"
+    },
+    {
+       "Name":"Jagannath University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Lords University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Nirwan University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Shri Kallaji Vedic Vishvavidyalaya",
+       "type":"Private University"
+    },
+    {
+       "Name":"Shri Khushal Das University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Shyam University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Institute of Chartered Financial Analysts of India University (ICFAI) , Agartala, Tripura",
+       "type":"Private University"
+    },
+    {
+       "Name":"Amity University, Noida, U.P.",
+       "type":"Private University"
+    },
+    {
+       "Name":"Graphic Era Hill University (Formerly Graphic Era Parvatiya Vishwavidyalaya)",
+       "type":"Private University"
+    },
+    {
+       "Name":"Himalayiya University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Institute of Chartered Financial Analysts of India University (ICFAI), Dehradun. Uttarakhand",
+       "type":"Private University"
+    },
+    {
+       "Name":"Sardar Bhagwan Singh University",
+       "type":"Private University"
+    },
+    {
+       "Name":"Amity University, North 24 Parganas, West Bengal",
+       "type":"Private University"
+    },
+    {
+       "Name":"National Institute of Technology, Surathkal",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Imphal",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Aizawl",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Dimapur",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology, Ravangla",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology (BHU) , Varanasi",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Technology",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Design (NID), Ahmedabad",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Design (NID), Gandhinagar",
+       "type":"National Importance"
+    },
+    {
+       "Name":"National Institute of Design (NID), Bengaluru",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Petroleum and Energy (IIPE), Andhra Pradesh",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Indian Institute of Technology, Palakkad",
+       "type":"National Importance"
+    },
+    {
+       "Name":"Central Institute of Technology (CIT)",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"National Rail and Transportation Institute (NRTI)",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Siksha 'O' Anusandhan",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"IIS University",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Chaitanya",
+       "type":"Deemed University"
+    },
+    {
+       "Name":"Central University of Andhra Pradesh",
+       "type":"Central University"
+    },
+    {
+       "Name":"Central Tribal University of Andhra Pradesh",
+       "type":"Central University"
+    },
+    {
+       "Name":"The National Sanskrit University",
+       "type":"Central University"
+    },
+    {
+       "Name":"Dr. Rajendra Prasad Central Agricultural University",
+       "type":"Central University"
+    },
+    {
+       "Name":"The Central Sanskrit University",
+       "type":"Central University"
+    },
+    {
+      "Name":"Other",
+      "type":"Other"
+   }
+ ]

@@ -1,0 +1,85 @@
+<!--
+  @File Name          : leadObjectButton.html
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 3/7/2020, 1:51:44 pm
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    9/3/2020   shubhranshu     Initial Version
+-->
+<template>
+    <!-- <lightning-combobox
+            name="progress"
+            label="Lightning Actions"
+            value={leadAction}
+            placeholder="Choose one action to proceed"
+            options={options}
+            onchange={handleChange} ></lightning-combobox> -->
+<!-- 
+    <p>Selected value is: {leadAction}</p> -->
+    <!-- Message Toast Starts here-->
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant} auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+    <!-- Message Toast Ends here-->
+    <!-- <template if:true={leadRender}>
+      <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_2-of-12">
+          <button class="slds-button slds-button_text-destructive" data-value="PrintRegForm" onclick={handleChange}>Print Form</button>
+        </div>
+        <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_2-of-12">
+          <button class="slds-button slds-button_text-destructive" data-value="AdmissionOrRegOrLateFeePayment" onclick={handleChange}>Make Payment</button>
+        </div>
+         <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_2-of-12">
+          <button class="slds-button slds-button_text-destructive" data-value="UploadImage" onclick={handleChange}>Upload Image</button>
+        </div>
+        <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_2-of-12">
+          <button class="slds-button slds-button_text-destructive" data-value="CompleteFormLogin" onclick={handleChange}>Complete Form Login</button>
+        </div>
+        <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_2-of-12">
+          <button class="slds-button slds-button_text-destructive" data-value="AepRequest" onclick={handleChange}>AEP Request</button>
+        </div>
+      </div>
+      <br />
+      <br />
+      <div class="slds-grid slds-wrap"> -->
+        <!-- <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+          <button class="slds-button slds-button_text-destructive" data-value="CPProfile" onclick={handleChange}>Counsellor Profile</button>
+        </div> -->
+        <!-- <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+          <button class="slds-button slds-button_text-destructive" data-value="TransferDescr" onclick={handleChange}>Transfer Description</button>
+        </div> 
+        <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+          <button class="slds-button slds-button_text-destructive" data-value="CompleteleadDetails" onclick={handleChange}>Compelete Lead Details</button>
+        </div> -->
+        <!-- <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+          <button class="slds-button slds-button_text-destructive" data-value="QuickLead" onclick={handleChange}>Quick Lead Form</button>
+        </div> -->
+      <!-- </div>
+      <br />
+  </template> -->
+
+  <template if:true={leadRender}>
+    <div class="slds-m-top_medium slds-m-bottom_x-large slds-align_absolute-center">
+        <lightning-button-group>
+            <lightning-button label="Quick Lead Update" data-value="quickLead" title="Quick Lead Update" onclick={handleChange} icon-name="utility:record_update"></lightning-button>
+            <lightning-button data-value="AdmissionOrRegOrLateFeePayment" onclick={handleChange} title="Make Payment" label="Make Payment" icon-name="utility:money"></lightning-button>
+            <lightning-button-menu alternative-text="Show menu" variant="border-filled">
+                <lightning-menu-item data-value="PrintRegForm" onclick={handleChange} title="Print Form" label="Print Form" icon-name="utility:print"></lightning-menu-item>
+                <lightning-menu-item data-value="UploadImage" onclick={handleChange} label="Upload Image" title="Upload Image" icon-name="utility:image"></lightning-menu-item>
+                <lightning-menu-item data-value="CompleteFormLogin" onclick={handleChange} label="Complete Form Login" title="Complete Form Login" icon-name="utility:logout"></lightning-menu-item>
+                <lightning-menu-item data-value="UploadImage" onclick={AepRequest} label="AEP Request" title="AEP Request" icon-name="utility:contact_request"></lightning-menu-item>
+                <lightning-menu-item data-value="QuickLeadForm" onclick={handleChange} label="Create Quick Lead" title="Quick Lead Form" icon-name="utility:description"></lightning-menu-item>
+            </lightning-button-menu>
+        </lightning-button-group>
+    </div>
+  </template>
+
+  <template if:true={quickLeadFlag}>
+      <c-quick-lead-update-component openmodel={quickLeadFlag} record-id={recordId} onclick={handleCloseQuickLead}></c-quick-lead-update-component>
+  </template>
+
+  <!-- <template if:true={quickLeadCreateFlag}>
+      <c-quick-lead-create-component openmodel={quickLeadCreateFlag} onclick={handleCloseQuickLeadCreate}></c-quick-lead-create-component>
+  </template> -->
+</template>

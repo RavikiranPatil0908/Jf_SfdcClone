@@ -1,0 +1,351 @@
+<!--
+  @File Name          : KnowlarityComponent.component
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 31/1/2020, 11:19:56 am
+  @Modification Log   : 
+  Ver       Date            Author                  Modification
+  1.0    29/1/2020   @BK     Initial Version
+-->
+<apex:component >
+    <apex:attribute name="PrimaryNumber" description="This field is to get the primary number" type="String" />
+    <apex:attribute name="SecondaryNumber" description="This field is to get the secondary number" type="String" />
+    <apex:attribute name="recordId" description="This field is toget the record id" type="String" />
+    <apex:attribute name="recordType" description="This field is to get the record type" type="String" />
+    <apex:attribute name="ownerId" description="This field is to get the ownerId" type="String" />
+    <apex:attribute name="centerId" description="This field is to get the center Id" type="String" />
+    <apex:attribute name="stdCode" description="This field is to get the std code" type="String" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="/soap/ajax/46.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/46.0/apex.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <style>
+        .note
+        {
+            text-align: center;
+            height: 50px;
+            background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+            color: #fff;
+            font-weight: bold;
+            line-height: 50px;
+        }
+        .form-content
+        {
+            padding: 2% 5%;
+            border: 1px solid #ced4da;
+            background : white;
+            /* margin-bottom: 2%; */
+        }
+        .form-control{
+            border-radius:1.5rem;
+        }
+        .btnSubmit
+        {
+            border:none;
+            border-radius:1.5rem;
+            padding: 1%;
+            width: 60%;
+            cursor: pointer;
+            background: teal;
+            color: #fff;
+        }
+        #callStatus {
+            font-size: .9rem;
+        }
+    </style>
+    <apex:outputPanel id="container">
+        <div class="container register-form">
+            <div class="form">
+                <div class="note">
+                    <p>Knowlarity Dashboard</p>
+                </div>
+
+                <div class="form-content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <select class="form-control"  id="contactList" name="contactList" tabindex="3"></select>
+                            </div>
+                            <div class="form-group">
+                                <span class="helpButton">
+                                    <label for="contactList"><h6>Call status : </h6></label>
+                                </span>
+                                &nbsp;&nbsp;
+                                <span id="callStatus"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <button type="button" class="btnSubmit" onclick="clickToCall(1)">Primary Contact ({!PrimaryNumber}) <i class="fa fa-phone"></i> </button>
+                            </div>
+                            <apex:outputPanel rendered="{!IF(SecondaryNumber!=null && SecondaryNumber!='',true,false)}">
+                                <div class="form-group">
+                                    <button type="button" class="btnSubmit" onclick="clickToCall(2)">Secondary Contact ({!SecondaryNumber}) <i class="fa fa-phone"></i> </button>
+                                </div>  
+                            </apex:outputPanel>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </apex:outputPanel>
+
+    <script>
+        var callId = '';
+        var URL = "https://konnect.knowlarity.com:8100/update-stream/edda8320-7546-4e53-b880-fbc4dd92cb5e/konnect"
+        var source = new EventSource(URL);
+        var startTime, endTime, callConnetedTime, callTime, callDuration, callTransferDuration;
+        source.onmessage = function (event) {
+            var data = JSON.parse(event.data)
+            console.log('Received an event .......');
+            console.log(data);
+            if (callId === data.uuid) {
+                console.log('Received an event .......');
+                console.log(data);
+                streamNotificatonAPI(data);
+            }
+        }
+
+        $(document).ready(function () {
+            var informationCenter = "{!centerId}";
+            if (informationCenter) {
+                var counselorProfileQuery = sforce.connection.query(`SELECT id,MobilePhone__c,AEP_Name__r.Name,First_Name__c,Last_Name__c,Agent_Number__c FROM Counsellor_Profile__c WHERE Agent_Number__c!=null AND AEP_Name__r.Name='${informationCenter}' AND IsActive__c=false`);
+                var counselorProfileRecord = counselorProfileQuery.getArray("records");
+                if (counselorProfileQuery.size > 0) {
+                    $('#contactList').append('<option value="">Agent Mobile Number</option>');
+
+                    $.each(counselorProfileRecord, function (key, value) {
+                        $('#contactList').append(`<option value="${value.Agent_Number__c}">${value.First_Name__c} ${value.Last_Name__c}</option>`);
+                    });
+                    
+                    if(typeof(Storage) !== "undefined" && localStorage.agentNumber) {
+                        $('#contactList').val(localStorage.agentNumber);
+                    }
+                }
+            }
+            
+            $('#contactList').change(function() {
+                if($(this).val() && typeof(Storage) !== "undefined") {
+                    localStorage.agentNumber = $(this).val();
+                }
+            });
+
+        });
+
+        // to set the steaming API data to paramters.
+        function streamNotificatonAPI(data) {
+            if (data.hasOwnProperty('event_type')) {
+                var textValue = $('#callStatus').text();
+
+                if (data.event_type == 'AGENT_CALL' && data.Event_Date_Local) {
+                    startTime = moment(data.Event_Date_Local, "YYYY-MM-DD HH:mm:ss");
+                    callTime = startTime.format('HH:mm:ss');
+                    $('#callStatus').text("Agent waiting to be patched...");
+                }
+
+                if (data.event_type == 'CUSTOMER_CALL' && data.Event_Date_Local) {
+                    callConnetedTime = moment(data.Event_Date_Local, "YYYY-MM-DD HH:mm:ss");
+                    $('#callStatus').text("Calling "+data.customer_number);
+                }
+
+                if (data.event_type == 'CUSTOMER_ANSWER' && data.Event_Date_Local) {
+                    callConnetedTime = moment(data.Event_Date_Local, "YYYY-MM-DD HH:mm:ss");
+                    $('#callStatus').text("Connected with "+data.customer_number);
+                }
+
+                if (data.event_type == 'HANGUP' && data.Event_Date_Local) {
+                    endTime = moment(data.Event_Date_Local, "YYYY-MM-DD HH:mm:ss");
+                    $('#callStatus').text("Disconnected");
+
+                    if (endTime && callConnetedTime) {
+                        callDuration = moment.duration(endTime.diff(callConnetedTime)).as('seconds');
+                    } else {
+                        callDuration = 0;
+                    }
+                }
+            }
+            if (data.hasOwnProperty('dispnumber')) {
+                //createTask(data);
+            }
+        }
+
+        // To trigger the click to call API
+        function clickToCall(contactType) {
+            var number = $("#contactList").val();
+            var mobilePhone = "{!PrimaryNumber}";
+            var secondaryNumber = "{!SecondaryNumber}";
+            if (number) {
+                var customerNumber = '+91' + mobilePhone;
+                if (contactType === 2 && secondaryNumber) {
+                    customerNumber = '+91';
+                    if("{!stdCode}" && secondaryNumber.length == 8) {
+                        var code = parseInt("{!stdCode}");
+                        var codeStr = code.toString();
+                        customerNumber = customerNumber + codeStr.slice(-2) + secondaryNumber.slice(-8);
+                    } else {
+                        customerNumber = customerNumber + secondaryNumber.slice(-10);
+                    }
+                }
+                console.log('customerNumber ==>' + customerNumber);
+                var request = {
+                    k_number: "{!$Label.SR_Outbound_Number}",
+                    agent_number: number,
+                    customer_number: customerNumber
+                }
+
+                $.ajax({
+                    method: "POST",
+                    url: "https://kpi.knowlarity.com/Basic/v1/account/call/makecall",
+                    headers: {
+                        "x-api-key": "{!$Label.KnowlarityAPIKey}",
+                        "authorization": "{!$Label.KnowlarityAuthKey}",
+                        "content-type": "application/json"
+                    },
+                    dataType: "json",
+                    crossDomain: true,
+                    data: JSON.stringify(request)
+                }).done(function (response) {
+                    console.dir(response);
+                    if (response.hasOwnProperty('success')) {
+                        $('#callStatus').text('Calling-Agent...');
+                        callId = response.success.call_id;
+                        console.log('callId ==> ' + callId);
+                    } else if (response.hasOwnProperty('error')) {
+                        $('#callStatus').text(response.error.message);
+                        if(response.error.message.includes('Do Not Call registry') && contactType == 1 && "{!recordType}"=="Lead") {
+                            updateDNDonLead();
+                        }
+                    }
+                });
+            } else {
+                alert('Kindly select the Agent Number');
+            }
+
+        }
+
+        function updateDNDonLead() {
+            var objLead = new sforce.SObject('Lead');
+            objLead.id = "{!recordId}";
+            objLead.is_dnd_new__c = "Yes";
+
+            var result = sforce.connection.update([objLead]);
+            if (result[0].getBoolean("success")) {
+                console.log('dnd updated');
+            }
+            else {
+                alert('Error : ' + result);
+            }
+        }
+
+        // To create the task after the call finished.
+        function createTask(data) {
+            var taskQuery = sforce.connection.query(`SELECT id FROM Task WHERE Call_uuid__c='${data.uuid}'`);
+            console.dir(taskQuery);
+            if (taskQuery.size == 0) {
+                // to get the status of the call
+                var callType = data.business_call_type;
+                var callStatus = 'Not Connected';
+                var callTransferStatus = '';
+                if (callType.includes("Customer Missed")) {
+                    callStatus = 'Connected';
+                    callTransferStatus = 'Missed';
+                } else if (callType.includes("Phone") && data.resource_url) {
+                    callStatus = 'Connected';
+                    callTransferStatus = 'Connected';
+                } else if (callType.includes("Agent Missed")) {
+                    callStatus = 'Not Connected';
+                    callTransferStatus = 'Missed';
+                } else if (callType.includes("Phone") && !data.resource_url) {
+                    callStatus = 'Connected';
+                    callTransferStatus = 'Missed';
+                }
+
+                // to get the agent number
+                var agentNumber = $("#contactList").val();
+                // agentNumber = '+91' + agentNumber.slice(-10);
+
+                // to get the who Id 
+                var relatedTo = "{!recordId}".slice(0, 15);
+                var ownerId = "{!ownerId}".slice(0, 15);
+
+                // to capture call transfer duration
+                if (callDuration > 0) {
+                    callTransferDuration = data.call_duration - callDuration;
+                } else {
+                    callTransferDuration = data.call_duration;
+                }
+
+                var requiredData = {
+                    data: data,
+                    agentNumber: agentNumber,
+                    callStatus: callStatus,
+                    callTransferStatus: callTransferStatus,
+                    callTransferDuration: callTransferDuration,
+                    callDuration: callDuration,
+                    callTime: callTime,
+                    relatedTo: relatedTo,
+                    ownerId: ownerId
+                };
+
+                // to create the task.
+                var objTask = setUpTask(requiredData);
+
+                var result = sforce.connection.create([objTask]);
+                if (result[0].getBoolean("success")) {
+                    $('#callStatus').text('Task successfully created.');
+                    resetParams();
+                }
+                else {
+                    resetParams();
+                    alert('Error : ' + result);
+                }
+            }
+        }
+
+        // to setup the task to create
+        function setUpTask(requiredData) {
+            var currentDate = moment().format('YYYY-MM-DD');
+            var objTask = new sforce.SObject("Task");
+            objTask.Call_uuid__c = requiredData.data.uuid;
+            objTask.Subject = 'OUTBOUND Call | Customer Number: ' + requiredData.data.caller_id;
+            objTask.ActivityDate = currentDate;
+            objTask.Call_date__c = currentDate;
+            objTask.Call_direction__c = requiredData.data.Call_Type;
+            objTask.Called_number__c = requiredData.data.dispnumber;
+            objTask.Agent_list__c = requiredData.agentNumber;
+            objTask.Client_variable_2__c = requiredData.data.resource_url;
+            objTask.Agent_number__c = requiredData.agentNumber;
+            objTask.Call_status__c = requiredData.callStatus;
+            objTask.call_transfer_status__c = requiredData.callTransferStatus;
+            objTask.Customer_number__c = requiredData.data.caller_id;
+            objTask.Status = 'Completed';
+            objTask.Call_transfer_duration__c = requiredData.callTransferDuration;
+            objTask.Call_duration__c = requiredData.callDuration;
+            objTask.Call_time__c = requiredData.callTime;
+            if("{!recordType}" == "Lead") {
+                objTask.whoid = requiredData.relatedTo;
+            } else  {
+                objTask.whatid = requiredData.relatedTo;
+            }
+            
+            objTask.Ownerid = requiredData.ownerId;
+
+            return objTask;
+        }
+
+        // to rest the global params 
+        function resetParams() {
+            startTime = '';
+            endTime = '';
+            callConnetedTime = '';
+            callTime = '';
+            callDuration = '';
+            callTransferDuration = '';
+        }
+    </script>
+</apex:component>

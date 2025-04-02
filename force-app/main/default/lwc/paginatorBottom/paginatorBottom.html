@@ -1,0 +1,32 @@
+<!--
+  @File Name          : paginatorBottom.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 17/12/2019, 11:37:05 am
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    17/12/2019   @BK     Initial Version
+-->
+<template>
+    <lightning-layout>
+        <lightning-layout-item>
+            <lightning-button label="First" icon-name="utility:chevronleft" onclick={handleFirst}
+                disabled={showFirstButton}></lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item>
+            <lightning-button label="Previous" icon-name="utility:chevronleft" onclick={handlePrevious}
+                disabled={showFirstButton}></lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item flexibility="grow"></lightning-layout-item>
+        <lightning-layout-item>
+            <lightning-button label="Next" icon-name="utility:chevronright" icon-position="right" onclick={handleNext}
+                disabled={showLastButton}></lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item>
+            <lightning-button label="Last" icon-name="utility:chevronright" icon-position="right" onclick={handleLast}
+                disabled={showLastButton}></lightning-button>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

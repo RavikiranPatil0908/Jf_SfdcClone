@@ -1,0 +1,51 @@
+<apex:page Controller="Mass_Welcome"  sidebar="false" docType="html-5.0" ReadOnly="true">
+<head>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>   
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+
+</head>
+<body class="home">  
+<apex:form id="formid1">
+<apex:pagemessages />
+ <apex:pageBlock mode="edit">
+  <apex:pageblockSection columns="1">
+    <apex:pageBlockSectionItem >
+      <apex:outputLabel for="startingstudentno"  > Student Number</apex:outputLabel>
+        <apex:panelGroup >
+            <apex:inputTextarea id="startingstudentno" value="{!StudentNumber}"  rows="10"  cols="50"/> <span class="red">*</span> <br />    
+        </apex:panelGroup>
+  </apex:pageBlockSectionItem>
+  <br />
+  <apex:pageBlockSectionItem >
+      <apex:commandButton action="{!find}" value="View" immediate="false"/>
+     <apex:commandButton action="{!search}" value="Download Mass Welcome Letter"/>
+  </apex:pageBlockSectionItem>  
+ </apex:pageblockSection>
+        <apex:actionStatus id="status" startText="requesting..."/>
+           <apex:pageBlockTable value="{!lstToDisplay}" var="a" 
+                               rendered="{!NOT(ISNULL(lstToDisplay))}">                   
+              <apex:column value="{!a.nm_StudentNo__c}"/>   
+              <apex:column value="{!a.FirstName}"/>
+              <apex:column value="{!a.LastName}"/>
+              <apex:column value="{!a.nm_StudentStatus__c}"/>
+              <apex:column value="{!a.nm_NewPassword__c}"/>
+              <apex:column value="{!TODAY()}"/>
+              <apex:column value="{!a.Ref__c}"/>
+                     
+</apex:pageBlockTable>
+</apex:pageBlock>
+</apex:form>  
+</body>
+     
+
+</apex:page>

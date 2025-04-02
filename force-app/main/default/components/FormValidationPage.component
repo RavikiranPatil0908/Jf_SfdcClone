@@ -1,0 +1,2498 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 25--03--2025
+  @last modified by  : @Ravi
+-->
+<apex:component access="global">
+<script>
+    <apex:attribute access="global" name="LeadStatus" type="String" description="Lead status" />
+    <apex:attribute access="global" name="isLateralDataFetched" type="Boolean" description="Is lateral data fetched flag" />
+    <apex:attribute access="global" name="islateral" type="Boolean" description="Is lateral flag true" />
+    <apex:attribute access="global" name="isOtpVerified" type="Boolean" description="Is otp verified flag" />
+    <apex:attribute access="global" name="program" type="String" description="Program" />
+    <apex:attribute access="global" name="lateralAddmissionNotAllowProgramList" type="String" description="Program List" />
+    // var totalAcad =  3;
+    var ctrlPressed = false;
+    //var isCalled = false;
+    // var objDate = {};
+    // var responseData = null;
+    // var checkPercent = {
+    //     'SSC': 0,
+    //     'HSC': 0,
+    //     'Diploma': 0,
+    //     'Graduation': 0,
+    //     'PostGraduation': 0
+    // };
+
+    function checkCtrlV(e) {
+        var code = (document.all) ? event.keyCode : e.which;
+        // Check if Ctrl key is pressed
+        if (code == 17) {
+            ctrlPressed = true;
+        }
+        // Check if Ctrl + V combination is pressed
+        if (ctrlPressed && code == 86) {
+            e.preventDefault(); // Prevent the default paste action
+            console.log('Pasting is disabled');
+        }
+    }
+
+    // Reset ctrlPressed when Ctrl key is released
+    document.addEventListener('keyup', function (e) {
+        if (e.keyCode == 17) {
+            ctrlPressed = false;
+        }
+    });
+
+    $(document).ready(function (e) { 
+        // window.onload = function() {
+        //     callRemoteAction();
+        // };  
+        window.onload = function() {
+            showModalIfIsLateralVerified();
+        };
+        callRemoteAction();
+        //checkNationality();
+        checkDebIdVerification();
+
+        if($('[id$=formSectionBlock]').val()!=null && $('[id$=formSectionBlock]').val()!='') {
+            showLoader();
+            $('.formSection').hide();
+            setTimeout(showFormSection, 1000);
+        }
+
+        $('body').on('focus','.form-control', function(){
+            $(this).closest('.form-line').addClass('focused');
+        });
+
+        $('body').on('click', '.form-float .form-line .form-label', function () {
+            $(this).parent().find('input').focus();
+        });
+
+        $('body').find('.form-control').each(function () {
+            if ($(this).val() !== '') {
+                $(this).parents('.form-line').addClass('focused');
+            }
+        });
+
+        $('body').find('.lateralselect').each(function () {  
+             var isLateralDataFetched ="{!isLateralDataFetched}";
+            if ((isLateralDataFetched == "true")) {
+                if($(this).val() !== '') {
+                    $(this).attr('disabled',true);
+                } 
+            }
+        });
+
+        // $('body').find('.islateral').each(function() {
+        //     var isLateralDataFetched ="{!isLateralDataFetched}";
+        //     if ((isLateralDataFetched == "true")) {
+        //         if($(this).val() !== '') {
+        //             $(this).attr('readonly','true');
+        //         }
+        //     }
+        // });
+
+        $('body').find('.form-control').focusout(function () {
+            // let elem = $(this);
+            if ($(this).parents('.form-group').hasClass('form-float')) {
+                if ($(this).val() == '') { $(this).parents('.form-line').removeClass('focused'); }
+            }
+            else {
+                $(this).parents('.form-line').removeClass('focused');
+            }
+        });
+
+        /*-------------------------------------------------------Common validation class Names -------------------------------------*/
+        $('.notnull').attr('required','true');
+        $('.disabled').attr('disabled',true);
+        $('.readonly').attr('readonly','readonly');
+
+        $('.ModifyFirstOptionForProgramList> option:first-child').text('---None--');
+        $('.ModifyFirstOptionForDiffAbled> option:first-child').text('Are you differently abled');
+        $('.ModifyFirstOptionForDisability> option:first-child').text('Natue of Disability');
+        
+        /*-------------------- Remove Error message on enter start ------------------------*/
+        $('body').on('change', '.notnull', function(e) {
+            $(this).closest('div.form-group').children('span.error').remove();
+        });
+
+        $('body').on('keypress', '.notnull', function(e) {
+            $(this).closest('div.form-group').children('span.error').remove();
+        });
+
+        $('body').on('dp.change', '.date', function() {
+            $(this).closest('div.form-group').children('span.error').remove();
+        });
+        /*-------------------- Remove Error message on enter end ------------------------*/
+     
+        // show the alert
+        setTimeout(function() {
+            $(".alert").alert('close');
+        }, 10000);
+
+        $('body').on('keypress','.numonly', function(e){ 
+            return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) ) ? false : true;
+        });
+        
+        $('body').on('keypress','.floatingNumOnly', function(event){
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+            var input = $(this).val();
+            if ((input.indexOf('.') != -1) && (input.substring(input.indexOf('.')).length > 2)) {
+                event.preventDefault();
+            }
+        });
+
+        $('body').on('keypress','.CGPANumOnly', function(event){
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+            var input = $(this).val();
+            if ((input.indexOf('.') != -1) && (input.substring(input.indexOf('.')).length > 1)) {
+                event.preventDefault();
+            }
+        });
+
+        $("textarea").each(function(textarea) {
+            // $(this).height( $(this)[0].scrollHeight );
+        });
+       
+        
+        /*----- allow letters and whitespaces only.-------*/
+        $('body').on('keypress','.onlyAlphabets', function(event) {
+            var inputValue = event.which;
+            if(!((inputValue >= 65 && inputValue <= 122 && inputValue != 92 && inputValue != 94 && inputValue != 93 && inputValue != 91) || inputValue == 46 ) && (inputValue != 32 && inputValue != 0 )) { 
+                event.preventDefault(); 
+            }
+        });
+        
+        /*-----------------limit chart in text field ----------------*/
+        $('body').on('keypress','.limitedChar', function(event) {
+            var inputValue = $(this).val().length;
+            if(inputValue >=40) { 
+                event.preventDefault(); 
+            }
+        });
+
+        $('body').on('change','.percentageValidate', function(e){
+            e.stopImmediatePropagation();
+            let percentage = parseFloat($(this).val());
+            let type = $(this).data('type');
+            console.log('required % ==>'+checkPercent[type]);
+            if(isNaN(percentage) || percentage > 100 || percentage < 1){
+                console.log('enterd 1');
+                showHtmlMessage('Invalid Information','Please Enter Percentage less than 100 and greater than zero.');
+                $(this).val("");
+                $(this).closest('div.form-group').children('span.error').remove();
+                $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+            }else if($(this).hasClass('checkPercent') && percentage < checkPercent[type]){
+                console.log('enterd 2');
+                showHtmlMessage('Important Information', type+' percentage: minimum '+checkPercent[type]+' percent required');
+                $(this).val("");
+                $(this).closest('div.form-group').children('span.error').remove();
+                $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Minimum '+checkPercent[type]+' percent required.</span>');                
+            }
+        });
+
+        $('body').on('change','#attachmentFile', function() {
+            if($(this).length > 0 && $(this).get(0).files.length != 0) {
+                $('.saveStudentImageSection').show();
+            } else {
+                $('.saveStudentImageSection').hide();
+            }
+        });
+
+        /*-----------------------------------------------------------Personal Details Validation ---------------------------------*/
+        
+        // $('#datetimepicker2').datepicker({
+        //     autoclose: true,
+        //     container: '#datetimepicker2'
+        // });
+
+        $('body').on('change','.emailValidation', function(){
+            if(!isValidEmailAddress($(this).val())){
+                showHtmlMessage('Invalid Information','Please enter a valid email address.');
+                $(this).val("");
+            }
+        });
+        
+        $('body').on('change','.mobileNoValidation', function(){
+            let mobileNumberValue = $(this).val();
+            let lastdigits = mobileNumberValue.slice(-4);
+            console.log(lastdigits);
+            let pattern = "^(?!(\\d)\\1{8})";
+            pattern = new RegExp(pattern);
+            if(!pattern.test(mobileNumberValue)){  
+                showHtmlMessage('Invalid Information','Please Enter Valid Mobile Number');
+                $(this).val("");
+            }else if( (mobileNumberValue.length >10 && lastdigits != '0000') || mobileNumberValue.length < 10){
+                showHtmlMessage('Invalid Information','Please enter a valid 10 digit mobile number.');
+                $(this).val("");
+            }
+        });
+        
+        $('body').on('change','[id$=aadharCard]', function(){
+            var aadharCardValue = $(this).val();
+            if(aadharCardValue.length >12 || aadharCardValue.length< 12){
+                showHtmlMessage('Invalid Information','Please Enter 12 digit Aadhaar Card Number');
+                $(this).val('');
+                $('.aadharNumber').val('');
+            }
+            $('.aadharNumber').val(aadharCardValue); 
+        });
+        
+
+        // // Nationality Check for making aadhar card mandatory
+        $('body').on('change','[id$=nationality]', function(){
+            var nationality = $(this).val();
+            if(nationality =='Indian'){
+                $('.IndianNationalityPanelId').show();
+                //for passport not mandatory 
+                $('[id$=passport]').removeClass('notnull');
+                $('[id$=passportLabel]').text('Passport No');
+                $('[id$=passport]').closest('div.form-group').children('span.error').remove();
+            }else{
+                $('.IndianNationalityPanelId').hide(); 
+                $('[id$=aadharCard]').removeClass('notnull');
+                //$('[id$=ABCId]').removeClass('notnull');
+                //for passport mandatory 
+                $('[id$=passport]').addClass('notnull');
+                $('[id$=passportLabel]').html('Passport No <span style="color:red;font-style:bold">*</span>');
+            }
+            // var domicile = $('[id$=domicile]').val();
+            // checkNationality();
+        });
+
+        // $('body').on('change','[id$=domicile]', function(){
+        //     var domicile = $(this).val();
+        //     var nationality = $('[id$=nationality]').val();
+        //     if (nationality == 'Indian' && domicile == 'India') {
+        //         $('[id$=ABCId]').addClass('notnull');
+        //         $('[id$=DEBId]').addClass('notnull');
+        //         $('.abcIdPanel').show();
+        //     }else {
+        //         $('[id$=ABCId]').removeClass('notnull');
+        //         $('[id$=DEBId]').removeClass('notnull');
+        //         $('.abcIdPanel').hide();
+        //     }
+        // });
+
+        if($('.nationality').val() !='' && $('.nationality').val() !=null ){
+        //    console.log("inchanges trigger");
+            $('[id$=nationality]').trigger('change');
+        }
+
+        $('body').on('change','[id$=motherTongue]', function(){
+            $('.otherMotherTonguePanelId').hide();
+            if($(this).val() == 'Other') {
+                $('.otherMotherTonguePanelId').show();
+                $('[id$=otherMotherTongue]').addClass('notnull');
+            }else{
+                $('[id$=otherMotherTongue]').removeClass('notnull');
+                $('[id$=otherMotherTongue]').val('');
+            }
+        });
+
+        if($('[id$=motherTongue]').val() != null && $('[id$=motherTongue]').val() != ''){
+            $('[id$=motherTongue]').trigger('change');
+        }
+
+        // LinkedIn Validation
+        $('body').on('change','.linkedURLValidation', function(){
+           var linkedinURL = $(this).val();
+            if(!(/(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/).test(linkedinURL)){  
+                showHtmlMessage('Invalid Information','Please Enter valid Linkedin URL');
+                $(this).val('');
+                $(this).addClass('');
+            }
+        });
+        
+        if($(".linkedURLValidation").val() !='' && $(".linkedURLValidation").val() !=null){
+            $(".linkedURLValidation").trigger('change');
+        }
+
+        // //Pan Card Validation
+        $('body').on('change','[id$=PanCardno]', function(){    
+            var regExp = /[a-zA-z]{5}\d{4}[a-zA-Z]{1}/; 
+            var txtpan = $(this).val(); 
+            if (txtpan.length == 10 ) { 
+                if( !txtpan.match(regExp) ){ 
+                    $(this).val('');
+                    showHtmlMessage('Invalid Information','Pan Card Number Invalid.');
+                }
+            } 
+            else { 
+                $(this).val(''); 
+                showHtmlMessage('Invalid Information','Pan Card Number Invalid.');
+            } 
+
+        });
+
+        if($('[id$=PanCardno]').val() !='' && $('[id$=PanCardno]').val() !=null){
+            $('[id$=PanCardno]').trigger('change');
+        }
+
+        // //Passport Validation
+        $('body').on('change','[id$=passport]', function(){ 
+            if($('[id$=nationality]').val() == 'Indian') {
+                var regExp = /[a-zA-Z]{1}\d{7}/; 
+                var txtpan = $(this).val(); 
+                if (txtpan.length == 8 ) { 
+                    if( !txtpan.match(regExp) ){ 
+                        $(this).val('');
+                        showHtmlMessage('Invalid Information','Passport Number Invalid.');
+                    }
+                } 
+                else { 
+                    $(this).val(''); 
+                    showHtmlMessage('Invalid Information','Passport Number Invalid.');
+                } 
+            }   
+        });
+
+        if($('[id$=passport]').val() !='' && $('[id$=passport]').val() !=null){
+            $('[id$=passport]').trigger('change');
+        }
+
+        $('body').on('change','.diffAbled', function(){ 
+            let differentlyAbled = $(this).val();
+            if (differentlyAbled == 'Yes') {
+                $('[id$=disability]').addClass('notnull');
+                $('#disabilityPanel').css('display', 'block');
+            } else {
+                $('[id$=disability]').removeClass('notnull');
+                $('#disabilityPanel').css('display', 'none');
+                if ($('[id$=disability]').val()) {
+                    $('[id$=disability]').val('');
+                }
+            }
+        });
+
+        if ($('[id$=diffAbled]').val() != '' && $('[id$=diffAbled]').val() != null) {
+            $('[id$=diffAbled]').trigger('change');
+        }
+
+        $('body').find('#datetimepicker2').datetimepicker({
+            format: 'DD/MM/YYYY',
+            useCurrent: false,
+            maxDate: moment()
+        });
+
+        $('body').on('dp.change', '#datetimepicker2', function(e) {
+            var dateString = e.date.format(e.date._f);
+            var today = new Date();
+            var datestr = (dateString.split(" ")[0]).split("/");
+            var birthDate  =  new Date(datestr[2],datestr[1]-1,datestr[0]);
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
+            {
+                age--;
+            }  
+            $('[id$=ageAsOn]').val(age);
+            if(age < 16){
+                showHtmlMessage('Invalid Details','Date of Birth cannot be less than 16 years.');
+                $('[id$=dateOfBirth]').val('');
+            }
+        });
+
+        if($('[id$=dateOfBirth]').val() !='' && $('[id$=dateOfBirth]').val() !=null){
+            var dateString = $('[id$=dateOfBirth]').val();
+            var today = new Date();
+            var datestr=(dateString.split(" ")[0]).split("/");
+            var birthDate  =  new Date(datestr[2],datestr[1]-1,datestr[0]);
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            $('[id$=ageAsOn]').val(age);
+        }
+
+        $('body').on('keypress','.doNotAllowedSpecialCharacter', function(e){
+            var regex = new RegExp("^[a-z  A-Z]*$");
+            var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (!regex.test(str) && str !="'") {
+                $(this).focus();
+                $(this).val('');
+                e.preventDefault();
+                $(this).closest('div.form-group').children('span.error').remove();
+                $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+            }else{
+                $(this).closest('div.form-group').children('span.error').remove();
+            }
+        });
+
+        $('body').on('change','[id$=maritalStatus]', function(){
+            if($('[id$=maritalStatus]').val() === 'Married'){
+                $("[id$=spousePanelId]").show();
+                $("[id$=spouseName]").addClass('notnull');
+            }else{
+                $("[id$=spousePanelId]").hide();
+                $("[id$=spouseName]").removeClass('notnull').val('');
+                $("[id$=spouseName]").closest('div.form-group').children('span.error').remove();
+
+            }
+        });
+
+        if($('[id$=maritalStatus]') .val() !='' && $('[id$=maritalStatus]').val() !=null){
+            $('[id$=maritalStatus]').trigger('change');
+        }
+
+        /*----------------------------------------------------------- #END# of Personal Details Validation ---------------------------------*/
+
+        /*------------------------------------------------------------------------Address Information ----------------------------------*/
+
+        $('body').on('change','.pincodeValidate', function(){
+            var pincodeValue = $(this).val();
+            if(pincodeValue.length >6 || pincodeValue.length<6){
+                showHtmlMessage('Invalid Information','Please Enter 6 digit Pincode');
+                $(this).val("");
+            } 
+        });
+
+        if($('[id$=shippingHouseNo]').val() !='' && $('[id$=shippingHouseNo]').val() !=null){
+            showShippingAddressPreview();
+        }
+        
+        $('.addressPreview').change(function(){
+            showShippingAddressPreview();
+        });
+
+        
+        $('body').on('change','input[name$=permanentAddressChoice]', function(){
+            let selectedOption = this.value;
+            if(selectedOption!=undefined) {
+                $('body').find('[id$=hdnPermenentAddressChoice]').val(selectedOption);
+                if(selectedOption =='NewAddress'){
+                    $('#newPermanentAddress').show();         
+                    $('.permenentAddress').addClass('notnull');
+                    $('[id$=permanentLocality]').removeClass('notnull');
+                    
+                }else{
+                    $('#newPermanentAddress').hide();
+                    $('.permenentAddress').removeClass('notnull');
+                }
+            }
+        });
+        
+        $('body').on('change','[id$=shippingPinCode]', function(){
+            var pincode = $(this).val();
+            console.log("pincode==="+pincode);
+            // $('[id$=hdnpostalCode]').val(pincode);
+            // $('[id$=hdnAddressChoice]').val('Shipping Address');
+            getShipingCountryStateCityFromPostalAPI(pincode,'Shipping Address');
+        });
+  
+        $('body').on('change','[id$=permenentPinCode]', function(){
+            var pincode = $(this).val();
+            // $('[id$=hdnpostalCode]').val(pincode);
+            // $('[id$=hdnAddressChoice]').val('Permanent Address');
+            getPermanentCountryStateCityFromPostalAPI(pincode,'Permanent Address');
+        });
+
+        //To set the radio button for permanentAddressChoice 
+        if( $('[id$=hdnPermenentAddressChoice]').val() != '' && $('[id$=hdnPermenentAddressChoice]').val() != null){
+            var permanentAddressChoice = $('[id$=hdnPermenentAddressChoice]').val();
+            $('input[name$=permanentAddressChoice]').filter('[value="'+permanentAddressChoice+'"]').prop('checked', true).trigger('change');
+        }else{
+            $('input[name$=permanentAddressChoice]').filter('[value="SameAsShipping"]').prop('checked', true).trigger('change');
+        }
+
+        /*---------------------------------------------------------------- #END# of Address Details Validation -----------------------------------------------------------*/
+
+        /*-------------------------------------------------------------------------Program Details ------------------------------------------*/
+        
+        // $('.eligibilityCriteria').selectpicker();
+        // $('.eligibilityCriteria').select2();
+        // $('.eligibilityCriteria').siblings('span').find('span.select2-selection--single').css({ "border-style": "none", "outline": "none", "height": "34px" });
+
+        reRenderProgramSection(false);
+
+        $('body').on('change', '[id$=panelProgramType]', function () {
+            console.log('[id$=panelProgramType]', 'called -->');
+            $('[id$=chooseProgramPanel_ProgramSpecalization]').val('');
+            $('[id$=specialisationType]').val('');
+            rerenderChooseProgramPanelProgramDetails();
+            if($(this).val() == 'Bachelor Programs' || $(this).val() == 'Master Programs') {
+                $('[id$=specializationLabel]').html('Choose Specialization <span style="color:red;font-style:bold">*</span>');
+            } else {
+                $('[id$=specializationLabel]').html('Choose Program <span style="color:red;font-style:bold">*</span>');
+            }
+        });
+
+        $('body').on('change', '[id$=chooseProgramPanel_ProgramSpecalization]', function () {
+            $('[id$=specialisationType]').val('');
+            console.log('chooseProgramPanel_ProgramSpecalization --> called');
+            rerenderChooseProgramPanelProgramDetails();
+        });
+
+        $('body').on('change','[id$=eligibilityCriteria]',function(e) {
+            e.stopImmediatePropagation();
+            if($(this).val()) {
+                console.log('CallValidate --> called');
+                CallValidate();
+            }
+        });
+        
+        //to disable the after preference if current is empty
+        $('.pref').change(function(e) {
+            
+            let prefVal = $(this).val();
+            let currIndex =  $('.pref').index(this);
+            let checkProg = $('.pref').length;
+            if(!prefVal){
+                let index = parseInt(currIndex) + 1;
+                for(var i=index;i<checkProg;i++){
+                    $('.pref').eq(i).prop('disabled',true).val('');
+                }
+            }
+        });
+
+        //to enable prefence on load.
+        $('.pref').each(function (index,elem){
+            if($(elem).val() != '' && $(elem).val() != null){
+                $(elem).prop('disabled',false);
+                $('.pref').eq(index+1).prop('disabled',false);
+            }
+        });
+
+        //to trigger preference value1
+        $('body').on('change','[id$=Programs_ProgramDetails]', function(){
+            let currentVal = $("option:selected",this).text();
+            $('[id$=hdnProgramPreference1]').val(currentVal);
+        });
+
+        if($('[id$=Programs_ProgramDetails]').val() != null && $('[id$=Programs_ProgramDetails]').val() != '') {
+            $('[id$=Programs_ProgramDetails]').trigger('change');
+        }
+        
+        $('[id$=chooseProgramPanel_ProgramSpecalization]').change(function () {
+            $('[id$=specialisationType]').val('');
+
+            if ($(this).val() == 'MBA (WX)') {
+                $('[id$=photoUploadContainer]').show();
+            } else {
+                $('[id$=photoUploadContainer]').hide();
+            }
+        });
+
+        $('body').on('change','[id$=specialisationType]', function(){
+            let selectedOption = $(this).val();
+            if(selectedOption == 'Dual Specialisation') {
+                $('.programPreferenceClass2Panel').show();
+                $('.programPreferenceClass2').addClass('notnull');
+            }else {
+                $('.programPreferenceClass2Panel').hide();
+                $('.programPreferenceClass2').removeClass('notnull').val('');
+            }
+        });
+
+
+        if($('[id$=specialisationType]').val() != null && $('[id$=specialisationType]').val() != ''){
+            $('[id$=specialisationType]').trigger('change');
+        }
+        
+        // $('body').on('change','input[name$=alumniStudent]', function(){
+        //     let selectedOption = this.value;
+        //     var chooseProgram = $('[id$=hdnChooseProgram]').val();
+        //     if(selectedOption!=undefined) {
+        //         if(selectedOption =='Yes'){
+        //             $('#showAlumniSection').show();
+        //             $('.alumnai').addClass('notnull');
+        //         }else{
+        //             $('#showAlumniSection').hide();
+        //             $('.alumnai').removeClass('notnull');
+        //         }
+        //     }
+        // });
+            
+        $('body').on('change','.validateLateralStudentNo', function() {
+            let studentNumber = $(this).val();
+            if(studentNumber != undefined){
+                if(!studentNumber.startsWith('77') && !studentNumber.startsWith('79')){
+                    showHtmlMessage('Important Information','Please enter Valid Student Number');
+                    $(this).val('');
+                }else if(studentNumber.length != 11){
+                    showHtmlMessage('Important Information','Please enter 11 digit Student Number');
+                    $(this).val('');
+                }else{
+                    getLateralStudentDetailsAPI();
+                }
+            }
+        });
+
+        // if($('[id$=studentNumber]').val() != '' && $('[id$=studentNumber]').val() != null){
+        //     $('input[name$=alumniStudent]').filter('[value="Yes"]').prop('checked', true).trigger('change');
+        // }else{
+        //     $('input[name$=alumniStudent]').filter('[value="No"]').prop('checked', true).trigger('change');
+        // }
+
+        // $('body').on('change','.validateABCId', function() {
+        //     if($(this).val()) {
+        //         let withoutSpace = $(this).val().replace(/ /g, '').length; 
+        //         if(withoutSpace != 12) {
+        //             showHtmlMessage('Important Information','Please enter 12 digit Academic Bank Of Credits Identification Number');
+        //             $(this).val('');
+        //         }
+        //     }
+        // });
+        // $('[id$=ABCId]').attr({ maxLength : 12 });
+      
+        $('body').on('change','.validateDEBId', function() {
+            //$('[id$=isCalled]').val('false');
+            sessionStorage.setItem('isCalled','false');
+            // console.log('isCalled12-->' + sessionStorage.getItem('isCalled'));
+            if($(this).val()) {
+                let withoutSpace = $(this).val().replace(/ /g, '').length; 
+                if(withoutSpace != 12) {
+                    showHtmlMessage('Important Information','Please enter 12 digit Distance Education Bureau Identification Number (DEB ID)');
+                    $(this).val('');
+                    $('[id$=DEBId]').removeClass('notnull');
+                    //$('[id$=passportLabel]').text('Distance Education Bureau Identification Number (DEB ID)');
+                }
+                else {
+                    $('[id$=DEBId]').addClass('notnull');
+                }
+                //$('[id$=debIdLabel]').html('Distance Education Bureau Identification Number (DEB ID) <span style="color:red;font-style:bold">*</span>');
+                
+            } else {
+                $('[id$=DEBId]').removeClass('notnull');
+            }
+            let debId = $('[id$=DEBId]').val();
+            let isDebMatched = $('[id$=debMatched]').val();
+            let debUniqueId = $('[id$=debUniqueId]').val();
+            let dob = $('[id$=dateOfBirth]').val();
+            let debDob = $('[id$=debDob]').val();
+            // let dateObj = new Date(debDob);
+            // let day = String(dateObj.getDate()).padStart(2, '0');
+            // let month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+            // let year = dateObj.getFullYear();
+
+            // let formattedDate = `${day}/${month}/${year}`;
+            // console.log(formattedDate);
+            let debDobDate = formattedDate(debDob);
+            console.log('field dob-->' + dob);
+            console.log('debId-->' + debId + ' debDobDate-->' + debDobDate); 
+            if (debUniqueId === debId && debId !== '' && debDobDate === dob) {
+                // $('.verifiedButton').show();
+                // $('.verifyDEBId').hide();
+                showDebVerifiedButton();
+            }else {
+                // $('.verifiedButton').hide();
+                // $('.verifyDEBId').show();
+                hideDebVerifiedButton();
+            }
+        });
+        $('[id$=DEBId]').attr({ maxLength : 12 });
+        
+        /*----------------------------------------------------------------------------#END# of Program Details Validation-----------------------------------------------------*/
+
+        /*--------------------------------------------------------------------Academic Details Validation-----------------------------------------*/
+            
+            $('[id$=sscBoard]').change(function(){
+                var selectedOpt = $(this).val();
+                if(selectedOpt != undefined){
+                    if(selectedOpt == 'State Boards/Others'){
+                        $('[id$=sscOtherBoardPanelId]').show();
+                        $('[id$=sscOtherStateBoard]').addClass('notnull');
+                    }else{
+                        $('[id$=sscOtherBoardPanelId]').hide();
+                        $('[id$=sscOtherStateBoard]').removeClass('notnull');
+                    }
+                }
+            });
+
+            if($('[id$=sscBoard]').val() !='' && $('[id$=sscBoard]').val() !=null){
+                $('[id$=sscBoard]').trigger('change');
+            }
+            
+            $('[id$=hscStateBoard]').change(function(){
+                var selectedOpt = $(this).val();
+                if(selectedOpt != undefined){
+                    if(selectedOpt =='State Boards/Others'){
+                        $('[id$=hscOtherStateBoardPanelId]').show();
+                        $('[id$=hscOtherStateBoard]').addClass('notnull');
+                    }else{
+                        $('[id$=hscOtherStateBoardPanelId]').hide();
+                        $('[id$=hscOtherStateBoard]').removeClass('notnull');
+                    }
+                }
+            });
+
+            if($('[id$=hscStateBoard]').val() !='' && $('[id$=hscStateBoard]').val() !=null){
+                $('[id$=hscStateBoard]').trigger('change');
+            }
+            
+            $('[id$=hscOrDiploma]').change(function(){
+                let selectedOption = $(this).val();
+                document.getElementById("diploam_HSCPanelId").innerHTML = selectedOption;
+                $('[id$=DiplomaSectionPanelId]').hide();
+                $('[id$=HSCSectionPanelId]').hide();
+                
+                if(selectedOption == 'XII/HSC' || selectedOption == '12th Grade'){
+                    $('[id$=HSCSectionPanelId]').show();
+                    $('.hscDetails').addClass('notnull');
+                    $('.diplomaDetails').removeClass('notnull');
+                }else if(selectedOption == 'Diploma'){
+                    $('[id$=DiplomaSectionPanelId]').show();
+                    $('.hscDetails').removeClass('notnull');
+                    $('.diplomaDetails').addClass('notnull');
+                }
+            });
+
+            //if diploma duration value is selected.
+            if($('[id$=hdnDiplomayrOfCompletion]').val() != '' && $('[id$=hdnDiplomayrOfCompletion]').val() != null) {
+                let textYear = $('[id$=hdnDiplomayrOfCompletion]').val();
+                year = parseFloat(textYear.replace(/,/g, ''));
+                $('#diplomayrOfCompletion').val(year);
+                $('#diplomayrOfCompletion').trigger('change');
+            }
+
+            $('#diplomayrOfCompletion').change(function () {
+                if($(this).val() != null && $(this).val() != ''){
+                    $('[id$=hdnDiplomayrOfCompletion]').val($(this).val());
+                }
+            })
+
+
+            //to show others option for graduation degree
+            $('[id$=degreeName]').change(function() {
+                let degreeName = $(this).val();
+                if(degreeName == 'Others'){
+                    $('[id$=otherDegreeName]').addClass('notnull');
+                    $('[id$=OtherDegreeNamePanelId]').show();
+                }else{
+                    $('[id$=otherDegreeName]').val('').removeClass('notnull');
+                    $('[id$=OtherDegreeNamePanelId]').hide();
+                }
+            });
+
+            if($('[id$=degreeName]').val() != null && $('[id$=degreeName]').val() != ''){
+                $('[id$=degreeName]').trigger('change');
+            }
+
+            $('body').on('change','.masterProgramNamePicklist', function(event){
+                let degreeName = $(this).val();
+                if(degreeName == 'Other'){
+                    $('[id$=otherProgramName]').addClass('notnull');
+                    $('[id$=OtherProgramNamePanelId]').show();
+                }else{
+                    $('[id$=otherProgramName]').val('').removeClass('notnull');
+                    $('[id$=OtherProgramNamePanelId]').hide();
+                }
+            });
+
+            if($('.masterProgramNamePicklist').val() != null && $('.masterProgramNamePicklist').val() != ''){
+                $('.masterProgramNamePicklist').trigger('change');
+            }
+
+            // Remove Master options
+            var degreeNameOptions = [];
+            $('[id$=degreeName] > option').each(function() {
+                let degreeNameVal = $(this).val();
+                if(degreeNameVal && degreeNameVal.match("^Master")) {
+                    degreeNameOptions.push(degreeNameVal);
+                }
+            });
+
+            $('[id$=degreeName] > option').filter(function () {
+                return $.inArray(this.value, degreeNameOptions) !== -1
+            }).remove();
+
+            //to show other option degree mode is any other
+            $('.degreeMode').change(function () {
+                let indexVal = $('.degreeMode').index(this);
+                if($(this).val() == 'Any Other'){
+                    $('.otherDegreeModePanel').eq(indexVal).show();
+                    $('.otherDegreeMode').eq(indexVal).addClass('notnull');
+                }else{
+                    $('.otherDegreeModePanel').eq(indexVal).hide();
+                    $('.otherDegreeMode').eq(indexVal).val('');
+                    $('.otherDegreeMode').eq(indexVal).removeClass('notnull');
+                }
+            });
+
+            $('.degreeMode').each(function(){
+                $(this).trigger('change');
+            });
+
+            $('.datetimepicker4').datetimepicker({
+                viewMode: 'years',
+                format: 'YYYY',
+                minDate: moment().add(-50,'years'),
+                maxDate: moment(),
+                useCurrent: false
+            });
+
+            //to covert duration of program from months to year.
+            $('.DurationInMonth').change(function() {
+                let IndexVal = $('.DurationInMonth').index(this);
+                if($(this).val() > 0) {
+                    let Year = parseInt($(this).val()/12);
+                    let mod = $(this).val()%12;
+                    let total = 0;
+                    if(mod > 0){
+                        total = Year+'.'+mod;
+                    }else{
+                        total = Year;
+                    }
+                    $('.DurationInYear').eq(IndexVal).val(total);
+                }else{
+                    $(this).val('');
+                    $('.DurationInYear').eq(IndexVal).val('');
+                }
+                
+            });
+
+            $('.DurationInMonth').trigger('change');
+
+            //for select2 university list.
+            $('.autoCompleteUniversity').select2({
+                "language": {
+                    "noResults": function(){
+                        return "No Results Found. <a href='javascript:void(0);' class='btn btn-primary selectOther' onclick='selectOther(this);'>Other</a>";
+                    }
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                }
+            }); 
+
+            $('.autoCompleteUniversity').siblings('span').find('span.select2-selection--single').css({"border-style":"none","outline":"none","height":"32px"});
+            
+            $('body').on('change','.autoCompleteUniversity', function(){
+                let option = $(this).val();
+                let indexVal = $(".autoCompleteUniversity").index(this);
+                console.log('option -->'+option);
+
+                if($(this).hasClass('degreeDetails')) {
+                    $('[id$=hiddendegreeUniversity]').val(option);
+                }
+
+                if($(this).hasClass('Acad1')) {
+                    $('[id$=programUniversity]').val(option);
+                }
+                
+                if(option == 'Other'){ 
+                    $('.otherUniversityNamePanel').eq(indexVal).show();
+                    $('.otherUniversityName').eq(indexVal).addClass('notnull');
+                }else{
+                    $('.otherUniversityNamePanel').eq(indexVal).hide();
+                    $('.otherUniversityName').eq(indexVal).removeClass('notnull');
+                    $('.otherUniversityName').eq(indexVal).val('');
+                    $('.otherUniversityName').prop('required',false);
+                }
+
+                $.each(responseData, function(i, item) {
+                    if(item.University_Name__c == option && !$(this).hasClass('Acad1')){
+                        $('.hdnUniversityType').eq(indexVal).val(item.University_Type__c);
+                    }
+                });
+                
+            });
+
+            // $('.autoCompleteUniversity').each(function(){
+            //     if(!responseData){
+            //         $.getJSON("{!URLFOR($Resource.UniversityNameJS)}", function( json ) {
+            //             responseData = json;
+            //         }).done(function(){
+            //             $(this).trigger('change');
+            //             console.log('triggerd');
+            //         });
+            //     }else{
+            //         $(this).trigger('change');
+            //         console.log('triggerd');
+            //     } 
+            // });
+
+            $('.universtityNameText').change(function () {
+                if($(this).val()) {
+                    console.log('universtityNameText '+$(this).val());
+                    $('[id$=programUniversity]').val($(this).val());
+                }
+            });
+
+        /*---------------------------------------------------------------------#END# of Academic Details Validation------------------------------------------------------*/
+
+        /*---------------------------------------------------------------------------- Work Expereience Validation-----------------------------------------------------*/
+
+        $('body').on('change','.totalWPEXP',function() {
+            if($(this).val()) {
+                $('.nonWorkExpPanel').hide();
+                $('.workExpPanel').show();
+                $('.WKEXPDetails').addClass('notnull');
+                $('[id$=ReasonForNotWorking]').removeClass('notnull');
+                $('[id$=ReasonForNotWorking]').val('');
+                $('[id$=ReasonForNotWorking]').removeAttr('required');
+                $('[id$=ReasonForNotWorking]').trigger('change');
+
+                $('.StartDate').each(function (index,elem) {
+                    var _currentlyWorking = $('.hdnCurrentlyWorking').eq(index).val();
+                    if(_currentlyWorking == 'true') {
+                        $('.EndDate').eq(index).removeClass('notnull');
+                    }
+                });
+            }else{
+                $('.nonWorkExpPanel').show();
+                $('.workExpPanel').hide();
+                $('.WKEXPDetails').removeClass('notnull');
+                $('.WKEXPDetails').val('');
+                $('[id$=ReasonForNotWorking]').addClass('notnull');
+                $('[id$=ReasonForNotWorking]').trigger('change');
+            }
+        });
+
+        $('[id$=ReasonForNotWorking]').change(function () {
+            $('.nonWorkExpInnerPanel').hide();
+            if($(this).val() == 'Other') {
+                $('.nonWorkExpInnerPanel').show();
+                $('[id$=OtherReasonForNotWorkingInner]').addClass('notnull');
+            }else{
+                $('[id$=OtherReasonForNotWorkingInner]').removeClass('notnull');
+                $('[id$=OtherReasonForNotWorkingInner]').val('');
+            }
+        });
+
+        if($('[id$=ReasonForNotWorking]').val() != null && $('[id$=ReasonForNotWorking]').val() != '') {
+            $('[id$=ReasonForNotWorking]').trigger('change');
+        }
+
+        if($('[id$=totalWPEXP]').val()) {
+            $('[id$=totalWPEXP]').trigger('change');
+        }
+
+        // to disable Work Expereince in Years field
+        $('body').on('focus','.expereinceInYears', function(){
+            $(this).attr('readonly','true');
+        });
+
+        //to load objDate.
+        loadObjDate();
+
+        $('body').on('dp.change', '.datetimepicker3', function(e) {
+            console.log('methiod called from here');
+            if($(this).find('input').hasClass('StartDate')){
+                console.log('metheod vcalled startfunction')
+                StartDateFunction($(this));
+            }else if($(this).find('input').hasClass('EndDate')){
+                EndDateFunction($(this));
+            }
+        });
+
+        //to show other option Field in Work Experience is any other
+        $('.otherOption').each(function(index, elem) {
+            let indexVal = getDataId($(this));
+            let field = $(this).data('id');
+            enableOtherField(indexVal,this,field);
+        });
+
+        $('body').on('custom-event','.otherOption', function(){
+            let indexVal = getDataId($(this));
+            let field = $(this).data('id');
+            enableOtherField(indexVal,this,field);
+        });
+
+        //to load autocomplete on comapny field.
+        $('.autoCompleteCompany').keyup(function(){
+            var options = {
+                url :'{!JSENCODE($Resource.CompanyNames)}',
+                getValue: "name",
+                list: {
+                    match: {
+                        enabled: true
+                    }
+                }
+            };  
+            $(this).easyAutocomplete(options);
+        });
+    
+        $('body').on('change','.autoCompleteCompany', function(){
+            let option = $(this).val();
+            let indexVal = $(".autoCompleteCompany").index(this);
+            $('.hdnCompanyName').eq(indexVal).val(option);
+            if(option =='Other'){
+                $('.otherCompanyNamePanel').eq(indexVal).show();
+                $('.otherCompanyName').eq(indexVal).addClass('notnull');
+            }else{
+                $('.otherCompanyNamePanel').eq(indexVal).hide();
+                $('.otherCompanyName').eq(indexVal).removeClass('notnull');
+            }
+        });
+
+        $('.hdnCompanyName').each(function(index,elem) {
+            if($(this).val() != null && $(this).val() != ''){
+                $('.autoCompleteCompany').eq(index).val($(this).val());
+                $('.autoCompleteCompany').eq(index).trigger('change');
+            }
+        });
+
+        $('body').on('custom-event','.hdnCompanyName', function(){
+            let indexVal = $('.hdnCompanyName').index(this);
+            if($(this).val() != null && $(this).val() != ''){
+                $('.autoCompleteCompany').eq(indexVal).val($(this).val());
+                $('.autoCompleteCompany').eq(indexVal).trigger('change');
+            }
+        });
+        
+        /* -- For Current Work Experience -- */
+        $('body').on('change','.currentlyWorking', function() {
+            $('input[name="' + this.name + '"]').not(this).prop('checked', false);
+            $('.hdnCurrentlyWorking').val('false');
+            $('.EndDate').addClass('notnull');
+            $('.EndDate').attr('disabled',false);
+            let indexVal = $(this).data('id');
+            if($(this).prop('checked') == true) {
+                $('.end').eq(indexVal).data("DateTimePicker").clear();
+                $('.hdnCurrentlyWorking').eq(indexVal).val('true');
+                $('.EndDate').eq(indexVal).attr('disabled',true);
+                $('.EndDate').eq(indexVal).removeClass('notnull');
+                $('.expereinceInYears').eq(indexVal).val('');
+                objDate[indexVal].enddate = moment().format('DD/MM/YYYY');
+
+            }else if($('.StartDate').eq(indexVal).val()) {
+                $('.EndDate').eq(indexVal).attr('disabled',false);
+                $('.EndDate').eq(indexVal).addClass('notnull');
+                objDate[indexVal].enddate = '';
+            }
+                let date1 = $('.StartDate').eq(indexVal).val();
+                let date2 = $('.EndDate').eq(indexVal).val();
+                let date = calculateDateDiff(date1, date2, indexVal);
+                if (date.indexOf('NaN') == -1) {
+                    $('.expereinceInYears').eq(indexVal).val(date);
+                    // to store the end date in the object if start date exist
+                    // objDate[indexVal].enddate = enddate;
+                } else {
+                    $('.expereinceInYears').eq(indexVal).val('');
+                }
+        });
+
+        
+        /*------------------------------------------------------------#END# of Work Expereience Validation-----------------------------------------------------------------*/
+
+        /*---------------------------------------------- custom js---------------------------------------------------*/
+
+
+        for(var i= 1; i <= totalAcad; i++){
+            if($('.Acad'+i).val() != '' && $('.Acad'+i).val() != null){
+                checkCaseAdd(i);
+            }
+        }
+    });
+    /*------------------------------------------------------------#START# Lateral Modal Validation-----------------------------------------------------------------*/   
+    
+    function validateOTPForm(otpMode, isResend) {
+        console.log("validateOTPForm called with mode==> " + otpMode);
+        showLoader();
+        submitForOtp(otpMode, isResend);
+    }
+
+    function submitNonLateral(){
+        showLoader();;
+        IsStudentSelectNo();
+    }
+
+    function LateralStatus(value) {
+        let isselect = value === 'Yes';
+        let lateralMessage = $('[id$=LateralMessage]').val();
+        console.log("message " + lateralMessage);
+        if (isselect) { 
+            if (lateralMessage && lateralMessage !== '') {
+                hideLoader();
+                $('[id$=studentNo]').val('');
+                showHtmlMessage('Warning', lateralMessage);
+            } else {
+                hideLoader();
+                $('[id$=LateralSelectionModal]').hide();
+                $('[id$=studentNo]').val('');
+                $('[id$=OTPModal]').show();
+            }
+        } else {
+            if (lateralMessage && lateralMessage !== '') {
+                showHtmlMessage('Invalid Information', lateralMessage);
+                $('[id$=radio_lateralNo]').prop('checked', false);
+                $('[id$=IsLateralModal]').modal('hide');
+            } else {
+                hideLoader();
+                showHtmlMessage('Important Message', 'Kindly continue with the new admission form.');
+                $('[id$=selectNo]').hide();
+                $('[id$=radio_lateralNo]').prop('checked', false);
+                $('[id$=IsLateralModal]').modal('hide');
+            }
+        }
+    }
+
+    function showModalIfIsLateralVerified() {
+      
+        let result = '{!isOtpVerified}';
+        if (result) {
+            showHtmlMessageWithType('Important Message', 'Lateral student data fetched successfully.', 'success');
+        }
+    }
+
+    function showNotificationMsg(status, msg) {
+        $('[id$=LateralSelectionModal]').show();
+        closeModal();
+        showNotification(status, msg, 'top', 'center', 'animated fadeInDown', 'animated fadeOutUp');
+    }
+
+    function validateOTPInput() {
+        let otpInput = $('body').find('[id$=otpInput]').val();
+        if (!otpInput || otpInput.length === 0) {
+            showModalMsg('Please enter the value');
+            return false;
+        }
+        showLoader();
+        VerifyOTP(otpInput);
+        return true;
+    }
+
+    function showSendEmailModal() {
+        let studentNumber = $('[id$=studentNo]').val().trim();
+        $('[id$=LateralMessage]').val('');
+        console.log('student number'+studentNumber);
+        if (studentNumber) {
+            if (!studentNumber.startsWith('77') && !studentNumber.startsWith('79')) {
+                showModalMsg('Please enter Valid Student Number');
+                $(this).val('');
+                return;
+            } else if (studentNumber.length !== 11) {
+                showModalMsg('Please enter 11 digit Student Number');
+                $(this).val('');
+                return;
+            } else {
+                // $('body').find('.errorMsg').val('');
+                // $('[name=studentNoParam]').val(studentNumber);
+                showLoader();
+                console.log('student number====>'+studentNumber);
+                IsStudentSelectYes(studentNumber);
+
+            }
+        } else {
+            hideLoader();
+            showModalMsg('Please enter student number');
+            return;
+        }
+    }
+
+    function closeModal() {
+        closeModalSelection();
+        $('[id$=IsLateralModal]').modal('hide');
+    }
+     function closeModalSelection(){
+        $('[id$=LateralSelectionModal]').show();
+        $('[id$=lateralSelection]').show();
+        $('[id$=radio_lateralYes]').prop('checked', false);
+        $('[id$=radio_lateralNo]').prop('checked', false);
+        $('[id$=selectNo]').hide();
+        $('[id$=sapIdSection]').hide();
+        $('[id$=studentNo]').val('');
+        $('[id$=OTPModal]').hide();
+     }
+
+    function showModalMsg(message) {
+        let element = $('body').find('.errorMsg');
+        element.text(message);
+        element.show();
+        setTimeout(() => {
+            element.hide();
+        }, 6000);
+    }
+
+
+     /*------------------------------------------------------------#END# Lateral Modal Validation -----------------------------------------------------------------------*/
+    function showFormSection() {
+        let formBlock = $('[id$=formSectionBlock]').val();
+        let isNonLateral =$('[id$=isNonLateral]').val();
+        let isLateral ='{!isLateral}';
+        let program= '{!program}';
+        let ProgramFamily ='{!lateralAddmissionNotAllowProgramList}';
+        let status ='{!LeadStatus}';
+        var formBlocks = ['form1', 'form2', 'form3', 'form4', 'form5'];
+        let leadStatus =['Admission Fee Paid','Registration Fee Paid'];
+
+        formBlock = formBlock.includes('form') ? formBlock : 'form1';
+        console.log('formBlock ==>'+formBlock);
+        const formSections = new Map();
+        formSections.set('form1', 'PersonalInformationSection');
+        formSections.set('form2', 'AddressInformationSection');
+        formSections.set('form3', 'ProgramInformationSection');
+        formSections.set('form4', 'AcademicInformationSection');
+        formSections.set('form5', 'WorkExperienceSection');
+        let i = parseInt(formBlock[formBlock.length - 1]);
+        console.log('formBlock i ==>'+i)
+       
+        if (formBlocks.includes(formBlock) && (isNonLateral === '' && isLateral === 'false' ) && ProgramFamily.includes(program) && !leadStatus.includes(status)) {
+            $('[id$=IsLateralModal]').modal({
+                backdrop: 'static',
+                keyboard: false
+            }).modal('show');
+            $('[id$=IsLateralModal]').removeAttr('aria-hidden');
+        }
+        for (let index = 1; index < i; index++) {
+            let section = `form${index}`;
+            let formId = formSections.get(section)
+            console.log('section 1 ==>'+section)
+            if(validateForm(`[id$=${formId}]`) === 1) { 
+                stopFormPageLoader(section,'false');
+                hideLoader();
+                return;
+            }
+        }
+        
+        $(`.${formBlock}`).show();
+        hideLoader();
+    }
+
+    function getDataId(element) {
+        let className = element.attr('class');
+        // Split the class attribute by spaces to get individual classes
+        let classes = className.split(' ');
+        let dataSet;
+        // Loop through each class
+        for (let i = 0; i < classes.length; i++) {
+            // Check if the class starts with 'data-'
+            if (classes[i].startsWith('data-')) {
+                // Print or use the class name as needed
+                dataSet = classes[i];
+            }
+        }
+        let indexVal = dataSet.split("-").pop();
+        return indexVal;
+    }
+
+    function gotoNextTab(section){
+        let ageAsOn = $('[id$=ageAsOn]').val();
+        if(section === 'PersonalInformationSection' &&  ageAsOn < 16){
+            showHtmlMessage('Invalid Details','Date of Birth cannot be less than 16 years.');
+            $('[id$=dateOfBirth]').val('');
+            return true;
+        } else {
+            if(validateForm(`[id$=${section}]`) === 1) {
+                return true;
+            }
+
+            if(validateImage()) {
+                return true;
+            }
+            if(section === 'WorkExperienceSection' && checkWorkExperience()) {
+                return true;
+            }
+            showLoader();
+            return false;
+        }
+    }
+
+    function gotoPreviousTab(path) {
+        $('.nav-element').removeClass('active');
+        $(`.form-nav-element`).addClass("active");
+        $(`.${path}-nav-element`).children('a').addClass('toggled');
+        $(`.${path}-nav-element`).addClass("active");
+        $('.formSection').hide();
+        $(`.${path}`).show();
+    }
+
+    // function validateChange(id) {
+    //     var flag = 0;
+    //     console.log('check changed--' + id);
+    //     $(id).find('.lateralChangedData').each(function () {
+    //         if($(this).val() !=null){
+    //             savePersonalDetails();
+    //         }
+
+    //     });
+    // }
+
+    function validateForm(id) {
+        var flag = 0;
+        console.log('check--' + id);
+        // if ($('[id$=DEBId]').val() !== '' && !$('[id$=DEBId]').hasClass('notnull')) {
+        //     console.log('add');
+        //     $('[id$=DEBId]').addClass('notnull');
+        // }      
+        $(id).find('.notnull').each(function () {
+            if(!$(this).prop('disabled')) {
+                if($(this).val() !=null){
+                    if ($(this).val().trim().length == 0) {
+                        flag = 1;
+                        console.log('Id Required Value --'+$(this).attr('id'));
+                        $(this).focus();
+                        $(this).closest('div.form-group').children('span.error').remove();
+                        $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+                    }else if($(this).attr('type') == 'radio') {
+                        var attrName = $(this).attr('name');
+                        console.log('radio btn checked'+$("input[name='"+attrName+"']:checked").val());
+                        if(!$("input[name='"+attrName+"']:checked").val()) {
+                            flag = 1;
+                            console.log('Id Required Value --'+$(this).attr('id'));
+                            $(this).focus();
+                            $(this).siblings('span.error').remove();
+                            $(this).siblings('label').after('<br/> <span class="error" style="color:red;font-size: 13px;">Please enter value.</span>');
+                        }
+                    }
+                    console.log('validate method--->' + $(this).hasClass('validateDEBId'));
+
+                    if($(this).hasClass('validateDEBId') && validateDEBDateOfBirth(false)) {
+                        flag = 1;
+                    }
+                }else{
+                    flag = 1;
+                    console.log('Id Required Value --'+$(this).attr('id'));
+                    $(this).focus();
+                    $(this).closest('div.form-group').children('span.error').remove();
+                    $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');    
+                }
+            }
+        });
+        return flag;  
+    }
+
+    function isValidEmailAddress(emailAddress) {
+        // var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+        let pattern = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g);
+        // alert( pattern.test(emailAddress) );
+        return pattern.test(emailAddress);
+    }
+
+    function showShippingAddressPreview(){
+        let addressPart = ' , ';
+            if($('[id$=shippingStreetName]').val()){
+            addressPart += $('[id$=shippingStreetName]').val()  + " , ";
+        }
+
+        if( $('[id$=shippinglocality]').val()){
+            addressPart += $('[id$=shippinglocality]').val() + " , ";
+        }
+        
+        $("#addressPreview").text('Shipping Address: ' + $('[id$=shippingHouseNo]').val() + addressPart + $('[id$=shippingCity]').val() + ' , '+$('[id$=shippingState]').val() + ' , '+$('[id$=shippingCountry]').val() +' - '+ $('[id$=shippingPinCode]').val() );
+        $('.pincodeCheck').parent().siblings('span').remove();
+    }
+
+    function stopFormPageLoader(path = 'form5',isConfirm = 'true') {
+        console.log('form path ==>'+path);
+         // GMT tracking 
+        if(path === 'form2')
+        {
+            pushData('Form2-Address');
+        }
+        else if(path === 'form3')
+        {
+            pushData('Form3-Program');
+        }
+        else if(path === 'form4')
+        {
+            pushData('Form4-Educational');
+        }
+        else if(path === 'form5' && isConfirm == 'false')
+        {
+            pushData('Form5-Work');
+        }
+        else if(path === 'form5' && isConfirm == 'true' )
+        {
+            pushData('Preview-Form');
+        }
+        
+        
+        try {
+            if($('[id$=errorMsg]').val()) {
+                openPopUp();
+            } else if(isConfirm == 'false') {
+                $('.nav-element').removeClass('active');
+                $(`.form-nav-element`).addClass("active");
+                $(`.${path}-nav-element`).children('a').addClass('toggled');
+                $(`.${path}-nav-element`).addClass("active");
+                $('.formSection').hide();
+                $(`.${path}`).show();
+            } else {
+                $(`[data-navigate="reviewForm"]`).click();
+                return;
+            }
+        } catch (error) {
+            console.log('error ==>'+error);
+        }
+        $('body').scrollTop(0);
+        hideLoader();
+    }
+
+    //To check PostalCode Request Success or Fail
+    function postalCodeStatus(val){
+        console.log('Response recived ==>'+val);
+        if($('[id$=postalCodeMessage]').val() == 'Error'){
+            $('.'+val).val('');
+            showHtmlMessage('Invalid Information','Please enter valid India Pin Code');
+        }
+    }
+
+    //To check DEB ID is exist
+    // function checkDEBId() {
+    //     let debId = $('body').find('.validateDEBId').val();
+    //     if(debId) {
+    //         return false;
+    //     }
+    //     showHtmlMessage('Invalid Details','Kindly Enter the DEBID.');
+    //     return true;
+    // }
+
+    function DEBStatus(){
+        hideLoader();
+        //console.log('Response recived ==>');
+        //console.log('val-->' + $('[id$=DEBId]').val());
+        //let isCalled = $('[id$=isCalled]').val();
+        let isCalled = 'false';
+        isCalled = sessionStorage.getItem('isCalled');
+        //console.log('isCalled--->' + isCalled);
+        //$('[id$=isCalled]').val('true');
+            
+        if($('[id$=DEBId]').val() === ''){
+            //showHtmlMessage('Important Message!','Please enter value');
+            hideDebVerifiedButton();
+            return;
+        }
+
+        console.log('is isDebInvalid--->' + $('[id$=isDebInvalid]').val());
+        if($('[id$=isDebInvalid]').val() === 'true'){
+            showHtmlMessage('Important Message!','Please enter valid, Distance Education Bureau Identification Number (DEB ID)');
+            hideDebVerifiedButton();
+            return;
+        }
+
+        console.log('debId---->' + $('[id$=debUniqueId]').val());
+        if($('[id$=debUniqueId]').val() === '') {
+            showHtmlMessage('Important Message!','Some thing went wrong');
+            hideDebVerifiedButton();
+            return;
+        }
+
+        validateDEBDateOfBirth(true);
+
+        if($('[id$=isActive]').val() === 'true' && $('[id$=dobMatched]').val() === 'true') {
+            if (isCalled === 'false') {
+                sessionStorage.setItem('isCalled','true');
+                console.log('isCalled2--->' + sessionStorage.getItem('isCalled'));
+                showHtmlMessageWithType('Success!','Distance Education Bureau Identification Number (DEB ID) has been verified','success');
+            }
+            showDebVerifiedButton();
+            return;
+        }
+    
+        
+    }
+
+    function validateDEBDateOfBirth(skipActiveCheck) {
+        let debUniqueId = $('[id$=debUniqueId]').val();
+        let dobMatched = $('[id$=dobMatched]').val();
+        let debId = $('[id$=DEBId]').val();
+        let dob = $('[id$=dateOfBirth]').val();
+        let debDob = $('[id$=debDob]').val();
+        //console.log('validate-->' + debDob);
+        //console.log('isActive--->' + $('[id$=debUniqueId]').val() + ' debUniqueId--->' + debUniqueId + ' dobMatched--->' + dobMatched + ' debId-->' + debId);
+
+        if($('.validateDEBId').val()) {
+            let debDobDate = formattedDate(debDob);
+
+            if(skipActiveCheck && $('[id$=dobMatched]').val() !== 'true') {
+                showHtmlMessage('Important Message!','The entered Date of Birth ' + dob + ' does not match the details from the Distance Education Bureau.');
+                // $('.verifyDEBId').show();
+                // $('.verifiedButton').hide();
+                //$('[id$=DEBId]').val('');
+                hideDebVerifiedButton();
+                return true;
+            } 
+            else if(!skipActiveCheck && debUniqueId === debId && debDobDate !== dob) {
+                showHtmlMessage('Important Message!','The entered Date of Birth ' + dob + ' does not match the details from the Distance Education Bureau.');
+                // $('.verifyDEBId').show();
+                // $('.verifiedButton').hide();
+                //$('[id$=DEBId]').val('');
+                hideDebVerifiedButton();
+                return true;
+            } 
+             else if(!skipActiveCheck && ($('[id$=isActive]').val() !== 'true' || debUniqueId !== debId || dobMatched !== 'true')) {
+                showHtmlMessage('Important Message!','Please verify the Distance Education Bureau Identification Number (DEB ID).');
+                // $('.verifyDEBId').show();
+                // $('.verifiedButton').hide();
+                hideDebVerifiedButton();
+                return true;
+            } 
+            // else if(abcUniqueId !== abcId) {
+            //     showHtmlMessage('Important Message!','The Entered Academic Bank Of Credits Identification Number does not match the DEB Id.');
+            //     $('.verifyDEBId').show();
+            //     $('.verifiedButton').hide();
+            //     return true;
+            // }
+        }
+    }
+
+    function formattedDate(debDob) {
+        let dateObj = new Date(debDob);
+        let day = String(dateObj.getDate()).padStart(2, '0');
+        let month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+        let year = dateObj.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    function enabledPref(cls,id){
+        var x ='.'+cls+'';
+        var selectedValue = [id.value];
+        $(x).removeAttr('disabled');
+        avoidDuplicate(id); 
+    }
+    
+    function avoidDuplicate(id){
+        let checker = {};
+        $(".pref").each(function() {
+            let selection = $(this).val();
+            if($(this).data('id') == 1){
+                selection = $("option:selected",this).val();
+            }
+            if(selection !='') {
+                if ( checker[selection] ) {
+                    showHtmlMessage('Invalid Details','Duplicate Program Preference found!');
+                    id.value ="";
+                    return false;
+                }else {
+                    checker[selection] = true;
+                }
+            }    
+        });
+    }
+   
+    // function AlumniStatus(){
+    //     if($('[id$=AlumniMessage]').val() != '' && $('[id$=AlumniMessage]').val() != null){
+    //         $('[id$=studentNumber]').val('');
+    //         showHtmlMessage('Invalid Information',$('[id$=AlumniMessage]').val());
+    //     }
+    // }
+
+    function setBComProgram(panelId, picklistId) {
+        console.log('method called');
+        $(`[id$=${panelId}]`).hide();
+
+        $(`[id$=${picklistId}] option`).filter(function() {
+            return this.text == 'Bachelor of Commerce'; 
+        }).attr('selected', true);
+    }
+
+    function reRenderProgramSection(isReRender) {
+        $('body').find('.eligibilityCriteria').select2();
+        $('body').find('.eligibilityCriteria').siblings('span').find('span.select2-selection--single').css({ "border-style": "none", "outline": "none", "height": "34px" });
+
+        // if ($('body').find('[id$=eligibilityCriteria]').val() != '' && $('body').find('[id$=eligibilityCriteria]').val() != null) {
+        //     $('body').find('[id$=eligibilityCriteria]').trigger('change');
+        // }
+
+        if($('body').find('[id$=panelProgramType]').val() == 'Bachelor Programs' || $('body').find('[id$=panelProgramType]').val() == 'Master Programs') {
+            $('body').find('[id$=specializationLabel]').html('Choose Specialization <span style="color:red;font-style:bold">*</span>');
+        } else {
+            $('body').find('[id$=specializationLabel]').html('Choose Program <span style="color:red;font-style:bold">*</span>');
+        }
+
+        if($('body').find('[id$=chooseProgramPanel_ProgramSpecalization]').val() == 'BCom') {
+            try{
+                setBComProgram('normalSpPanel','ProgramSpecalization123');
+            }catch(e){
+                console.log('function not defined');
+                let panelId = 'normalSpPanel';
+                let picklistId = 'ProgramSpecalization123';
+                $('body').find(`[id$=${panelId}]`).hide();
+                $('body').find(`[id$=${picklistId}] option`).filter(function() {
+                    return this.text == 'Bachelor of Commerce'; 
+                }).attr('selected', true);
+            };
+        }
+
+        if ($("[id$=chooseProgramPanel_ProgramSpecalization]").val() == 'MBA (WX)') {
+            $('[id$=photoUploadContainer]').show();
+        } else {
+            $('[id$=photoUploadContainer]').hide();
+        }
+    }
+
+    // function academicValidation(jsonMap,jsonMapOfAcademicRequired,yearsEligibility,jsonMapOfAcademicRequiredPercentage,jsonMapOfEligibilityVsMaster,checkFlag) {
+    //     // let checkFlag = false;
+    //     let category = $('body').find('[id$=category]').val();
+    //     let diffAbled = $('body').find('[id$=diffAbled]').val() === 'Yes';
+    //     let catgry = ['SC', 'ST', 'OBC'];
+    //     let msg, chooseProgramPanel_ProgramSpecalization = $('[id$=chooseProgramPanel_ProgramSpecalization]').val();
+    //     let selectedOption = $('body').find('[id$=eligibilityCriteria]').val();
+    //     let requiredPercentageMap;
+    //     $('.checkPercent').removeClass('checkPercent');
+
+    //     for (const iterator in checkPercent) {
+    //         checkPercent[iterator] = 0;
+    //     }
+
+    //     if (jsonMapOfEligibilityVsMaster != '' && jsonMapOfEligibilityVsMaster != null) {
+    //         let restrictedFieldMap = JSON.parse(jsonMapOfEligibilityVsMaster);
+    //         if (restrictedFieldMap[selectedOption]) {
+    //             $('.masterDegreePanel').show();
+    //             $('.masterProgramNamePicklist').addClass('Acad1 notnull');
+    //             $('.universtityNamePicklist').addClass('Acad1 notnull');
+    //             $('.qualificationDegreePanel').hide();
+    //             $('.masterProgramNameText').removeClass('Acad1 notnull');
+    //             $('.universtityNameText').removeClass('Acad1 notnull');
+
+    //         } else {
+    //             $('.masterDegreePanel').hide();
+    //             $('.masterProgramNamePicklist').removeClass('Acad1 notnull');
+    //             $('.universtityNamePicklist').removeClass('Acad1 notnull');
+    //             $('.qualificationDegreePanel').show();
+    //             $('.masterProgramNameText').addClass('Acad1');
+    //             $('.universtityNameText').removeClass('Acad1');
+    //         }
+    //     }
+
+    //     if (jsonMapOfAcademicRequired != null && jsonMapOfAcademicRequired != '') {
+    //         let restrictedFieldMap = JSON.parse(jsonMapOfAcademicRequired);
+    //         for (var key in restrictedFieldMap) {
+    //             if (key.includes(selectedOption) && !checkFlag) {
+    //                 console.log('check-->' + key + '=' + selectedOption + '-Graduation' + '-->' + restrictedFieldMap[key]);
+    //                 if (key == selectedOption + '-Professional' && restrictedFieldMap[key]) {
+    //                     msg = chooseProgramPanel_ProgramSpecalization === 'M.Sc. (AI & ML Ops)' ? 'its mandatory to submit Bachelors and Masters academic record proofs' : 'its mandatory to submit Post Graduation or Professional Degree records proof';
+    //                     if(catgry.includes(category) || diffAbled){
+    //                         msg=msg+ ' A 5% waiver on the minimum eligibility criteria for SC/ST/OBC/PwD candidates is applicable.';
+    //                     }
+    //                     showHtmlMessage('Important Information', `For this eligibility criteria, ${msg}`);
+    //                     break;
+    //                 } else if (key == selectedOption + '-Graduation' && restrictedFieldMap[key]) {
+    //                     msg = chooseProgramPanel_ProgramSpecalization === 'M.Sc. (AI & ML Ops)' ? 'its mandatory to submit Bachelors academic record proofs' : 'its mandatory to submit Graduation academic records proof';
+    //                     if(catgry.includes(category) || diffAbled){
+    //                         msg=msg+ ' A 5% waiver on the minimum eligibility criteria for SC/ST/OBC/PwD candidates is applicable.';
+    //                     }
+    //                     showHtmlMessage('Important Information', `For this eligibility criteria, ${msg}`);
+    //                     break;
+    //                 } else if(catgry.includes(category) || diffAbled) {
+    //                     msg='A 5% waiver on the minimum eligibility criteria for SC/ST/OBC/PwD candidates is applicable.';
+    //                     showHtmlMessage('Important Information', `For this eligibility criteria, ${msg}`);
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     if (jsonMapOfAcademicRequiredPercentage != null && jsonMapOfAcademicRequiredPercentage != '') {
+    //         requiredPercentageMap = JSON.parse(jsonMapOfAcademicRequiredPercentage);
+    //         console.dir(requiredPercentageMap);
+    //     }
+
+    //     checkFlag = false;
+
+    //     $('.acadDetails').removeClass('notnull');
+    //     $('.graduationDegree').hide();
+
+    //     if (jsonMapOfAcademicRequired != '' && jsonMapOfAcademicRequired != null) {
+    //         let restrictedFieldMap = JSON.parse(jsonMapOfAcademicRequired);
+    //         console.dir(restrictedFieldMap);
+    //         $('#showHSC_Diploma_GraduationSection').hide();
+    //         $('[id$=HSCSectionPanelId]').hide();
+    //         $('[id$=DiplomaSectionPanelId]').hide();
+    //         $('[id$=hscDiplomaRatingType]').hide();
+
+    //         for (var key in restrictedFieldMap) {
+    //             if (key == selectedOption + '-HSC') {
+    //                 if (restrictedFieldMap[key] != null && restrictedFieldMap[key] != '') {
+    //                     console.log(selectedOption + '---' + key + '-----value----' + restrictedFieldMap[key]);
+    //                     if (restrictedFieldMap[key]) {
+    //                         console.log('HSC ==> required')
+    //                         $('#showHSC_Diploma_GraduationSection').show();
+    //                         document.getElementById("diploam_HSCPanelId").innerHTML = 'XII/HSC';
+    //                         $('[id$=HSCSectionPanelId]').show();
+    //                         $('.hscDetails').addClass('notnull');
+    //                         $('[id$=hscOrDiploma]').val('XII/HSC');
+
+    //                         if(requiredPercentageMap.hasOwnProperty(key) && requiredPercentageMap[key]) {
+    //                             checkPercent.HSC = requiredPercentageMap[key];
+    //                             if(catgry.includes(category) || diffAbled) {
+    //                                 checkPercent.HSC = checkPercent.HSC - 5;
+    //                             }
+    //                             $('[id$=hscPercentage]').addClass('checkPercent');
+    //                             if($('[id$=hscPercentage]').val() < checkPercent.HSC) {
+    //                                 $('[id$=hscPercentage]').val('');
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //             } else if (key == selectedOption + '-Diploma') {
+    //                 if (restrictedFieldMap[key] != null && restrictedFieldMap[key] != '') {
+    //                     console.log(selectedOption + '---' + key + '-----value----' + restrictedFieldMap[key]);
+    //                     if (restrictedFieldMap[key]) {
+    //                         $('#showHSC_Diploma_GraduationSection').show();
+    //                         document.getElementById("diploam_HSCPanelId").innerHTML = 'Diploma';
+    //                         $('[id$=DiplomaSectionPanelId]').show();
+    //                         $('.diplomaDetails').addClass('notnull');
+    //                         $('[id$=hscOrDiploma]').val('Diploma');
+
+    //                         if(requiredPercentageMap.hasOwnProperty(key) && requiredPercentageMap[key]) {
+    //                             checkPercent.Diploma = requiredPercentageMap[key];
+    //                             if(catgry.includes(category) || diffAbled) {
+    //                                 checkPercent.Diploma = checkPercent.Diploma - 5;
+    //                             }
+    //                             $('[id$=diplomaPercentage]').addClass('checkPercent');
+    //                             if($('[id$=diplomaPercentage]').val() < checkPercent.Diploma) {
+    //                                 $('[id$=diplomaPercentage]').val('');
+    //                             }
+    //                         }
+
+    //                     }
+    //                 }
+    //             } else if (key == selectedOption + '-Graduation' || key == selectedOption + '-Professional') {
+    //                 if (restrictedFieldMap[key] != null && restrictedFieldMap[key] != '') {
+    //                     console.log(selectedOption + '---' + key + '-----value----' + restrictedFieldMap[key]);
+    //                     if (restrictedFieldMap[key]) {
+    //                         document.getElementById("diploam_HSCPanelId").innerHTML = 'HSC/Diploma';
+    //                         document.getElementById("qualificationPanelId1").innerHTML = chooseProgramPanel_ProgramSpecalization === 'M.Sc. (AI & ML Ops)' ? 'Bachelors (Qualification 1)' : 'Graduation (Qualification 1)';
+    //                         $('#showHSC_Diploma_GraduationSection').show();
+    //                         $('[id$=hscDiplomaRatingType]').show();
+
+    //                         $('[id$=hscOrDiploma]').addClass('notnull');
+    //                         $('.degreeDetails').addClass('notnull');
+    //                         $('.graduationDegree').show();
+
+
+    //                         if ($('[id$=hscOrDiploma]').val() != '' && $('[id$=hscOrDiploma]').val() != null) {
+    //                             let selectedOptionHSC = $('[id$=hscOrDiploma]').val();
+    //                             document.getElementById("diploam_HSCPanelId").innerHTML = selectedOptionHSC;
+    //                             $('[id$=DiplomaSectionPanelId]').hide();
+    //                             $('[id$=HSCSectionPanelId]').hide();
+    //                             if (selectedOptionHSC == '12th Grade' || selectedOptionHSC == 'XII/HSC') {
+    //                                 $('[id$=HSCSectionPanelId]').show();
+    //                                 $('.hscDetails').addClass('notnull');
+    //                                 $('.diplomaDetails').removeClass('notnull');
+
+    //                             } else if (selectedOptionHSC == 'Diploma') {
+    //                                 $('[id$=DiplomaSectionPanelId]').show();
+    //                                 $('.hscDetails').removeClass('notnull');
+    //                                 $('.diplomaDetails').addClass('notnull');
+    //                             }
+    //                         }
+
+    //                         if (key == selectedOption + '-Professional') {
+    //                             document.getElementById("qualificationPanelId2").innerHTML = chooseProgramPanel_ProgramSpecalization === 'M.Sc. (AI & ML Ops)' ? 'Masters (Qualification 2)' : 'Qualification 2';
+    //                             if ($('.Acad1').val() == '' || $('.Acad1').val() == null) {
+    //                                 checkCaseAdd(1);
+    //                             }
+    //                         }
+
+    //                         // For Graduation percentage 
+    //                         if(requiredPercentageMap[key]) {
+    //                             if (key == selectedOption + '-Professional') {
+    //                                 checkPercent.PostGraduation = requiredPercentageMap[key];
+    //                                 if(catgry.includes(category) || diffAbled) {
+    //                                     checkPercent.PostGraduation = checkPercent.PostGraduation - 5;
+    //                                 }
+    //                                 $('.addGradPercentage1').addClass('checkPercent');
+    //                                 if ($('.addGradPercentage1').val() < checkPercent.PostGraduation) {
+    //                                     $('.addGradPercentage1').val('');
+    //                                 }
+    //                             } else if(key == selectedOption+'-Graduation') {
+    //                                 checkPercent.Graduation = requiredPercentageMap[key];
+    //                                 if(catgry.includes(category) || diffAbled) {
+    //                                     checkPercent.Graduation = checkPercent.Graduation - 5;
+    //                                 }
+    //                                 $('[id$=degreePercentage]').addClass('checkPercent');
+    //                                 if($('[id$=degreePercentage]').val() < checkPercent.Graduation) {
+    //                                     $('[id$=degreePercentage]').val('');
+    //                                 }
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //         console.log('CheckPercent ==>');
+    //         console.dir(checkPercent);
+
+    //         if ($('[id$=hscOrDiploma]').val() != '' && $('[id$=hscOrDiploma]').val() != null) {
+    //             let selectedOptionHSC = $('[id$=hscOrDiploma]').val();
+    //             document.getElementById("diploam_HSCPanelId").innerHTML = selectedOptionHSC;
+    //             $('[id$=DiplomaSectionPanelId]').hide();
+    //             $('[id$=HSCSectionPanelId]').hide();
+
+    //             if (selectedOptionHSC == '12th Grade' || selectedOptionHSC == 'XII/HSC') {
+    //                 $('[id$=HSCSectionPanelId]').show();
+    //                 $('.hscDetails').addClass('notnull');
+    //                 $('.diplomaDetails').removeClass('notnull');
+
+    //             } else if (selectedOptionHSC == 'Diploma') {
+    //                 $('[id$=DiplomaSectionPanelId]').show();
+    //                 $('.hscDetails').removeClass('notnull');
+    //                 $('.diplomaDetails').addClass('notnull');
+    //             }
+    //         }
+    //     }
+    // }
+
+    /*---------------------------------------------------------- For Additional Qualification ---------------------------------------------*/       
+    function Qualification(check) {
+        if(check==1) {
+            //to add academic qualification
+            console.log('totalAcad-->'+totalAcad);
+            switch (totalAcad) {
+                case 3:
+                    checkCaseAdd(1);
+                    break;
+                case 2:
+                    checkCaseAdd(2);
+                    break;
+                case 1:
+                    checkCaseAdd(3);
+            }
+        }else if(check==0) {
+            //to remove academic qualification
+            switch (totalAcad) {
+                case 0:
+                    checkCaseRemove(3);
+                    break;
+                case 1:
+                    checkCaseRemove(2);
+                    break;
+                case 2:
+                    checkCaseRemove(1);
+            }
+        }
+    }
+
+    function checkCaseAdd(Id){
+        $('[id$=Acad'+Id+']').show();
+        $('.Acad'+Id).addClass('notnull');
+        totalAcad--;
+        hideRemoveBtn();
+    }
+    
+    function checkCaseRemove(Id){
+        $('[id$=Acad'+Id+']').hide();
+        $('.Acad'+Id).removeClass('notnull');
+        $('.rank'+Id).removeClass('notnull');
+        $('.rank'+Id).val('');
+        $('.Acad'+Id).val('');
+        totalAcad++;
+        hideRemoveBtn();
+    }
+
+    function hideRemoveBtn() {
+        let jsonMapOfAcademicRequired = $('[id$=jsonMapOfEligibility]').val();
+        let selectedOption = $('[id$=eligibilityCriteria]').val();
+        let restrictedFieldMap = JSON.parse(jsonMapOfAcademicRequired);
+        // selectedOption+'-Graduation'
+
+        if(restrictedFieldMap[selectedOption+'-Professional']) {
+            if(totalAcad == 2){
+                $('[id$=removeQualififcation]').hide();
+            }else{
+                $('[id$=removeQualififcation]').show();
+            }
+        }else{
+            if(totalAcad == 3){
+                $('[id$=removeQualififcation]').hide();
+            }else{
+                $('[id$=removeQualififcation]').show();
+            }
+        }
+        
+
+        
+    }
+    /* ------------------------------------------------------------------------------End of Academics Section ----------------------------------------- */
+
+    //for other Fields enable in work Experience Dynamically.
+    function enableOtherField(count,e,field){
+        let panel = '.other'+field+'Panel';
+        let elem = '.other'+field;
+        let label = '.other'+field+'Label';
+        if(e.value == 'Others'){
+            $(panel).eq(count).show();
+            $(elem).eq(count).addClass('notnull');
+            $(elem).eq(count).closest('div.form-group').children('span.error').remove();
+            $(label).eq(count).html('Actual Designation <span style="color:red;font-style:bold">*</span>');
+        }else{
+            $(panel).eq(count).hide();
+            $(elem).eq(count).val('');
+            $(elem).eq(count).removeClass('notnull');
+            $(elem).eq(count).closest('div.form-group').children('span.error').remove();
+            $(label).eq(count).html('Actual Designation');
+        }
+    }
+
+    //to trigger event on dynamic fields.
+    function loadTriggerField(){
+        //To load trigger methods
+        $('.otherOption').trigger('custom-event');
+        $('.hdnCompanyName').trigger('custom-event');
+
+        //To bind easyAutoComplete 
+        $('.autoCompleteCompany').keyup(function(){
+            var options = {
+                url :'{!JSENCODE($Resource.CompanyNameJS)}',
+                getValue: "name",
+                list: {
+                    match: {
+                        enabled: true
+                    }
+                }
+            };  
+            $(this).easyAutocomplete(options);
+        });
+
+        //to trigger date obj
+        loadObjDate();
+    }
+
+    //to get the date in words
+    function calculateDateDiff(date1, date2, IndexVal) {
+        let currentlyWorking = $('.hdnCurrentlyWorking').eq(IndexVal).val();
+        if (currentlyWorking == 'true') {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            date2 = dd + '/' + mm  + '/' + yyyy;
+        }
+        let b = moment(date1, 'DD/MM/YYYY'),
+            a = moment(date2, 'DD/MM/YYYY'),
+            intervals = ['years', 'months', 'days'],
+            out = [];
+        
+        for(var i=0; i<intervals.length; i++){
+            let diff = a.diff(b, intervals[i]);
+            b.add(diff, intervals[i]);
+            out.push(diff + ' ' + intervals[i]);
+        }
+        return out.join(' ');
+    }
+
+    function checkWorkExperience(){
+        let jsonMapOfEligibilityVsWorkExp = $('[id$=jsonMapOfEligibilityVsWorkExp]').val();
+        let yearsEligibility = 0;
+        if(jsonMapOfEligibilityVsWorkExp) {
+            jsonMapOfEligibilityVsWorkExp = JSON.parse(jsonMapOfEligibilityVsWorkExp);
+            let selectedEligibilityId = $('[id$=eligibilityCriteria]').val();
+            if(jsonMapOfEligibilityVsWorkExp[selectedEligibilityId]){
+                yearsEligibility = jsonMapOfEligibilityVsWorkExp[selectedEligibilityId];
+            }
+        }
+        let months = 0;
+
+        for (let key in objDate) {
+            // check if the property/key is defined in the object itself, not in parent
+            let currentlyWorkingBoolean = $('.hdnCurrentlyWorking').eq(key).val();
+            if (objDate[key].startdate.length > 0 && (objDate[key].enddate.length > 0 || currentlyWorkingBoolean == 'true')) {
+                let startdate = moment(objDate[key].startdate,'DD/MM/YYYY');
+                let enddate = (currentlyWorkingBoolean == 'true') ?  moment() : moment(objDate[key].enddate,'DD/MM/YYYY'); 
+                months += enddate.diff(startdate, 'days');
+            }
+        }
+        console.log('months-->'+months);
+        if(months/365 < yearsEligibility){     
+            showHtmlMessage('Important Information!','As selected Eligiblity Criteria please enter atleast '+ yearsEligibility + ' years of Work Experiance.');
+            return true;
+        }
+        return false;
+    }
+
+    // function checkLinkedInField() {
+    //     let programType = $('[id$=programType]').val();
+    //     if(!$('.linkedURLValidation').val() && !programType.includes('M.Sc.')) {
+    //         showHtmlMessage('Important Information!','Please Enter Linkedin URL.');
+    //         return false;
+    //     } else{
+    //         return true;
+    //     }
+    // }
+
+    function loadObjDate() {
+        $(document).find('.datetimepicker3').datetimepicker({
+            format: 'DD/MM/YYYY',
+            useCurrent: false,
+            maxDate: moment()
+        });
+
+        preLoadData();
+    }
+
+    function preLoadData() {
+        if($('.totalWPEXP').val()) {
+            $('.WKEXPDetails').addClass('notnull');
+        }
+        
+        $('body').find('.StartDate').each(function (index,elem) {
+            let startdate = elem.value;
+            let currentlyWorking = $('.hdnCurrentlyWorking').eq(index).val();
+            let enddate = $('.EndDate').eq(index).val();
+            if(currentlyWorking == 'true') {
+                enddate = moment().format('DD/MM/YYYY');
+                $('.currentlyWorking').eq(index).prop('checked', true);
+                console.log('check removed second');
+                $('.EndDate').eq(index).removeClass('notnull');
+                $('.EndDate').eq(index).attr('disabled',true);
+            }
+            
+            objDate[index] = {
+                'startdate': startdate,
+                'enddate': enddate
+            };
+            
+            if(startdate && currentlyWorking == 'false'){
+                $('.EndDate').eq(index).attr('disabled',false);
+            }
+        });
+
+        //to remove objects after row deleted.
+        let removedIndex = $('.EndDate').length;
+        if (objDate.hasOwnProperty(removedIndex)) {
+            delete objDate[removedIndex];
+        }
+
+        //to hide remove button
+        if($('.StartDate').length == 1) {
+            $('.removeExperience').hide();
+        }else{
+            $('.removeExperience').show();
+        }
+    }
+
+    function StartDateFunction(e) {
+
+        // to get all the required values.
+        let startdate = $(e).data("date");
+        // let IndexVal = getDataId(e);
+        let IndexVal = $(e).data("id");
+        let enddate = $('.EndDate').eq(IndexVal).val();
+        console.log('startdate ==>'+startdate);
+        console.log(JSON.stringify(objDate));
+        if(Object.keys(objDate).length === 0 && objDate.constructor === Object) {
+            preLoadData();
+            console.log(JSON.stringify(objDate));
+        }
+        if(startdate){
+            let startdate1 = moment(startdate,'DD/MM/YYYY');
+            //to check if endate does not exceed start date.
+            if(enddate){
+                var enddate1 = moment(enddate,'DD/MM/YYYY');
+                console.log('enddate1'+enddate1);
+                if(startdate1.isAfter(enddate1)){
+                    showHtmlMessage('Invalid Date','Start Date cannot exceed End Date.');
+                    $(e).data("DateTimePicker").clear();
+                    objDate[IndexVal].startdate = '';
+                    $('.expereinceInYears').eq(IndexVal).val('');
+                    return;
+                }
+            }
+
+            //to check if start date does not go beyond previous end date.
+            for (let key in objDate) {
+                if((objDate.hasOwnProperty(key) && key != IndexVal) && (objDate[key].enddate.length > 0 && objDate[key].startdate.length > 0)){
+                    let SD_Date = moment(objDate[key].startdate, 'DD/MM/YYYY');
+                    let ED_Date = moment(objDate[key].enddate, 'DD/MM/YYYY');
+                    let range = getDateRange(SD_Date, ED_Date);
+                    console.log('startdate ==>'+startdate);
+                    if( range.includes(startdate) || (typeof enddate1 !== 'undefined' && (startdate1.isBefore(SD_Date) && enddate1.isAfter(ED_Date))) ){
+                        showHtmlMessage('Invalid Date','Your Start Date Conflicts with the already Entered Work Experience Dates.');
+                        $(e).data("DateTimePicker").clear();
+                        objDate[IndexVal].startdate = '';
+                        $('.expereinceInYears').eq(IndexVal).val('');
+                        return;
+                    }
+                }
+            }
+
+            console.log(JSON.stringify(objDate));
+            // to store the start date in the object.
+            objDate[IndexVal].startdate = startdate;
+
+            let date = calculateDateDiff(startdate, enddate, IndexVal);
+            if (date.indexOf('NaN') == -1) {
+                $('.expereinceInYears').eq(IndexVal).val(date);
+            }
+            let currentlyWorking = $('.hdnCurrentlyWorking').eq(IndexVal).val();
+            console.log('currentlyWorking-->'+currentlyWorking);
+            if(currentlyWorking == 'false'){
+                $('.EndDate').eq(IndexVal).removeAttr('disabled');
+            }
+        }   
+    }
+
+    function EndDateFunction(e){
+
+        // to get all the required values.
+        // let IndexVal = getDataId(e);
+        let IndexVal = $(e).data("id");
+        let nextIndex = parseInt(IndexVal) + 1;
+
+        let startdate = $('.StartDate').eq(IndexVal).val();
+        let enddate = $(e).data("date");
+
+        if(startdate && enddate){
+            let startdate1 = moment(startdate,'DD/MM/YYYY');
+            let enddate1 = moment(enddate,'DD/MM/YYYY');
+
+            if(startdate1.isAfter(enddate1) || startdate.length <= 0) {
+                showHtmlMessage('Invalid Date','End Date should not be less than Start Date');
+                $(e).data("DateTimePicker").clear();
+                objDate[IndexVal].enddate = '';
+                $('.expereinceInYears').eq(IndexVal).val('');
+                return;
+            }
+
+            for (let key in objDate) {
+                if((objDate.hasOwnProperty(key) && key != IndexVal) && (objDate[key].enddate.length > 0 && objDate[key].startdate.length > 0)) {
+                    let SD_Date = moment(objDate[key].startdate, 'DD/MM/YYYY');
+                    let ED_Date = moment(objDate[key].enddate, 'DD/MM/YYYY');
+                    let range = getDateRange(SD_Date, ED_Date);
+                    console.log('enddate ==>'+enddate);
+                    if(range.includes(enddate) || (startdate1.isBefore(SD_Date) && enddate1.isAfter(ED_Date))) {
+                        showHtmlMessage('Invalid Date','Your End Date Conflicts with the already Entered Work Experience Dates.');
+                        $(e).data("DateTimePicker").clear();
+                        objDate[IndexVal].startdate = '';
+                        $('.expereinceInYears').eq(IndexVal).val('');
+                        $('.currentlyWorking').eq(IndexVal).prop('checked',false);
+                        return;
+                    }
+                }
+            }
+
+            let date = calculateDateDiff(startdate, enddate, IndexVal);
+            if (date.indexOf('NaN') == -1) {
+                $('.expereinceInYears').eq(IndexVal).val(date);
+                // to store the end date in the object if start date exist
+                objDate[IndexVal].enddate = enddate;
+            }
+            
+        } 
+    }
+
+    function selectOther(elem){
+        let spans = document.querySelectorAll('.selectOther');
+        let indexVal = Array.from(spans).indexOf(elem);
+        $('.autoCompleteUniversity').eq(indexVal).val('Other').trigger('change');
+        $('.autoCompleteUniversity').eq(indexVal).select2("close");
+    }
+
+    function openPopUp() {
+        let message = $('[id$=errorMsg]').val();
+        if(message){
+            showHtmlMessage('Important Message!',message);
+            $('[id$=errorMsg]').val('');
+        }
+    }
+
+    // 
+    // function callError() {
+
+    // }
+
+    function showHtmlMessage(header,message) {
+        if(/<\/?[a-z][\s\S]*>/i.test(message)) {
+            swal({
+                title: header+"!",
+                html: message,
+                type: "warning"
+            });
+        } else {
+            swal({
+                title: header+"!",
+                text: message,
+                type: "warning"
+            });
+        }
+    }
+
+    function showHtmlMessageWithType(header,message,msgType) {
+        if(/<\/?[a-z][\s\S]*>/i.test(message)) {
+            swal({
+                title: header+"!",
+                html: message,
+                type: msgType
+            });
+        } else {
+            swal({
+                title: header+"!",
+                text: message,
+                type: msgType
+            });
+        }
+    }
+
+    function checkDebIdVerification() {
+        if ($('[id$=DEBId]').val() !== '' && !$('[id$=DEBId]').hasClass('notnull')) {
+            //console.log('add2');
+            $('[id$=DEBId]').addClass('notnull');
+        }
+        let isActive = $('[id$=isActive]').val();
+        let dobMatched = $('[id$=dobMatched]').val();
+        let debId = $('[id$=DEBId]').val();
+        let isDebMatched = $('[id$=debMatched]').val();
+        // console.log('isActive-->' + isActive + 'dobMatched--->' + dobMatched);
+        // console.log('debId-->' + debId + ' isDebMatched-->' + isDebMatched); 
+        
+        if (isActive === 'true' && dobMatched === 'true' && debId != '' && isDebMatched === 'true') {
+            //console.log('verified');
+            showDebVerifiedButton();
+        }else {
+            //console.log('not');
+            hideDebVerifiedButton();
+        }
+    }
+
+    // function checkNationality() {
+    //     let domicile = $('[id$=domicile]').val();
+    //     let nationality = $('[id$=nationality]').val();
+    //     if (nationality == 'Indian' && domicile == 'India') {
+    //         $('[id$=ABCId]').addClass('notnull');
+    //         $('[id$=DEBId]').addClass('notnull');
+    //         $('.abcIdPanel').show();
+    //     }else{
+    //         $('[id$=ABCId]').removeClass('notnull');
+    //         $('[id$=DEBId]').removeClass('notnull');
+    //         $('.abcIdPanel').hide();
+    //     }
+    // }
+
+    function callRemoteAction() {
+        let result = sforce.apex.execute("GetUniversityList", "getUniversityDetails", {});
+        if(result.length > 0) {
+            if(result) {
+                // Successful response, result contains the list of universities
+                responseData = result;
+                console.log(responseData.length);
+
+                let value1 = $('[id$=hiddendegreeUniversity]').val();
+                let value2 = $('[id$=programUniversity]').val();
+                console.log('value1 '+value1);
+                console.log('value2 '+value2);
+
+                let triggerUniversityFlag = false;
+
+                // Iterate through the list of universities
+                $.each(responseData, function(index, university) {
+
+                    // Append data to select element
+                    $('.getuniversitylist').append('<option value="' + university.University_Name__c + '">' + university.University_Name__c + '</option>');
+
+                    // Check if the university Name matches value1 or value2
+                    if (university.University_Name__c === value1) {
+                        console.log('entered eq1');
+                        $('.autoCompleteUniversity').eq(0).val(university.University_Name__c);
+                        triggerUniversityFlag = true;
+                    }
+                    if (university.University_Name__c === value2) {
+                        console.log('entered eq2');
+                        $('.autoCompleteUniversity').eq(1).val(university.University_Name__c);
+                        $('.universtityNameText').val(university.University_Name__c);
+                        triggerUniversityFlag = true;
+                    }
+                });
+
+                // Trigger 'change' event if necessary
+                if (triggerUniversityFlag) {
+                    $('.autoCompleteUniversity').trigger('change');
+                    console.log('triggerUniversityFlag==>' + triggerUniversityFlag);
+                }
+            }else {
+                showHtmlMessage('Internal error occured. Kindly contact our Support Team.');
+            }
+        }else {
+            showHtmlMessage('Internal error occured. Kindly contact our Support Team.');
+        }
+    }
+
+    function getDateRange(firstDate, lastDate) {
+        if (moment(firstDate, 'YYYY-MM-DD').isSame(moment(lastDate, 'YYYY-MM-DD'), 'day'))
+            return [lastDate];
+        let date = firstDate;
+        const dates = [date];
+        do {
+            date = moment(date).add(1, 'day');
+            dates.push(date.format('DD/MM/YYYY'));
+        } while (moment(date).isBefore(lastDate));
+        return dates;
+    };
+
+    /* ---------------------------------------------------- Profile Image Upload ---------------------------------------------*/
+        
+    var attachment;
+    var attachmentName;
+    var fileSize;
+    var positionIndex;
+    var doneUploading;
+
+    function previewFile(file) {
+        $('[id$=studPhoto]').attr('src','{!URLFOR($Resource.No_Profile_Image)}');
+        var validFileExtensions = [".jpg", ".jpeg", ".png"];
+        var FileSize = file.files[0].size / 512 / 512; // in KB
+        var sFileName = file.value;
+        if (sFileName.length > 0) {
+            var blnValid = false;
+            for (var j = 0; j < validFileExtensions.length; j++) {
+                var sCurExtension = validFileExtensions[j];
+                if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                    blnValid = true;
+                    console.log('blnValid in loop-->'+blnValid);
+                    break;
+                }
+            }
+            console.log('blnValid-->'+blnValid);
+            if(!blnValid) {
+                showHtmlMessage('Invalid File Format',sFileName + ' is invalid, allowed extension are: '+ validFileExtensions.join(", "));
+                $(file).val('');
+                return false;
+            }else if (FileSize > 1) {
+                showHtmlMessage('Invalid File','File size exceeds 512 KB');
+                $(file).val('');
+                return false;
+            }
+
+            //To set the object URLs of the file in the image.
+            $('[id$=studPhoto]').attr('src', window.URL.createObjectURL(file.files[0]));
+            return true;
+        }
+
+        return false;
+    }
+
+    // To encode the image base64 string.
+    function uploadFile(profileimage) {
+        var maxFileSize = 4350000;      
+        var maxStringSize = 6000000;
+
+        var file = profileimage.files[0];
+        if(file != undefined && previewFile(profileimage)) {
+            if(file.size <= maxFileSize) {
+                attachmentName = file.name;
+                var fileReader = new FileReader();
+                fileReader.onloadend = function(e) {
+                    attachment = window.btoa(this.result);  //Base 64 encode the file before sending it
+                    positionIndex=0;
+                    fileSize = attachment.length;
+                    console.log("Total Attachment Length: " + fileSize);
+                    doneUploading = false;
+                }
+                fileReader.onerror = function(e) {
+                    showHtmlMessage('Invalid File','There was an error reading the file.  Please try again.');
+                }
+                fileReader.onabort = function(e) {
+                    showHtmlMessage('Invalid File','There was an error reading the file.  Please try again.');
+                }
+                fileReader.readAsBinaryString(file);  //Read the body of the file
+            } else {
+                showHtmlMessage('Invalid File','File size exceeds 4 MB');
+            }
+        } else {
+            attachment = '';
+        }
+        
+    }   
+
+    //Method to send a file to be attached to the Account bound to the page by the standardController
+    //Sends parameters: Account Id, Attachment (body), Attachment Name, and the Id of the Attachment if it exists to the controller   
+    async function uploadAttachment() {
+        if(attachment) {
+            var attachmentBody = "";
+            var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000 characters
+            if(fileSize <= positionIndex + chunkSize) {
+                attachmentBody = attachment.substring(positionIndex);
+                doneUploading = true;
+            } else {
+                attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+            }
+            console.log("Uploading " + attachmentBody.length + " chars of " + fileSize);
+            attachmentName = generateFileName(attachmentName);
+            console.log("attachmentName "+ attachmentName);
+            let Result = await sforce.apex.execute("UploadStudentProfileDocument", "uploadFile", {attachmentBody:attachmentBody, file_name:attachmentName });
+
+            if(Result.length > 0) {
+                let objResult = Result[0];
+                console.log('objResult -->'+ objResult);
+                if(objResult) {
+                    $('.studentImage').val(encodeURI(objResult));
+                    clearInputFile();
+                    return true;
+                }else {
+                    showHtmlMessage('Invalid Details','Internal error occured. Kindly contact your Authorized Enrolment Partner.');
+                    return false;
+                }
+            }else {
+                return false;
+            }
+        } else{
+            return false;
+        }
+        
+    }
+
+    function validateStudentImage() {
+        if ($('#attachmentFile').length > 0 && $('#attachmentFile').get(0).files.length != 0) {
+            return uploadAttachment();
+        } else if (!$('.studentImage').val()) {
+            showHtmlMessage('Invalid Details', 'Please Upload Photo.');
+            return false;
+        }
+        return false;
+    }
+
+    function validateImage() {
+        let programName = $('[id$=chooseProgramPanel_ProgramSpecalization]').val();
+        let programTypeList = ['MBA (WX)'];
+        if (!programTypeList.includes(programName)) { 
+            return false;
+        }
+
+        if($('#attachmentFile').length > 0 && $('#attachmentFile').get(0).files.length != 0) {
+            showHtmlMessage('Important Message', 'Kindly click submit button to complete the photo upload.');
+            return true;
+        }
+
+        if (!$('.studentImage').val()) {
+            showHtmlMessage('Invalid Details', 'Please Upload Photo.');
+            return true;
+        }
+        return false;
+    }
+
+    function clearInputFile() {
+        $('#attachmentFile').val('');
+        $('.saveStudentImageSection').hide();
+    }
+
+    function hideDebVerifiedButton() {
+        $('.verifiedButton').hide();
+        $('.verifyDEBId').show();
+    }
+
+    function showDebVerifiedButton() {
+        $('.verifiedButton').show();
+        $('.verifyDEBId').hide();
+    }
+
+    function generateFileName(filename) {
+        if(filename) {
+            var fileExtension = '.' + filename.split('.').pop();
+            var result = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for ( var i = 0; i < 18; i++ ) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result + fileExtension;
+        } else{
+            return null;
+        }
+    }
+
+    function setCallStatus() {
+        //$('[id$=isCalled]').val('false');
+        sessionStorage.setItem('isCalled','false');
+        showLoader();
+    }
+
+    function showLoader() {
+        $('.page-loader-wrapper').show();
+    }
+
+    function hideLoader() {
+        $('.page-loader-wrapper').fadeOut();
+    }
+</script>
+</apex:component>

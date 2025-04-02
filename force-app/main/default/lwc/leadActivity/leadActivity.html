@@ -1,0 +1,51 @@
+<!--
+  @File Name          : leadActivity.html
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 26/5/2020, 12:30:33 pm
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    16/4/2020   shubhranshu     Initial Version
+-->
+<template>
+  <article class="slds-card">
+    <div class="slds-card__body slds-m-around_small">
+
+      <!-- Tab set -->
+      <lightning-tabset variant="scoped">
+        <lightning-tab label="Log a Call">
+          <c-log-of-call record-id={recordId} onchange={handleRefereshChange} type-of-task="Call" lead-detail={leadDetail} lead-name={leadName}></c-log-of-call>
+        </lightning-tab>
+        <lightning-tab label="Email">
+          <c-email-wizard show-modal="true" onchange={handleRefereshChange} to-address={leadEmail} ld={leadDetail}></c-email-wizard>
+        </lightning-tab>
+        <lightning-tab label="New Task">
+          <c-log-of-call record-id={recordId} onchange={handleRefereshChange} type-of-task="Task" enable-edit="true" lead-detail={leadDetail} lead-name={leadName}></c-log-of-call>
+        </lightning-tab>
+      </lightning-tabset>
+      <!-- Tab set ends Here -->
+
+      <!-- Time Line Activity Begins Here -->
+      <ul class="slds-timeline slds-p-top_small">
+        <template if:true={hasTimelineData}>
+          <li if:false={showHeader} class="slds-timeline__actions slds-timeline__actions_inline slds-is-relative">
+            <c-timeline-filter-panel onchange={handleFilterChange}></c-timeline-filter-panel>
+          </li>
+          <template for:each={activites} for:item="activity">
+            <c-timeline-item key={activity.Id} task={activity} record-id={activity.Id}></c-timeline-item>
+          </template>
+        </template>
+        <template if:false={hasTimelineData}>
+          <span class="slds-badge slds-theme_warning">
+            <lightning-icon icon-name="utility:warning" size="x-small"></lightning-icon>&nbsp; No Data Found
+            !!!!
+          </span>
+        </template>
+      </ul>
+      <!-- Time Line Activity Ends Here -->
+    </div>
+  </article>
+
+</template>

@@ -1,0 +1,565 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 03-04-2024
+  @last modified by  : @BK
+-->
+<apex:page renderAs="HTML" controller="AdmissionFormController" cache="false" sidebar="false" showHeader="false"> 
+<apex:form id="frm">
+<!-- <apex:actionfunction name="editDetails" action="{!editDetails}" reRender="pnlChangeICMaster" status="processing"/> -->
+<!-- Conversion Pixel - NMIMS_RegFormComplete_8378391 - DO NOT MODIFY -->
+<script src="https://secure.adnxs.com/px?id=839256&seg=8378391&t=1" type="text/javascript"></script>
+<script type="text/javascript">
+    history.pushState(null, null, 'AdmissionConfirmationForm');
+    window.addEventListener('popstate', function () {
+        history.pushState(null, null, 'AdmissionConfirmationForm');
+    });
+</script>
+<!-- End of Conversion Pixel -->
+    <div style="width:80%; margin:5px auto;font:Normal 12px/30px Helvetica Narrow,sans-serif;">
+        <div style="width:98%; border:3px solid #000000; background:#ffffff;">
+         
+         
+            <!-- Header Start -->
+           
+            <div style="height:16px; margin-top:5px;line-height:20%;">
+                <apex:outputText value="Date: {0,date,dd-MM-yyyy}" style="float:right; margin-right:50px;">
+                
+                   <apex:param value="{!TODAY()}" />
+               </apex:outputText>
+                 
+            </div>
+            <div style="line-height: 70%">
+                <img src="{!URLFOR($Resource.Images,'images/logo.png')}" width="50%" style="margin-left:23%;"/>
+                <!-- <apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive" style="width: 235px"/> -->
+            </div>
+            <div style="margin:10px 0;font-size:15px;line-height: 70%">
+                <center><b>NMIMS CENTRE FOR DISTANCE AND ONLINE EDUCATION</b></center>                 
+            </div>   
+                
+            <div style="margin:10px 0;font-size:13px;margin-top:0px;">
+                <center><b>Admission Form</b></center>                              
+            </div>
+            <apex:image url="{!objLead.nm_StudentImageUrl__c}" height="90" style="display:block;margin-left:auto;margin-right:auto;" rendered="{!IF(objLead.nm_StudentImageUrl__c!=null,true,false)}"/>       
+            <table width="100%" border="0">
+                <tr>
+                    <td width="20%"><b>Registration No:</b></td>
+                    <td width="80%">{!objLead.nm_RegistrationNo__c}</td>
+                </tr>
+            </table>
+              
+            <div style="padding:15px;margin-top:0px;">
+                <div style="padding-left:5px;margin:10px;font-size:13px;background-color:silver">
+                    <b>Personal Details</b>
+                </div>
+                
+                <div align="center" draggable="false" >
+               <!-- <apex:commandButton value="Edit" style="width: 100px; padding: 10px;" id="Edit1"/>-->
+               <!--<apex:commandButton value="Edit" styleClass="btn pgSubmit" id="Edit1" style="width: 100px; padding: 10px;" status="processing" action="{!editDetails}" />-->
+          
+               <apex:commandLink action="{!GoToEditTab}" value="Edit" style="width: 100px; padding: 10px;" id="edit1" reRender="frm" styleClass="btn pgSubmit">
+                   <apex:param name="sectionName" assignTo="{!sectionName}" value="Personal Information"/>
+                   <apex:param name="IsEditFormConfirmation" assignTo="{!IsEditFormConfirmation}" value="true"/>
+               </apex:commandLink>
+               
+                </div>
+                <br/>
+                <table width="100%">
+                    <tr>
+                        <td width="20%"><b>Salutation:</b></td>
+                        <td width="30%">{!objLead.Salutation}</td>
+                        <td width="20%"><b>Name:</b></td>
+                        <td>{!objLead.FirstName}&nbsp;{!objLead.LastName}</td>
+                    </tr>
+                   
+                    <tr>
+                        <td width="20%"><b>Date of Birth:</b></td>
+                        <td width="30%"> <apex:outputText styleClass="ot" value="{0, date, dd '/' MM '/' yyyy}">
+                                <apex:param value="{!objLead.nm_DateOfBirth__c}" /> 
+                            </apex:outputText></td>
+                        <td width="20%"><b>Gender:</b></td>
+                        <td>{!objLead.nm_Gender__c}</td>
+                        
+                    </tr>
+                     <tr>
+                        <td width="20%"><b>Marital Status:</b></td>
+                        <td width="30%">{!objLead.nm_MaritalStatus__c}</td>
+                        <td width="20%"><b>Father's name:</b></td>
+                        <td>{!objLead.Father_Name__c}</td>
+                    </tr>
+                     <tr>
+                        <td width="20%"><b>Mother's Name:</b></td>
+                        <td width="30%">{!objLead.Mother_Name__c}</td>
+                        <td width="20%"><b>Spouse Name:</b></td>
+                        <td>{!objLead.nm_SpouseName__c}</td>
+                    </tr>  
+                     <tr>
+                        <td width="20%"><b>Blood Group:</b></td>
+                        <td width="30%">{!objLead.nm_BloodGroup__c}</td>
+                        <td width="20%"><b>Category:</b></td>
+                        <td>{!objLead.nm_Category__c}</td>
+                    </tr>  
+                     <tr>
+                       <!-- <td width="20%"><b>Others-Specify:</b></td>
+                        <td width="30%"> {!objLead.nm_OtherCategory__c}</td>
+                         -->
+                        <td width="20%"><b>Nationality:</b></td>
+                        <td>{!objLead.nm_Nationality__c}</td>
+                        <td width="20%"><b>Domicile:</b></td>
+                        <td>{!objLead.nm_Domicile__c}</td>
+                    </tr>
+                    <tr>
+                        <apex:outputPanel rendered="{!IF(objLead.nm_Nationality__c == 'Indian',true,false)}">
+                        <td width="20%"><b><apex:outputLabel value="{!IF(objLead.Adhar_Card_Number__c !=  null && objLead.Adhar_Card_Number__c != '','Aadhar Number:','')}" /></b></td>
+                        <td><apex:outputLabel value="{!IF(objLead.Adhar_Card_Number__c !=  null && objLead.Adhar_Card_Number__c != '',objLead.Adhar_Card_Number__c,'')}" /></td>
+                        <td width="20%"><b><apex:outputLabel value="{!IF(objLead.Pancard_no__c !=  null && objLead.Pancard_no__c != '','Pancard Number:','')}" /></b></td>
+                        <td><apex:outputLabel value="{!IF(objLead.Pancard_no__c !=  null && objLead.Pancard_no__c != '',objLead.Pancard_no__c,'')}" /></td>
+                        </apex:outputPanel>
+                    </tr>
+                    <tr>
+                        <td width="20%"><b>Passport Number:</b></td>
+                        <td>{!objLead.nm_Passport__c}</td>
+                    </tr>
+                 </table>
+                    <div style="padding-left:5px;margin:10px 0;font-size:13px;background-color:silver;">
+                        <b>Address of Communication</b>
+                    </div>
+                    
+                    <div align="center" draggable="false" >
+                        <apex:commandLink action="{!GoToEditTab}" value="Edit" style="width: 100px; padding: 10px;" id="edit2" reRender="frm" styleClass="btn pgSubmit">
+                           <apex:param name="sectionName" assignTo="{!sectionName}" value="Address Information"/>
+                           <apex:param name="IsEditFormConfirmation" assignTo="{!IsEditFormConfirmation}" value="true"/>
+                       </apex:commandLink>
+                   </div>
+                   
+                    <br/>
+                    <table width="100%">
+                    <tr>
+                        <td width="20%" style="vertical-align:top;"><b>Shipping Address:</b></td>
+                        <td>{!objLead.House_No_Name_Shipping__c}&nbsp;{!objLead.Shipping_Street__c}&nbsp;
+                         {!objLead.Locality_Name_Shipping__c}&nbsp;{!objLead.Shipping_City__c}<br/>
+                        &nbsp;{!objLead.State_Province_Shipping__c}&nbsp;{!objLead.Country_Shipping__c}&nbsp;{!objLead.Zip_Postal_Code_Shipping__c}
+                        </td>
+                    </tr>
+                    
+                     <tr>
+                        <td width="20%"><b>Mobile Number:</b></td>
+                        <td width="30%">{!objLead.MobilePhone}</td>
+                        <td width="20%"><b>Primary Email:</b></td>
+                        <td>{!objLead.Email}</td>
+                    </tr>
+                    <tr>
+                    
+                        <td width="20%"><b>STD Code:</b></td>
+                        <td width="30%">{!objLead.nm_STDCode__c}</td>
+                        <td width="20%"><b>Phone Number:</b></td>
+                        <td>{!objLead.Phone}</td>
+                    </tr>
+                    <tr>
+                        <td width="20%" style="vertical-align:top;"><b>Permanent Address:</b></td>
+                        <td>{!objLead.nm_HouseNumber_P__c}&nbsp;{!objLead.nm_Street_P__c}&nbsp;
+                        {!objLead.nm_LocalityName_P__c}&nbsp;{!objLead.nm_City_P__c}<br/>
+                        &nbsp;{!objLead.nm_StateProvince_P__c}&nbsp;
+                        {!objLead.nm_Country_P__c} &nbsp; {!objLead.nm_PostalCode_P__c}
+                        
+                        </td>
+                        <td width="20%"><b>Alternate Email:</b></td>
+                        <td width="30%">{!objLead.nm_SecondryEmail__c}</td>
+                    </tr>
+                        
+                 <!--
+                    <tr>
+                       <td width="20%"><b>Alternate Email:</b></td>
+                        <td width="30%">{!objLead.nm_SecondryEmail__c}</td>
+                    </tr>
+                  -->
+                </table>
+              </div>  
+        
+         
+        
+          
+          <div style="padding:15px;">
+            <div style="padding-left:5px;margin:10px 0;font-size:13px;background-color:silver; ">
+                <b>Program Details</b>
+            </div>
+           <div align="center" draggable="false" > 
+             <apex:commandLink action="{!GoToEditTab}" value="Edit" style="width: 100px; padding: 10px;" id="edit3" reRender="frm" styleClass="btn pgSubmit">
+               <apex:param name="sectionName" assignTo="{!sectionName}" value="Program Details"/>
+               <apex:param name="IsEditFormConfirmation" assignTo="{!IsEditFormConfirmation}" value="true"/>
+            </apex:commandLink>
+           </div>
+            
+            <br/>
+            <table width="100%" border="0">
+                <tr>
+                    <td width="20%"><b>Program Name:</b></td>
+                    <td width="30%">{!objLead.nm_ChooseaProgram__c}</td>
+
+                    <td width="20%"><b>Program Type :</b></td>
+                    <td width="30%"><apex:outputLabel value="{!IF(objLead.Program_Type__c == 'M.Sc.','M.Sc. (Applied Finance)',objLead.Program_Type__c)}" /></td>
+                </tr>
+               
+                <apex:outputPanel rendered="{!IF(objLead.Program_Type__c == 'MBA (WX)',true,false)}">
+                <tr>
+                    <!-- <td width="20%"><b>Batch Preference:</b></td>
+                    <td width="30%">{!objLead.nm_Interview_Slot_Preference__c}</td> -->
+                
+                    <td width="20%"><b>Program Specialisation Type:</b></td>
+                    <td width="30%">{!objLead.Specialization_Type__c}</td>
+                </tr>
+                <tr>
+                    <td width="20%"><b>Program Specialisation Preference 1:</b></td>
+                    <td width="30%">
+                        <apex:repeat value="{!MapOfIdVsProgram}" var="key"><apex:outputText rendered="{!key==objLead.nm_Program__c}">{!MapOfIdVsProgram[objLead.nm_Program__c].nm_ProgramName__c}</apex:outputText></apex:repeat>
+                    </td>
+
+                    <td width="20%"><b>Program Specialisation Preference 2:</b></td>
+                    <td width="30%">
+                        <apex:repeat value="{!MapOfIdVsProgram}" var="key"><apex:outputText rendered="{!key==objLead.nm_Program2__c}">{!MapOfIdVsProgram[objLead.nm_Program2__c].nm_ProgramName__c}</apex:outputText></apex:repeat>
+                    </td>
+                </tr>
+                </apex:outputPanel>
+                 <tr>
+                    <td width="20%" valign="top"><b>Eligibility:</b></td>
+                    <td width="30%" >{!objLead.nm_Eligibility_Criteria_Ref__c}</td>
+
+                    <!-- <td width="20%" valign="top"><b>Information Center:</b></td>
+                    <td width="30%" valign="top">{!objLead.IC_Name__c}</td> -->
+                </tr>
+                <tr>
+                    <!-- <td width="20%" valign="top"><b>Self Learning Material:</b></td>
+                    <td width="30%" valign="top">{!objLead.nm_SelfLearningMaterial__c}</td> -->
+                    <!-- <apex:outputPanel rendered="{!IF(objLead.Program_Type__c == 'M.Sc. (AI)',true,false)}">
+                        <td width="20%">
+                            <b>Program Type :</b>
+                        </td>
+                        <td width="30%">{!objLead.nm_Program__c}</td>
+                    </apex:outputPanel> -->
+                    <!-- <td width="20%"><b>Are you from Defence:</b></td>
+                    <td width="30%">{!objLead.Are_you_from_Defence__c}</td> -->
+                </tr>
+                <!-- <tr>
+                    <td width="20%"><b>Is Lateral:</b></td>
+                    <td width="30%">{!objLead.Is_Lateral__c}</td>
+                </tr> -->
+                
+            </table>
+            
+            <div style="padding-left:5px;margin:10px 0;font-size:13px;background-color:silver;">
+                <b>Academic Information</b>
+            </div>
+            <div align="center" draggable="false" >
+                <apex:commandLink action="{!GoToEditTab}" value="Edit" style="width: 100px; padding: 10px;" id="edit4" reRender="frm" styleClass="btn pgSubmit">
+                   <apex:param name="sectionName" assignTo="{!sectionName}" value="Academic Information"/>
+                   <apex:param name="IsEditFormConfirmation" assignTo="{!IsEditFormConfirmation}" value="true"/>
+               </apex:commandLink>
+           </div>
+           
+            <br/>
+            <table width="100%">
+                 <tr>
+                        <td width="25%"><b>10th %:</b></td>
+                        <td width="25%">{!objLead.nm_10thPercentage__c}</td>
+                        <td width="25%"><b>10th Board:</b></td>
+                        <td width="25%">{!objLead.nm_NameofBoard__c}</td>
+                </tr>
+                <tr>
+                        <td width="25%"><b>Name of School(10th):</b></td>
+                        <td width="25%">{!objLead.nm_NameofSchool__c}</td>
+                        <td width="25%"><b>Year of Completion(10th):</b></td>
+                        <td width="25%">{!objLead.nm_YearofCompletion__c}</td>
+                </tr>
+                <tr>
+                    <td colspan="4"><hr/></td>
+                </tr>
+                <tr>
+                        <td width="25%"><b>Diploma / 12th:</b></td>
+                        <td width="25%">{!objLead.nm_Class12OrDiploma__c}</td> 
+                        <td width="25%"></td>
+                        <td width="25%"></td>
+                </tr>
+                <apex:outputPanel rendered="{!IF(objLead.nm_Class12OrDiploma__c == '12th Grade' || objLead.nm_Class12OrDiploma__c == 'XII/HSC',true,false)}">
+                <tr>
+                        <td width="25%"><b>12th %:</b></td>
+                        <td width="25%">{!objLead.nm_12thPercentage__c}</td>
+                </tr>
+                <tr>
+                        <td width="25%"><b>12th Board:</b></td>
+                        <td width="25%">{!objLead.nm_NameofBoard12__c}</td>
+                        <td width="25%"><b>Year of Completion(12th):</b></td>
+                        <td width="25%">{!objLead.nm_YearofCompletion12__c}</td>
+                        
+                </tr>
+                <tr>
+                        <td width="25%"><b>Name of School(12th):</b></td>
+                        <td width="25%">{!objLead.nm_NameofSchool12__c}</td>
+                        <td width="25%"><b>Stream (12th):</b></td>
+                        <td width="25%">{!objLead.nm_Stream__c}</td>
+                        
+                </tr>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(objLead.nm_Class12OrDiploma__c == 'Diploma',true,false)}">
+                <tr>
+                        <td width="25%"><b>Diploma %:</b></td>
+                        <td width="25%">{!objLead.Result_Diploma__c}</td>
+                </tr>
+                <tr>    
+                        <td width="25%"><b>Diploma Name:</b></td>
+                        <td width="25%">{!objLead.nm_DiplomaName__c}</td>
+                        <td width="25%"><b>School/College/Universuty Name:</b></td>
+                        <td width="25%">{!objLead.nm_DiplomaSchoolCollegeUniversityname__c}</td>
+                </tr>
+                <tr>    
+                        <td width="25%"><b>Diploma Stream:</b></td>
+                        <td width="25%">{!objLead.nm_StreamDiploma__c}</td>
+                        <td width="25%"><b>Duration of Diploma(In Years):</b></td>
+                        <td width="25%">{!objLead.nm_DurationOfDiploma__c}</td>
+                </tr>
+                <tr>
+                        <td width="25%"><b>Year of Completion(Diploma): </b></td>
+                        <td width="25%">{!objLead.nm_DiplomaYearOfCompletion__c}</td>  
+                </tr>
+                </apex:outputPanel>
+                
+                <tr>
+                    <td colspan="4"><hr/></td>
+                </tr>
+                <tr>
+                    <td width="25%"><b>Bachelors Degree Name:</b></td>
+                    <td width="25%"><apex:outputLabel value="{!IF(objLead.nm_BachelorsDegreeName__c == 'Others',objLead.nm_OtherBachelorsDegreeName__c,objLead.nm_BachelorsDegreeName__c)}" /></td>
+                    <td width="25%"><b>Specialization:</b></td>
+                    <td width="25%">{!objLead.nm_Specialization__c}</td>
+                        
+                </tr>
+                <tr>
+                    <td width="25%"><b>College Name:</b></td>
+                    <td width="25%">{!objLead.nm_NameOfCollege__c}</td>
+                    <td width="25%"><b>University Name:</b></td>
+                    <td width="25%"><apex:outputLabel value="{!IF(objLead.nm_NameofUniversity__c == 'Other',objLead.nm_Other_University_Name__c,objLead.nm_NameofUniversity__c)}" /></td>
+                        
+                </tr>
+                 <tr>
+                    <td width="25%"><b>Year of Completion:</b></td>
+                    <td width="25%">{!objLead.nm_YearofCollegeCompletion__c}</td>
+                    <td width="25%"><b>Bachelors Degree %:</b></td>
+                    <td width="25%">{!objLead.nm_BachelorsDegreePercentage__c}</td>
+                 </tr>
+                 <tr>       
+                        <td width="25%"><b>Graduation Degree Mode:</b></td>
+                        <td width="25%">{!objLead.nm_GraduationDegreeMode__c}</td>
+                        <td width="25%"><b><apex:outputLabel value="{!IF(objLead.nm_GraduationDegreeMode__c == 'Any Other','Other Degree Mode:','')}"/></b></td>
+                        <td width="25%"><apex:outputLabel value="{!IF(objLead.nm_GraduationDegreeMode__c == 'Any Other',objLead.nm_OtherGraduationDegreeMode__c,'')}"/></td>
+                </tr>
+                
+                
+                <apex:outputPanel rendered="{!IF(objLead.Name_of_College1__c != null,true,false)}">
+                <tr>
+                    <td colspan="4"><hr/></td>
+                </tr>
+                <tr>
+                    <td width="25%"><b>Name of Program:</b></td>
+                    <td width="25%">{!objLead.Name_of_Program1__c}</td>
+                    <td width="25%"><b>Name of College:</b></td>
+                    <td width="25%">{!objLead.Name_of_College1__c}</td>
+                </tr>
+                <tr>
+                    <td width="25%"><b>Name of University:</b></td>
+                    <td width="25%">{!objLead.Name_of_University1__c}</td>
+                    <td width="25%"><b>Year of Passing:</b></td>
+                    <td width="25%">{!objLead.Year_of_Passing1__c}</td>
+                </tr>
+                <tr>
+                    <td width="25%"><b>Duration of Program (Months):</b></td>
+                    <td width="25%">{!objLead.Duration_of_Program1__c}</td>
+                    <td width="25%"><b>Percentage:</b></td>
+                    <td width="25%">{!objLead.Percentage1__c}</td>
+                </tr> 
+                <tr>
+                    <td width="25%"><b>Graduation Degree Mode:</b></td>
+                    <td width="25%">{!objLead.Graduation_Degree_Mode1__c}</td>  
+                    <td width="25%"><b><apex:outputLabel value="{!IF(objLead.Graduation_Degree_Mode1__c == 'Any Other','Other Degree Mode:','')}"/></b></td>
+                    <td width="25%"><apex:outputLabel value="{!IF(objLead.Graduation_Degree_Mode1__c == 'Any Other',objLead.Other_Graduation_Degree_Mode1__c,'')}" /></td>          
+                </tr>
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!IF(objLead.Name_of_College2__c != null,true,false)}">
+                <tr>
+                    <td colspan="4"><hr/></td>
+                </tr>
+                <tr>
+                    <td width="25%"><b>Name of Program:</b></td>
+                    <td width="25%">{!objLead.Name_of_Program2__c}</td>
+                    <td width="25%"><b>Name of College:</b></td>
+                    <td width="25%">{!objLead.Name_of_College2__c}</td>
+                </tr>
+                <tr>
+                    <td width="25%"><b>Name of University:</b></td>
+                    <td width="25%">{!objLead.Name_of_University2__c}</td>
+                    <td width="25%"><b>Year of Passing:</b></td>
+                    <td width="25%">{!objLead.Year_of_Passing2__c}</td>
+                </tr>
+                <tr>
+                    <td width="25%"><b>Duration of Program (Months):</b></td>
+                    <td width="25%">{!objLead.Duration_of_Program2__c}</td>
+                    <td width="25%"><b>Percentage:</b></td>
+                    <td width="25%">{!objLead.Percentage2__c}</td>
+                </tr> 
+                <tr>
+                    <td width="25%"><b>Graduation Degree Mode:</b></td>
+                    <td width="25%">{!objLead.Graduation_Degree_Mode2__c}</td>  
+                    <td width="25%"><b><apex:outputLabel value="{!IF(objLead.Graduation_Degree_Mode2__c == 'Any Other','Other Degree Mode:','')}"/></b></td>
+                    <td width="25%"><apex:outputLabel value="{!IF(objLead.Graduation_Degree_Mode2__c == 'Any Other',objLead.Other_Graduation_Degree_Mode2__c,'')}" /></td>          
+                </tr>
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!IF(objLead.Name_of_College3__c != null,true,false)}">
+                <tr>
+                    <td colspan="4"><hr/></td>
+                </tr>
+                <tr>
+                    <td width="25%"><b>Name of Program:</b></td>
+                    <td width="25%">{!objLead.Name_of_Program3__c}</td>
+                    <td width="25%"><b>Name of College:</b></td>
+                    <td width="25%">{!objLead.Name_of_College3__c}</td>
+                </tr>
+                <tr>
+                    <td width="25%"><b>Name of University:</b></td>
+                    <td width="25%">{!objLead.Name_of_University3__c}</td>
+                    <td width="25%"><b>Year of Passing:</b></td>
+                    <td width="25%">{!objLead.Year_of_Passing3__c}</td>
+                </tr>
+                <tr>
+                    <td width="25%"><b>Duration of Program (Months):</b></td>
+                    <td width="25%">{!objLead.Duration_of_Program3__c}</td>
+                    <td width="25%"><b>Percentage:</b></td>
+                    <td width="25%">{!objLead.Percentage3__c}</td>
+                </tr> 
+                <tr>
+                    <td width="25%"><b>Graduation Degree Mode:</b></td>
+                    <td width="25%">{!objLead.Graduation_Degree_Mode3__c}</td>  
+                    <td width="25%"><b><apex:outputLabel value="{!IF(objLead.Graduation_Degree_Mode3__c == 'Any Other','Other Degree Mode:','')}"/></b></td>
+                    <td width="25%"><apex:outputLabel value="{!IF(objLead.Graduation_Degree_Mode3__c == 'Any Other',objLead.Other_Graduation_Degree_Mode3__c,'')}" /></td>          
+                </tr>
+                </apex:outputPanel>
+                
+            </table>   
+            
+               <div style="padding-left:5px;margin:10px 0;font-size:13px;background-color:silver;">
+            
+                <b>Work Experience</b>
+            </div>
+            <div align="center" draggable="false" >
+                <apex:commandLink action="{!GoToEditTab}" value="Edit" style="width: 100px; padding: 10px;" id="edit5" reRender="frm" styleClass="btn pgSubmit">
+                   <apex:param name="sectionName" assignTo="{!sectionName}" value="Work Experience"/>
+                   <apex:param name="IsEditFormConfirmation" assignTo="{!IsEditFormConfirmation}" value="true"/>
+               </apex:commandLink>
+           </div>
+           
+            <br/>
+            
+            <!-- To Show Work Experieence for the Degree Program -->
+            <apex:outputPanel rendered="{!IF(objLead.Reason__c == '' || objLead.Reason__c == null,true,false)}">
+            <apex:variable value="{!1}" var="count"/>
+            <apex:variable value="{!lstWorkExperience.size}" var="WEsize"/>
+            <table width="100%">
+                <tr>
+                    <td width="25%"><b>Total Work Experience:</b></td>
+                    <td width="25%">{!objLead.Total_Work_Experience__c}</td>
+                    <td width="25%"></td>
+                    <td width="25%"></td>
+                </tr>
+            </table>
+            
+            <apex:repeat value="{!lstWorkExperience}" var="v">
+                <table width="100%">
+                    <tr>
+                        <td width="25%"><b>Company Name:</b></td>
+                        <td width="25%">{!v.nm_CompanyName__c}</td>
+                        <td width="25%"><b>Department:</b></td>
+                        <td width="25%"><apex:outputText value="{!IF(v.nm_Department__c == 'Others',v.Department__c,v.nm_Department__c)}" /></td>
+                    </tr>
+                    <tr>
+                        <td width="25%"><b>Designation:</b></td>
+                        <td width="25%" ><apex:outputText value="{!IF(v.nm_Designation__c == 'Others',v.nm_OtherDesignation__c,v.nm_Designation__c)}" /></td>
+                        <td width ="25%"><b> Industry :</b></td>
+                        <td width="25%"><apex:outputText value="{!IF(v.Industry__c == 'Others',v.OtherIndustry__c,v.Industry__c)}" /></td>
+                    </tr> 
+                    <apex:outputPanel rendered="{!IF(WEsize != count,true,false)}">
+                        <tr>
+                            <td colspan="4"><hr/></td>
+                        </tr>   
+                    </apex:outputPanel>         
+                </table>
+                <apex:variable value="{!count + 1}" var="count"/>
+            </apex:repeat>
+            </apex:outputPanel>
+            
+            <table width="100%">
+                <tr>    
+                    <apex:outputPanel rendered="{!IF(objLead.Reason__c != '' && objLead.Reason__c != null,true,false)}">
+                    <td width="25%"><b>Reason For Not working:</b></td>
+                    <td width="25%">{!objLead.Reason__c}</td>
+                    </apex:outputPanel>
+                    <td width="25%"><b>LinkedIn URL:</b></td>
+                    <td width="25%">{!objLead.LinkedIn_URL__c}</td>
+                    <apex:outputPanel rendered="{!IF(objLead.Reason__c == '' || objLead.Reason__c == null,true,false)}">
+                    <td width="25%"></td>
+                    <td width="25%"></td>
+                    </apex:outputPanel>
+                </tr>
+            </table>
+            
+         </div>
+         <div class="text-right col-sm-6" style="margin-bottom:40px;"> 
+                <apex:commandButton value="Make Payment" styleClass="btn pgSubmit" id="next5" status="processing" action="{!MakePayment}" style="width: 100px; padding: 10px; float:right;" /> 
+             </div>
+        </div>
+    </div>
+    
+   
+    </apex:form>
+
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}" />
+    <script src="../../soap/ajax/45.0/connection.js" type="text/javascript"></script>
+    <script src="../../soap/ajax/45.0/apex.js" type="text/javascript"></script>
+    <apex:includeScript value="{!$Resource.jquerycookiemin}"/>
+    <script type="text/javascript">
+        var studentNoValue = '{!objLead.nm_RegistrationNo__c}';
+        initSessionCookie(studentNoValue);
+
+        function initSessionCookie(studentNoValue){
+            var date = new Date();
+            var minutes = 30;
+            date.setTime(date.getTime() + (minutes * 60 * 1000));
+            console.log('expire '+date+' studentNoValue '+studentNoValue);
+            if(studentNoValue){
+            generateSessionAttribute(studentNoValue,date);
+            }
+        }
+
+        async function generateSessionAttribute(cookievalue,date){
+          // $.cookie("studentsession", null);
+          let encryptedString = '';
+        //   console.log('cookievalue '+cookievalue);
+          let Result = await sforce.apex.execute("GetLoanDetailsService", "generateChecksumForSession", {studentNo: cookievalue});
+            // console.log('Result '+Result);
+            if(Result.length > 0) {
+                if(Result) {
+                    encryptedString = Result;
+                }else {
+                    showHtmlMessage('Internal error occured. Kindly contact your Authorized Enrolment Partner.');
+                }
+            }else {
+                console.log('error no record found')
+            }
+            if(encryptedString){
+              $.cookie("studentsession", encryptedString ,{ expires: date });
+              $.cookie("studentsessionExpire", date);
+            //   console.log($.cookie("studentsession"));
+            }
+          
+        }
+    </script>
+</apex:page>

@@ -1,0 +1,57 @@
+<apex:page lightningStylesheets="true" sidebar="false">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <apex:includeLightning />
+    <style>
+        #lightning {
+            /* min-height:100vh; */
+            font-size: 13px
+        }
+    </style>
+
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Student Interview rating</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </head>
+
+
+    <body>
+        <apex:form >
+
+
+            <div id="lightning" />
+            <script>
+                function getQueryParameters() {
+                    let params = {};
+                    let search = location.search.substring(1);
+                    if (search) {
+                        params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', (key, value) => {
+                            return key === "" ? value : decodeURIComponent(value)
+                        });
+                    }
+                    console.log(search);
+                    console.log(params);
+                    return params;
+                }
+
+                var params = getQueryParameters();
+                console.log(JSON.stringify(params).includes('sfdc.tabName'));
+                $Lightning.use("c:aepPurchaseLicesneApp", function () {
+                    $Lightning.createComponent("c:AepMerchandise", { "parameters": params },
+                        "lightning",
+                        function (cmp) {
+                            console.log('component created successfully ...');
+                        });
+                });
+
+                console.log('params ' + JSON.stringify(params));
+
+
+            </script>
+        </apex:form>
+    </body>
+
+    </html>
+</apex:page>

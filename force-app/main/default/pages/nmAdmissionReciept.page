@@ -1,0 +1,126 @@
+<apex:page controller="nmAdmissionPaymentReciept" renderAs="pdf">
+<!---->
+    <div style="width:98%; margin:5px auto;font:Normal 16px/30px Helvetica Narrow, sans-serif;">
+        <div style="width:100%; border:3px solid #000000; background:#ffffff; float:left; margin-bottom:15px;">
+            <!-- Header Start -->
+            <div style="height:16px; margin-top:5px;">
+                <apex:outputText value="Date: {0,date,dd-MM-yyyy}" style="float:right; margin-right:50px;">
+                   <apex:param value="{!TODAY()}" />
+               </apex:outputText>
+            </div>
+            <div>
+                <img src="{!URLFOR($Resource.Images,'images/logo.png')}" width="50%" style="margin-left:23%;"/>
+            </div>
+            <div style="margin:10px 0;font-size:15px;">
+                <center><b>PAYMENT ACKNOWLEDGEMENT RECEIPT</b>(for Admission)</center>
+            </div>
+            <!-- Header End -->
+            <div id = "Contents" style="margin-left:5%; margin-right:5%; margin-top:5%;font-weight: normal">
+             
+                
+                 <div style="margin-bottom:2%"><b>{!IF(mapOfPaymentRecord['StudentDetails'].nm_OpportunityNew__r.Account.nm_StudentNo__c !=null,'Student No.','Registration No.')}:</b>&nbsp;&nbsp;{!mapOfPaymentRecord['StudentDetails'].nm_Lead__r.nm_RegistrationNo__c}{!IF(mapOfPaymentRecord['StudentDetails'].nm_OpportunityNew__r.Account.nm_StudentNo__c !=null,mapOfPaymentRecord['StudentDetails'].nm_OpportunityNew__r.Account.nm_StudentNo__c,mapOfPaymentRecord['StudentDetails'].nm_OpportunityNew__r.Account.nm_RegistrationNumber__c)} </div>
+              
+
+                <div style="margin-bottom:2%"><b>Name:</b>&nbsp;&nbsp;{!mapOfPaymentRecord['StudentDetails'].nm_Lead__r.Name}{!mapOfPaymentRecord['StudentDetails'].nm_OpportunityNew__r.Account.name}{!mapOfPaymentRecord['StudentDetails'].Validity_Extension__r.Related_Account__r.Name}</div>
+                <div style="margin-bottom:2%"><b>Receipt Date:</b>&nbsp;&nbsp;<apex:outputText value="{0,date,dd-MM-yyyy}"><apex:param value="{!TODAY()}" /></apex:outputText></div> 
+                <div style="margin-bottom:2%"><b>IC Name:</b>&nbsp;&nbsp;{!mapOfPaymentRecord['StudentDetails'].nm_Lead__r.nm_InformationCenter__r.name}{!mapOfPaymentRecord['StudentDetails'].nm_OpportunityNew__r.Account.nm_Centers__r.Name}{!mapOfPaymentRecord['StudentDetails'].Validity_Extension__r.Related_Account__r.nm_Centers__r.Name}</div>
+                <div style="margin-bottom:2%"><b>Program:</b>&nbsp;&nbsp;{!mapOfPaymentRecord['StudentDetails'].nm_Lead__r.nm_Program__r.name}{!mapOfPaymentRecord['StudentDetails'].nm_OpportunityNew__r.nm_Program__r.name}{!mapOfPaymentRecord['StudentDetails'].Validity_Extension__r.Student_Program_Validity__c} {!IF(programName2!=null && programName2!='','; '+programName2,'') }</div>
+                <apex:outputLabel rendered="{!IF((mapOfPaymentRecord['StudentDetails'].nm_OpportunityNew__r.nm_Year__c !=null || mapOfPaymentRecord['StudentDetails'].nm_Lead__r.nm_Year__c !=null),true,false)}">
+                <div style="margin-bottom:2%"><b>Year:</b>&nbsp;&nbsp;{!mapOfPaymentRecord['StudentDetails'].nm_OpportunityNew__r.nm_Year__c}{!mapOfPaymentRecord['StudentDetails'].nm_Lead__r.nm_Year__c}</div>
+                <div style="margin-bottom:2%"><b>Session:</b>&nbsp;&nbsp;{!mapOfPaymentRecord['StudentDetails'].nm_OpportunityNew__r.nm_Session__c}{!mapOfPaymentRecord['StudentDetails'].nm_Lead__r.nm_Session__c}</div>
+                </apex:outputLabel>
+                <div style="margin-top:10px; margin-bottom:15px;">
+                    <table style="border:1px solid black;border-collapse:collapse; align:center; text-align:center; width:600px;">
+                        <tr>
+                            <th style="border:1px solid black;"> 
+                                <apex:outputText value="Transaction ID" rendered="{!mapOfPaymentRecord['StudentDetails'].nm_ModeOfPayment__c=='Online'}"/>
+                                <apex:outputText value="Demand Draft" rendered="{!mapOfPaymentRecord['StudentDetails'].nm_ModeOfPayment__c=='Demand Draft'}"/>
+                                <apex:outputText value="Challan" rendered="{!mapOfPaymentRecord['StudentDetails'].nm_ModeOfPayment__c=='Challan'}"/>
+                            </th>
+                            <th style="border:1px solid black;">Transaction Date</th>
+                            <th style="border:1px solid black;">Mode</th>
+                            <apex:outputText rendered="{!mapOfPaymentRecord['StudentDetails'].Choose_program__c  =='Certificate Programs'}"> 
+                            <th style="border:0.6px solid black;">Amount</th>    
+                            <th style="border:0.6px solid black;">CGST(9%)</th>
+                            <th style="border:0.6px solid black;">SGST(9%)</th>
+                            </apex:outputText>
+                            <th style="border:1px solid black;">Total Amount</th>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black;">{!IF(mapOfPaymentRecord['StudentDetails'].nm_ModeOfPayment__c=='Online',mapOfPaymentRecord['StudentDetails'].nm_TransactionID__c,mapOfPaymentRecord['StudentDetails'].nm_DemandDraftNumber__c)}</td>
+                            <td style="border:1px solid black;"><apex:outputText value="{0,date,dd-MM-yyyy}"><apex:param value="{!mapOfPaymentRecord['StudentDetails'].nm_TransactionDate__c}" /></apex:outputText></td>
+                            <td style="border:1px solid black;">{!mapOfPaymentRecord['StudentDetails'].nm_ModeOfPayment__c}</td>
+                            <apex:outputText rendered="{!mapOfPaymentRecord['StudentDetails'].Choose_program__c =='Certificate Programs'}">
+                                
+                                <td style="border:1px solid black;">Rs.{!IF(mapOfPaymentRecord['StudentDetails'].nm_Amount__c == 1500, Round((mapOfPaymentRecord['StudentDetails'].nm_ActualPaymentAmmount__c - mapOfPaymentRecord['StudentDetails'].nm_ActualPaymentAmmount__c*0.18),
+                                    2),Round(mapOfPaymentRecord['StudentDetails'].nm_ActualPaymentAmmount__c - mapOfPaymentRecord['StudentDetails'].nm_ActualPaymentAmmount__c*0.18,
+                                    2))} </td>
+                            <td style="border:1px solid black;">{!IF(mapOfPaymentRecord['StudentDetails'].nm_Amount__c == 1500, mapOfPaymentRecord['StudentDetails'].nm_ActualPaymentAmmount__c*0.09, Round((mapOfPaymentRecord['StudentDetails'].nm_ActualPaymentAmmount__c*0.09),2))}</td>
+                            <td style="border:1px solid black;">{!IF(mapOfPaymentRecord['StudentDetails'].nm_Amount__c == 1500, mapOfPaymentRecord['StudentDetails'].nm_ActualPaymentAmmount__c*0.09, Round((mapOfPaymentRecord['StudentDetails'].nm_ActualPaymentAmmount__c*0.09),2))}</td>
+                        </apex:outputText>
+                            <td style="border:1px solid black;">Rs.{!IF(mapOfPaymentRecord['StudentDetails'].nm_ModeOfPayment__c=='Online',mapOfPaymentRecord['StudentDetails'].nm_ActualPaymentAmmount__c,mapOfPaymentRecord['StudentDetails'].nm_Amount__c)}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="margin-bottom:2%">Payment is successful and total amount paid is Rs. {!mapOfPaymentRecord['StudentDetails'].nm_ActualPaymentAmmount__c}</div>
+                 <apex:outputPanel rendered="{!IF(mapOfPaymentRecord['StudentDetails'].nm_PaymentType__c == 'Coursera', true,false)}">
+                <div>(You can opt for Coursera cancellation within 7 days only)</div>
+                </apex:outputPanel>
+                <div style="margin-bottom:2%">Disclaimer: Payment is subject to realization.</div>
+                <div style="margin-bottom:2%">(This is a computer generated acknowledgement hence no need of Signature).</div>
+                <div style="margin-bottom:150px"></div> 
+                <!--------------------------------------------------Installment Note -------------------------------------------------------------------------------------------------------------->
+                        <apex:outputPanel rendered="{!IF(mapOfPaymentRecord['StudentDetails'].nm_PaymentType__c =='Installment',true,false)}">
+                          <div class="row" style="overflow:auto;font-size:14px;width: 100%;height:100%;">
+                            <!--<p style="color:red;">Important Note:</p>
+                            <ul><p><span style="color:red">1.</span>Candidate has the facility of paying the Program fees in 2 instalments (1st instalment – Initial payment, 2nd instalment – Balance payment) only.</p>
+                             <p><span style="color:red">2.</span>If the candidate is not able to pay the 2nd instalment and/or not able to complete his admission process by the end of the drive  i.e. 7th March, 2017, Administrative charges amounting to Rs. 2500/- will be deducted and the balance amount will be Refunded to the candidate.</p>
+                             <p><span style="color:red">3.</span>2nd Instalment and the eligibility documents should be submitted on or prior the cut-off dates.</p>
+                             <table border="1" bordercolor="#000000" style="background-color:#F7F7F7" width="600" cellpadding="2" cellspacing="0">
+                                <tr>
+                                    <th>Particulars</th>
+                                    <th>Date</th>
+                                </tr>
+                                <tr>
+                                 <td>Admission with Normal Fee</td>
+                                 <td>15th September, 2016 (Thursday) to 2nd February, 2017 (Thursday)</td>
+                                </tr>
+                                <tr>
+                                    <td>Admission with Late fees of Rs. 500/-</td>
+                                    <td>3rd February, 2017 (Friday) to 21st February, 2017 (Tuesday)</td>
+                                </tr>
+                                <tr>
+                                    <td>Admission with Late fees of Rs. 1000/-</td>
+                                    <td>22nd February, 2017 (Wednesday) to 7th March, 2017 (Tuesday)</td>
+                                </tr>
+                             </table>
+                            <p> <span style="color:red">4.</span>Below is the chart showing the 2nd instalment payable in Normal and late fee slabs: eg. 1st Instalment paid is “5000” then the 2nd instalments applicable will be as follows:</p>
+                                <table border="1" bordercolor="#000000" style="background-color:#F7F7F7" width="600" cellpadding="2" cellspacing="0">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>2nd Instalment payable</th>
+                                    </tr>
+                                    <tr>
+                                        <td>On or before 2nd February, 2017</td>
+                                        <td>13000/- (Program fee minus 1st instalment) i.e. 18000 – 5000 = 13000/-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Between 3rd February, 2017 to 21st February, 2017</td>
+                                        <td>13500/- (Program fee plus late fee minus 1st instalment) i.e. (18000 + 500) – 5000 = 13500/-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Between 22nd February, 2017 to 7th March, 2017</td>
+                                        <td>14000/- (Program fee plus late fee minus 1st instalment) i.e. (18000 + 1000) – 5000 = 14000/-</td>
+                                    </tr>
+                                </table>
+                                <p><span style="color:red">5.</span>Even if the entire fees is paid before 2nd Feb, but the documents are submitted after 2nd Feb, late fees would be applicable as per the slab mentioned in point number 3.</p>
+                            </ul>-->
+                            <!-- <apex:include pageName="nm_InstallmentNote"/> -->
+                            <apex:outputText value="{!InstallmentDisclaimer}" escape="false"></apex:outputText>
+                            </div>
+                        </apex:outputPanel>
+<!--------------------------------------------------------end ------------------------------------------------------------------------------------------------------------------------>                
+            </div>
+        </div>
+    </div>  
+</apex:page>

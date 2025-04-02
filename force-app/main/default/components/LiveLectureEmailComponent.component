@@ -1,0 +1,11 @@
+<apex:component controller="LiveLectureEmailComponentController" access="global">
+    <apex:attribute access="global" name="oppId" assignTo="{!OpportunityId}" type="String" description="Opportunity ID"/>    
+    <!-- <apex:attribute access="global" name="emailNameFromEmail" assignTo="{!emailName}" type="String" description="Email Name"/>     -->
+
+<!-- Begin Default Content REMOVE THIS -->
+<!-- <h1>Congratulations</h1>
+This is your new Component {!CourseCount}  -->
+{!RecordedCount} subjects - {!RecordedName} and live lectures for {!CourseCount} subjects - {!CoursesName}.
+<!-- {!emailName} {!CoursesName} -->
+<!-- End Default Content REMOVE THIS -->
+</apex:component>

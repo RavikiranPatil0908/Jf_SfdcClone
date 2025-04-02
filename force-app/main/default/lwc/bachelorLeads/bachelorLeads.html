@@ -1,0 +1,387 @@
+<!--
+  @File Name          : bachelorLeads.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 07-04-2020
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    1/7/2020   @BK     Initial Version
+-->
+<template>
+
+    <div class="slds-show_medium">
+        <div class="test-listViewManager slds-card slds-card_boundary slds-grid slds-grid_vertical forceListViewManager">
+            <div class="slds-page-header_object-home slds-page-header_joined slds-page-header_bleed slds-page-header slds-shrink-none test-headerRegion forceListViewManagerHeader bottom-border">
+                <div class="slds-grid">
+                    <div class="slds-col slds-has-flexi-truncate firstHeaderRow">
+                        <div class="slds-media slds-no-space slds-grow">
+                            <div class="slds-media__figure">
+                                <lightning-icon class="slds-align_absolute-center" icon-name="standard:lead" alternative-text="Lead"
+                                    size="medium"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <nav role="navigation" aria-label="Breadcrumbs">
+                                    <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                                        <li class="slds-breadcrumb__item slds-line-height_reset">
+                                            <span class="slds-var-p-right_x-small uiOutputText forceBreadCrumbItem">Leads</span>
+                                        </li>
+                                    </ol>
+                                </nav>
+                                <h1 class="slds-truncate slds-page-header__title slds-text-color_default">
+                                    <a href="javascript:void(0);" class="slds-card__header-link" title="Bachelor Leads">
+                                        <span>Bachelor Leads</span>
+                                    </a>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-align-bottom">
+                        <ul class="slds-list_horizontal slds-has-dividers_left">
+                            <template for:each={dividers} for:item="item">
+                                <li class="slds-item" key={item}>{item}</li>
+                            </template>
+                        </ul>
+                    </div>
+                    <div class="slds-col slds-no-flex slds-grid slds-align-bottom slds-shrink">
+                        <div class="search-in-list slds-m-left_large slds-is-relative">
+                            <lightning-input type="search" data-key="search" placeholder="Search the list..." value={searchVal} onchange={handleBlur} onfocus={loadPopUp} onblur={hidePopUp} autocomplete="off"></lightning-input>
+                            <div role="tooltip" id="listviewSearchTooltip-186" style="width: 15rem;" class={popoverClass}>
+                                <div class="slds-popover__body">Name, Email, Mobile No,and Registration No are the searchable fields. Use filters or sort on other fields instead.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-no-flex slds-grid slds-align-bottom">
+                        <div class="slds-m-left_xx-small">
+                            <lightning-button-group>
+                                <lightning-button-icon icon-name="utility:loop"  alternative-text="Refersh" title="Refersh" data-key="refersh" onclick={handleClick}></lightning-button-icon>
+                                <lightning-button-icon icon-name="utility:filterList"  alternative-text="Filter" title="Filter" data-key="filter" onclick={handleClick}></lightning-button-icon>
+                            </lightning-button-group>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid listDisplays safari-workaround-anchor">
+                <div class="slds-grid listViewContainer safari-workaround slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 bottom-border" if:true={showFilter}>
+                        <div class="slds-text-heading_small slds-p-horizontal_small slds-p-top_x-small">Filters</div>
+                        <fieldset class="slds-form-element slds-form-element_compound">
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element__row slds-wrap">
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-combobox label="Status" 
+                                            onchange={handleStatusChange} 
+                                            options={controllingValues} 
+                                            placeholder="--None--" 
+                                            value={filters.Status}>
+                                        </lightning-combobox>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-combobox label="Lead Description" 
+                                            onchange={handleChange} 
+                                            options={dependentValues} 
+                                            placeholder="--None--" 
+                                            value={filters.Lead_Description__c}
+                                            data-key="Lead_Description__c"
+                                            disabled={isEmpty}>
+                                        </lightning-combobox>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-input type="date" data-key="Next_Follow_up__c" value={filters.Next_Follow_up__c} label="Next Follow Up time" onchange={handleChange}></lightning-input>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-combobox label="Lead Source" 
+                                            onchange={handleChange} 
+                                            options={leadSourceValues} 
+                                            placeholder="--None--" 
+                                            data-key="LeadSource"
+                                            value={filters.LeadSource}>
+                                        </lightning-combobox>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-combobox label="Program Type" 
+                                            onchange={handleChange} 
+                                            options={programTypeValues} 
+                                            placeholder="--None--" 
+                                            data-key="Program_Type__c"
+                                            value={filters.Program_Type__c}>
+                                        </lightning-combobox>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-input type="date" data-key="CreatedDate" value={filters.CreatedDate} label="Created Date" onchange={handleChange}></lightning-input>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-p-around_small">
+                                        <div class="slds-float_right">
+                                            <lightning-button label="Cancel" data-key="cancel" class="slds-p-right_small"
+                                                title="close" onclick={handleClick}></lightning-button>
+                                            <lightning-button variant="brand" label="Save" data-key="save" 
+                                                title="Apply Filter" onclick={handleClick}></lightning-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-no-space forceListViewManagerPrimaryDisplayManager">
+                        <template if:true={DataLoading}>
+                            <div class="exampleHolder">
+                                <lightning-spinner alternative-text="Loading" size="medium" variant="brand">
+                                </lightning-spinner>
+                            </div>
+                        </template>
+                        <div class="hideSelection forceListViewManagerGrid" if:false={DataLoading}>
+                            <lightning-datatable key-field="id" data={currentPageData} columns={columns} sorted-by={sortBy}
+                            sorted-direction={sortDirection} onsort={handleSortdata} hide-checkbox-column show-row-number-column>
+                            </lightning-datatable>
+                            <div class="slds-align_absolute-center slds-p-vertical_small" if:true={showNavigation}>
+                                <ul class="slds-button-group-row">
+                                    <template if:true={hasPrev}>
+                                        <li class="slds-button-group-item">
+                                            <button class="slds-button slds-button_neutral" onclick={onPrev}> prev
+                                            </button>
+                                        </li>
+                                    </template>
+                                    <template for:each={pagesList} for:item="pageNumber">
+                                        <li class="slds-button-group-item" key={pageNumber}>
+                                            <button data-id={pageNumber} class="slds-button slds-button_neutral"
+                                                onclick={onPageClick}>{pageNumber}</button>
+                                        </li>
+                                    </template>
+                                    <template if:true={hasNext}>
+                                        <li class="slds-button-group-item">
+                                            <button class="slds-button slds-button_neutral" onclick={onNext}>next</button>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-grid_vertical-align-start slds-line-height_reset slds-wrap forceCommunityActionsContainerMobile slds-hide_medium">
+        <button data-key="mobileFilter" onclick={handleClick} class="slds-button slds-button_neutral slds-line-height_reset slds-p-vertical_none slds-m-around_none slds-m-left_none slds-size_1-of-2 buttonOutsideOverflow uiButton forceCommunityActionButtonMobile" aria-live="off" type="button" >
+            <lightning-icon class="slds-button_brand" icon-name="action:filter" alternative-text="Filter"
+                size="x-small"></lightning-icon>
+            <span class="labelSpan slds-text-body_small slds-hyphenate slds-p-top_x-small slds-show">Filter</span>
+        </button>
+
+        <button data-key="mobileSort" onclick={handleClick} class="slds-button slds-button_neutral slds-line-height_reset slds-p-vertical_none slds-m-around_none slds-m-left_none slds-size_1-of-2 buttonOutsideOverflow uiButton forceCommunityActionButtonMobile" aria-live="off" type="button" >
+            <lightning-icon class="slds-button_brand" icon-name="action:sort" alternative-text="Filter"
+                size="x-small"></lightning-icon>
+            <span class="labelSpan slds-text-body_small slds-hyphenate slds-p-top_x-small slds-show">Sort</span>
+        </button>
+
+        <div class="dark uiAbstractList forceRecordLayout forceFilterListDeprecated slds-size_1-of-1">
+            <div class="listTitleContainer uiBlock">
+                <div class="bLeft">
+                    <lightning-icon class="slds-align_absolute-center" icon-name="standard:lead" alternative-text="Lead"
+                    size="small"></lightning-icon>
+                </div>
+                <div class="bBody">
+                    <a class="triggerLink" aria-haspopup="dialog" href="javascript:void(0);">
+                        <h2 class="listTitle truncate">Bachelor Leads
+                            <span class="filterLabel filterIndicator slds-p-left_medium">
+                                <template for:each={dividers} for:item="item">
+                                    <span key={item}>{item}, </span>
+                                </template>
+                            </span>
+                            <span class="filterLabel filterIndicator slds-p-left_medium"></span>
+                        </h2>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <ul class="slds-has-dividers_around-space slds-size_1-of-1">
+            <template for:each={currentPageData} for:item="lead">
+                <li class="slds-item" key={lead.Id}>
+                    <a href={lead.nameUrl}>{lead.Name}</a>
+                    <ul>
+                        <li>
+                            <div class="slds-list--horizontal">
+                                <div class="slds-item--label slds-truncate recordCell" title="Status:">Status:</div>
+                                <div class="slds-item--detail slds-truncate recordCell">
+                                    <span>{lead.Status}</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="slds-list--horizontal">
+                                <div class="slds-item--label slds-truncate recordCell" title="Email:">Email:</div>
+                                <div class="slds-item--detail slds-truncate recordCell">
+                                    <span>{lead.Email}</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="slds-list--horizontal">
+                                <div class="slds-item--label slds-truncate recordCell" title="Mobile:">Mobile:</div>
+                                <div class="slds-item--detail slds-truncate recordCell">
+                                    <span>{lead.MobilePhone}</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="slds-list--horizontal">
+                                <div class="slds-item--label slds-truncate recordCell" title="Lead Source:">Lead Source:</div>
+                                <div class="slds-item--detail slds-truncate recordCell">
+                                    <span>{lead.LeadSource}</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="slds-list--horizontal">
+                                <div class="slds-item--label slds-truncate recordCell" title="Owner:">Owner:</div>
+                                <div class="slds-item--detail slds-truncate recordCell">
+                                    <span>{lead.Owner.Name}</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </template>
+        </ul>
+        <div class="slds-align_absolute-center slds-p-vertical_small" if:true={showNavigation}>
+            <ul class="slds-button-group-row">
+                <template if:true={hasPrev}>
+                    <li class="slds-button-group-item">
+                        <button class="slds-button slds-button_neutral" onclick={onPrev}> prev
+                        </button>
+                    </li>
+                </template>
+                <template for:each={pagesList} for:item="pageNumber">
+                    <li class="slds-button-group-item" key={pageNumber}>
+                        <button data-id={pageNumber} class="slds-button slds-button_neutral"
+                            onclick={onPageClick}>{pageNumber}</button>
+                    </li>
+                </template>
+                <template if:true={hasNext}>
+                    <li class="slds-button-group-item">
+                        <button class="slds-button slds-button_neutral" onclick={onNext}>next</button>
+                    </li>
+                </template>
+            </ul>
+        </div>
+
+        <template if:true={showMobileFilter}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium"
+                aria-labelledby="modal-heading-04" aria-modal="true" aria-describedby="modal-content-id-4">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning-button-icon class="slds-modal__close slds-button_icon-inverse" icon-name="utility:close"
+                            variant="border-filled" size="medium" alternative-text="Close" title="Close" aria-hidden="true"
+                            data-key="cancel" onclick={handleClick}></lightning-button-icon>
+                        <h2 id="modal-heading-04" class="slds-modal__title slds-hyphenate">Filter</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-4">
+                        <fieldset class="slds-form-element slds-form-element_compound">
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element__row slds-wrap">
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-combobox label="Status" 
+                                            onchange={handleStatusChange} 
+                                            options={controllingValues} 
+                                            placeholder="--None--" 
+                                            value={filters.Status}>
+                                        </lightning-combobox>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-combobox label="Lead Description" 
+                                            onchange={handleChange} 
+                                            options={dependentValues} 
+                                            placeholder="--None--" 
+                                            value={filters.Lead_Description__c}
+                                            data-key="Lead_Description__c"
+                                            disabled={isEmpty}>
+                                        </lightning-combobox>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-input type="date" data-key="Next_Follow_up__c" value={filters.Next_Follow_up__c} label="Next Follow Up time" onchange={handleChange}></lightning-input>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-combobox label="Lead Source" 
+                                            onchange={handleChange} 
+                                            options={leadSourceValues} 
+                                            placeholder="--None--" 
+                                            data-key="LeadSource"
+                                            value={filters.LeadSource}>
+                                        </lightning-combobox>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-combobox label="Program Type" 
+                                            onchange={handleChange} 
+                                            options={programTypeValues} 
+                                            placeholder="--None--" 
+                                            data-key="Program_Type__c"
+                                            value={filters.Program_Type__c}>
+                                        </lightning-combobox>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-input type="date" data-key="CreatedDate" value={filters.CreatedDate} label="Created Date" onchange={handleChange}></lightning-input>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" data-key="cancel" onclick={handleClick}>Cancel</button>
+                        <button class="slds-button slds-button_brand" data-key="save" 
+                        title="Apply Filter" onclick={handleClick}>Save</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <template if:true={showSortFilter}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium"
+            aria-labelledby="modal-heading-02" aria-modal="true" aria-describedby="modal-content-id-2">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning-button-icon class="slds-modal__close slds-button_icon-inverse" icon-name="utility:close"
+                            variant="border-filled" size="medium" alternative-text="Close" title="Close" aria-hidden="true"
+                            data-key="cancelSort" onclick={handleClick}></lightning-button-icon>
+                        <h2 id="modal-heading-02" class="slds-modal__title slds-hyphenate">Sort</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                        <fieldset class="slds-form-element slds-form-element_compound">
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element__row slds-wrap">
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-combobox label="Select..." 
+                                            onchange={handleSortChange} 
+                                            options={sortColumns} 
+                                            placeholder="--None--" 
+                                            value={mobileSortField}
+                                            data-key="field">
+                                        </lightning-combobox>
+                                    </div>
+
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-radio-group name="radioGroup"
+                                            onchange={handleSortChange}
+                                            label="Direction"
+                                            options={directionOrders}
+                                            value={sortDirection}
+                                            type="button" data-key="direction">
+                                        </lightning-radio-group>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" data-key="cancelSort" onclick={handleClick}>Cancel</button>
+                        <button class="slds-button slds-button_brand" data-key="saveSort" 
+                        title="Sort" onclick={handleClick}>Save</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </div>
+</template>

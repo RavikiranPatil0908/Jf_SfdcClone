@@ -1,0 +1,25 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 03-04-2024
+  @last modified by  : @BK
+-->
+<apex:page controller="UnsubscribeEmail" action="{!UnsubscribeEmailAddress}" showHeader="false" cache="false">
+    <script type="text/javascript">
+        setTimeout(function(){
+            window.location.href = 'http://online.nmims.edu';
+        },5000);
+    </script>
+    <div style="margin-top:100px;">
+        <div>
+            <center><img src="{!URLFOR($Resource.Images,'images/logo.png')}" width="30%"/></center>
+        </div>
+        <div style="margin:10px 0;">
+            <center><h1 style="font-size:15px;">NMIMS CENTRE FOR DISTANCE AND ONLINE EDUCATION</h1></center>
+        </div>
+        <div>
+            <center><span style="font-size:35px; font-weight:bold;">Your  email address is unsubscribe successfully.</span></center>
+        </div>
+    </div>
+</apex:page>

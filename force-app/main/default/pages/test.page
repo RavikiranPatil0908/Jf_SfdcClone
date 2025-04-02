@@ -1,0 +1,512 @@
+<apex:page showHeader="false" standardStylesheets="false" controller="nmLogin_new">
+
+     <style>
+        .Processingview
+        {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;           
+            width:  100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+           
+        }
+        .required
+        {
+            border: 2px solid #c00 !important;
+        }
+        .overlay
+        {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+          background-color: rgba(0,0,0,0.5);
+        }
+        .poup
+        {
+            position: fixed;
+            top: 30%;
+            width: 40%;
+            margin-left: 30%;
+            z-index: 11;
+        }
+        .messageCell
+        {
+            color:White !important;
+        }
+        .LateFee
+        {
+            Color: red;
+            float: right;
+            margin-right: 4%;
+            font-style: italic;
+        }
+     </style>
+     <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>NMIMS Distance Education: Login</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        
+            <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/logo.png')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/select-bg.png')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/banner.jpg')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/chosen.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/style.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/vars.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css.map')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css.map')}"/>
+      
+        <script>
+            function showForm()
+            {
+                var type = '{!strtype}';
+                if(type == 'registration')
+                {
+                    document.getElementById('new_checkbox').style.display = 'block';
+                    document.getElementById('idReRegistration').style.display = 'none';
+                }
+                else if(type == 'reregistration')
+                {
+                    document.getElementById('new_checkbox').style.display = 'none';
+                    document.getElementById('idReRegistration').style.display = 'block';
+                }
+                
+            }
+            
+            
+        </script>
+        
+     </head>   
+         <nav class="headerNavigation">
+          <div class="container">
+            <div class="logoImg"><a href="#"><apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive"/></a></div>
+            <div class="headerLinks"><!--<a href="#" class="header-phone-link"><span class="icon-phone"></span></a>-->
+              <button class="mobileMenu"><span class="icon-menu"></span></button>
+              <div class="search"><a href="#" class="icon-search" data-toggle="modal" data-target="#searchModal"></a></div>
+              <ul class="navLinks">
+                <li class="link"> <a href="#">
+                  <div class="linkIns">
+                    <div class="icon-looking-for linkIcon"></div>
+                    I‘m looking for <span class="icon-down-arrow arrow-down"></span> </div>
+                  </a>
+                  <ul class="linkDropdown">
+                    <li><a href="#">Programs</a></li>
+                    <li><a href="#">Academic Deliverables</a></li>
+                    <li class="innerDropdown"><a href="#">Resources <span class="">&gt;&gt;</span></a>
+                      <ul class="linkDropdownIns">
+                        <li><a href="#">Programs</a></li>
+                        <li><a href="#">Examinations</a></li>
+                        <li><a href="#">Students Zone</a></li>
+                        <li><a href="#">Alumni</a></li>
+                      </ul>
+                    </li>
+                    <li><a href="#">Support</a></li>
+                    <li><a href="#">Calendar</a></li>
+                    <li><a href="#">Locations</a></li>
+                    <li><a href="#">Alumni</a></li>
+                    <li><a href="#">Students Zone</a></li>
+                  </ul>
+                </li>
+                <li class="link"> <a href="#">
+                  <div class="linkIns">
+                    <div class="icon-admission linkIcon"></div>
+                    Admission info <span class="icon-down-arrow arrow-down"></span> </div>
+                  </a>
+                  <ul class="linkDropdown">
+                    <li><a href="#">Admission Process</a></li>
+                    <li><a href="#">Fee Structure</a></li>
+                    <li><a href="#">Request A Visit</a></li>
+                    <li><a href="#">Apply Now</a></li>
+                    <li><a href="#">Check Status</a></li>
+                    <li><a href="#">Re-Register</a></li>
+                  </ul>
+                </li>
+                <li class="link"> <a href="#">
+                  <div class="linkIns">
+                    <div class="icon-university linkIcon"></div>
+                    The University <span class="icon-down-arrow arrow-down"></span> </div>
+                  </a>
+                  <ul class="linkDropdown">
+                    <li class="innerDropdown"><a href="#">Why NGASCE <span class="">&gt;&gt;</span></a>
+                      <ul class="linkDropdownIns open-left">
+                        <li><a href="#">Key Differentiators</a></li>
+                        <li><a href="#">Awards &amp; Recognition</a></li>
+                        <li><a href="#">Testimonials</a></li>
+                      </ul>
+                    </li>
+                    <li class="innerDropdown"><a href="#">About Us <span class="">&gt;&gt;</span></a>
+                      <ul class="linkDropdownIns open-left">
+                        <li><a href="#">Our Vision and Mission</a></li>
+                        <li><a href="#">Vice Chancellor's Note</a></li>
+                        <li><a href="#">Director's Note</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <!--/ Logo & Navigation --> 
+          <!-- Breadcrumb & Social Icons -->
+        <div class="topSocialWrapper">
+          <div class="container">
+            <div class="grayWrapper">
+              <ol class="breadcrumb">
+                <li><a href="#">
+                  <h5>Home</h5>
+                  </a></li>
+                <li><a href="#">
+                  <h5>Admission Info</h5>
+                  </a></li>
+                <li class="active">
+                  <h5>Login</h5>
+                </li>
+              </ol>
+            </div>
+            <div class="shareIcons">
+              <ul>
+                <li><a href="#" class="icon-google-plus"></a></li>
+                <li><a href="#" class="icon-twitter"></a></li>
+                <li><a href="#" class="icon-facebook"></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!--/ Bredcrums & Social Icons --> 
+
+        <!-- Banner -->
+        <div class="bannerContainer" style="background-image:url({!URLFOR($Resource.ImageResource,'images/')}banner.jpg);">
+        
+          <div class="container">
+            <div class="bannerIns">
+              <h2><apex:outputText value="{!if(strtype == 'registration','Registration','Re-Registration')}" /></h2>
+            </div>
+          </div>
+        </div>
+        <!--/ Banner --> 
+        
+    <body class="home" onload="showForm();">
+ 
+ <apex:form >   
+        <form id="reg-long-form" role="form">
+      <div class="tab-wrapper">
+        <div class="container">
+          <div class="tab-content">
+            <div class="tab-pane active">
+              <div class="message-box text-center"><apex:outputText value="{!if(strtype == 'registration','Choose an Option','Re-Registration')}" /></div>
+              <div class="form-wrapper">
+                <div class="row">
+                   <div class="radio">
+                   <div id="new_checkbox" class="col-xs-18" style="display:none;">
+                   <div class="col-md-4 col-xs-18 col-sm-9">
+                      <label>
+                         <input type="radio" name="OptRadio" id="NewApp" class="iCheckRadio" value="NewApp" data-mode="1"/>
+                              <span>New Applicant<span style="color:red;">*</span></span>
+                       </label>
+                   </div>
+                   <div class="col-md-4 col-xs-18 col-sm-9 text-center">
+                      <label>
+                        <input type="radio" name="OptRadio" id="CmpltReg" class="iCheckRadio" data-mode="2" value="CmpltReg" />
+                          <span>Complete Registration/Payment<span style="color:red;">*</span></span>
+                       </label>
+                   </div>
+                   </div>
+          <!---------------------------------complete form Link----------------------------------------------------------------------------->         
+                   <div id="idNew" style="display:none;">
+                      <div class="col-xs-18 col-sm-9" >  
+                        <div class="form-group" >
+                           <div class="">
+                              <a href="/apex/nmCompleteformNew"><span style="color:red;">Click Here to go to Registration Form</span></a>
+                          </div>
+                      </div>
+                   </div>
+                 </div>
+          <!---------------------------------------------------end-------------------------------------------------------------------------------->
+           <!-----------------------------------------------Lead Login-------------------------------------------------------------------------------->
+             <div class="clearfix"></div>
+             <apex:actionFunction action="{!LeadLogin}" name="call"/>
+               <div id="idCompleteForm" style="display:none;">
+               <div class="tab-wrapper">
+                <div class="container">
+                  <div class="tab-content">
+                   <div class="form-wrapper">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                        <!--
+                         <label for="blood-group">Registration No<span style="color:red;">*</span></label>
+                         -->
+                          <apex:inputField value="{!objLead.nm_RegistrationNo__c}" styleClass="form-control notnull" html-placeholder="Registration No"/>
+                        </div>
+                      </div>  
+                      <div class="col-md-4">
+                        <div class="form-group">
+                        <!--
+                          <label for="dob">Date of Birth <span style="color:red;">*</span></label>
+                          -->
+                          <div class="input-group date" data-date-format="DD/MM/YYYY" id="datetimepicker1"><span class="dateInput dateOnlyInput">
+                            <apex:inputText value="{!objLead.nm_DateOfBirth__c}" styleClass="form-control notnull" html-placeholder="Date of Birth" />
+                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                        </div>
+                      </div>  
+                      <div class="row">
+                           <div class="col-md-6"></div>
+                            <div class="col-md-6 col-md-offset-3"><input type="submit" name="j_id0:formid1:j_id19" value="Sign In" class="btn btn-default submit" onclick="Go();return false;"/>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                 </div> 
+                </div>
+                  </div>
+                 </div>  
+           <!---------------------------------------------------end of Lead Login-------------------------------------------------------------------------->
+           <!----------------------------------------------------------student Login ----------------------------------------------------------------------->
+                   <div class="clearfix"></div>
+             <apex:actionFunction action="{!studentLogin}" name="callTo"/>
+               <div id="idReRegistration" style="display:none;">
+               <div class="tab-wrapper">
+                <div class="container">
+                  <div class="tab-content">
+                   <div class="form-wrapper">
+                    <div class="row">
+                      <div class="col-md-4">
+                       <div class="form-group">
+                         <label for="blood-group1">Student No<span style="color:red;">*</span></label>
+                          <apex:inputField value="{!objAccount.nm_StudentNo__c}" styleClass="form-control notnull"/>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="dob">Date of Birth <span style="color:red;">*</span></label>
+                          <div class="input-group date" data-date-format="DD/MM/YYYY" id="datetimepicker2"><span class="dateInput dateOnlyInput">
+                            <apex:inputText value="{!objAccount.nm_DateOfBirth__c}" styleClass="form-control notnull" />
+                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                         </div>
+                      </div>
+                      <div class="row">
+                           <div class="col-md-6"></div>
+                            <div class="col-md-6 col-md-offset-3"><input type="submit" name="j_id0:formid1:j_id19" value="Sign In" class="btn btn-default submit" onclick="GoTo();return false;"/>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                 </div> 
+                </div>
+                  </div>
+                 </div>  
+           
+           <!-----------------------------------------------------end of Student Login------------------------------------------------------------------------>       
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </form>
+    <apex:outputPanel rendered="{!strSecToShow == 'msg'}" id="MsgPopUp" style="background-image:url({!URLFOR($Resource.ImageResource,'images/')}screenshot.jpg);"><!---->
+        <div class="modal popup-wrapper">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">{!HeaderMessage}</h4>
+              </div>
+              <div class="modal-body">
+                <apex:repeat value="{!lstMsg}" var="msg">
+                    <p>{!msg}</p>
+                </apex:repeat>
+              </div>
+              <div class="modal-footer">
+                <apex:commandButton value="OK" styleClass="btn btn-default "  id="btn1" status="processing" action="/apex/{!strBtnURL}" rendered="{! strBtnURL != '' }"/>
+                 <apex:commandButton value="OK" styleClass="btn btn-default "  id="btn2" status="processing" rendered="{! strBtnURL == '' }"/>
+              </div>
+            </div>
+          </div>
+        </div>
+     <div class="overlay"></div>
+  </apex:outputPanel>
+   </apex:form>    
+    <!--/ Login --> 
+                                 
+        <!-- Footer -->
+        <footer>
+          <div class="container">
+            <div class="row">
+              <div class="col-md-2 col-sm-4">
+                <p class="small">I‘m looking for</p>
+                <ul class="footerLinks">
+                  <li><a href="programs.html">Programs</a></li>
+                  <li><a href="examination-process.html">Examinations</a></li>
+                  <li><a href="#">Students Zone</a></li>
+                  <li><a href="#">Academic Deliverables</a></li>
+                  <li><a href="#">Resources</a></li>
+                  <li><a href="#">Support</a></li>
+                  <li><a href="#">Calendar</a></li>
+                </ul>
+              </div>
+              <div class="col-md-3 col-sm-4">
+                <p class="small">Admission Info</p>
+                <ul class="footerLinks">
+                  <li><a href="admission-process.html">Admission Process</a></li>
+                  <li><a href="#">Fee Structure</a></li>
+                  <li><a href="#">Lateral Admissions Or Upgradation</a></li>
+                  <li><a href="#">Request A Visit</a></li>
+                  <li><a href="#">Apply Now</a></li>
+                  <li><a href="#">Check Status</a></li>
+                  <li><a href="#">Re-Register</a></li>
+                </ul>
+              </div>
+              <div class="col-md-2 col-sm-4">
+                <p class="small">The University</p>
+                <ul class="footerLinks">
+                  <li><a href="about.html">About us</a></li>
+                  <li><a href="#">Vice Chancellor’s Note</a></li>
+                  <li><a href="#">Director’s Note</a></li>
+                  <li><a href="#">Key Differentiators</a></li>
+                  <li><a href="#">Awards AND Recognition</a></li>
+                  <li><a href="#">Testimonials</a></li>
+                  <li><a href="locations.html">Locations</a></li>
+                </ul>
+              </div>
+              <div class="clearfix visible-sm"></div>
+              <div class="col-md-5">
+                <div class="connectWrapper">
+                  <form class="form-inline">
+                    <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Sign Up for latest Updates" />
+                    <button type="submit" class="btn btn-default custom-btn">SIGN UP</button>
+                  </form>
+                  <div class="footerSocialIcons">
+                    <p class="small">Follow Us :</p>
+                    <p class="text">Connect with us via Social Media and get all our latest news and upcoming events.</p>
+                    <ul>
+                      <li><a href="#" class="icon-twitter"></a></li>
+                      <li><a href="#" class="icon-facebook"></a></li>
+                      <li><a href="#" class="icon-google-plus"></a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-md-12">
+                <div class="footerBottom">
+                  <div class="pageLinks">
+                    <ul>
+                      <li><a href="#">NMIMS UNIVERSITY </a></li>
+                      <li><a href="news.html"> NEWS AND EVENTS </a></li>
+                      <li><a href="#" >BLOG </a></li>
+                      <li><a href="#">CORPORATE CONNECT </a></li>
+                      <li><a href="our-faculty.html">FACULTY </a></li>
+                      <li><a href="#">FAQ'S </a></li>
+                      <li><a href="#"> CONTACT US</a></li>
+                    </ul>
+                  </div>
+                  <div class="copyRight">
+                    <p class="text">&copy; 2016 NMIMS. All Rights Reserved.</p>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+        <!--/ Footer --> 
+
+    <!-- Search Popup -->
+    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <form class="form-inline" id="">
+              <input type="text" class="form-control" id="searchInput" placeholder=""/>
+              <button type="" class="icon-search"></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ Search Popup --> 
+  <script type="text/javascript">
+    $(document).ready(function(){
+         $('.notnull').attr('required','true');
+        $('input[name$=OptRadio]').change(function(){
+            var selectedOpt = this.value; 
+            if(selectedOpt != undefined)   
+            {   
+                     
+                $('[id$=hdnPaymentMode]').val(selectedOpt);
+                if( selectedOpt == 'NewApp' )
+                {
+                    $('[id$=idNew]').css('display','block');
+                    $('[id$=idCompleteForm]').css('display','none');
+                    $('[id$=idReRegistration]').css('display','none');
+                }
+                else if( selectedOpt == 'CmpltReg' )
+                {
+                    $('[id$=idNew]').css('display','none');
+                    $('[id$=idCompleteForm]').css('display','block');
+                    $('[id$=idReRegistration]').css('display','none');
+                }
+                else if( selectedOpt == 'ReReg' )
+                {
+                    $('[id$=idNew]').css('display','none');
+                    $('[id$=idCompleteForm]').css('display','none');
+                    $('[id$=idReRegistration]').css('display','block');
+                }
+            }
+        });
+        $('[id$=btn2]').click(function(){
+            $('[id$=MsgPopUp]').hide();
+            return false;
+        });
+   
+
+    });
+   
+    </script>
+    <script type ="text/javascript">
+     function Go()
+    {
+        call();
+    }
+    function GoTo()
+    {
+       callTo(); 
+    }
+   
+    </script>
+    
+     <!--All java script  -->
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+     <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}"/>
+    
+   
+    
+    
+    
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}"/>
+ 
+    </body>  
+    
+</apex:page>

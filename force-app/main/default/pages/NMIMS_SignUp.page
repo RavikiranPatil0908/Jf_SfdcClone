@@ -1,0 +1,252 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" cache="false"  applyHtmlTag="false" applyBodyTag="false">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+    <title>Sign In | Bootstrap Based Admin Template - Material Design</title>
+   
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css"/>
+
+    <!-- Bootstrap Core Css -->
+    <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+
+    <!-- Waves Effect Css -->
+    <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/node-waves/waves.css" rel="stylesheet" />
+
+    <!-- Animation Css -->
+    <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/animate-css/animate.css" rel="stylesheet" />
+
+    <!-- Custom Css -->
+    <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/css/style.css" rel="stylesheet"/>
+   
+</head>
+
+<style>
+    .navbar {
+        height: 12%;
+    }
+    .container-fluid {
+    padding-right: 45px;
+    padding-left: 17px;
+    }
+    .navbar-header {
+    padding: 4px 7px;
+}
+    .login-page {
+        background-color: #fff;
+        padding-left: 0;
+     
+        max-width: 360px;
+        margin: 5% auto;
+        overflow-x: hidden;
+    }
+   
+    .login-page .login-box .msg {
+    margin-bottom: 14px;
+
+        }
+    .login-box{
+        margin-top: 30%;
+    }
+    .input-group {
+    width: 100%;
+    margin-bottom: 7px;
+}
+.m-b--20 {
+    margin-bottom: -14px;
+}
+.card .body .col-xs-12 {
+    margin-bottom: 0px;
+    color: rgb(24, 22, 22);
+}
+.label-primary {
+    background-color: #1f91f3;
+    margin-left: 65px;
+}
+.label-rounded {
+        border-radius: 20%; 
+        height: 29px;   
+        width: 200px ;
+        padding: 7px 10px; 
+        display: inline-block;
+        font-size: larger;
+    }
+    @media (min-width: 414px) {
+    .navbar-right {
+        float: right !important;
+        margin-right: -6px;
+        margin-top: 25px;
+    }
+ }
+@media (max-width: 300px) {
+    .navbar .navbar-header {
+        display: revert;
+        margin-bottom: -6px;
+        width: calc(100% + 30px);
+    }
+}
+</style>    
+  <nav class="navbar">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive" /> 
+          
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <!-- Call Search -->
+                <li> <button class="btn btn-block bg-blue waves-effect" type="submit">Login Here</button></li>
+               
+            </ul>
+        </div>
+    </div>
+</nav>
+<body class="login-page">
+   
+    <div class="login-box">
+        <div class="card">
+             
+            <div class="body">
+                <div class="col-xs-12"></div>
+                <label class="label label-primary label-rounded text">ENROLL NOW</label>
+                <h5 class="msg">Create A New Account</h5>
+                <form id="sign_Up" method="POST">
+                  
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">person</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="First Name" placeholder="First Name" required="required" autofocus="autofocus"/>
+                    </div>
+                </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">person</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="Last Name" placeholder="Last Name" required="required" autofocus="autofocus"/>
+                        </div>
+                    </div> 
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">phone</i>
+                        </span>
+                        <div class="form-line">
+                            <select class="form-control" name="countryCode" required="required">
+                                <option value="+1">+1 (US)</option>
+                                <option value="+91">+91 (IN)</option>
+                                <option value="+44">+44 (UK)</option>
+                             
+                            </select>
+                            <input type="tel" class="form-control" name="mobileNumber" placeholder="Mobile Number" required="required" />
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">email</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="email" class="form-control" name="Email" placeholder="Email" required="required" autofocus="autofocus"/>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">category</i>
+                        </span>
+                        <div class="form-line">
+                            <select class="form-control" name="programCategory" required="required">
+                                <option value="" disabled="disabled" selected="selected">Select Program Category</option>
+                                <option value="category1">Category 1</option>
+                                <option value="category2">Category 2</option>
+                                <option value="category3">Category 3</option>
+                                <!-- Add more options as needed -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">school</i>
+                        </span>
+                        <div class="form-line">
+                            <select class="form-control" name="programName" required="required">
+                                <option value="" disabled="disabled" selected="selected">Select Program Name</option>
+                                <option value="program1">Program 1</option>
+                                <option value="program2">Program 2</option>
+                                <option value="program3">Program 3</option>
+                                <!-- Add more options as needed -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">business_center</i>
+                        </span>
+                        <div class="form-line">
+                            <select class="form-control" name="specialization" required="required">
+                                <option value="" disabled="disabled" selected="selected">Select Specialization</option>
+                                <option value="specialization1">Specialization 1</option>
+                                <option value="specialization2">Specialization 2</option>
+                                <option value="specialization3">Specialization 3</option>
+                                <!-- Add more options as needed -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">location_city</i>
+                        </span>
+                        <div class="form-line">
+                            <select class="form-control" name="cityName" required="required">
+                                <option value="" disabled="disabled" selected="selected"> City Name</option>
+                                <option value="city1">City 1</option>
+                                <option value="city2">City 2</option>
+                                <option value="city3">City 3</option>
+                               
+                            </select>
+                        </div>
+                    </div>
+                
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="checkbox">
+                                <input type="checkbox" name="rememberme" id="rememberme" class="filled-in chk-col-pink"/>
+                                <label for="rememberme">I agree to receive communication from NCDOE</label>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 m-t-15">
+                            <button class="btn btn-block bg-blue waves-effect" type="submit">submit to Register</button>
+                        </div>
+                    </div>
+                    <div class="row m-t-15 m-b--20">
+                        <div class="col-xs-12 text-center">
+                        <h5>Already have an Account?  <a href="https://ngasce--dev6.sandbox.my.salesforce-sites.com/SignUp">Click Here</a> to Login</h5>   
+                        </div>
+                    </div>
+                    
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jquery Core Js -->
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core Js -->
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/bootstrap/js/bootstrap.js"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/node-waves/waves.js"></script>
+
+    <!-- Validation Plugin Js -->
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/jquery-validation/jquery.validate.js"></script>
+
+    <!-- Custom Js -->
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/admin.js"></script>
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/pages/examples/sign-in.js"></script>
+</body>
+
+</apex:page>

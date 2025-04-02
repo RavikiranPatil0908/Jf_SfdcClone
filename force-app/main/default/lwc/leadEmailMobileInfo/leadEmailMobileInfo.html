@@ -1,0 +1,90 @@
+<!--
+ * @File Name          : leadEmailMobileInfo.html
+ * @description       : 
+ * @author            : @Monikac
+ * @group             : 
+ * @last modified on  : 22-11-2024
+ * @last modified by  : @BK
+-->
+<template>
+    <template if:true={dataLoading}>
+        <div class="exampleHolder">
+            <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+        </div>
+    </template>
+    <template if:false={dataLoading}>
+        <template if:true={hasData}>
+            <article class="slds-card slds-card_boundary">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__figure">
+                            <lightning-icon class="slds-align_absolute-center" icon-name="standard:lead" alternative-text="Lead Details" size="small"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">
+                                <span>Lead Details</span>
+                            </h2>
+                        </div>
+                        <div class="slds-media__actions">
+                            <lightning-button label="Edit" onclick={handleEdit} if:false={isEditing}></lightning-button>
+                        </div>
+                    </header>
+                </div>
+                <div class="slds-card__body">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Email">Email</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Mobile">Mobile</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Secondry Email">Secondry Email</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Phone">Phone</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={records} for:item="rec">
+                                <tr class="slds-hint-parent" key={rec.email}>
+                                    <td data-label="Email">
+                                        <lightning-input type="email" value={editedEmail} onchange={handleEmailChange} disabled={isDisabled}></lightning-input>
+                                    </td>
+                                    <td data-label="Mobile">
+                                        <lightning-input type="tel" value={editedMobile} onchange={handleMobileChange} disabled={isDisabled}></lightning-input>
+                                    </td>
+                                    <td data-label="Secondry Email">
+                                        <lightning-input type="email" value={editedSecondaryEmail} onchange={handleSecondaryEmailChange} disabled={isDisabled}></lightning-input>
+                                    </td>
+                                    <td data-label="Phone">
+                                        <lightning-input type="tel" value={editedPhone} onchange={handlePhoneChange} disabled={isDisabled}></lightning-input>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="slds-card__footer">
+                    <lightning-button label="Save" variant="brand" onclick={handleSave} class="slds-m-right_small" if:true={showSaveButton}></lightning-button>
+                    <lightning-button label="Cancel" variant="neutral" onclick={handleCancel} if:true={showSaveButton}></lightning-button>
+                </div>
+            </article>
+        </template>
+        <template if:false={hasData}>
+            <article class="slds-card slds-card_boundary">
+                <div class="slds-card__body slds-card__body_inner">
+                    <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                        <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt="" />
+                        <div class="slds-text-color_weak">
+                            <h3 class="slds-text-heading_medium">DND Marked Lead</h3>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </template>
+    </template>
+</template>

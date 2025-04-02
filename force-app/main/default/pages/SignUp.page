@@ -1,0 +1,214 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 14-05-2024
+  @last modified by  : @BK
+-->
+<apex:page showHeader="false" standardStylesheets="true" sidebar="false" applyBodyTag="false">
+
+    <head>
+        <apex:slds />
+        <style>
+            .slds-global-header.slds-grid.slds-grid_align-spread {
+                height: 5.125rem;
+            }
+
+            .c-main-section {
+                margin-top: 5.125rem;
+                width: 100%
+            }
+
+            .slds-global-header .slds-global-header__item .slds-global-header__logo {
+                background-image: url("{!URLFOR($Resource.ImageResource,'images/logo.png')}");
+                height: 4.5rem;
+            }
+
+            .slds-form-element.slds-form-element_compound.c-form-padding-bottom {
+                padding: 0 .25rem;
+                margin-bottom: .25rem;
+            }
+
+            html, body {
+                height: 100%
+            }
+            body {
+                display: flex;
+                align-items: stretch;
+            }
+        </style>
+    </head>
+
+    <body class="slds-scope" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <header class="slds-global-header_container">
+            <a href="#" class="slds-assistive-text slds-assistive-text_focus">Skip to Navigation</a>
+            <a href="#" class="slds-assistive-text slds-assistive-text_focus">Skip to Main Content</a>
+            <div class="slds-global-header slds-grid slds-grid_align-spread">
+                <div class="slds-global-header__item">
+                    <div class="slds-global-header__logo">
+                        <span class="slds-assistive-text">Salesforce</span>
+                    </div>
+                </div>
+                <div class="slds-global-header__item">
+                    <ul class="slds-global-actions">
+                        <li class="slds-global-actions__item">
+                            <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                <!-- <button
+                                    class="slds-button slds-button_icon slds-button_icon slds-button_icon-container slds-button_icon-small slds-global-actions__notifications slds-global-actions__item-action"
+                                    title="no new notifications" aria-live="assertive" aria-atomic="true">
+                                    <svg class="slds-button__icon slds-global-header__icon" aria-hidden="true">
+                                        <use
+                                            xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#notification')}">
+                                        </use>
+                                    </svg>
+                                    <span class="slds-assistive-text">no new notifications</span>
+                                </button> -->
+                                <a class="slds-button slds-button_outline-brand" href="/Login">Login Here</a>
+                            </div>
+                        </li>
+                        <!-- <li class="slds-global-actions__item">
+                            <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                <button
+                                    class="slds-button slds-button_icon slds-button_icon slds-button_icon-container slds-button_icon-small slds-global-actions__help slds-global-actions__item-action"
+                                    aria-haspopup="true" title="Help and Training">
+                                    <svg class="slds-button__icon slds-global-header__icon" aria-hidden="true">
+                                        <use
+                                            xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#question')}">
+                                        </use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Help and Training</span>
+                                </button>
+                            </div>
+                        </li>
+                        <li class="slds-global-actions__item">
+                            <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                <button
+                                    class="slds-button slds-button_icon slds-button_icon slds-button_icon-container slds-button_icon-small slds-global-actions__notifications slds-global-actions__item-action"
+                                    title="no new notifications" aria-live="assertive" aria-atomic="true">
+                                    <svg class="slds-button__icon slds-global-header__icon" aria-hidden="true">
+                                        <use
+                                            xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#notification')}">
+                                        </use>
+                                    </svg>
+                                    <span class="slds-assistive-text">no new notifications</span>
+                                </button>
+                                <span aria-hidden="true" class="slds-notification-badge">0</span>
+                            </div>
+                        </li>
+                        <li class="slds-global-actions__item">
+                            <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                <button class="slds-button slds-global-actions__avatar slds-global-actions__item-action"
+                                    title="person name" aria-haspopup="true">
+                                    <span class="slds-avatar slds-avatar_circle slds-avatar_medium">
+                                        <img alt="Person name"
+                                            src="https://www.lightningdesignsystem.com/assets/images/avatar2.jpg"
+                                            title="User avatar" />
+                                    </span>
+                                </button>
+                            </div>
+                        </li> -->
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <div class="c-main-section">
+            <div class="slds-grid slds-grid_align-center slds-m-top_xx-large">
+                <div class="slds-col slds-col slds-size_4-of-5 slds-medium-size_3-of-6 slds-large-size_1-of-4">
+                    <article class="slds-card">
+                        <div class="slds-card__body slds-card__body_inner">
+                            <h2 class="slds-text-heading_large slds-text-align_center slds-var-p-bottom_small" id="form-header-id-01">
+                           <div class="slds-button slds-button_brand slds-var-p-horizontal_xx-large slds-var-p-vertical_xx-small ">Enroll Now</div>
+
+                                <!-- Enroll Now -->
+                            </h2>
+                            <h2 class="slds-text-heading_small slds-text-align_center slds-var-p-bottom_small" id="form-header-id-02">Create a new Account</h2>
+                            <div class="slds-form">
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control">
+                                        <input type="text" id="stacked-input-id-01" placeholder="First Name" class="slds-input" />
+                                    </div>
+                                </div>
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control">
+                                        <input type="text" id="stacked-input-id-02" placeholder="Last Name" class="slds-input" />
+                                    </div>
+                                </div>
+                                <!-- <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control">
+                                        <input type="text" id="stacked-input-id-03" placeholder="Mobile Number" class="slds-input" />
+                                    </div>
+                                </div> -->
+                                <fieldset class="slds-form-element slds-form-element_compound c-form-padding-bottom">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-size_2-of-12">
+                                                <div class="slds-form-element">
+                                                    <div class="slds-form-element__control">
+                                                        <input type="text" id="stacked-input-id-03-a" class="slds-input" placeholder="+91"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-size_10-of-12">
+                                                <div class="slds-form-element">
+                                                    <div class="slds-form-element__control">
+                                                        <input type="text" id="stacked-input-id-03-b" class="slds-input" placeholder="Mobile Number"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control">
+                                        <input type="text" id="stacked-input-id-04" placeholder="Email ID" class="slds-input" />
+                                    </div>
+                                </div>
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control">
+                                        <input type="text" id="stacked-input-id-05" placeholder="Program Category" class="slds-input" />
+                                    </div>
+                                </div>
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control">
+                                        <input type="text" id="stacked-input-id-06" placeholder="Program Name" class="slds-input" />
+                                    </div>
+                                </div>
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control">
+                                        <input type="text" id="stacked-input-id-07" placeholder="Program Specialisation" class="slds-input" />
+                                    </div>
+                                </div>
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control">
+                                        <input type="text" id="stacked-input-id-07" placeholder="City Name" class="slds-input" />
+                                    </div>
+                                </div>
+                                <fieldset class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-checkbox">
+                                            <input type="checkbox" name="default" id="checkbox-unique-id-33" value="checkbox-unique-id-33" />
+                                            <label class="slds-checkbox__label" for="checkbox-unique-id-33">
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label">I agree to receive communication from NCDOE</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control slds-text-align_center slds-text-heading_medium">
+                                        <button class="slds-button slds-button_brand slds-var-p-horizontal_xx-large slds-var-p-vertical_xx-small">Submit to Register</button>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <footer class="slds-card__footer slds-text-align_center">
+                            Already have an Account? <a href="/Login">Click Here</a> to Login
+                        </footer>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </body>
+
+</apex:page>

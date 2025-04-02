@@ -1,0 +1,265 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 02-05-2024
+  @last modified by  : @BK
+-->
+<apex:page showHeader="false" standardStylesheets="false" controller="BasicInfoOfStudent" cache="false">
+<head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0 , user-scalable=no"></meta>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title><apex:outputText value="{!objWebinar.Page_Title__c}" escape="false" /></title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+        <script src="https://cdn.rawgit.com/hilios/jQuery.countdown/2.2.0/dist/jquery.countdown.min.js"></script>
+
+      <style>
+        
+        body {
+            padding-top: 15px;
+        }
+        
+        
+        </style>
+</head>
+    <apex:outputPanel rendered="{!objWebinar.Active__c}">
+        <!-- Hidden Fields: Start-->
+        <apex:form >
+            <apex:inputHidden id="hdnDate" value="{!objWebinar.Event_Date__c}" />
+            <apex:inputHidden id="hdnStartTime" value="{!objWebinar.Start_Time__c}" />
+            <apex:inputHidden id="hdnEndTime" value="{!objWebinar.End_Time__c}" />
+        </apex:form>
+        <!-- Hidden Fields: End -->
+
+        <!-- Top Header : START -->
+        
+        <nav class="navbar navbar-light bg-faded">
+          <a class="navbar-brand" style="padding:0px 15px" href="#">
+            <apex:image url="{!URLFOR($Resource.NGA_Logo)}" styleClass="img-responsive" rendered="{!objWebinar.Logo__c == 'NGA Logo'}"/>
+            <apex:image url="{!URLFOR($Resource.SasLogo)}" styleClass="img-responsive" rendered="{!objWebinar.Logo__c == 'NGA-SAS Logo'}"/>
+          </a>
+        </nav>
+        <div class="clearfix"/>
+        <div style="width:100%;height:10px;background-color:#d2232a;margin-top:30px;"/>
+        
+        <!-- Top Header : END -->
+        
+        
+        <div class="clearfix"/>
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="background-color:#1e73be;margin-top:10px;color:#ffffff;text-align:center">
+        
+        <h3><apex:outputText value="{!objWebinar.Heading__c}" escape="true" /></h3>
+        <h3 id="eventDateTime"><!-- script push datetime here --></h3>
+        <!--<div class="lead" id="countDown"></div>-->
+        </div>
+        <div class="clearfix"/>
+        
+        <!-- Form: START -->
+        
+        <br/>
+        <div class="container">
+        
+            <div class="row">
+                
+                <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                    
+                    <div style="background-color:#1e73be;margin-top:10px;color:#ffffff;padding:10px;text-align:left">Fill-in your details to register for this webinar</div>
+                    <div class="clearfix"/>
+                    <apex:form styleclass="form" style="margin-top:10px">
+                        <div class="form-group"> 
+                            <apex:inputField value="{!objReferral.Name__c}" html-placeholder="Full Name" styleClass="form-control notnull" id="fName"/>
+                        </div>
+                        <div class="form-group">
+                            <apex:inputField value="{!objReferral.Email__c}" html-placeholder="Email Id" styleClass="form-control notnull emailValidation"/>
+                        </div>
+                        <div class="form-group">
+                            <apex:inputField value="{!objReferral.Mobile_Number__c}" id="txtMobno" html-placeholder="Mobile Number" styleClass="form-control mobileValidation notnull numonly limitedChar"/>
+                        </div>
+                        <div class="form-group">
+                            <apex:inputField value="{!objReferral.Company_Name__c}" id="company" html-placeholder="Company Name" styleClass="form-control"/>
+                        </div>
+                        <div class="form-group">
+                            <apex:inputField value="{!objReferral.City__c}"  styleClass="form-control notnull ModifyFirstOptionForcity"/>
+                        </div>
+                        <div class="form-group">
+                            <input type ="Checkbox" id="iagree"  value="I agree" style="form-control notnull"><font style="font-size:15px;"> By Clicking on button below, I authorize NMIMS and its representative to contact me via phone/email/SMS. This will override registry on DND/NDNC.</font></input>
+                        </div>                    
+                        <center> <apex:commandButton value="Reserve My Seat" styleClass="btn btn-primary btn-block btnStatus" id="next" action="{!Save}"/></center>
+                    </apex:form>
+                </div>
+                
+                <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12" style="text-align:justify;font-size:16px;">
+                    <div class="col-md-12">
+                        <div class="col-md-4">
+                        <apex:image url="{!imageURL}" styleClass="img-responsive img-circle" style="margin-right:50px;width:160px;height:160px;"/>
+                        </div>
+                        
+                        <div class="col-md-8">
+                        <p><apex:outputText value="{!objWebinar.Description__c}" escape="false" /></p>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="col-md-12">
+                        <apex:outputText value="{!objWebinar.Content__c}" escape="false" />
+                    </div>
+                    
+                </div>
+            
+            </div>
+        </div>
+        
+    </apex:outputPanel>
+    
+    <apex:outputPanel rendered="{!!objWebinar.Active__c}">
+        <nav class="navbar navbar-light bg-faded">
+            <a class="navbar-brand"  href="#">
+                <apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive"/>
+            </a>
+        </nav>
+        <div class="clearfix top40"/>
+        <div style="width:100%;height:10px;background-color:#d2232a;"/>
+
+        <div class="clearfix"/>
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="background-color:#1e73be;margin-top:10px;color:#ffffff;text-align:center">
+            <h3><apex:outputText value="Webinar has been deactivated" escape="true" /></h3>
+        </div>
+        <div class="clearfix"/>
+    </apex:outputPanel>
+        <!-- Form: END -->
+        
+        <div class="clearfix"/>
+        <div style="width:100%;height:10px;background-color:#d2232a;margin-top:30px;"/>
+        
+        
+        <!--All java script  -->
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+        
+        <script>
+        $(document).ready(function(){
+        /* date time dispaly */
+        var eventDate = $('[id$=hdnDate]').val();
+        var startTime = $('[id$=hdnStartTime]').val();
+        var endTime = $('[id$=hdnEndTime]').val(); 
+
+        eventDate = moment(eventDate);
+        eventDate = eventDate.format('Do MMMM YYYY').replace( /(\d)(st|nd|rd|th)/g, '$1<sup>$2</sup>' );
+        startTime = moment(startTime,'HH:mm:ss');
+        startTime = startTime.format('h:mm A');
+        endTime = moment(endTime,'HH:mm:ss');
+        endTime = endTime.format('h:mm A');
+        var dateTime = 'Date: '+eventDate+' | Time: '+startTime+' – '+endTime;
+        $('#eventDateTime').html(dateTime);
+        /* date time dispaly end */
+
+        $('.ModifyFirstOptionForcity> option:first-child').text('City');
+        $('.btnStatus').attr('disabled',true);
+        $('.notnull').attr('required','true');
+        $('.numonly').keypress(function(e){ 
+            return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) ) ? false : true;
+        });
+        
+        $('[id$=fName]').keypress(function (e) {
+            var regex = new RegExp("^[a-z  A-Z]*$");
+            var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (!regex.test(str)) {
+                $(this).focus();
+                e.preventDefault();
+                $(this).parent().children('span').remove();
+                $(this).parent().append('<span class="error" style="color:red;font-style:bold">Name does not contain number and special character .</span>');
+            }else{
+                $(this).parent().children('span').remove();
+            }    
+        });
+        
+      $('.limitedChar').keypress(function(event) {
+           var inputValue = $(this).val().length;
+            if(inputValue >=10) { 
+                event.preventDefault(); 
+            }
+        });
+        $('.limitedChar').change(function(){
+           var inputValue = $(".limitedChar").val()
+            if(!inputValue.startsWith('7') && !inputValue.startsWith('8') && !inputValue.startsWith('9')) 
+            { 
+                alert("Please enter Valid Mobile Number");
+                $('.limitedChar').val(""); 
+            }
+        });
+            
+     $("#iagree").on('change', function() {
+              if ($(this).is(':checked')) {
+                $(this).attr('value', 'true');
+                 $('.btnStatus').attr('disabled',false);
+              } else {
+                $(this).attr('value', 'false');
+                  $('.btnStatus').attr('disabled',true);
+              }
+          });
+          
+          $(".emailValidation").change(function(){
+            var emailAddress = $(this).val();
+            if(!isValidEmailAddress(emailAddress)){
+                $(this).parent().children('span').remove();
+                $(this).parent().append('<span class="error" style="color:red;font-style:bold">Please enter correct email Address.</span>');
+                $(this).val("");
+            }else{
+                $(this).parent().children('span').remove();
+            }
+        });
+        
+        $(".mobileValidation").change(function(){
+            var mobileNumberValue = $(".mobileValidation").val();
+            if(mobileNumberValue.length >10 || mobileNumberValue.length<10)
+            {
+                $(this).parent().children('span').remove();
+                    $(this).parent().append('<span class="error" style="color:red;font-style:bold">Please enter correct mobile number.</span>');
+                    $(this).val("");
+               
+            }else{
+                $(this).parent().children('span').remove();
+            }
+        
+    });
+        
+      });
+      
+      function isValidEmailAddress(emailAddress) {
+        var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+        // alert( pattern.test(emailAddress) );
+        return pattern.test(emailAddress);
+    }; 
+    
+    <!------------------Count Down ----------------------------------------->
+      function getdayFromNow(days) {
+        return new Date(new Date().valueOf() + days * 24 * 60 * 60 * 1000);
+      }
+
+      var $clock = $('#countDown');
+
+      $clock.countdown(getdayFromNow(6), function(event) {
+        $(this).html(event.strftime('%D days %H:%M:%S'));
+      });
+    <!--------------------------------end-------------------------->  
+    </script>
+    <!-- Facebook Pixel Code -->
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '146694735869022');
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=146694735869022&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Facebook Pixel Code -->
+</apex:page>

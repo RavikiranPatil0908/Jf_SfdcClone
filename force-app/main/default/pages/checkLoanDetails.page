@@ -1,0 +1,569 @@
+<!--
+  @description       : 
+  @author            : @vickysahu
+  @group             : 
+  @last modified on  : 02-17-2025
+  @last modified by  : @vickysahu
+-->
+<apex:page controller="CheckLoanDetailsController">
+    <!-- Add Bootstrap CSS -->
+    <apex:includeScript value="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"/>
+    <apex:stylesheet value="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+    <apex:outputPanel >
+        <div class="body table-responsive">
+            <br/>
+            <apex:outputPanel rendered="{!objWrapper.isEligiableForloan}">
+                <h4 style="color: green;">Student is Eligible for Loan Approval</h4>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!objOpp.Loan_Approved__c}">
+                <h4 style="color: green;">Loan Application is already Approved</h4>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!IF(!objWrapper.isEligiableForloan && !objOpp.Loan_Approved__c,true,false)}">
+                <h4 style="color: #FFBF00;">Student is not Eligible for Loan Approval</h4>
+            </apex:outputPanel>
+            <br/><br/>
+            <table class="table table-bordered text-center" style="width:70%">
+                <thead>
+                    <tr>
+                    <th style="width:60%">Approval Stage Name</th>
+                    <th>Field Name</th>
+                    <th>Value</th>
+                    <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!lstDocument}" var="objDoc" >
+                        <tr>
+                            <td>
+                                <apex:outputPanel rendered="{!IF(objDoc.nm_Status__c == 'Approved' || objDoc.nm_Status__c == 'Admission Form & Documents Provisional',true,false)}">
+                                    <p style="color: green;">{!objDoc.nm_DocumentName__c}</p>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!IF(objDoc.nm_Status__c != 'Approved' && objDoc.nm_Status__c != 'Admission Form & Documents Provisional',true,false)}">
+                                    <p style="color: #FFBF00;">{!objDoc.nm_DocumentName__c}</p>
+                                </apex:outputPanel>
+                            </td>
+                            <td>
+                                <p>Status</p>
+                            </td>
+                            <td>
+                                <p>{!objDoc.nm_Status__c}</p>
+                            </td> 
+                            <td>
+                                <a href="/{!objDoc.Id}" target="_blank">Click here</a> 
+                            </td>                                                    
+                        </tr>
+                    </apex:repeat>
+                    
+                    <!-- <apex:outputPanel rendered="{!!objWrapper.isDocumentApproved}">
+                        <apex:repeat value="{!lstDocumentNotApproved}" var="objDoc" >
+                            <tr>
+                                <td>
+                                    <p style="color: #FFBF00;">{!objDoc.nm_DocumentName__c}</p>
+                                </td>
+                                <td>
+                                    <p>Status</p>
+                                </td>
+                                <td>
+                                    <p>{!objDoc.nm_Status__c}</p>                            
+                                </td>
+                                <td>
+                                    <a href="/{!objDoc.Id}" target="_blank">Click here</a> 
+                                </td>                                                     
+                            </tr>
+                        </apex:repeat>
+                    </apex:outputPanel> -->
+                    
+                    <apex:outputPanel rendered="{!objWrapper.isInterviewApplicable}">
+                        <tr>
+                            <td>
+                                <apex:outputPanel rendered="{!objWrapper.isInterviewStatusSelected}">
+                                    <p style="color: green;">Interview</p>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!!objWrapper.isInterviewStatusSelected}">
+                                    <p style="color: #FFBF00;">Interview</p>
+                                </apex:outputPanel>
+                            </td>
+                            <td>
+                                <p>Interview Status</p>
+                            </td>
+                            <td>
+                                <p>{!objOpp.Account.Interview_Status__c}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.AccountId}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+
+                    <tr>
+                        <td>
+                            <apex:outputPanel rendered="{!objOpp.Account.is_Video_Call_Verified__c}">
+                                <p style="color: green;">Video Verification</p>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!objOpp.Account.is_Video_Call_Verified__c}">
+                                <p style="color: #FFBF00;">Video Verification</p>
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <P>is Video Call Verified</P>
+                        </td>
+                        <td>
+                            <p>{!objOpp.Account.is_Video_Call_Verified__c}</p>
+                        </td>
+                        <td>
+                            <a href="/{!objOpp.AccountId}" target="_blank">Click here</a>
+                        </td>
+                    </tr>
+                    
+                    <apex:outputPanel rendered="{!objWrapper.isDEBApplicable}">
+                        <tr>
+                            <td>
+                                <apex:outputPanel rendered="{!objWrapper.isDEBVerified}">
+                                    <p style="color: green;">DEB Verification</p>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!!objWrapper.isDEBVerified}">
+                                    <p style="color: #FFBF00;">DEB Verification</p>
+                                </apex:outputPanel>
+                            </td>
+                            <td>
+                                <p>is Deb verified</p>
+                            </td>
+                            <td>
+                                <p>{!objWrapper.isDEBVerified}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.AccountId}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    
+                    <tr>
+                        <td>
+                            <apex:outputPanel rendered="{!objOpp.Account.nm_IsEmailVerified__c}">
+                                <p style="color: green;">Email Verification</p>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!objOpp.Account.nm_IsEmailVerified__c}">
+                                <p style="color: #FFBF00;">Email Verification</p>
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <p>Is Email Verified</p>
+                        </td>
+                        <td>
+                            <p>{!objOpp.Account.nm_IsEmailVerified__c}</p>
+                        </td>
+                        <td>
+                            <a href="/{!objOpp.AccountId}" target="_blank">Click here</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <apex:outputPanel rendered="{!objOpp.Account.Is_Mobile_Verified__c}">
+                                <p style="color: green;">Mobile Verification</p>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!objOpp.Account.Is_Mobile_Verified__c}">
+                                <p style="color: #FFBF00;">Mobile Verification</p>
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <p>Is Mobile Verified</p>
+                        </td>
+                        <td>
+                            <p>{!objOpp.Account.Is_Mobile_Verified__c}</p>
+                        </td>
+                        <td>
+                            <a href="/{!objOpp.AccountId}" target="_blank">Click here</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <apex:outputPanel rendered="{!objWrapper.isLoanReadyForDisbursement}">
+                                <p style="color: green;">Loan Status</p>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!objWrapper.isLoanReadyForDisbursement}">
+                                <p style="color: #FFBF00;">Loan Status</p>
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <p>Loan Order Status</p>
+                        </td>
+                        <td>
+                            <p>{!objOpp.Loan_Order_Status__c}</p>
+                        </td>
+                        <td>
+                            <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <apex:outputPanel rendered="{!objWrapper.isLoanAmountAndActualPending}">
+                                <p style="color: green;">Loan Amount</p>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!objWrapper.isLoanAmountAndActualPending}">
+                                <p style="color: #FFBF00;">Loan Amount</p>
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <p>Loan Amount</p>
+                        </td>
+                        <td>
+                            <p>{!objOpp.Loan_Amount__c}</p>
+                        </td>
+                        <td>
+                            <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <apex:outputPanel rendered="{!objWrapper.isLoanAmountAndActualPending}">
+                                <p style="color: green;">Pending Amount</p>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!objWrapper.isLoanAmountAndActualPending}">
+                                <p style="color: #FFBF00;">Pending Amount</p>
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <p>Actual Pending Amount</p>
+                        </td>
+                        <td>
+                            <p>{!objOpp.ActualPendingAmount__c}</p>
+                        </td>
+                        <td>
+                            <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <apex:outputPanel rendered="{!objWrapper.isInterestMatch}">
+                                <p style="color: green;">Interest in Opportunity</p>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!objWrapper.isInterestMatch}">
+                                <p style="color: #FFBF00;">Interest in Opportunity</p>
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <p>Interest Rate</p>
+                        </td>
+                        <td>
+                            <p>{!objOpp.Interest_Rate__c}</p>
+                        </td>
+                        <td>
+                            <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <apex:outputPanel rendered="{!objWrapper.isSubventionMatch}">
+                                <p style="color: green;">Subvention in Opportunity</p>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!objWrapper.isSubventionMatch}">
+                                <p style="color: #FFBF00;">Subvention in Opportunity</p>
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <p>Subvention Value</p>
+                        </td>
+                        <td>
+                            <p>{!objOpp.Subvention_Value__c}</p>
+                        </td>
+                        <td>
+                            <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <apex:outputPanel rendered="{!objWrapper.isInterestMatch}">
+                                <p style="color: green;">Interest in Tenure</p>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!objWrapper.isInterestMatch}">
+                                <p style="color: #FFBF00;">Interest in Tenure</p>
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <p>Interest Rate</p>
+                        </td>
+                        <td>
+                            <p>{!objTenure.Interest_Rate__c}</p>
+                        </td>
+                        <apex:outputPanel rendered="{!IF(objTenure != null, true, false)}">
+                            <td>
+                                <a href="/{objTenure.Id}" target="_blank">Click here</a>
+                            </td>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!objTenure == null}">
+                            <td>Not Found</td>
+                        </apex:outputPanel>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <apex:outputPanel rendered="{!objWrapper.isSubventionMatch}">
+                                <p style="color: green;">Subvention in Tenure</p>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!objWrapper.isSubventionMatch}">
+                                <p style="color: #FFBF00;">Subvention in Tenure</p>
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <p>Subvention Value</p>
+                        </td>
+                        <td>
+                            <p>{!objTenure.Subvention_Value__c}</p>
+                        </td>
+                        <apex:outputPanel rendered="{!IF(objTenure != null, true, false)}">
+                            <td>
+                                <a href="/{objTenure.Id}" target="_blank">Click here</a>
+                            </td>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!objTenure == null}">
+                            <td>Not Found</td>
+                        </apex:outputPanel>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+    </apex:outputPanel>
+    <!-- <apex:outputPanel rendered="{!!objWrapper.isEligiableForloan}">
+        <h4>Student is not Eligiable for loan Approval</h4><br/><br/>
+        <div class="body table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                    <th>Approval Stage Name</th>
+                    <th>Field Name</th>
+                    <th>Value</th>
+                    <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!lstDocumentNotApproved}" var="objDoc" >
+                        <tr>
+                            <td>
+                                <p>{!objDoc.nm_DocumentName__c}</p>
+                            </td>
+                            <td>
+                                <p>Status</p>
+                            </td>
+                            <td>
+                                <p style="color: red;">{!objDoc.nm_Status__c}</p>                            
+                            </td>
+                            <td>
+                                <a href="/{!objDoc.Id}" target="_blank">Click here</a> 
+                            </td>                                                     
+                        </tr>
+                    </apex:repeat>
+
+                    <apex:outputPanel rendered="{!IF(objWrapper.isInterviewApplicable && objOpp.Account.Interview_Status__c != 'Selected' ,true,false)}">
+                        <tr>
+                            <td>
+                                <p>Interview</p>
+                            </td>
+                            <td>
+                                <p>Interview Status</p>
+                            </td>
+                            <td>
+                                <p style="color: red;">{!objOpp.Account.Interview_Status__c}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.AccountId}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+
+                    <apex:outputPanel rendered="{!!objOpp.Account.is_Video_Call_Verified__c}">
+                        <tr>
+                            <td>
+                                <p>Video Verification</p>
+                            </td>
+                            <td>
+                                <P>is Video Call Verified</P>
+                            </td>
+                            <td>
+                                <p style="color: red;">{!objOpp.Account.is_Video_Call_Verified__c}</p>
+                            </td>
+                            <td>
+                                <a href="/{objOpp.AccountId}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!IF(objWrapper.isDEBApplicable && !objWrapper.isDEBVerified ,true,false)}">
+                        <tr>
+                            <td>
+                                <p>DEB Verification</p>
+                            </td>
+                            <td>
+                                <p>is Deb verified</p>
+                            </td>
+                            <td>
+                                <p style="color: red;">objWrapper.isDEBVerified</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.AccountId}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!!objOpp.Account.nm_IsEmailVerified__c}">
+                        <tr>
+                            <td>
+                                <p>Email Verification</p>
+                            </td>
+                            <td>
+                                <p>Is Email Verified</p>
+                            </td>
+                            <td>
+                                <p style="color: red;">{!objOpp.Account.nm_IsEmailVerified__c}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.AccountId}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!!objOpp.Account.Is_Mobile_Verified__c}">
+                        <tr>
+                            <td>
+                                <p>Mobile Verification</p>
+                            </td>
+                            <td>
+                                <p>Is Mobile Verified</p>
+                            </td>
+                            <td>
+                                <p style="color: red;">{!objOpp.Account.Is_Mobile_Verified__c}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.AccountId}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!!objWrapper.isLoanReadyForDisbursement}">
+                        <tr>
+                            <td>
+                                <p>Loan Status</p>
+                            </td>
+                            <td>
+                                <p>Loan Order Status</p>
+                            </td>
+                            <td>
+                                <p style="color: red;">{!objOpp.Loan_Order_Status__c}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!!objWrapper.isLoanAmountAndActualPending}">
+                        <tr>
+                            <td>
+                                <p>Loan Amount</p>
+                            </td>
+                            <td>
+                                <p>Loan Amount</p>
+                            </td>
+                            <td>
+                                <p style="color: red;">{!objOpp.Loan_Amount__c}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+                   
+                        <tr>
+                            <td>
+                                <p>Pending Amount</p>
+                            </td>
+                            <td>
+                                <p>Actual Pending Amount</p>
+                            </td>
+                            <td>
+                                <p style="color: red;">{!objOpp.ActualPendingAmount__c}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+
+                    <apex:outputPanel rendered="{!!objWrapper.isTenureMatch}">
+                        <tr>
+                            <td>
+                                <p>Tenure in Opportunity</p>
+                            </td>
+                            <td>
+                                <p>Tenure</p>
+                            </td>
+                            <td>
+                                <p style="color: red;">{!objOpp.Tenure__c}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+    
+                        <tr>
+                            <td>
+                                <p>Subvention in Opportunity</p>
+                            </td>
+                            <td>
+                                <p>Subvention Value</p>
+                            </td>
+                            <td>
+                                <p style="color: red;">{!objOpp.Subvention_Value__c}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+    
+                        <tr>
+                            <td>
+                                <p>Tenure in Tenure</p>
+                            </td>
+                            <td>
+                                <p>Tenure</p>
+                            </td>
+                            <td>
+                                <p style="color: red;">{!objTenure.Tenure__c}</p>
+                            </td>
+                            <apex:outputPanel rendered="{!IF(objTenure != null, true, false)}">
+                                <td>
+                                    <a href="/{objTenure.Id}" target="_blank">Click here</a>
+                                </td>
+                            </apex:outputPanel>
+                        </tr>
+    
+                        <tr>
+                            <td>
+                                <p>Subvention in Tenure</p>
+                            </td>
+                            <td>
+                                <p>Subvention Value</p>
+                            </td>
+                            <td>
+                                <p style="color: red;">{!objTenure.Subvention_Value__c}</p>
+                            </td>
+                            <apex:outputPanel rendered="{!IF(objTenure != null, true, false)}">
+                                <td>
+                                    <a href="/{objTenure.Id}" target="_blank">Click here</a>
+                                </td>
+                            </apex:outputPanel>
+                        </tr>
+                    </apex:outputPanel>
+                    
+                </tbody>
+            </table>
+        </div>
+    </apex:outputPanel> -->
+    <apex:includeScript value="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/pages/ui/notifications.js"/>
+</apex:page>

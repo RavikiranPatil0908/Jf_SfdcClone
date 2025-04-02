@@ -1,0 +1,496 @@
+<!--
+  @File Name          : emailWizard.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 07-16-2020
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    16/5/2020   @BK     Initial Version
+-->
+<template>
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant}
+        auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+
+    <template if:false={showModal}>
+        <div class="slds-grid">
+            <button name="recap" type="button" class="slds-button slds-button_neutral slds-col slds-size_7-of-8"
+                onclick={toggeleEditOption}>
+                Send an Email
+            </button>
+            <button name="add" type="button" class="slds-button slds-button_brand slds-col slds-size_1-of-8"
+                onclick={toggeleEditOption}>Add</button>
+        </div>
+    </template>
+    <template if:true={showModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium"
+            aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning-button-icon class="slds-modal__close slds-button_icon-inverse" icon-name="utility:close"
+                        variant="bare-inverse" size="large" alternative-text="Close" title="Close" aria-hidden="true"
+                        onclick={closeModal}></lightning-button-icon>
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Email</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-form" role="list">
+                        <div class="slds-form__row">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                    <lightning-input name="fromAdress" type="text" value={email.fromAdress} label="From"
+                                        placeholder="To Address" disabled></lightning-input>
+                                </div>
+                            </div>
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                    <lightning-input name="toAddress" type="text" value={email.toAddress} label="To"
+                                        placeholder="To Address" disabled></lightning-input>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-form__row">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                    <lightning-input name="ccAddress" type="text" value={email.ccAddress} label="Cc"
+                                        placeholder="Cc Address" onchange={handleChange} data-field="ccAddress">
+                                    </lightning-input>
+                                </div>
+                            </div>
+
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                                    <lightning-input name="bccAddress" type="text" value={email.bccAddress} label="Bcc"
+                                        placeholder="Bcc Address" onchange={handleChange} data-field="bccAddress">
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <lightning-input name="subject" type="text" value={email.subject} label="Subject"
+                                placeholder="Enter Subject" onchange={handleChange} data-field="subject" required>
+                            </lightning-input>
+                        </div>
+
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <template if:true={checkTemplateType}>
+                                <lightning-input-rich-text value={email.body} onchange={handleChange} data-field="body">
+                                </lightning-input-rich-text>
+                            </template>
+                            <template if:false={checkTemplateType}>
+                                <lightning-formatted-rich-text value={email.body}>
+                                </lightning-formatted-rich-text>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <div class="slds-grid slds-grid_align-spread slds-wrap">
+                        <div if:true={email.hasAttachment} class="slds-col slds-size_1-of-1">
+                            <div class="slds-grid slds-wrap">
+                                <template for:each={attachments} for:item="attachment" for:index="index">
+                                    <div class="slds-col slds-size_1-of-2 slds-p-around_x-small" key={attachment.Id}>
+                                        <article class="slds-card slds-card_boundary">
+                                            <div class="slds-card__header slds-grid"
+                                                style="padding: .40rem .5rem 0; margin: 0 0 .40rem">
+                                                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                                    <div class="slds-media__figure">
+                                                        <lightning-icon icon-name="doctype:attachment"
+                                                            alternative-text="Attachment file" title="file"
+                                                            size="small"></lightning-icon>
+                                                    </div>
+                                                    <div class="slds-media__body">
+                                                        <h2 class="slds-card__header-title slds-float_left">
+                                                            <span class="slds-card__header-link slds-truncate">
+                                                                <span>{attachment.name}</span>
+                                                            </span>
+                                                        </h2>
+                                                    </div>
+                                                    <div class="slds-no-flex">
+                                                        <lightning-button-icon icon-name="utility:close"
+                                                            data-index={index} onclick={removeAttachment} size="medium"
+                                                            alternative-text="Close" title="Close" aria-hidden="true">
+                                                        </lightning-button-icon>
+                                                    </div>
+                                                </header>
+                                            </div>
+                                        </article>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="slds-col">
+                            <lightning-button-group class="slds-m-horizontal_medium slds-m-top_x-small">
+                                <lightning-button title="Attach file" label="Attachment" icon-name="utility:attach"
+                                    variant="border-filled" data-key="attach" onclick={showAttachmentModal}>
+                                </lightning-button>
+                                <!-- <lightning-button title="Insert Template" label="Template" onclick={showTemplateModal}
+                                    icon-name="utility:insert_template" variant="border-filled" data-key="template">
+                                </lightning-button> -->
+                                <lightning-button-icon title="Preview email" icon-name="utility:preview"
+                                    disabled={checkTemplateType} variant="border-filled" alternative-text="Preview"
+                                    onclick={showPreviewModal}>
+                                </lightning-button-icon>
+                                <lightning-button-icon title="Clear email and revert" icon-name="utility:delete"
+                                    variant="border-filled" alternative-text="Delete" name="openConfirmation"
+                                    onclick={showConfrimDialog}></lightning-button-icon>
+                            </lightning-button-group>
+                        </div>
+                        <div class="slds-col">
+                            <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
+                            <button class="slds-button slds-button_brand" onclick={sendEmail}>Send</button>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- Attachment -->
+    <template if:true={showAttachment}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium"
+            aria-labelledby="modal-heading-02" aria-modal="true" aria-describedby="modal-content-id-2">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning-button-icon class="slds-modal__close slds-button_icon-inverse" icon-name="utility:close"
+                        variant="border-filled" size="medium" alternative-text="Close" title="Close" aria-hidden="true"
+                        onclick={closeAttachmentModal}></lightning-button-icon>
+                    <h2 id="modal-heading-02" class="slds-modal__title slds-hyphenate">Select Files</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                    <div class="slds-grid slds-border_top slds-border_bottom slds-border_left">
+                        <!-- <div class="slds-col slds-size_1-of-3 slds-border_right">
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-size_1-of-1 slds-p-vertical_small">
+                                    <lightning-input type="file"></lightning-input>
+                                </div>
+                            </div>
+                        </div> -->
+                        <div class="slds-col">
+                            <div class="slds-p-around_small">
+                                <lightning-combobox class="half-width" name="folders" placeholder="Search Folder"
+                                    options={folders} onchange={handleChangeOnAttachment} value={attachmentValue}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-p-around_small">
+                                <ul class="slds-has-dividers_around slds-has-block-links_space">
+                                    <template for:each={files} for:item="file">
+                                        <li class="slds-item" key={file.key} if:true={file.show}>
+                                            <a href="javascript:void(0);" onclick={handleSelect} data-key={file.key}>
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-12">
+                                                        <lightning-input type="checkbox" checked={file.selected}
+                                                            onchange={handleSelect} data-key={file.key}>
+                                                        </lightning-input>
+                                                    </div>
+                                                    <div class="slds-col slds-size_1-of-12">
+                                                        <lightning-icon icon-name="doctype:attachment"
+                                                            alternative-text="Audio file" title="Audio">
+                                                        </lightning-icon>
+                                                    </div>
+                                                    <div class="slds-col slds-size_10-of-12">
+                                                        {file.value.Name}
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeAttachmentModal}>Cancel</button>
+                    <button class="slds-button slds-button_brand" disabled={sendOption} onclick={onSubmit}>Add <template
+                            if:false={sendOption}>({count})</template></button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- Email Templates -->
+    <template if:true={showTemplate}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large"
+            aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning-button-icon class="slds-modal__close slds-button_icon-inverse" icon-name="utility:close"
+                        variant="border-filled" size="medium" alternative-text="Close" title="Close" aria-hidden="true"
+                        onclick={closeTemplateModal}></lightning-button-icon>
+                    <h2 id="modal-heading-03" class="slds-modal__title slds-hyphenate">Insert Email Template</h2>
+                    <div class="slds-list_inline slds-wrap slds-m-top_medium">
+                        <div class="slds-text-align_center slds-p-right_x-small">Select a template for:</div>
+                        <lightning-icon icon-name="standard:lead" alternative-text="Lead" title="Lead" size="x-small">
+                        </lightning-icon>
+                        <span class="slds-p-left_x-small slds-p-right_small">Leads</span>
+                    </div>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-3">
+                    <div class="slds-grid">
+                        <div class="slds-col">
+                            <lightning-input type="text" name="template" label="Templates"
+                                value="Classic Email Templates" readonly>
+                            </lightning-input>
+                        </div>
+                        <div class="slds-col">
+                            <fieldset class="slds-form-element slds-form-element_compound">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__row">
+                                        <div class="slds-size_1-of-2">
+                                            <lightning-combobox name="folders" label="Folders" value={templateValue}
+                                                options={templateFolders} onchange={handleChangeOnTemplate}
+                                                data-name="folders">
+                                            </lightning-combobox>
+                                        </div>
+                                        <div class="slds-size_1-of-2">
+                                            <lightning-input type="text" label="Search" name="search"
+                                                value={searchValue} data-name="search" placeholder="Search templates..."
+                                                onchange={handleChangeOnTemplate}>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <template if:false={templateDataLoaded}>
+                        <div class="exampleHolder">
+                            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                        </div>
+                    </template>
+                    <table if:true={templateDataLoaded}
+                        class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout slds-m-top_medium">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Name">Name</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Description">Description</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Folder">Folder</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={templates} for:item="Item">
+                                <tr class="slds-hint-parent" key={Item.key} if:true={Item.show}>
+                                    <th data-label="Name">
+                                        <div class="slds-cell-wrap" data-label="Name" role="gridcell">
+                                            <span class="slds-grid slds-grid_align-spread">
+                                                <div class="slds-hyphenate" title={Item.value.Name}>
+                                                    <a href="javascript:void(0);" tabindex="-1" onclick={insertTemplate}
+                                                        data-key={Item.key}>
+                                                        <lightning-formatted-text value={Item.value.Name}>
+                                                        </lightning-formatted-text>
+                                                    </a>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </th>
+                                    <td data-label="Description">
+                                        <div class="slds-cell-wrap" data-label="Description" role="gridcell">
+                                            <span class="slds-grid slds-grid_align-spread">
+                                                <div class="slds-hyphenate" title={Item.value.Description}>
+                                                    <lightning-formatted-text value={Item.value.Description}>
+                                                    </lightning-formatted-text>
+                                                </div>
+                                            </span>
+                                        </div>
+
+                                    </td>
+                                    <td data-label="Folder">
+                                        <div class="slds-truncate" title={Item.folderName}>{Item.folderName}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeTemplateModal}>Cancel</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- Email Preview -->
+    <template if:true={showPreview}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium"
+            aria-labelledby="modal-heading-04" aria-modal="true" aria-describedby="modal-content-id-4">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning-button-icon class="slds-modal__close slds-button_icon-inverse" icon-name="utility:close"
+                        variant="border-filled" size="medium" alternative-text="Close" title="Close" aria-hidden="true"
+                        onclick={closePreviewModal}></lightning-button-icon>
+                    <h2 id="modal-heading-04" class="slds-modal__title slds-hyphenate">Preview email</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-4">
+                    <template if:false={checkTemplateType}>
+                        <iframe style="border: none; width: 100%; height: 400px" src={uiEmailTemplateURL}></iframe>
+                    </template>
+                    <template if:true={checkTemplateType}>
+                        <lightning-formatted-rich-text value={email.body}>
+                        </lightning-formatted-rich-text>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_brand" onclick={closePreviewModal}>Close</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- Clear Email PopUp -->
+    <c-confirmation-dialog title='Clear email?' message='Recipients, subject, body text, and attachments are removed.'
+        confirm-label='Clear' cancel-label='Cancel' visible={isDialogVisible} onclick={handleClickOnConfirmDialog}>
+    </c-confirmation-dialog>
+
+    <!-- <template if:true={showModal}>
+        <div class="slds-docked_container email-docker">
+            <section class={dockerClass} role="dialog"
+                aria-labelledby="dialog-heading-id-2" aria-describedby="dialog-content-id-2">
+                <header class="slds-docked-composer__header slds-grid slds-shrink-none" aria-live="assertive">
+                    <div class="slds-media slds-media_center slds-no-space">
+                        <div class="slds-media__figure slds-m-right_x-small">
+                            <lightning-icon icon-name="utility:email" alternative-text="email" size="x-small"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="slds-truncate" id="dialog-heading-id-2" title="New Email">New Email</h2>
+                        </div>
+                    </div>
+                    <div class="slds-col_bump-left slds-shrink-none">
+                        <lightning-button-icon icon-name="utility:minimize_window" variant="bare" alternative-text="Minimize Composer Panel" title="Minimize window" onclick={hideEmailModal}></lightning-button-icon>
+                        <lightning-button-icon icon-name="utility:expand_alt" variant="bare" alternative-text="Expand Composer Panel" title="Expand Composer" onclick={showEmailModal}></lightning-button-icon>
+                        <lightning-button-icon icon-name="utility:close" variant="bare" alternative-text="Close Composer Panel" title="Close" onclick={closeModal}></lightning-button-icon>
+                    </div>
+                </header>
+                <div class="slds-docked-composer__body" id="dialog-content-id-2">
+                    <div class="slds-email-composer">
+                        <div class="slds-form-element slds-email-composer__combobox">
+                            <label class="slds-form-element__label" for="recipients-to">To</label>
+                            <div class="slds-form-element__control">
+                                <lightning-pill label={email.toAddress}>
+                                    <lightning-avatar src="https://www.lightningdesignsystem.com/assets/images/avatar2.jpg" fallback-icon-name="standard:user" variant="circle"  alternative-text="User avatar"></lightning-avatar>
+                                </lightning-pill>
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-email-composer__combobox">
+                            <label class="slds-form-element__label" for="recipients-bcc">Bcc</label>
+                            <div class="slds-form-element__control">
+                                <ul class="orderedList" role="listbox"
+                                    aria-label="Selected Options:" aria-orientation="horizontal">
+                                    <template for:each={bccList} for:item="address">
+                                        <li class="pillContainerListItem" role="presentation" key={address}>
+                                            <span class="slds-pill" role="option" tabindex="0" aria-selected="true">
+                                                <span class="slds-avatar slds-avatar_x-small slds-pill__icon_container">
+                                                    <img alt="Person name" src="https://www.lightningdesignsystem.com/assets/images/avatar2.jpg"
+                                                        title="User avatar" />
+                                                </span>
+                                                <span class="slds-pill__label" title={address}>
+                                                    {address}</span>
+                                                <span class="slds-icon_container slds-pill__remove" title="Remove">
+                                                    <lightning-icon icon-name="utility:close" alternative-text="Press delete or backspace to
+                                                    remove" size="x-small" data-address={address} data-key="bcc" onclick={removeAddress}></lightning-icon>
+                                                </span>
+                                            </span>
+                                        </li>
+                                    </template>
+                                    <li class="pillContainerListItem">
+                                        <lightning-input onchange={handleChange} data-field="bccValue" type="text" class="addressField" value={bccValue}></lightning-input>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-email-composer__combobox">
+                            <label class="slds-form-element__label" for="recipients-cc">Cc</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-combobox_container slds-has-inline-listbox">
+                                    <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click"
+                                        aria-expanded="false" aria-haspopup="listbox" role="combobox">
+                                        <div class="slds-combobox__form-element" role="none">
+                                            <input type="text" class="slds-input slds-combobox__input" id="recipients-cc"
+                                                aria-autocomplete="list" aria-controls="listbox-id-03" role="textbox"
+                                                placeholder=" " />
+                                        </div>
+                                        <div id="listbox-id-03" role="listbox" class="slds-dropdown slds-dropdown_fluid">
+                                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                                <li role="presentation" class="slds-listbox__item">
+                                                    <div id="listbox-option-id-3"
+                                                        class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                                        role="option">
+                                                        <span class="slds-media__figure">
+                                                            <lightning-icon icon-name="standard:account" alternative-text="Account" title="Account"></lightning-icon>
+                                                        </span>
+                                                        <span class="slds-media__body">
+                                                            <span
+                                                                class="slds-listbox__option-text slds-listbox__option-text_entity">Acme</span>
+                                                            <span
+                                                                class="slds-listbox__option-meta slds-listbox__option-meta_entity">Account
+                                                                • San Francisco</span>
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label slds-assistive-text" for="input-subject-01">Enter
+                                subject</label>
+                            <div class="slds-form-element__control">
+                                <input type="text" id="input-subject-01" class="slds-input slds-input_bare" value={email.subject}
+                                    placeholder="Enter Subject" onchange={handleChange} data-field="subject" />
+                            </div>
+                        </div>
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <template if:true={checkTemplateType}>
+                                    <lightning-input-rich-text value={email.body} onchange={handleChange} data-field="body">
+                                    </lightning-input-rich-text>
+                                </template>
+                                <template if:false={checkTemplateType}>
+                                    <lightning-formatted-rich-text value={email.body}>
+                                    </lightning-formatted-rich-text>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="slds-docked-composer__footer slds-shrink-none">
+                    <div class="slds-col_bump-left slds-grid slds-grid_vertical-align-center">
+                        <div class="slds-grid slds-m-right_small" role="toolbar">
+                            <ul class="slds-grid" aria-label="Insert content">
+                                <li class="ml-5">
+                                    <lightning-button-icon icon-name="utility:link" class="slds-button_icon-small" variant="bare" data-key="attach" onclick={showAttachmentModal} alternative-text="Attach File" title="Attach File"></lightning-button-icon>
+                                </li>
+                                <li class="ml-5">
+                                    <lightning-button-icon icon-name="utility:insert_template" class="slds-button_icon-small" variant="bare" data-key="template" onclick={showTemplateModal} alternative-text="Insert Template" title="Insert Template"></lightning-button-icon>
+                                </li>
+                                <li class="ml-5">
+                                    <lightning-button-icon icon-name="utility:preview" class="slds-button_icon-small" variant="bare" data-key="preview" disabled={checkTemplateType} onclick={showPreviewModal} alternative-text="Preview" title="Preview" ></lightning-button-icon>
+                                </li>
+                                <li class="ml-5">
+                                    <lightning-button-icon icon-name="utility:delete" class="slds-button_icon-small" variant="bare" data-key="delete" onclick={showConfrimDialog} alternative-text="delete" title="Clear email and revert" ></lightning-button-icon>
+                                </li>
+                            </ul>
+                        </div>
+                        <button class="slds-button slds-button_brand" onclick={sendEmail}>Send</button>
+                    </div>
+                </footer>
+            </section>
+        </div>
+    </template> -->
+
+</template>

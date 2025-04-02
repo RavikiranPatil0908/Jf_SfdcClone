@@ -1,0 +1,136 @@
+<apex:page controller="nmRegistrationPaymentByIc" sidebar="false">
+
+    <apex:includeScript value="{!URLFOR($Resource.Scripts,'/scripts/jquery-1.8.2.min.js')}"/>
+    
+    <style>
+        .Processingview
+        {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;           
+            width:  100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;       
+        }
+    </style>
+    
+    <apex:form id="idForm">
+    <script type="text/javascript">
+  
+    function Paymentcheck()
+    {
+        
+        check();
+       
+    }
+    function CheckSave()
+    {
+        document.getElementById('j_id0:idForm:btnid').disabled = true;
+        callSave();
+    }
+    </script>
+    <apex:actionFunction name="check" action="{!showPaymentMode}" reRender="pnlPayment"/>
+     <apex:actionFunction name="callSave" action="{!MakePayment}"/>
+        <apex:outputpanel id="pnlDetails" rendered="{!strSectionToShow == 'Information'}">
+            <h2>{!strInforamtion}</h2>
+            <br/><br/>
+            <a href="/{!leadId}" title="Back to Lead" style="{!if(leadId != null, '','display:none;')}">Back to Lead</a>
+        </apex:outputpanel>
+        
+        <apex:sectionHeader title="{!strName}" subtitle="Make Payment for registration." rendered="{!strSectionToShow == 'Payment'}" />
+          <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlock id="pbDetails" title="Student Details" rendered="{!strSectionToShow == 'Payment'}">
+        
+             <apex:pageBlockSection >
+                 
+                 <apex:pageBlockSectionItem >
+                     <label>Student Name</label>
+                     <apex:outputText value="{!strName}"/>  
+                 </apex:pageBlockSectionItem>
+                 
+                 <apex:pageBlockSectionItem >
+                     <label>Registration No</label>
+                     <apex:outputText value="{!strRegNo}"/>  
+                 </apex:pageBlockSectionItem>            
+                 
+             </apex:pageBlockSection>
+             
+        </apex:pageBlock>
+         
+        <apex:outputPanel id="pnlPayment">    
+            
+            <apex:pageBlock title="Make Payment" id="pbPayment" rendered="{!strSectionToShow == 'Payment'}">
+                
+              
+                
+                <apex:pageBlockSection >       
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Type Of Payment</apex:outputLabel>
+                        <apex:selectList id="typeselected" value="{!PaymentTypeSelected}" multiselect="false" size="1" onchange="Paymentcheck();">
+                            <apex:selectOptions value="{!items}"/>
+                        </apex:selectList> 
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:inputField value="{!objPayment.nm_ModeOfPayment__c}" id="mode" rendered="{!IsShowPaymnetMode}">
+                        <apex:actionSupport event="onchange" reRender="pnlPayment" status="processing" />
+                    </apex:inputField>  
+                    
+                    <apex:inputField value="{!objPayment.nm_DemandDraftNumber__c}"  rendered="{!boolShow}" id="DDn"/>    
+                    <apex:inputField value="{!objPayment.nm_NameoftheBank__c}" rendered="{!boolShow}" id="bank"/>                        
+                    <apex:inputField value="{!objPayment.nm_DemandDraftDate__c}" rendered="{!boolShow}" id="DD"/>
+                    <apex:inputField value="{!objPayment.nm_BankLocation__c}" rendered="{!boolShow}" id="BL"/>
+                    <apex:inputField value="{!objPayment.nm_DispatchDate__c}" rendered="{!boolShow}" />
+                    <apex:outputField value="{!objPayment.nm_Amount__c}" rendered="{!boolShow}" id="idAmount" /> 
+                
+                  <apex:outputLabel value="Pay with Late fees" rendered="{!AND(if(boolShow==true,true,false),if(decLatefees>0.0,true,false))}" style="margin-left:140px;font-weight:bold;">
+                     <apex:inputCheckbox id="chkLatefees" value="{!isPaywithLatefees}" rendered="{!AND(if(boolShow==true,true,false),if(decLatefees>0.0,true,false))}">
+                                <apex:actionSupport event="onchange" action="{!Checklatefees}" reRender="pnlPayment" status="processing"/>
+                  </apex:inputCheckbox>
+                   &nbsp;
+                    <apex:outputText value="{!decLatefees}" rendered="{!AND(if(boolShow==true,true,false),if(decLatefees>0.0,true,false))}" style="font-weight:bold"/>
+                    </apex:outputLabel>
+                </apex:pageBlockSection>
+                
+            </apex:pageBlock>
+            
+            <center>
+                
+                <apex:commandButton value="Submit" id="btnid" rendered="{!(strSectionToShow == 'Payment')}" onclick="CheckSave(); return false;"/>&nbsp;
+                
+                <apex:outputText escape="false" value="<script>window.open('{!url}','_blank','');</script>" rendered="{!if(strInforamtion == 'Payment Successful',true,false)}" />
+                
+                <script type="text/javascript">                   
+                
+                    function ShowReciept(url,returnurl)
+                    {         
+                        if(url != '')
+                        {
+                            var open = window.open(url,'_blank','');
+                        }                        
+                        else
+                        {
+                            if($('[id$=mode]').val() == 'Demand Draft')
+                            {
+                                if($('[id$=DDn]').val() == '' || $('[id$=bank]').val() == ''|| $('[id$=DD]').val() == '' || $('[id$=BL]').val() == '' || $('[id$=idAmount]').val() == '')
+                                {
+                                    alert('fill all the required fields');
+                                }
+                            }
+                        }
+                        return false;
+                    }
+                </script>
+                
+            </center>
+      
+        </apex:outputPanel>
+        
+        <apex:actionStatus id="processing" startStyleClass="Processingview"/>    
+        
+    </apex:form>
+    
+</apex:page>

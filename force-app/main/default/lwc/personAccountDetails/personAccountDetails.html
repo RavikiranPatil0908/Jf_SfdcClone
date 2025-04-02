@@ -1,0 +1,83 @@
+<!--
+ * @File Name          : personAccountDetails.html
+ * @description       : 
+ * @author            : @Monikac
+ * @group             : 
+ * @last modified on  : 09-09-2024
+ * @last modified by  : @Monikac
+-->
+<template>
+    <template if:true={dataLoading}>
+        <div class="exampleHolder">
+            <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+        </div>
+    </template>
+    <template if:false={dataLoading}>
+        <template if:true={hasData}>
+            <article class="slds-card slds-card_boundary">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__figure">
+                            <lightning-icon class="slds-align_absolute-center" icon-name="standard:person" alternative-text="Person Account Details" size="small"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">
+                                <span>Person Account Details</span>
+                            </h2>
+                        </div>
+                    </header>
+                </div>
+                <div class="slds-card__body">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Email">Email</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Mobile">Mobile</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Secondry Email">Secondry Email</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Phone">Phone</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={records} for:item="rec">
+                                <tr class="slds-hint-parent" key={rec.email}>
+                                    <td data-label="Email">
+                                        <div class="slds-truncate" title={rec.email}>{rec.email}</div>
+                                    </td>
+                                    <td data-label="Mobile">
+                                        <div class="slds-truncate" title={rec.mobile}>{rec.mobile}</div>
+                                    </td>
+                                    <td data-label="Secondry Email">
+                                        <div class="slds-truncate" title={rec.secondaryEmail}>{rec.secondaryEmail}</div>
+                                    </td>
+                                    <td data-label="Phone">
+                                        <div class="slds-truncate" title={rec.phone}>{rec.phone}</div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </template>
+        <template if:false={hasData}>
+            <article class="slds-card slds-card_boundary">
+                <div class="slds-card__body slds-card__body_inner">
+                    <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                        <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt="" />
+                        <div class="slds-text-color_weak">
+                            <h3 class="slds-text-heading_medium">No Data found 🧐🤔</h3>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </template>
+    </template>
+</template>

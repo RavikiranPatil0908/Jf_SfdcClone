@@ -1,0 +1,28 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 29-08-2024
+  @last modified by  : @BK
+-->
+<apex:page showHeader="true" sidebar="true">
+    <html>
+    <apex:includeLightning />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <body>
+        <div id="LightningComponentid" />
+        <script>
+            $Lightning.use("c:RaiseinternalTicketcApp", function () {                    //Aura App
+                $Lightning.createComponent("c:raiseInternalTicket",                     //lightning component
+                    { isClassic: true },
+                    "LightningComponentid",
+                    function (cmp) {
+                        console.log('LWC Componenet added in VF page');
+                    });
+            });
+        </script>
+    </body>
+
+    </html>
+</apex:page>

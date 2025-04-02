@@ -1,0 +1,66 @@
+<!--
+  @File Name          : FeeReceiptEmailerMatter3MBAWXComponent.component
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 23-08-2024
+  @Modification Log   : 
+  Ver       Date            Author                  Modification
+  1.0    17/3/2020   shubhranshu     Initial Version
+-->
+<apex:component controller="EmailTemplateController" access="global">
+    <apex:attribute access="global" name="oppId" assignTo="{!OpportunityId}" type="ID" description="Opportunity ID"/>    
+    <apex:attribute access="global" name="sessionValue" assignTo="{!session}" type="String" description="session"/>    
+    <apex:attribute access="global" name="yearValue" assignTo="{!year}" type="Integer" description="year"/>    
+    <apex:attribute access="global" name="chooseProgramValue" assignTo="{!chooseProgram}" type="String" description="chooseProgram"/>    
+    <apex:attribute access="global" name="programTypeValue" assignTo="{!programType}" type="String" description="programType"/>    
+     
+    <table align="center" border="0" cellpadding="0" cellspacing="0" style="width:700px;" width="700">
+        <tbody>
+            <tr>
+                <td>&nbsp;</td>
+                <td style="font-size: 16px; color: #333333; line-height: 24px;" valign="top"> - Calculation of cancellation charges are at the sole discretion of the University.</td>
+                <td>&nbsp;</td>
+             </tr>
+             <tr>
+                <td>&nbsp;</td>
+                <td style="font-size: 16px; color: #333333; line-height: 24px;" valign="top">&nbsp;</td>
+                <td>&nbsp;</td>
+             </tr>
+             <tr>
+                <td>&nbsp;</td>
+                <td style="font-size: 16px; color: #333333; line-height: 24px;" valign="top"> - Last date for cancellation is &nbsp;<c:FormattedDateTime datetimeValue="{!lastDateForCancelation}" datetimeFormat="dd-MM-yyyy" /> and no cancellation request will be accepted post this date. </td>
+                <td>&nbsp;</td>
+             </tr>
+             <tr>
+                <td>&nbsp;</td>
+                <td style="font-size: 16px; color: #333333; line-height: 24px;" valign="top">&nbsp;</td>
+                <td>&nbsp;</td>
+             </tr>
+             <tr>
+                <td>&nbsp;</td>
+                <td style="font-size: 16px; color: #333333; line-height: 24px;" valign="top">In case of any queries, please feel free to call us at <a href="tel:18001025136" style="color: #aa1f24">1800 1025 136</a> (Monday – Saturday) 9 am – 7 pm.</td>
+                <td>&nbsp;</td>
+             </tr>
+             <tr>
+                <td>&nbsp;</td>
+                <td style="font-size: 16px; color: #333333; line-height: 24px;" valign="top">&nbsp;</td>
+                <td>&nbsp;</td>
+             </tr>
+             <tr>
+                <td>&nbsp;</td>
+                <td style="font-size: 16px; color: #333333; line-height: 24px;" valign="top">Thanks and Regards,<br />
+                   <span><b>Team NCDOE</b><br />
+                   </span>
+                </td>
+                <td>&nbsp;</td>
+             </tr>
+             <tr>
+                <td>&nbsp;</td>
+                <td style="font-size: 16px; color: #464648; line-height: 24px;" valign="top">&nbsp;</td>
+                <td>&nbsp;</td>
+             </tr>
+        </tbody>
+    </table>
+</apex:component>

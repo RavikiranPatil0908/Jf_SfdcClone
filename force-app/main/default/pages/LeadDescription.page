@@ -1,0 +1,156 @@
+<!--
+  @File Name          : LeadDescription.page
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 8/5/2020, 7:01:08 pm
+  @Modification Log   : 
+  Ver       Date            Author                  Modification
+  1.0    7/5/2020   @BK     Initial Version
+-->
+<apex:page id="descriptionSection" standardController="Lead" applyBodyTag="false" docType="html-5.0">
+
+    <head>
+        <!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script> -->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js" html-integrity="sha256-TkEcmf5KSG2zToAaUzkq6G+GWezMQ4lEtaBiyaq6Jb4=" html-crossorigin="anonymous" />
+        <style>
+            /*-- bootstrap css --*/
+
+            .container {
+                width: 100%;
+                margin-right: auto;
+                margin-left: auto;
+            }
+
+            .container::after,
+            ::before {
+                box-sizing: border-box;
+            }
+
+
+            ul.timeline {
+                list-style-type: none;
+                position: relative;
+            }
+
+            ul.timeline:before {
+                content: ' ';
+                background: #d4d9df;
+                display: inline-block;
+                position: absolute;
+                left: 29px;
+                width: 2px;
+                height: 100%;
+                z-index: 400;
+            }
+
+            ul.timeline>li {
+                margin: 10px 0;
+                padding-left: 20px;
+                padding-right: 50px;
+            }
+
+            ul.timeline>li:before {
+                content: ' ';
+                background: white;
+                display: inline-block;
+                position: absolute;
+                border-radius: 50%;
+                border: 3px solid #22c0e8;
+                left: 20px;
+                width: 20px;
+                height: 20px;
+                z-index: 400;
+            }
+
+            .pl-1{
+                padding-left: 1rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <ul class="timeline">
+            </ul>
+        </div>
+        <script>
+            $(document).ready(function(){ 
+                var description = `{!lead.Description}`;
+                console.log(description.split("\n"));
+                var arrayOflist = description.split("\n");
+                if(arrayOflist.length > 0) {
+                    let updatedList = formatList(arrayOflist);
+                    createObject(updatedList);
+                }
+            });
+
+            function createObject(description) {
+                let objActivity = [];
+                let html = '';
+                
+                try {
+                
+                    for (let i = 0; i < description.length; i++) {
+                        if (i === 0 || i % 2 === 0) {
+                            let next = i + 1;
+                            let header = description[next];
+                            let headerArray = header.split('updated by');
+                            let dateTime = headerArray[0];
+                            let momentDate = moment(dateTime,'YYYY-MM-DD HH:mm:ss');
+                            let objDescription = {
+                                'header': headerArray[1],
+                                'date': momentDate.format('MMMM Do YYYY, h:mm a'),
+                                'body': description[i]
+                            };
+                            objActivity.push(objDescription);
+                        }
+                    }
+                    objActivity.reverse();
+                    for (let key in objActivity) { 
+                        console.dir(objActivity[key]);
+                        html += `<li>
+                        <a  href="javascript:void(0);">${objActivity[key].header}</a>
+                        <a href="javascript:void(0);" class="pl-1">${objActivity[key].date}</a>
+                        <p>${objActivity[key].body}</p>`;
+                    }
+                    $('.timeline').html(html);
+                }catch(error) {
+                    html = `<span style="white-space: pre-line">{!lead.Description}</span>`;
+                    $('.timeline').html(html);
+                }
+            }
+
+            function formatList(listOfComment) {
+                let updatedList = [];
+                let toSkip = -1;
+                let headerCount = -1;
+                for (let i = 0; i < listOfComment.length; i++) {
+                    if(i <= toSkip) {
+                        continue;
+                    }
+                    let content = listOfComment[i];
+                    if(!content.includes('updated by')) {
+                        let body = content;
+                        let next = i + 1;
+                        for(let j = next; j < listOfComment.length; j++) {
+                            if(listOfComment[j].includes('updated by')) {
+                                break;
+                            }
+                            body += "<br/>"+ listOfComment[j];
+                            toSkip = j;
+                        }
+                        console.log(body);
+                        updatedList.push(body);
+                    } else if(content.includes('updated by') && i != headerCount+1) {
+                        updatedList.push(content);
+                        headerCount = i;
+                    }
+                }
+                console.dir(updatedList);
+                return updatedList;
+            }
+        </script>
+    </body>
+</apex:page>

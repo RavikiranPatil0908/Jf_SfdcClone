@@ -1,0 +1,902 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 03-10-2025
+  @last modified by  : @vickysahu
+-->
+<apex:component access="global" controller="VideoCallPageController" allowDML="true">
+    <apex:attribute access="global" name="recordId" type="ID" description="Record Id" assignTo="{!objectId}"/>
+    <apex:attribute access="global" name="objType" type="String" description="Object Type" assignTo="{!objectType}"/>
+
+    <style>
+        .card .header.p-b-0.p-t-0.p-l-0.p-r-0 {
+            padding: 0px;
+        }
+
+        .bg-steel-blue {
+            background-color: #337ab7;
+        }
+        .form-group .form-line .form-label {
+                top: -10px;
+        }
+
+        .btn-custom {
+            border-bottom: 5px solid #285e8e;
+            position: relative;
+            margin-right: 5px;
+        }
+
+        .btn-custom:hover {
+            top: 0.5px;
+            border-bottom-width: 2.5px;
+        }
+
+        .btn-custom:active {
+            top: 5px;
+            border-bottom: 0;
+        }
+
+        .panelbooked .customStyle.m-b-0, .panelpending .customStyle.m-b-0 {
+            margin-bottom: 0px;
+        }
+
+        .no-space {
+            margin: 0 !important;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            pointer-events: all; /* Ensure it blocks interactions */
+        }
+
+        .hidden {
+            display: none; /* Initially hidden */
+        }
+
+        /* Prevent scrolling when loader is visible */
+        body.no-scroll {
+            overflow: hidden;
+            pointer-events: none; /* Prevents clicks on all elements */
+        }
+    </style>
+    <div class="container-fluid">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="body">
+                    <apex:outputPanel id="panelstatus">
+                        <h4>Call Verification Status <span class="label {!IF(formStatus == 'Pending', 'bg-red', 
+                            IF(formStatus == 'Slot Booked', 'bg-cyan', 
+                                IF(formStatus == 'Verified', 'bg-green',
+                                    IF(formStatus == 'Not Verified', 'bg-red',
+                                        'label-default'))))}">{!formStatus}</span>
+                        </h4>
+                    </apex:outputPanel>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spinner -->
+        <div class="loader-overlay hidden">
+            <div class="loader">
+                <div class="preloader">
+                    <div class="spinner-layer center">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Spinner -->
+
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="header p-b-0 b-b-n p-t-0 p-l-0 p-r-0">
+                    <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue">
+                        <li class="active" id="InterivewFormTab">
+                            <a href="#InterivewForm" style="color: #fff;">
+                                <apex:outputPanel styleClass="list-group-item-heading font-18 font-bold" id="panelHeader">{!sectionHeader}</apex:outputPanel>
+                            </a>
+                        </li>                     
+                    </ul>
+                </div>
+                <div class="body">
+                    <div class="form">
+                        
+                        <apex:outputPanel id="msgBlock">
+                            <script>
+                                function checkErrorMsg() {
+                                    console.log('alert');
+                                    $('.page-loader-wrapper').fadeOut();
+                                    let strSecToShow = '{!strSecToShow}';
+                                    let message = '{!message}';
+                                    console.log('strSecToShow--->' + strSecToShow);
+                                    console.log('message--->' + $('body').find('[id$=message]').val());
+                                    if(strSecToShow === 'PopUpError' || strSecToShow === 'Success'){
+                                        console.log('openPopUp');
+                                        
+                                        if(strSecToShow == 'PopUpError'){
+                                            showHtmlMessage('Important Message',message,strSecToShow);
+                                        }
+                                        if (strSecToShow == 'Success') {
+                                            console.log('success');
+                                            showNotification('alert-success', message, 'top', 'center', 'animated fadeInDown', 'animated fadeOutUp');
+                                        }
+                                    }
+                                }
+                            </script>
+                        </apex:outPutPanel>
+
+
+                        <apex:actionFunction name="reRenderFormPageBlock" reRender="VideoCallModule,callLogs,panelstatus,panelHeader,msgBlock" oncomplete="checkErrorMsg();">
+                        </apex:actionFunction>
+                        <!---------------------------------------- for ------------------------------------------>
+                        <apex:outputPanel styleClass="row clearfix" id="VideoCallModule" rendered="{!IF(isVideoVerificationEnabled, true, false)}">
+
+                            <apex:outputPanel rendered="{!IF((formStatus == 'Pending' || formStatus == 'Pending (Needs Re-booking)') && isSlotAvailable && showBookingForm && isVVCNotExpired, true, false)}" id="panelpending" styleClass="panelpending">
+                                   <!-- Action Function -->
+                                   <apex:actionFunction name="callHandelDateChange" action="{!getVideoCallTimeRange}" rerender="chooseVenuePanel1,chooseVenuePanel2" oncomplete="hideLoader();"/> 
+                                   <apex:actionFunction name="callHandelDateTimeRangeChange" action="{!getVideoCallTime}" rerender="chooseVenuePanel2" oncomplete="hideLoader();"/> 
+                                   
+                               
+                                <div class="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 customStyle m-b-0">
+                                        <div class="col-lg-5 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Date : "><span style="color:red;font-style:bold"> *</span></apex:outputLabel>
+                                                    <apex:selectList value="{!wrapper.meetingDate}" styleClass="form-control notnull h-34 videocalldate" multiselect="false" size="1" style="width:99%;" id="videocalldate" onchange="makeTimeRangeEmpty(); callHandelDateChange();">
+                                                        <apex:selectOptions value="{!VideoCallDate}" />
+                                                        <!-- <apex:actionSupport event="onchange" action="{!handelDateChange}" rerender="chooseVenuePanel1"
+                                                        onchange="showLoader(); callHandelDateChange();"/> -->
+                                                    </apex:selectList> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <apex:outputPanel id="chooseVenuePanel1" styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 customStyle m-b-0" layout="block"> 
+                                        <div class="col-lg-5 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Time Range : "><span style="color:red;font-style:bold"> *</span></apex:outputLabel>                                                    
+                                                    <apex:selectList value="{!wrapper.meetingTimeRange}" styleClass="form-control notnull h-34 videocalltimerange" multiselect="false" size="1" style="width:99%;" id="videocalltimerange" onchange="showLoader(); callHandelDateTimeRangeChange();">
+                                                        <apex:selectOptions value="{!videoCallTimeRange}" />
+                                                        <!-- <apex:actionSupport event="onchange" rerender="chooseVenuePanel2"/> -->
+                                                    </apex:selectList> 
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </apex:outputpanel>
+
+                                    <apex:outputPanel id="chooseVenuePanel2" styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 customStyle m-b-0" layout="block"> 
+                                        <div class="col-lg-5 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Time : "><span style="color:red;font-style:bold"> *</span></apex:outputLabel>                                                    
+                                                    <apex:selectList value="{!wrapper.meetingTime}" styleClass="form-control notnull h-34 videocalltime" multiselect="false" size="1" style="width:99%;" id="videocalltime">
+                                                        <apex:selectOptions value="{!videoCallTime}"/>
+                                                    </apex:selectList> 
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </apex:outputpanel>
+
+                                    <div class="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 customStyle m-b-0">
+                                        <div class="col-md-9 col-lg-9 col-sm-9 col-xs-9"></div>
+                                        <div class="col-md-3 col-lg-3 col-sm-3 col-xs-3" style="text-align: center;">
+                                            <a href="javascript:void(0);" class="btn btn-primary pgSubmit btn-lg btn-custom waves-effect" id="videoCallSubmit" 
+                                                onclick="return validateForm();">Submit
+                                            </a>
+                                        </div>
+                                    </div>
+                            </apex:outputPanel>
+                                
+                            <apex:outputPanel rendered="{!formStatus == 'Slot Booked'}" id="panelbooked" styleClass="panelbooked">
+                                <!-- <apex:inputHidden id="callDateTime" value="{!newTime}"></apex:inputHidden> -->
+                                <!-- <apex:outputLabel id="callDateTime" value="{!newTime}"></apex:outputLabel> -->
+                                <input id="callDateTime" type="hidden" name="theHiddenInput" value="{!newTime}" />
+                                <div class="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 customStyle m-b-0">
+                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 customStyle m-b-0">
+                                        <div class="form-group">   
+                                            <apex:outputlabel styleClass="form-label" value="Date : "></apex:outputLabel>
+                                            <apex:outputlabel styleClass="form-label" value="{!callDate}"></apex:outputlabel>
+                                        </div>
+                                    </div>
+                                </div>                                
+
+                                <div class="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 customStyle m-b-0">
+                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 customStyle m-b-0">
+                                        <div class="form-group">
+                                            <apex:outputlabel styleClass="form-label" value="Time : "></apex:outputLabel>                                                    
+                                            <apex:outputlabel styleClass="form-label" value="{!callTime}"></apex:outputlabel> 
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 customStyle m-b-0">
+                                    <div class="col-lg-12 col-md-12 col-sm-10 col-xs-10 customStyle m-b-0">
+                                        <div class="form-group">
+                                            <apex:outputlabel styleClass="form-label" value="Meeting Link : "></apex:outputLabel>
+                                            <!-- <apex:outputLink value="{!meetingUrl}">{!meetingUrl}</apex:outputLink> -->    
+                                            <!-- <apex:commandLink styleClass="btn btn-primary btn-lg waves-effect" id="meetingLink"
+                                                value="Join" action="{!checkValidityOfMeeting}" target="_blank" onclick="return checkMeetingValidity();">
+                                            </apex:commandLink> -->
+                                            <apex:commandLink styleClass="btn btn-primary btn-lg waves-effect" id="meetingLink"
+                                                value="Join" action="{!checkValidityOfMeeting}" target="_blank">
+                                            </apex:commandLink>                                                 
+                                        </div>
+                                    </div>
+                                </div> 
+                                
+                                <div class="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <!-- <div class="col-md-9 col-lg-9 col-sm-12 col-xs-12">
+                                        <apex:outputlabel styleClass="form-label" value="You can re-schedule your time slot before 24 hours of yours original slot"></apex:outputLabel>
+                                    </div> -->
+                                    <div class="col-md-9 col-lg-9 col-sm-6 col-xs-6"></div>
+                                    <apex:outputPanel layout="block" styleClass="col-md-3 col-lg-3 col-sm-6 col-xs-6 align-center" rendered="{!showReScheduleButton}">
+                                        <a href="javascript:void(0);" class="btn btn-primary btn-lg btn-custom waves-effect" id="videoCallReschedule" 
+                                            onclick="return reSchedule();">Re-schedule
+                                        </a>
+                                    </apex:outputPanel>
+                                    
+                                    <div class="col-md-9 col-lg-9 col-sm-12 col-xs-12">
+                                        <p></p>
+                                        <ul>
+                                            <li><b>Note:</b> The agent will wait for 5 minutes from the scheduled time. Please ensure you are ready to meet within this window. Thank you for your cooperation.</li>
+                                            <li>Please be informed that this call will be recorded during the video verification.</li>
+                                            <li>You can re-schedule your time slot before 24 hours of yours original slot</li>
+                                        </ul>
+                                        <!-- <apex:outputlabel styleClass="form-label" value="Note: The agent will wait for 5 minutes from the scheduled time. Please ensure you are ready to meet within this window. Thank you for your cooperation."></apex:outputLabel> -->
+                                    </div>
+                                    <!-- <div class="col-md-9 col-lg-9 col-sm-12 col-xs-12">
+                                        <apex:outputlabel styleClass="form-label" value="Please be informed that this call will be recorded during the video verification."></apex:outputLabel>
+                                    </div> -->
+                                </div>
+
+                            </apex:outputPanel>
+
+                            <apex:outputPanel rendered="{!formStatus == 'Verified' || formStatus == 'Not Verified'}" id="panelverified"> 
+
+                                <apex:outputPanel rendered="{!IF(formStatus == 'Not Verified' && isSlotAvailable, true, false)}">
+                                    <span>Your video verification is not yet complete. Kindly re-book another slot with our counsellor.</span>
+                                    <div class="row clearfix">
+                                        <div class="row clearfix col-lg-8 col-md-8 col-sm-4 col-xs-4"></div>
+                                        <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom waves-effect" id="reschedule" html-data-dismiss="modal" rendered="{!formStatus == 'Not Verified'}"
+                                            value="Re-schedule" action="{!getCallSchedulingPage}" oncomplete="reRenderFormPageBlock();">
+                                        </apex:commandLink><br></br><br></br>
+                                    </div>
+                                </apex:outputPanel>
+
+                                <!-- <apex:outputText value="formStatus: {!formStatus}" /> -->
+                                <!-- <apex:outputPanel rendered="{!formStatus == 'Verified'}">
+                                    <apex:outputLabel >test</apex:outputLabel>
+                                    <span>You have successfully completed the video call verification. You may review your responses as recorded by the counsellor on the call.</span>
+
+                                    <span>NOTE: The University reserves the right to amend the rules and regulation, whenever and wherever considered necessary and appropriate. Changes to the curriculum and course content, passing requirements, Fee structure, refund policy, admission cancellation policies and procedures, examination pattern, policies and timetables, certification, assignment pattern, and so on are all possible. Such amendments will be intimated to all students.</span>
+
+                                    <span>Please be informed all communications from and to University is via tickets or schedule a call back through the student portal only. There is no official WhatsApp group created by the University. Students who join any groups do so at their own risk. </span>
+                                </apex:outputPanel> -->
+
+                                <!-- <div class="row clearfix">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                <th>Call Date</th>
+                                                <th>Call Time</th>
+                                                <th>Call Status</th>
+                                                <th>Transcript</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <apex:repeat value="{!lstTaskTranscript}" var="a" >
+                                                    <tr>
+                                                        <td>
+                                                            <c:FormattedDateTime datetimeValue="{!a.Call_date__c}" datetimeFormat="dd MMM YYYY" />
+                                                        </td>
+                                                        <td>
+                                                            <c:FormattedDateTime datetimeValue="{!a.Schedule_Call_Time__c}" datetimeFormat="h:mm a" />
+                                                        </td>
+                                                        <td>
+                                                            <apex:outputText rendered="{!a.Not_Joined__c == true  && a.Status == 'Not Connected'}" value="Not Joined" />
+                                                            <apex:outputText rendered="{!a.is_Call_Cancel__c == true && a.Status == 'Not Connected'}" value="Cancelled" />
+                                                            <apex:outputText rendered="{!a.Not_Joined__c == false && a.is_Call_Cancel__c == false && a.Status == 'Completed'}" value="Joined" />
+                                                        </td>                                                     
+                                                        <td>
+                                                            <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom waves-effect" id="videoCallTabel"
+                                                                value="Open" action="{!getStudentRating}" oncomplete="renderTranscript();" rendered="{!(a.Not_Joined__c == false && a.is_Call_Cancel__c == false)}">
+                                                                <apex:param name="ratingId" value="{!a.StudentRating__c}" assignTo="{!ratingId}" />
+                                                            </apex:commandLink>
+                                                            <apex:outputPanel rendered="{!(a.Not_Joined__c == false && a.is_Call_Cancel__c == false)}" layout="none">
+                                                                <a href="javascript:void(0);" onclick="renderTranscript('{!a.StudentRating__c}');" class="btn btn-primary btn-lg btn-custom waves-effect" id="videoCallTabel">
+                                                                    Open
+                                                                </a>
+                                                            </apex:outputPanel>
+                                                        </td>
+                                                    </tr>
+                                                </apex:repeat>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>     -->
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!formStatus == 'Verified'}">
+                            <p>You have successfully completed the video call verification. You may review your responses as recorded by the counsellor on the call.</p>
+
+                            <p><b>NOTE:</b> The University reserves the right to amend the rules and regulation, whenever and wherever considered necessary and appropriate. Changes to the curriculum and course content, passing requirements, Fee structure, refund policy, admission cancellation policies and procedures, examination pattern, policies and timetables, certification, assignment pattern, and so on are all possible. Such amendments will be intimated to all students.</p>
+
+                            <p>Please be informed all communications from and to University is via tickets or schedule a call back through the student portal only. There is no official WhatsApp group created by the University. Students who join any groups do so at their own risk.</p> 
+                        </apex:outputPanel>
+                    </div>
+                     <!-- render if no active slot or payment not approved and document not approved -->
+                    <apex:outputPanel rendered="{!IF(formStatus != 'Verified' && formStatus != 'Slot Booked' , true, false)}" layout="none">
+                        <!-- <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" > -->
+                            <!-- <div class="card">
+                                <div class="header p-b-0 b-b-n p-t-0 p-l-0 p-r-0">
+                                    <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue">
+                                        <li class="active">
+                                            <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                                <span class="list-group-item-heading font-18 font-bold">Payment Details</span>
+                                            </a>
+                                        </li>                     
+                                    </ul>
+                                </div> -->
+                                <div class="body align-center">
+
+                                    <apex:outputPanel rendered="{!IF((!isVideoVerificationEnabled || !isSlotAvailable) && isVVCNotExpired,true,false)}">
+                                        <img src="/img/chatter/OpenRoad.svg" class="img-responsive" style="display: block;
+                                        margin-left: auto;
+                                        margin-right: auto;
+                                        width: 50%"/>
+
+                                        <apex:outputPanel rendered="{!IF(!isVideoVerificationEnabled && !isDownPaymentMade ,true,false)}">
+                                            <h4>Please complete the document verification and payment process for video verification at your earliest convenience</h4>
+                                        </apex:outputPanel>
+
+                                        <apex:outputPanel rendered="{!IF(!validAccStatus && isDownPaymentMade ,true,false)}">
+                                                <h4>Please complete the document verification for video verification at your earliest convenience</h4>
+                                        </apex:outputPanel>
+                                        
+                                        <apex:outputPanel rendered="{!IF(!isDebVerified && isDownPaymentMade ,true,false)}">
+                                            <h4 style="color:red">Please update and verify your DEB ID from the Application Status page to be able to book a video verification call slot.</h4>
+                                        </apex:outputPanel> 
+
+                                        <apex:outputPanel rendered="{!IF(isVideoVerificationEnabled && !isSlotAvailable ,true,false)}">
+                                            <h4>There are currently no active slots available. Thank you!</h4>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel rendered="{!!isVVCNotExpired}"> 
+                                        <img src="/img/chatter/OpenRoad.svg" class="img-responsive" style="display: block;
+                                        margin-left: auto;
+                                        margin-right: auto;
+                                        width: 50%"/>
+                                        
+                                        <h4>The video verification deadline has passed.</h4>
+                                    </apex:outputPanel>           
+                                </div>
+                            <!-- </div> -->
+                    <!-- </div> -->
+                    </apex:outputPanel>
+                </div>
+
+               
+            </div>
+        </div>
+
+        <apex:outputPanel styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="callLogs" rendered="{!lstVVCTranscript.size != 0}" layout="block">
+            <div class="card">
+                <!-- <div class="header p-b-0 b-b-n p-t-0 p-l-0 p-r-0">
+                    <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue">
+                        <li class="active" id="InterivewFormTab">
+                            <a href="#InterivewForm" style="color: #fff;">
+                                <apex:outputPanel styleClass="list-group-item-heading font-18 font-bold" id="panelHeader">{!sectionHeader}</apex:outputPanel>
+                            </a>
+                        </li>                     
+                    </ul>
+                </div> -->
+                <div class="body table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                            <th>Call Date</th>
+                            <th>Call Time</th>
+                            <th>Call Status</th>
+                            <th>Your Response</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <apex:repeat value="{!lstVVCTranscript}" var="a" >
+                                <tr>
+                                    <td>
+                                        <c:FormattedDateTime datetimeValue="{!a.Call_Date__c}" datetimeFormat="dd MMM YYYY" />
+                                    </td>
+                                    <td>
+                                        <c:FormattedDateTime datetimeValue="{!a.Schedule_Call_Time__c}" datetimeFormat="h:mm a" />
+                                    </td>
+                                    <td>
+                                        <!-- <apex:outputText rendered="{!a.Not_Joined__c == true  && a.Status == 'Not Connected'}" value="Not Joined" />
+                                        <apex:outputText rendered="{!a.is_Call_Cancel__c == true && a.Status == 'Not Connected'}" value="Cancelled" /> -->
+                                        <apex:outputText rendered="{!a.Status__c == 'Completed'}" value="Completed" />
+                                    </td>                                                     
+                                    <td>
+                                        <apex:outputPanel rendered="{!(a.Not_Joined__c == false && a.is_Call_Cancel__c == false)}" layout="none">
+                                            <a href="javascript:void(0);" onclick="renderTranscript('{!a.Id}');" class="btn btn-primary btn-lg btn-custom waves-effect" id="videoCallTabel">
+                                                Open
+                                            </a>
+                                        </apex:outputPanel>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </apex:outputPanel>
+
+        <apex:actionFunction reRender="TranscriptSection" name="renderTranscript" oncomplete="showLargeModal()" action="{!getVideoTranscript}">
+            <apex:param name="vvcJunctionId" value="" assignTo="{!vvcJunctionId}" />
+        </apex:actionFunction>
+
+        <!-- Large Size -->
+        <apex:outputPanel id="TranscriptSection">
+            <div class="modal fade largeModal" id="largeModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="largeModalLabel" style="text-align: center;">Responses</h3>
+                        </div>
+                        <div class="modal-body">
+
+                            <!-- Initialize the counter -->
+                            <apex:variable var="counter" value="{!0}"/>
+                            
+                            <apex:repeat value="{!lstQuestion}" var="obj">
+                                <!-- Increment the counter for each question -->
+                                <apex:variable var="counter" value="{!counter + 1}" />
+                                <p>{!counter}. {!obj.Question__c}</p>
+                                <p>Ans. {!obj.Answer__c}</p> 
+                            </apex:repeat>
+                            
+                            <!-- <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12  m-b-15" rendered="{!objRating.Confirm_Correct_DOB__c != null}">
+                                <div class="form-group">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                        <apex:outputlabel styleClass="form-label" value="Q) Please could you confirm your Date of Birth? ">                                                    
+                                            <apex:outputText value="{0,date,dd-MM-yyyy}">
+                                                <apex:param value="{!objAccount.nm_DateOfBirth__c}" />
+                                            </apex:outputText>
+                                        </apex:outputLabel>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Correct_DOB__c}"></apex:outputlabel>
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-15" rendered="{!objRating.Confirm_Correct_Program__c != null}">
+                                <div class="form-group">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                        <apex:outputPanel rendered="{!IF(objAccount.Specialization_Type__c == 'Single Specialisation' || objAccount.nm_Program__r.Specialisation__c != 'MBA (WX)' , true, false)}">
+                                            <apex:outputlabel styleClass="form-label" value="Q) You have enrolled for {!objAccount.nm_Program__r.nm_ProgramName__c}"></apex:outputLabel>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(objAccount.Specialization_Type__c == 'Dual Specialisation' && objAccount.nm_Program__r.Specialisation__c == 'MBA (WX)', true, false)}">
+                                            <apex:outputlabel styleClass="form-label" value="Q) You have enrolled for {!objAccount.nm_Program__r.nm_ProgramName__c} and {!objAccount.nm_Program2__r.nm_ProgramName__c}"></apex:outputLabel>
+                                        </apex:outputPanel>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">    
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Correct_Program__c}"></apex:outputlabel>
+                                    </div>     
+                                </div>
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-15" rendered="{!objRating.Confirm_Correct_Duration__c != null}">
+                                <div class="form-group">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                        <apex:outputlabel styleClass="form-label" value="Q) Are you aware that the duration of the program is {!objAccount.nm_Program__r.nm_ProgramDuration__c} year and mode of delivery is online? Do you want to continue? "></apex:outputLabel>                                                    
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">    
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Correct_Duration__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-0" rendered="{!objRating.Confirm_Loan_Details__c != null}">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                    <div class="form-group">
+                                        <apex:outputlabel styleClass="form-label" value="Q) We understand that you have opted for loan from ({!objOpp.Loan_Type__c} for Rs.{!objOpp.Loan_Amount__c}/- for a period of {!objOpp.Tenure__c} month) please note that the University has only facilitated this loan for you and your agreement is directly with the loan provider – {!objOpp.Loan_Type__c}. You have to abide by the terms of the loan agreement and any further issue due to this agreement is not the University’s responsibility and you will have to directly deal with the loan provider. "></apex:outputLabel>                                                    
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Loan_Details__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-0" rendered="{!IF(objRating.Confirm_Exam_Fee__c != null && objAccount.nm_Program__r.Specialisation__c != 'MBA (WX)',true,false)}">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                    <div class="form-group">
+                                        <apex:outputlabel styleClass="form-label" value="Q) Please note the examination fee is Rs‘800’ per subject per attempt and Project fee is Rs‘1500’ applicable in the respective term (in case of MBA student). This is not part of tuition fees. Also note the first two assignment submissions are free however any submissions post that for the failed subject(s) will be Rs. 500/-.per submission per subject per examination "></apex:outputLabel>                                                    
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Exam_Fee__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-0" rendered="{!IF(objRating.Confirm_Session__c != null && objAccount.nm_Program__r.Specialisation__c == 'MBA (WX)', true, false)}">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                    <div class="form-group">
+                                        <apex:outputlabel styleClass="form-label" value="Q) Are you aware that sessions are conducted - Monday to Friday – (07:00PM to 09:30 PM) every evening? In case of any public holidays, these sessions will be rescheduled to weekends. "></apex:outputLabel>                                                    
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Session__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-0" rendered="{!IF(objRating.Confirm_Examination_Component__c != null && objAccount.nm_Program__r.Specialisation__c == 'MBA (WX)',true,false)}">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                    <div class="form-group">
+                                        <apex:outputlabel styleClass="form-label" value="Q) Are you aware that examination has two components internal assessment of 60 marks and Term End examination of 40 marks? "></apex:outputLabel>                                                    
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Examination_Component__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-0" rendered="{!IF(objRating.Confirm_Exam_Evaluation__c != null && objAccount.nm_Program__r.Specialisation__c == 'MBA (WX)',true,false)}">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                    <div class="form-group">
+                                        <apex:outputlabel styleClass="form-label" value="Q) Each subject will have has 6 internal assessments (12 marks each). Out of which Best 5 IAs, will be considered for the final evaluation. These will be conducted in the evening from 09:45 PM to 10:30 PM post live sessions. Note: Missed IAs cannot be rescheduled "></apex:outputLabel>                                                    
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Exam_Evaluation__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-0" rendered="{!IF(objRating.Confirm_Term_End_Examination__c != null && objAccount.nm_Program__r.Specialisation__c == 'MBA (WX)',true,false)}">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                    <div class="form-group">
+                                        <apex:outputlabel styleClass="form-label" value="Q) Term end examination is conducted on Saturday/Sunday at 11:00AM. You can select either of the one slot as per your convenience. The dates of these slots will be provided in the batch planner. Note: Missed TEE cannot be rescheduled. "></apex:outputLabel>                                                    
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Term_End_Examination__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-15" rendered="{!IF(objRating.Confirm_Validity_Of_Program__c != null && objAccount.nm_Program__r.Specialisation__c != 'MBA (WX)',true,false)}">
+                                <div class="form-group">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                        <apex:outputlabel styleClass="form-label" value="Q) Please note the program validity is until {!validityDate}. You have to complete your program by validity date."></apex:outputLabel>                                                    
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Validity_Of_Program__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-15" rendered="{!objRating.Confirm_Passing_Marks__c != null}">
+                                <div class="form-group">
+                                    <apex:outputPanel rendered="{!objAccount.nm_Program__r.Specialisation__c != 'MBA (WX)'}">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                            <apex:outputlabel styleClass="form-label"  value="Q) Are you aware that passing marks is 40 marks per subject and there is no grace marks"></apex:outputLabel>                                                    
+                                        </div>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!objAccount.nm_Program__r.Specialisation__c == 'MBA (WX)'}">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                            <apex:outputlabel styleClass="form-label"  value="Q) Are you aware that passing marks is 40 marks per subject and there is no grace marks. Also, you need to score minimum of 16 marks in Term end examination to clear the subject. "></apex:outputLabel>                                                    
+                                        </div>
+                                    </apex:outputPanel>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Passing_Marks__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-0" rendered="{!IF(objRating.Confirm_Reexam_Process__c != null && objAccount.nm_Program__r.Specialisation__c == 'MBA (WX)',true,false)}">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                    <div class="form-group">
+                                        <apex:outputlabel styleClass="form-label" value="Q) If a student is not able not able to clear a TERM, he/she has to either repeat the subject or appear for a Re-exam by paying the applicable fees. Student will be allowed to progress to the next TERM only if they clear all subjects. "></apex:outputLabel>                                                    
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Reexam_Process__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-0" rendered="{!IF(objRating.Confirm_Validity_Of_Program__c != null && objAccount.nm_Program__r.Specialisation__c == 'MBA (WX)',true,false)}">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                    <div class="form-group">
+                                        <apex:outputlabel styleClass="form-label" value="Q) Please note the program validity is until {!validityDate}. You have to complete your program by validity date. "></apex:outputLabel>                                                    
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Validity_Of_Program__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-0" rendered="{!objRating.Confirm_Exam_Conduction_Process__c != null}">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                    <div class="form-group">
+                                        <apex:outputPanel rendered="{!objAccount.nm_Program__r.Specialisation__c == 'MBA (WX)'}">
+                                            <apex:outputlabel styleClass="form-label" value="Q) Currently our examinations are online from any location. However If you are found to indulge in any malpractices during examinations, the paper will be marked as ‘null and void’ and you will have to appear for examination only at the examination centre. Note- The University reserves the right to change this and switch to center-based examinations at its discretion at any point of time. "></apex:outputLabel>                                                    
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!objAccount.nm_Program__r.Specialisation__c != 'MBA (WX)'}">
+                                            <apex:outputlabel styleClass="form-label" value="Q) Currently our examination can be attempted either online from any location or at our designated examination centres. If you are found to indulge in any malpractices during examinations, the paper will be marked as ‘null and void’ and you will have to appear for examination only at the examination centre. Note- The University reserves the right to change this and switch to center-based examinations at its discretion at any point of time."></apex:outputLabel>                                                    
+                                        </apex:outputPanel>
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Exam_Conduction_Process__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-0" rendered="{!objRating.Confirm_Special_Case__c != null}">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                    <div class="form-group">
+                                        <apex:outputlabel styleClass="form-label" value="Q) Since you have opted for special needs, are you aware that you would have to attempt the examination at our examination centre only."></apex:outputLabel>                                                    
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Special_Case__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-15" rendered="{!objRating.Confirm_No_Placement_Service__c != null}">
+                                <div class="form-group">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                        <apex:outputlabel styleClass="form-label" value="Q) There are no placement services or referral bonus offered by the University. Do you wish to continue"></apex:outputLabel>                                                    
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_No_Placement_Service__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-15" rendered="{!objRating.Confirm_Mandatory_Engagement__c != null}">
+                                <div class="form-group">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                        <apex:outputlabel styleClass="form-label" value="Q) As per UGC guidelines, you need to have 75% engagement throughout the program .i.e 90 hours per subject per semester. This can be achieved by attending live sessions, viewing recordings and E-Books, participating in discussion forums, quizzes, posting queries and assignment submissions. Note: Students will not be allowed to attempt the TEE if the engagement is less than 75% "></apex:outputLabel>                                                    
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">    
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Mandatory_Engagement__c}"></apex:outputlabel> 
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel styleClass="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-15" rendered="{!objRating.Confirm_Cancellation_date__c != null}">
+                                <div class="form-group">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                        <apex:outputlabel styleClass="form-label" value="Q) Please note that if admission is cancelled by {!cancelDate}, full program fee will be refunded. Post that a processing fee of Rs. 1000 will be deducted until {!cancelDate2}. No refund is allowed after that. Please note -Registration fees Rs. 1200/- is non-refundable. "></apex:outputLabel>                                                    
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                        <apex:outputlabel styleClass="form-label" value="Ans: {!objRating.Confirm_Cancellation_date__c}"></apex:outputlabel>    
+                                    </div>
+                                </div>
+                            </apex:outputPanel> -->
+
+                            <div class="row clearfix col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <!-- <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> -->
+                                <div class="form-group">
+                                    <apex:outputlabel styleClass="form-label" value="Please make sure you go through the policies available on the student portal under student resource book.- Student portal>Student support>Know your policy>SRB. Please be aware that the University has not established any WhatsApp groups. Students who join any groups do so at their own risk. Any program related queries students are expected to raise via tickets or schedule a call back through the student portal only"></apex:outputLabel>                                                    
+                                </div>
+                                <!-- </div> -->
+                            </div>                                            
+                        </div>
+                        <div class="modal-footer">
+                            <a href="javascript:void(0);" class="btn btn-primary btn-lg btn-custom" data-dismiss="modal" id="videoCallClose">Close</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+
+        <div class="modal fade" id="defaultModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="defaultModalLabel">Confirm Schedule</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to book this call slot?
+                    </div>
+                    <div class="modal-footer">
+                        <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom waves-effect" id="videoCallSave" html-data-dismiss="modal"
+                            value="Save" onclick="if(hideModal('defaultModal')) return false;" action="{!saveDetail}" oncomplete="reRenderFormPageBlock();">
+                        </apex:commandLink>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-lg btn-custom waves-effect" data-dismiss="modal">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="largeModalReschedule" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="defaultModalLabel">Reschedule Video Call</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure? You want to Re-Schedule Meeting than Scheduled Meeting will be Cancel!
+                    </div>
+                    <div class="modal-footer">
+                        <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom" id="videoCallRescheduleSave" 
+                            value="Yes" onclick="if(hideModal('largeModalReschedule')) return false;" action="{!checkReschedule}" html-data-dismiss="modal" oncomplete="reRenderFormPageBlock();">
+                        </apex:commandLink>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-lg btn-custom waves-effect" data-dismiss="modal">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- SweetAlert Plugin Js -->
+     <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.0/sweetalert2.all.min.js"/>
+
+     <apex:includeScript value="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/pages/ui/notifications.js"/>
+
+     <script>
+         //checkMeetingValidity();
+
+         // function renderTranscriptAndOpenModal(ratingId) {
+         //     console.log('id--->' + ratingId);
+         //     renderTranscript(ratingId);  // This will set the parameter and call the Apex method
+         // }
+
+         function checkMeetingValidity() {
+             var now = new Date();
+             //console.log('now--->' + now);
+             // var callTime = $('body').find('[id$=callDateTime]').val();
+             var callTimeStr = $('[id$=callDateTime]').val();
+             // var callTimeStr = 'Tue Jun 10 6:35:00 GMT 2024';
+             //console.log('callTimeStr---->' + callTimeStr);
+             var buttonDisableTime = new Date(callTimeStr);
+             //console.log('buttonDisableTime--->' + buttonDisableTime);
+             var buttonEnableTime = new Date(callTimeStr);
+             buttonEnableTime.setHours(buttonEnableTime.getHours() - 3);
+             buttonEnableTime.setMinutes(buttonEnableTime.getMinutes() - 5);
+             console.log('buttonEnableTime--->' + buttonEnableTime);
+              
+             if (now < buttonEnableTime || now > buttonDisableTime) {
+                 //console.log('inside disable');
+                 // $('#meetingLink').prop('disabled', true);
+                document.querySelector('[id$=meetingLink]').setAttribute('disabled', true);
+                checkErrorMsg();
+             }
+             else {
+                var element = document.querySelector('[id$=meetingLink]');
+                if (element && element.hasAttribute('disabled')) {
+                    element.removeAttribute('disabled');
+                }
+                 // document.querySelector('[id$=meetingLink]').removeAttribute('disabled');
+                return true;
+             }
+         }
+
+         function hideModal(element) {
+             $('.page-loader-wrapper').show();
+             $(`#${element}`).modal('hide');
+             return false;
+         }
+
+         $(document).ready(function(){
+             /*-------------------------------------------------------Common validation class Names -------------------------------------*/
+             $('.required').append('<span style="color:red;font-style:bold"> *</span>');
+
+             $('body').on('change', '.notnull', function(e) {
+                 $(this).closest('div.form-group').children('span.error').remove();
+             });
+             // checkMeetingValidity();
+         });
+
+         /*--------------------show error Popup message -------------------*/
+         function showHtmlMessage(header,message,strSecToShow) {
+             swal({
+                 title: header+"!",
+                 text: message,
+                 type: "warning"
+             });
+         }
+
+         function showLargeModal() {
+             console.log('showLargeModal called');
+             // $('#largeModal').modal('show');
+             $('body').find('.largeModal').modal('show');
+             return true;
+         }
+
+         function reSchedule() {
+             $('#largeModalReschedule').modal('show');
+             return true;
+         }
+              //  function clearDependentPicklists() {
+        //     // Clear the Time Range picklist
+        //     let timeRangeSelect = document.getElementById('videocalltimerange');
+        //     timeRangeSelect.innerHTML = '<option value="">-- Select Time Range --</option>';
+
+        //     // Clear the Time picklist
+        //     let timeSelect = document.getElementById('videocalltime');
+        //     timeSelect.innerHTML = '<option value="">-- Select Time --</option>';
+        // }
+
+         $('body').on('change', '.videocalldate', function(e) {
+            console.log('on change date');
+            //$('.page-loader-wrapper').show();
+            $('.videocalltimerange').val('');
+            $('.videocalltime').val('');
+            // Clear options for VideoCallDate
+            // $('#videocalltimerange').html('<option value="">-- Select Date Range --</option>');
+            
+            // // Clear options for VideoCallTime
+            // $('#videocalltime').html('<option value="">-- Select Time --</option>');
+        });
+
+        // $('body').on('change', 'videocalldate', function(e) {
+        //     console.log('on change date');
+        //     // Clear all options in the Time Range dropdown
+        //     $('#videocalltimerange').empty();
+            
+        //     // Optionally, add a placeholder option like "Select Time"
+        //     $('#videocalltimerange').append('<option value="">Select Time</option>');
+        // });
+
+        function showLoader() {
+            $('.loader-overlay').removeClass('hidden');
+            $('body').addClass('no-scroll'); // Disable scrolling and interactions
+        }
+
+        function hideLoader() {
+            $('.loader-overlay').addClass('hidden');
+            $('body').removeClass('no-scroll'); // Re-enable scrolling and interactions
+        }
+
+        function makeTimeRangeEmpty() {
+            $('[id$=videocalltimerange]').val('');
+            $('[id$=videocalltime]').val('');
+            showLoader();
+         }
+
+         function validateForm(){
+             var flag = 0;
+             $('[id$=VideoCallModule]').find('.notnull').each(function () {
+                 if($(this).val() !=null){
+                     if ($(this).val().trim().length == 0) {
+                         flag = 1;
+                         console.log('Id Required Value --'+$(this).attr('id'));
+                         $(this).focus();
+                         $(this).closest('div.form-group').children('span.error').remove();
+                         $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+                     }
+                 }else{
+                     flag = 1;
+                     console.log('Id Required Value --'+$(this).attr('id'));
+                     $(this).focus();
+                     $(this).closest('div.form-group').children('span.error').remove();
+                     $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');  
+                 }
+             });
+             if(flag === 0) {
+                 console.log('test');
+                 $('#defaultModal').modal('show');
+                 return true;
+             } else {
+                 return false;
+             }
+         }
+          // GMT tracking 
+         if('{!formStatus}' == 'Not Verified' || '{!formStatus}' == 'Slot Booked'){
+            pushData('Video Call Scheduled');
+         }
+         console.log('{!formStatus}' ,'formStatus' );
+     </script>
+</apex:component>

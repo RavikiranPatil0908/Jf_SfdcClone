@@ -1,0 +1,50 @@
+<!--
+  @description       : 
+  @author            : @Ravi
+  @group             : 
+  @last modified on  : 07--11--2024
+  @last modified by  : @Ravi
+-->
+<template>
+    
+    <template if:false={uploadUrl}>
+        <div class="slds-grid slds-align_absolute-center">
+            <div class="slds-size_4-of-6" style="width: 50%; margin-top: 50px;">
+                <lightning-card  title="Upload Documents"  icon-name="utility:upload"  class="custom-card">
+                    <div class="slds-p-around_medium">
+                        
+                        <lightning-input  label="Student SAP ID"  value={sapId} onchange={handlesapId} onkeypress={restrictAlphabets}  class="slds-m-bottom_medium slds-input_small">
+                        </lightning-input>
+                        
+                        <!-- Mode of Upload Dropdown -->
+                        <lightning-combobox  label="Mode of Upload"  value={selectedMode} options={uploadModes} onchange={handleselectedMode} class="slds-m-bottom_medium slds-input_small">
+                        </lightning-combobox>
+                        
+                        <!-- Validate and Proceed Button -->
+                        <lightning-button variant="brand" label="Validate and Proceed" onclick={validateAndProceed} class="slds-m-top_small slds-m-horizontal_auto slds-size_full custom-button">
+                        </lightning-button>
+                    </div>  
+                </lightning-card>
+            </div>
+        </div>
+    </template>
+    <template if:true={uploadUrl}>
+        <div class="slds-size_6-of-6">
+            <!-- Displaying Student Name and SAP ID Above the Iframe -->
+            <div class="slds-grid slds-wrap slds-p-horizontal_small slds-p-vertical_x-small">
+                <div class="slds-col slds-size_9-of-12 slds-text-align_left">
+                    <p class="slds-text-heading_small slds-m-vertical_x-small">
+                        <strong>Student Name:</strong> {studentName} &nbsp; | &nbsp; <strong>SAP ID:</strong> {studentNo} &nbsp; | &nbsp; <strong>Information Center:</strong> {informationCenter}
+                    </p>
+                </div>
+                <div class="slds-col slds-size_3-of-12 slds-text-align_right">
+                    <p class="slds-text-heading_small slds-m-vertical_x-small">
+                        <strong><a onclick={backPress}>Back</a></strong>
+                    </p>
+                </div>
+            </div>
+            <!-- Iframe for Document Upload Page -->
+            <iframe src={uploadUrl} width="100%" height="800px" style="border: 1px solid #d8dde6; border-radius: 0.25rem;"></iframe>
+        </div>
+    </template>
+</template>

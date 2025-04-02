@@ -1,0 +1,23 @@
+<!--
+  @File Name          : PhotoChangeForApprovalComponent.component
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 6/3/2020, 11:52:51 am
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    5/3/2020   shubhranshu     Initial Version
+-->
+<apex:component controller="EmailTemplateController" access="global" >
+    <apex:attribute access="global" name="accId" assignTo="{!AccountId}" type="ID" description="Account ID"/>    
+    <apex:repeat value="{!lstlinkDocs}" var="doc" id="theRepeat">
+        <label><b>{!doc.Name}</b></label><br/>
+        <a href="{!doc.nm_URLforDocuments__c}" target="_blank">Click here</a>
+        <br /> <br />
+    </apex:repeat><br />
+    <p>
+        <apex:outputlink value="{!LEFT($Api.Partner_Server_URL_270,FIND('.com',$Api.Partner_Server_URL_270)+4)}p/process/ProcessInstanceWorkitemWizardStageManager?id={!approvalId}"><label><b>Click here</b></label></apex:outputlink> to <b>Approve/Reject</b>.
+      </p>
+    <!-- <p>Need your approval <a href="{!ApprovalRequest.Internal_URL}" style="color: #aa1f24" >Approve/Reject</a>.</p><br /> -->
+</apex:component>

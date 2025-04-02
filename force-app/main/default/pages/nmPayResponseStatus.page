@@ -1,0 +1,21 @@
+<apex:page controller="nmPayResponseStatus" action="{!ShowAdvise}" showHeader="false">
+  <style type="text/css">
+      body
+      {
+          background:#000000;
+      }
+  </style>
+  <!-- Begin Default Content REMOVE THIS -->
+  <div style="width:50%; margin:0 auto; background:#ffffff; border-radius:10px;padding:1%; margin-top:20px;">
+      <apex:image url="{!URLFOR($Resource.NMIMS_CSSJS, 'images/logo.png')}" alt="logo"/>
+  </div>
+  <div style="width:50%; margin:0 auto; background:#d1242a; color:#ffffff; border-radius:10px;padding:1%; margin-top:20px;{!IF(isSuccess == false,'','display:none;')}">  
+      <h1 style="font-size:13px;">{!strMessage}</h1><br/>
+      <h1 style="font-size:13px;">Payment is not successfully completed, Please contact your Information Center or try after some time.<a href="{!IF(IsReRegistration =='true','https://sandbox-ngasce.cs5.force.com/nmLogin_new?type=reregistration','https://sandbox-ngasce.cs5.force.com/nmLogin_new?type=registration')}">click here</a> for re-try.</h1>
+  </div>
+  
+  <div style="width:50%; margin:0 auto; background:#298A08; color:#ffffff; border-radius:10px;padding:1%; margin-top:20px;{!IF(isSuccess == true,'','display:none;')}">  
+      <h1 style="font-size:13px;">Payment completed successfully.</h1>
+  </div>
+  <!-- End Default Content REMOVE THIS -->
+</apex:page>

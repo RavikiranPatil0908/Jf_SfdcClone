@@ -1,0 +1,119 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 30-10-2024
+  @last modified by  : @BK
+-->
+<apex:component access="global" controller="CaseRelatedActivityController"  allowDML="true">
+    
+    <apex:attribute access="global" name="recordId" type="ID" description="Record Id" assignTo="{!caseId}" />
+    <style>
+        .media-body .media-heading.dateTime {
+            font-weight: 300;
+        }
+
+        .img-responsive.illustration {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+        }
+
+        .media.p-t-10 {
+            margin-bottom: 0px
+        }
+    </style>
+
+    <ul class="nav nav-tabs tab-nav-right" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#activities" data-toggle="tab">Activity</a>
+        </li>
+        <li role="presentation">
+            <a href="#attachment" data-toggle="tab">Attachments</a>
+        </li>
+        <!-- <li role="presentation">
+            <a href="#calls" data-toggle="tab">Scheduled Calls</a>
+        </li> -->
+    </ul>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane fade in active" id="activities">
+
+            <apex:outputPanel layout="none" rendered="{!objWrapper.isCommentExists}">
+                <apex:repeat value="{!objWrapper.lstComments}" var="em">
+                    <div class="media p-t-10">
+                        <div class="media-left">
+                            <a href="javascript:void(0);">
+                                <img class="media-object" src="{!URLFOR($Resource.AdminBSBMaterialDesign, 'AdminBSBMaterialDesign/images/userLogo.png')}" width="50" height="50" />
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">{!em.userName}</h4>
+                            <h4 class="media-heading dateTime">
+                                <c:FormattedDateTime datetimeValue="{!em.createdDate}" datetimeFormat="dd MMMM yyyy 'at' hh:mm a" />
+                            </h4>
+                            <p class="p-t-5">
+                                {!em.comment}
+                            </p>
+                        </div>
+                    </div>
+                </apex:repeat>
+            </apex:outputPanel>
+            
+            <apex:outputPanel layout="none" rendered="{!!objWrapper.isCommentExists}">
+                <div class="align-center p-t-10">
+                    <img src="/img/chatter/OpenRoad.svg" class="img-responsive illustration" />
+                    <h4>No Activity Found</h4>
+                </div>    
+            </apex:outputPanel>
+        </div>
+    
+        <div role="tabpanel" class="tab-pane fade row" id="attachment">
+            <apex:outputPanel layout="none" rendered="{!objWrapper.isAttachmentExists}">
+                <apex:repeat value="{!objWrapper.lstAttachments}" var="em">
+                    <div class="media col-md-4 col-sm-6 m-t-0">
+                        <div class="media-left">
+                            <a href="javascript:void(0);">
+                                <img class="media-object" src="{!URLFOR($Resource.AdminBSBMaterialDesign, 'AdminBSBMaterialDesign/images/attached.png')}" width="50" height="50" />
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">
+                                <a href="{!em.fileURL}" target="_blank">{!em.name}</a>
+                            </h4>
+                            <p class="p-t-5">
+                                <c:FormattedDateTime datetimeValue="{!em.createdDate}" datetimeFormat="dd MMMM yyyy 'at' hh:mm a" />
+                            </p>
+                        </div>
+                    </div>
+                </apex:repeat>
+            </apex:outputPanel>
+    
+            <apex:outputPanel layout="none" rendered="{!!objWrapper.isAttachmentExists}">
+                <div class="align-center p-t-10">
+                    <img src="/img/chatter/OpenRoad.svg" class="img-responsive illustration" />
+                    <h4>No Attachments Found</h4>
+                </div> 
+            </apex:outputPanel>
+        </div>
+    
+        <!-- <div role="tabpanel" class="tab-pane fade" id="calls">
+            <article class="slds-card">
+                <div class="slds-card__body slds-card__body_inner">
+                    <div class="calls-content">
+                        <template >
+                            <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                                <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt="" style="height: 400px;" />
+                                <div class="slds-text-color_weak">
+                                    <h3 class="slds-text-color_weak slds-text-heading_medium">No Scheduled Call Available</h3>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </article>
+        </div> -->
+    </div>
+    
+</apex:component>

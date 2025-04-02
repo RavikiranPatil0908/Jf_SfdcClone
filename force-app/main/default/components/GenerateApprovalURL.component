@@ -1,0 +1,5 @@
+<apex:component controller="GenerateApprovalURl" access="global">
+    <apex:attribute name="objectID" description="Obj ID" type="String" assignTo="{!ObjId}" />
+    <a href="{!urlStr}" style="color: #aa1f24">
+    <b>Click here</b></a>
+</apex:component>

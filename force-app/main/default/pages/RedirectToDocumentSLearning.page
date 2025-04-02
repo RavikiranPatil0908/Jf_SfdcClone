@@ -1,0 +1,13 @@
+<apex:page >
+    <script>
+        var uri='https://nga-sce.force.com/AepSite', 
+            communityType = window.location.pathname.replace(/^\/([^\/]*).*$/, '$1');
+        if(communityType === 'HO') {
+            uri = uri + '/HO/015/o';
+        } else {
+            uri = uri + '/015/o';
+        }
+         
+        window.open(uri,"_self")
+    </script>
+</apex:page>

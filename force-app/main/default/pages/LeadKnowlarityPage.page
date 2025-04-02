@@ -1,0 +1,31 @@
+<!--
+  @File Name          : LeadKnowlarityPage.page
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 29/1/2020, 1:29:35 pm
+  @Modification Log   : 
+  Ver       Date            Author                  Modification
+  1.0    27/1/2020   @BK     Initial Version
+-->
+<apex:page standardController="Lead" tabStyle="Lead">
+    <script src="/soap/ajax/46.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/46.0/apex.js" type="text/javascript"></script>
+    <div id="knowlarityPanel" style="display:none;">
+        <apex:outputPanel rendered="{!IF(lead.LeadSource!='Partner' && lead.LeadSource!='Web & Partner', true, false)}" layout="none">
+            <c:KnowlarityComponent PrimaryNumber="{!lead.MobilePhone}" SecondaryNumber="{!lead.Phone}" recordId="{!lead.id}" recordType="Lead" ownerId="{!$User.Id}" centerId="{!lead.IC_Name__c}" stdCode="{!lead.nm_STDCode__c}"/>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!IF(lead.LeadSource=='Partner' || lead.LeadSource=='Web & Partner', true, false)}" layout="none">
+            <p>This lead is not authorized to connect with Knowlarity.</p>
+        </apex:outputPanel>
+    </div>
+    <!-- to check if user is enabled for Knowlarity. -->
+    <script>
+        var userQuery = sforce.connection.query(`SELECT id,Knowlarity_User__c FROM User WHERE id='{!$User.Id}'`);
+        var userRecord = userQuery.getArray("records");
+        if (userQuery.size > 0 && userRecord[0].Knowlarity_User__c == 'true') {
+            document.getElementById("knowlarityPanel").style.display = "block";
+        }
+    </script>
+</apex:page>

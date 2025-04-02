@@ -1,0 +1,44 @@
+<!--
+  @Page Name          : NMIMS_UploadDocuments.page
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 21/8/2019, 1:40:06 PM
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author                 Modification
+  ==============================================================================
+  1.0    6/6/2019, 1:44:13 PM   @BK     Initial Version
+-->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" cache="false" controller="nmUploadDocuments_lead" >
+    <head>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+      <title>Upload Documents</title>
+      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet"/>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.min.css"/>
+      <apex:stylesheet value="{!URLFOR($Resource.Custom_Radio_Button_CSS)}"/>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>  
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"> </script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+        <style>
+            .form-group .control-label:after { 
+               content:"*";
+               color:red;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="py-5 text-center">
+                <img class="d-block mx-auto mb-4" src="{!URLFOR($Resource.Images,'images/logo.png')}" alt="" width="200" height="72" />
+                <h2>Upload Documents form</h2>
+                <p class="lead">Please unblock this page from your browser to continue uploading your documents safely. Documents once uploaded will go under verification by the NMIMS Center For Distance And Online Education admission committee.</p>
+            </div>
+            <h3>Student Name: {!leadName}</h3>
+            <apex:iframe src="{!$Label.DOCUMENT_SERVER}uploadDocumentForm?leadId={!leadId}&uid={!LeadUId}&type=leads" scrolling="true"  height="800px"/>
+        </div>
+    </body>
+</apex:page>

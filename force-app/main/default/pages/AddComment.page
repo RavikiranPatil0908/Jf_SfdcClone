@@ -1,0 +1,27 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 07-29-2023
+  @last modified by  : @BK
+-->
+<apex:page >
+  <html>
+    <apex:includeLightning />    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />  
+    <body>
+    <div id="LightningComponentid" />   
+    <script>
+    
+    $Lightning.use("c:addCommentLwcvfApp", function() {        
+        $Lightning.createComponent("c:addCaseComment",
+          {recordId: '{!$CurrentPage.parameters.id}'},
+          "LightningComponentid",
+          function(cmp) {
+             console.log('LWC Componenet added in VF page');            
+          });
+    });
+    </script>
+    </body>
+    </html>
+</apex:page>

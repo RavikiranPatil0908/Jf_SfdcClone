@@ -1,0 +1,26 @@
+<!--
+  @File Name          : paginationParent.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 12/19/2019, 12:47:19 PM
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    17/12/2019   @BK     Initial Version
+-->
+<template>
+    <lightning-card>
+        <template if:true={checkCenterRecordId}>
+            <c-record-list currentpage={page} onrecordsload={handleRecordsLoad} pagesize={pagesize} onchangesize={handleNewPageSize} onselected={handleRecordLoadOnOpportunity} center-id={centerRecordId}></c-record-list>
+            <div class="slds-m-around_medium">
+                <c-paginator-bottom onprevious={handlePrevious} onnext={handleNext} onfirst={handleFirst}
+                    onlast={handleLast} currentpage={page} totalrecords={totalrecords} pagesize={pagesize}>
+                </c-paginator-bottom>
+            </div>
+        </template>
+        <template if:true={oppIdfound}>
+            <c-update-opportunity opp-list={updateOpp}></c-update-opportunity>
+        </template>
+    </lightning-card>
+</template>

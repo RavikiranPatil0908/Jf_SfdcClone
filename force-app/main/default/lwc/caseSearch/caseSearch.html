@@ -1,0 +1,187 @@
+<template>
+    <!-- Message Toast Starts here-->
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant}
+        auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+    <!-- Message Toast Ends here-->
+    <div class="slds-tabs_card">
+        <div class="slds-page-header">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name" style="min-width: 100%;">
+                                <div class="slds-page-header__name-title" style="min-width: 100%;">
+                                    <lightning-input name="enter-search"
+                                        label="Search any key word (Kindly note: please enter more than 3 character to search)"
+                                        onchange={handleSearchInput} type="search"></lightning-input>
+                                    <br />
+                                    <lightning-button variant="brand" label="Search" type="button"
+                                        onclick={handleSearch} title="Primary action" class="slds-m-left_x-small">
+                                    </lightning-button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <br />
+    <lightning-card variant="Narrow">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-3">
+                <div class="slds-p-horizontal_small">
+                    <div class="slds-text-heading_small">Add Filter</div>
+                    <c-multi-select-dropdown-pick-list multi-select="true" onselectoption={handleSelectOptionList}
+                        options={StatusOptions} selectedvalue={selectedvalue} data-api-name="Status" data-field-key="1" data-field-type="MultiplePickList"
+                        label="Status Pick List">
+                    </c-multi-select-dropdown-pick-list>
+                </div>
+                <div class="slds-p-horizontal_small">
+                    <c-multi-select-dropdown-pick-list multi-select="true" onselectoption={handleSelectOptionList}
+                        options={CategoryOptions} data-api-name="nm_Category__c" label="Category Pick List" data-field-key="2" data-field-type="MultiplePickList">
+                    </c-multi-select-dropdown-pick-list>
+                </div>
+            </div>
+            <div class="slds-col slds-size_2-of-3">
+                <div class="slds-text-heading_smal slds-align_absolute-center">*Note: Only 500 record can be shown</div>
+                <div style="height: 500px;">
+                    <lightning-datatable key-field="Id" data={caseTableDate} show-row-number-column
+                        onrowaction={handleRowAction} onrowselection={getSelectedName} columns={columns}>
+                    </lightning-datatable>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+    <template if:true={isOpenModal}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+            class="slds-modal slds-fade-in-open slds-modal_large">
+            <div class="slds-modal__container">
+                <button type="button" class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                    onclick={handleOnClickModalClose}>
+                    <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                    </lightning-icon>
+                </button>
+                <div class="slds-modal__header">
+                    <span style="font-size: 20px;font-weight: bold;">CaseNumber : {recordOpened.CaseNumber}</span>
+                    <button type="button" class="slds-button slds-button_brand slds-float_right"
+                        aria-label="Cancel and close" data-new-tab={recordOpened.Id} onclick={handleOpenInNewTab}>new
+                        tab</button>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <p>CaseId : <lightning-formatted-text value={recordOpened.Id}></lightning-formatted-text>
+                    </p>
+                    <hr />
+                    <p>Case Owner : <lightning-formatted-text value={recordOpened.OwnerName}></lightning-formatted-text>
+                    </p>
+                    <hr />
+                    <p>Subject : <lightning-formatted-text value={recordOpened.Subject} linkify>
+                        </lightning-formatted-text>
+                    </p>
+                    <hr />
+                    <p>Status : <lightning-formatted-text value={recordOpened.Status}></lightning-formatted-text>
+                    </p>
+                    <hr />
+                    <p>Description : <lightning-formatted-text value={recordOpened.Description} linkify>
+                        </lightning-formatted-text>
+                    </p>
+                    <hr />
+                </div>
+                <div class="slds-modal__footer">
+                    <button type="button" class="slds-button slds-button_neutral" aria-label="Cancel and close"
+                        onclick={handleOnClickModalClose}>Cancel</button>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+
+    <template if:true={OpenModalForUpdateCase.isOpenModalForUpdateCase}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+            class="slds-modal slds-fade-in-open slds-modal_large">
+            <div class="slds-modal__container">
+                <button type="button" class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                    onclick={handleOnUpdateCaseClose}>
+                    <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                    </lightning-icon>
+                </button>
+                <div class="slds-modal__header">
+                    <span style="font-size: 20px;font-weight: bold;">{OpenModalForUpdateCase.buttonName} (Switch to
+                        &MediumSpace;
+                        <lightning-button data-update-selected={OpenModalForUpdateCase.switchButtonName}
+                            onclick={handleOnUpdateCaseOpen} variant="brand-outline"
+                            label={OpenModalForUpdateCase.switchButtonName}>
+                        </lightning-button> )
+                    </span>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                    <div class="slds-form">
+                        <template if:true={OpenModalForUpdateCase.isEmail}>
+                            <div class="slds-text-heading_small">* Note: Mass activity for Update Case and send Mail has a
+                                limit of 50</div>
+                        </template>
+                        <template if:true={OpenModalForUpdateCase.isUpdate}>
+                            <div class="slds-text-heading_small">* Note: Mass activity for Update Case has a limit of 200
+                            </div>
+                        </template>
+                        <div class="slds-form-element slds-form-element_stacked">
+                            <label class="slds-form-element__label" for="stacked-input-id-01">Case Numbers (,
+                                separated)</label>
+                            <div class="slds-form-element__control">
+                                <textarea id="stacked-input-id-01" placeholder="Placeholder text…" readonly disabled=""
+                                    class="slds-textarea" rows="5">{caseUpdate.caseNumbers}</textarea>
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-form-element_stacked">
+                            <lightning-combobox name="Status" label="Status" value={caseUpdate.caseStatus}
+                                placeholder="None" options={statusPickList} onchange={handleChangeForStatus} required>
+                            </lightning-combobox>
+                        </div>
+                        <template if:true={OpenModalForUpdateCase.isEmail}>
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <lightning-combobox name="SubjectType" label="Email Subject Type"
+                                    value={caseUpdate.caseSubjectType} placeholder="None" options={subjectTypePickList}
+                                    onchange={handleChangeForSubjectType} required></lightning-combobox>
+                            </div>
+                            <template if:true={caseUpdate.isNewSubjectNeeded}>
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <lightning-input type="text" onchange={handleChangeForSubject}
+                                        label="Email New Subject" placeholder="type here..." required>
+                                    </lightning-input>
+                                </div>
+                            </template>
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <lightning-textarea name="description" required onchange={handleDescriptionTextChange}
+                                    label="Email Description">
+                                </lightning-textarea>
+                            </div>
+                        </template>
+
+                    </div>
+                </div>
+                <div class="slds-modal__footer">
+                    <lightning-button variant="success" label={OpenModalForUpdateCase.buttonName}
+                        data-update-selected={OpenModalForUpdateCase.buttonName}
+                        title={OpenModalForUpdateCase.buttonName} onclick={handleConfirmClick}
+                        class="slds-m-left_x-small"></lightning-button>
+                    <button type="button" class="slds-button slds-button_neutral" aria-label="Cancel and close"
+                        onclick={handleOnUpdateCaseClose}>Cancel</button>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+
+
+
+    <div class="slds-docked-form-footer">
+        <button type="button" class="slds-button slds-button_outline-brand"
+            data-update-selected="Update Case And Send Mail" onclick={handleOnUpdateCaseOpen}>Update
+            Case And Send Mail</button>
+        <button type="button" class="slds-button slds-button_brand" data-update-selected="Update Case"
+            onclick={handleOnUpdateCaseOpen}>Update
+            Case</button>
+    </div>
+    <template if:true={loader}>
+        <lightning-spinner variant="brand" size="large"> </lightning-spinner>
+    </template>
+</template>

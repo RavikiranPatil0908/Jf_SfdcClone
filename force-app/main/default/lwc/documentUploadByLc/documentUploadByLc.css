@@ -1,0 +1,33 @@
+/* Center the card and add shadow */
+.custom-card {
+    border-radius: 10px;
+    border: 1px solid #edf0f5;
+}
+
+/* Style for the upload icon in the card title */
+.lightning-card__header-icon {
+    color: #d20082; 
+}
+
+/* Button Styling */
+.custom-button {
+    background-color: #0070d2;
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.custom-button:hover {
+    background-color: #005fb3;
+}
+.slds-card__header-title{
+    color:#0070d2;
+    background-color: #005fb3;
+    font-weight: bold;
+
+}
+
+
+.slds-input_small {
+    border-radius: 4px;
+}

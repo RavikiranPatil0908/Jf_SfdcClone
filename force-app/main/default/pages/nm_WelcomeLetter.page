@@ -1,0 +1,161 @@
+<!--
+  @File Name          : nm_MassWelcomeLetter.page
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 11-15-2021
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    14/1/2020   @BK     Initial Version
+-->
+<apex:page title="Welcome Letter" Controller="Mass_Welcome" renderAs="pdf">
+
+    <script type="text/javascript" src="/js/functions.js"></script>
+    <script src="/soap/ajax/11.1/connection.js"></script>
+    <script>
+        <style>
+            p.small {line - height: 600%;}
+p.big {line - height: 200%;}
+
+
+</style>
+    </script>
+
+    <body onload="init()">
+        <apex:repeat value="{!lstToDisplay}" var="account">
+            <div style="page-break-after:always;">
+
+                <p>
+                    <br/>
+                    <br/>
+                    <br/>
+                </p>
+                <p>
+                    <!-- <apex:image url="{!URLFOR($Resource.NMIMS_CSSJS, 'images/logo.png')}" alt="logo" styleClass="img-responsive"/> -->
+
+                </p>
+                <table style="width:100%">
+                    <tr>
+                        <td style="margin-left;white-space:nowrap;">To,
+                            <br></br>
+                            <apex:outputField value="{!account.Salutation}" />
+                            <apex:outputField value="{!account.name}" />
+                        </td>
+
+                        <td style="padding-left:300px;">
+                            <div style="white-space:nowrap">
+                                Date:&nbsp;
+                                <apex:outputText value="{0,date,dd/MM/yyyy}">
+                                    <apex:param value="{!TODAY()}" /> </apex:outputText>
+                            </div>
+
+                            <!--   <div style="white-space:nowrap">
+      Ref Code:&nbsp;
+      <apex:outputField value="{!account.Ref__c}"/>
+      </div> -->
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <apex:outputField value="{!account.nm_StudentNo__c}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <apex:outputField value="{!account.LC_Name__c}" />
+                        </td>
+                    </tr>
+                </table>
+                <p align="justify">
+                    Dear &#160;
+                    <apex:outputField id="theNameField" value="{!account.name}" />,
+                </p>
+                <p>
+                    Welcome to the prestigious NMIMS family!
+                </p>
+                <div style="width:100%;line-height:17px;word-spacing:25px;">
+                    <p align="justify">
+                        At NMIMS Center For Distance And Online Education, we help you create your own path for a successful career and surge
+                        ahead of competition. With our experienced academicians,
+                        <apex:outputPanel rendered="{!IF(account.nm_ChooseaProgram__c != 'Master Programs',true,false)}">contemporary study material ,</apex:outputPanel> dynamic assessment methods and online mode of learning,
+                        you add not just a qualification, but also quality to your career!
+                    </p>
+                </div>
+                <div style="width:100%;line-height:17px;word-spacing:25px;">
+                    <p>
+                        Given below is important information about your program and services, you are requested to go through the same:
+                    </p>
+                </div>
+                <div style="width:100%;line-height:17px;word-spacing:25px;">
+                    <p align="justify">
+                        <d style="font-weight:bold;color:Black ;font-size:100%"> NGASCE Student Zone:</d> NGASCE Student Zone a state of the art e-learning portal, forms the center
+                        of learning with facilities like Online
+                        <apex:outputPanel rendered="{!IF(account.nm_ChooseaProgram__c != 'Master Programs',true,false)}">
+                            Lectures via Zoom, Learning Resources, Assignment Submission, Exam Booking, Demo Exams, Message Boards and Digital Library.
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(account.nm_ChooseaProgram__c == 'Master Programs',true,false)}"> Lectures, Learning Resources, Connect with batch mates, Faculty interaction, Dashboards, Task Managers.</apex:outputPanel>
+                        To login to the platform please visit the 'Student Zone' website at
+                        <apex:outputPanel rendered="{!IF(account.nm_ChooseaProgram__c != 'Master Programs',true,false)}">
+                            http://online.nmims.edu/. </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(account.nm_ChooseaProgram__c == 'Master Programs',true,false)}">https://studentzone-ngasce.nmims.edu/studentportal/. </apex:outputPanel> Your login credentials for
+                        accessing the student zone will be as follows:
+                    </p>
+                </div>
+                <p style="margin-left:">
+                    <d style="font-weight:bold;color:Black ;font-size:100%"> User ID (SAP ID) :</d> &#160;
+                    <apex:outputField value="{!account.nm_StudentNo__c}" /> &nbsp;&nbsp; &nbsp;
+                    <d style="font-weight:bold;color:Black ;font-size:100%">Password : </d>&#160;
+                    <apex:outputField value="{!account.nm_NewPassword__c}" />
+                </p>
+
+                <div style="width:100%;line-height:17px;word-spacing:25px;">
+                    <p align="justify">
+                        <d style="font-weight:bold;color:Black;font-size:100%"> Student Support Services and Student Resource Book:</d>
+                        Our dedicated team of Student Services gives prompt response / guidance and helps answering queries effectively. You can
+                        get your queries resolved by calling our student helpline number
+                        <b style="font-weight:bold;color:Black;"> 1800 1025 136 </b> Mon-Sat (9 am to 7 pm) or email at
+                        <b style="font-weight:bold;color:Black;">ngasce@nmims.edu</b>. We also have a section of Student Support on the Student Zone which includes
+                        the Student Resource Book. Please read the Student Resource Book (SRB) carefully as it contains details
+                        of the academic, evaluation, administrative rules and regulations of the Institute. All students
+                        are expected to follow the rules and policies of the University and SRB is a very good resource for
+                        the same.
+                    </p>
+                </div>
+                <div style="width:100%;line-height:17px;word-spacing:25px;">
+                    <p align="justify">
+                        <d style="font-weight:bold;color:Black;font-size:100%"> Student I-Card and Other Enclosures: </d>
+                        The welcome kit also includes your I-Card and Student Undertaking.
+                        <apex:outputPanel rendered="{!IF(account.nm_ChooseaProgram__c == 'Master Programs',true,false)}">
+                            Your I-Card will give you access to NMIMS Regional Offices. The student undertaking should be signed by you and handed over
+                            to your AEP Representative at the earliest, failing which your results may be withheld by the
+                            University.
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(account.nm_ChooseaProgram__c != 'Master Programs',true,false)}">
+                            Your I-Card will give you access to NMIMS Regional Offices. I-Card should also be carried by you during your examinations,
+                            so please preserve this carefully. The student undertaking should be signed by you and handed
+                            over to your IC Representative at the earliest, failing which your results may be withheld by
+                            the University.
+                        </apex:outputPanel>
+                    </p>
+                </div>
+                <div style="width:100%;line-height:17px;word-spacing:25px;">
+                    <p align="justify">
+                        We at NMIMS Center For Distance And Online Education are committed to give you the best educational experience to assist
+                        you in moving ahead in your career.
+                    </p>
+                </div>
+                Best of Luck!
+                <br/>
+                <br/> Team NGA-SCE
+                <div style="width:100%;line-height:17px;word-spacing:25px;">
+                    <p style="font-style: italic">
+                        This is a system-generated output and is only for information purposes, the Welcome Letter has already been dispatched to
+                        your registered shipping address.
+                    </p>
+                </div>
+            </div>
+        </apex:repeat>
+    </body>
+</apex:page>

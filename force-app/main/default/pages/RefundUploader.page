@@ -1,0 +1,105 @@
+<apex:page sidebar="false" showHeader="false" id="refundUploaderPage"  controller="RefundRequestController"  standardStylesheets="false" cache="false">
+    <apex:include pageName="Bootstrapheader"/>
+    <style type="text/css">
+
+        .custPopup{
+            background-color: white;
+            border-width: 2px;
+            border-style: solid;
+            z-index: 9999;
+            left: 50%;
+            padding:10px;
+            position: absolute;
+            /* These are the 3 css properties you will need to change so the popup
+            displays in the center of the screen. First set the width. Then set
+            margin-left to negative half of what the width is. You can add
+            the height property for a fixed size pop up if you want.*/
+            width: 500px;
+            margin-left: -250px;
+            top:100px;
+        }
+        .popupBackground{
+            background-color:black;
+            opacity: 0.20;
+            filter: alpha(opacity = 20);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 9998;
+        }
+        .m15{
+            margin-top: 15px;
+        }
+    </style>
+    <body>
+        <apex:form id="attachment">
+            <div class="container">
+                <div class="row m15">
+                    <div class="col-sm-3"></div>
+                    <div class="col-md-6"><center><img src="{!URLFOR($Resource.Images,'images/logo.png')}" width="75%"/></center></div>
+                    <div class="col-sm-3"></div>
+                </div>
+
+                <div class="card text m15">
+                    <h5 class="card-header"><center>Refund Uploader</center></h5>
+                    <div class="card-body">
+                        <h5 class="card-title">Select Refund File.</h5>
+                        <div class="row justify-content-center m15">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <apex:inputFile onchange="ValidateSize(this)" value="{!attachment.body}" styleClass="form-control-file" filename="{!attachment.name}" id="file" accept=".pdf"/>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <apex:outputPanel rendered="{!IF(LastDateforCancellation >= TODAY(),true,IF(excessref,true,false))}">
+                                    <apex:commandButton id="savePageBtn" styleClass="pull-left" style="background-color: #008CBA;color:white; font-size: 26px;" action="{!upload}" value="Save"/>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(LastDateforCancellation >= TODAY(),false,IF(excessref,false,true))}">
+                                        <b style="color:#aa1f24">* Window Closed For Document Upload</b>
+                                    </apex:outputPanel>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Note: <br/>
+                        <ul>
+                            <li>Maximum file size allowed is 1 Mb.</li>
+                            <li>File Format allowed is pdf.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <apex:outputPanel id="tstpopup">
+                <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}"/>
+                <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
+                    <apex:outPutText value="{!errorMsg}" escape="false" /><br/><br/><br/>
+                    <apex:commandButton value="Close" action="{!closePopup}" />
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+        </apex:form>
+        <script>
+            function ValidateSize(file) {
+                let FileSize = file.files[0].size / 1024 / 1024; // in MB
+                let sCurExtension = '.pdf';
+                let sFileName = file.value;
+                if (sFileName.length > 0) {
+                    if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() != sCurExtension.toLowerCase()) {
+                        alert('Sorry, ' + sFileName + ' is invalid, allowed extension is: pdf' );
+                        $(file).val('');
+                        return ;
+                    }else if (FileSize > 1) {
+                        alert('File size exceeds 1 MB');
+                        $(file).val('');
+                        return ;
+                    }
+                }
+            }
+        </script>
+    </body>
+</apex:page>

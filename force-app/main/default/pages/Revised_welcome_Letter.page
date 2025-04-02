@@ -1,0 +1,151 @@
+<apex:page title="Welcome Letter"  standardController="Account" renderAs="pdf">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/11.1/connection.js"></script>
+
+
+<head>
+        <style type="text/css" media="print">
+           
+          p.small {line-height:600%;} 
+          p.big {line-height:200%;} 
+          
+        </style>
+    </head>
+    
+
+
+
+<script>
+    function init()
+    {
+        sforce.connection.sessionID = '{!$Api.Session_ID}';
+        alert('Executing!');
+    }
+</script>
+
+ <apex:form >
+<!-- <body onload="init()"> -->
+<body onload="init()">
+ <p>
+ <br/><br/><br/>
+ </p>
+  <p>
+ <!-- <apex:image url="{!URLFOR($Resource.NMIMS_CSSJS, 'images/logo.png')}" alt="logo" styleClass="img-responsive"/> -->
+ 
+  </p>
+  <table style="width:100%">
+  <tr>
+     <td style="margin-left;white-space:nowrap;">To,<br></br>
+     <apex:outputField value="{!account.Salutation}"/>
+     <apex:outputField value="{!account.name}"/>
+     </td>
+     
+     <td style="padding-left:300px;">
+     <div style="white-space:nowrap">
+      Date:&nbsp;
+      <apex:outputText value="{0,date,dd/MM/yyyy}"> <apex:param value="{!TODAY()}" /> </apex:outputText>
+      </div>
+     
+     <!-- <div style="white-space:nowrap">
+      Ref Code:&nbsp;
+      <apex:outputField value="{!account.Ref__c}"/>
+      </div> -->
+      </td>
+    </tr>
+  <tr>
+      <td> <apex:outputField value="{!account.nm_StudentNo__c}"/></td>
+  </tr> 
+  <tr>
+      <td> <apex:outputField value="{!account.LC_Name__c}"/></td>
+  </tr>        
+    </table>
+  <p align="justify">
+    Dear &#160; <apex:outputField id="theNameField" value="{!account.name}"/>,
+  </p>
+  <p>
+   Welcome to the prestigious NMIMS family! 
+  </p>
+  <div style="width:100%;line-height:17px;word-spacing:25px;">
+  <p align="justify">
+  At NMIMS Center For Distance And Online Education, we assist you in crafting your path to a 
+  successful career and staying ahead of the competition. With our skilled academicians, innovative
+  assessment methods,and online mode of learning, you add not only a qualification but also quality to
+  your career and profession!
+  </p>
+  </div>
+  <div style="width:100%;line-height:17px;word-spacing:25px;">
+  <p>
+  You are requested to read the following important details about the services: -
+  </p>
+   </div>
+   <div style="width:100%;line-height:17px;word-spacing:25px;">
+        <p align="justify">
+       <d style="font-weight:bold;color:Black ;font-size:100%"> NGASCE Student Zone:</d> 
+       
+       NGASCE Student Zone is an e-learning portal and it forms the center of 
+       learning with facilities like Online Lectures, Learning Resources, Discussion Forums, Faculty
+       interaction, Dashboards, Task Managers, etc. To log in, visit the 'Student Zone' webpage at
+       https://studentzone-ngasce.nmims.edu/studentportal/. You must have received a welcome email at
+       your registered email address containing your login credentials.
+
+      
+         </p>
+     </div>    
+        <!-- <p style="margin-left:">
+           <d style="font-weight:bold;color:Black ;font-size:100%">  User ID (SAP ID) :</d> &#160; <apex:outputField value="{!account.nm_StudentNo__c}"/> &nbsp;&nbsp; &nbsp;<d style="font-weight:bold;color:Black ;font-size:100%">Password : </d>&#160; <apex:outputField value="{!account.nm_NewPassword__c}"/>
+        </p>-->
+    
+    <div style="width:100%;line-height:17px;word-spacing:25px;">
+        <p align="justify">
+           <d style="font-weight:bold;color:Black;font-size:100%"> Student Support Services and Student Resource Book:</d>
+            Our dedicated Student Services team offers prompt response/guidance and assists in effectively answering queries.
+            Note the student hotline number  <b style="font-weight:bold;color:Black;">1800 1025 136 </b>(Mon-Sat, 9 a.m. to 7 p.m.) or email <b style="font-weight:bold;color:Black;">ngasce@nmims.edu</b>.
+            
+      </p>
+        <p align="justify">
+         Additionally, we also offer a section of Student Support on the Student Zone, which includes the
+         Student Resource Book. Please read the Student Resource Book (SRB) carefully as it provides
+         information about the University's academic, evaluation, administrative, and other rules and
+         regulations. All students are expected to adhere to the University's rules and policies, and the SRB is
+         an excellent resource for all of this.   
+        </p>
+    </div> 
+    <div style="width:100%;line-height:17px;word-spacing:25px;">   
+        <p align="justify">
+           <d style="font-weight:bold;color:Black;font-size:100%"> Student I-Card: </d>
+           
+           You will receive a Welcome Email at your registered email address, containing information on how to
+           access your <b style="font-weight:bold;color:Black;">Digital Identity Card</b> through your student portal. The Digital I Card is essential and 
+           important, since it allows you to access the Exam Portal and other University resources. 
+           Your I-Card will give you access to NMIMS Regional Offices.
+
+        
+        </p> 
+    </div>
+    <div style="width:100%;line-height:17px;word-spacing:25px;">   
+        <p align="justify">
+           <d style="font-weight:bold;color:Black;font-size:100%"> Student Undertaking Form (LOU): </d>
+            The Welcome Email also includes a link to the Student Undertaking Form. This is an important document,
+            so print it out, sign it in "Blue Ink," and email a scanned copy to University Regional Office or NMAT/NPAT Centre.
+            This is a mandatory procedure to establish that you have read all of the University's terms and conditions.
+        </p>
+    </div>
+
+     <div style="width:100%;line-height:17px;word-spacing:25px;">   
+        <p align="justify" >
+         We at NMIMS Center For Distance And Online Education are committed to give you the best educational experience
+          to assist you in moving ahead in your career.        
+        </p>
+     </div>   
+                   
+          Best of Luck!
+          <br/>
+          <br/>
+          <br/> 
+       
+        Team NGA-SCE
+
+   </body>  
+  </apex:form>    
+
+</apex:page>

@@ -1,0 +1,51 @@
+<!--
+  @File Name          : leadScoreAndMoreInfo.html
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 19/6/2020, 10:48:46 am
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    16/4/2020   shubhranshu     Initial Version
+-->
+<template>
+  <article class="slds-card">
+    <div class="slds-grid slds-einstein-header slds-card__header slds-m-bottom_none">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-grid slds-grid_vertical-align-center slds-size_3-of-4 slds-medium-size_2-of-3">
+          <div class="slds-media__figure myBar progressLoader">
+            <!-- <lightning-progress-ring value={leadScorePercentage}> </lightning-progress-ring> -->
+          </div>
+          <div class="slds-media__body">
+            <h2 class="slds-truncate" title="Lead Score">
+              <a href="javascript:void(0);" class="slds-card__header-link" title="Lead Score">
+                <span class="slds-text-heading_small">Lead Score</span>
+              </a>
+            </h2>
+          </div>
+        </div>
+        <div class="slds-einstein-header__figure slds-size_1-of-4 slds-medium-size_1-of-3"></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-m-top_none">
+      <lightning-accordion allow-multiple-sections-open>
+        <lightning-accordion-section name="A" label="Top Positives">
+          <ul>
+            <template for:each={dispositions} for:item="position">
+              <li key={position.label}>{position.label} is <b>{position.value}</b></li>
+            </template>
+          </ul>
+        </lightning-accordion-section>
+      </lightning-accordion>
+    </div>
+  </article>
+  <!-- <label class="slds-float_left"><b>Lead Score</b></label><br />
+  <label class="slds-float_right"><b>{leadScorePercentage} %</b></label> <br />
+  <lightning-progress-ring class="slds-float_left" value={leadScorePercentage}> </lightning-progress-ring><br />
+
+  <label class="slds-float_left"><b>Pardot Score</b></label><br />
+  <label class="slds-float_right"><b>{pardotScorePercentage} %</b></label> <br />
+  <lightning-progress-ring class="slds-float_left" value={pardotScorePercentage}> </lightning-progress-ring> -->
+
+</template>

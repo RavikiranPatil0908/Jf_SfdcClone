@@ -1,0 +1,166 @@
+<apex:page showHeader="false" controller="nmIncomingCallPopup">
+    <apex:includeScript value="{!URLFOR($Resource.streamingJS,'streamingJS/cometd.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.streamingJS,'streamingJS/jquery-1.5.1.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.streamingJS,'streamingJS/json2.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.streamingJS,'streamingJS/jquery.cometd.js')}"/>
+    <script type="text/javascript">
+        function FetchCallDetail(id)
+        {
+            id = id.replace('"','');
+            id = id.replace('"','');
+            $('[id$=hdnRecordId]').val(id);
+            ShowIncomingCallDetails();
+        }
+        
+        function OpenIncomingPopup(mobile)        
+        {
+        	var a = window.top.location;
+        	
+            if(mobile != '')
+            {            	
+            	try
+            	{	
+            		var locPage = a+'';
+            		//alert(locPage);
+	            	if(locPage.indexOf('visual.force') > -1)
+	                	top.postMessage('true', 'https://c.cs6.visual.force.com');
+	                else
+	                	top.postMessage('true', 'https://cs6.salesforce.com');
+	        	}
+	        	catch(err)
+	        	{
+	        		top.postMessage('true', 'https://cs6.salesforce.com');
+	        	}
+            }
+            else
+            {
+            	var a = window.top.location;
+	        	try
+	           	{	
+	           		var locPage = a+'';
+	           		
+	            	if(locPage.indexOf('visual.force') > -1)
+	            		top.postMessage('false', 'https://c.cs6.visual.force.com');
+	            	else
+	            		top.postMessage('false', 'https://cs6.salesforce.com');
+	            }
+	            catch(err)
+	            {
+	            	top.postMessage('false', 'https://cs6.salesforce.com');
+	            }
+            }
+        }
+        
+        function CallmarkChecked()
+        {
+        	var a = window.top.location;
+        	try
+           	{	
+           		var locPage = a+'';
+           		
+            	if(locPage.indexOf('visual.force') > -1)
+            		top.postMessage('false', 'https://c.cs6.visual.force.com');
+            	else
+            		top.postMessage('false', 'https://cs6.salesforce.com');
+            	markChecked();
+            }
+            catch(err)
+            {
+            	top.postMessage('false', 'https://cs6.salesforce.com');
+            	markChecked();
+            }
+        }
+    
+        (function($){
+            $(document).ready(function() {
+                // Connect to the CometD endpoint
+                $.cometd.init({
+                   url: window.location.protocol+'//'+window.location.hostname+'/cometd/24.0/',
+                   requestHeaders: { Authorization: 'OAuth {!$Api.Session_ID}'}
+               });
+    
+               // Subscribe to a topic. JSON-encoded update will be returned
+               // in the callback
+               $.cometd.subscribe('/topic/IncomingCallNotification', function(message) {         
+               	   //alert(JSON.stringify(message.data.sobject.Id));     
+                   FetchCallDetail(JSON.stringify(message.data.sobject.Id));
+                });
+            });
+        })(jQuery)
+    </script>
+   
+    <style type="text/css">
+        body
+        {
+            background:#F1FAFE;
+        }
+        .cpopupHeader
+        {
+            border-radius: 6px 6px 0 0;
+            background:#1797c0;
+            color:#FFFFFF;
+            text-align:left;
+            padding:7px 0px;
+            font-weight:bold;
+            height:15px;
+        }
+        .cpopupHeader .btnclose
+        {
+        	float: right;
+			height: 14px;
+			width: 14px;
+			background: #ffffff;
+			margin-right: 7px;
+			border-radius: 7px;
+			color: #1797c0;
+			font-size: 12px;
+			font-weight: bold;
+			cursor: pointer;
+			text-align: center;
+        }        
+        
+        .callButton
+        {
+            color: #333;
+            margin: 1px;
+            padding: 5px 7px;
+            border: 1px solid #b5b5b5;
+            border-bottom-color: #7f7f7f;
+            background: #e8e8e9 url('/img/alohaSkin/btn_sprite.png') repeat-x right top;
+            font-weight: bold;
+            font-size: .9em;
+            -moz-border-radius: 3px;
+            -webkit-border-radius: 3px;
+            border-radius: 3px;
+            cursor:pointer;
+            text-decoration:none;         
+        }
+    </style>
+    
+    <apex:form >
+        <apex:actionFunction name="markChecked" action="{!MarkChecked}"/>
+        <apex:actionFunction name="ShowIncomingCallDetails" action="{!ShowIncommingCall}" oncomplete="OpenIncomingPopup('{!incomingNumber}');" reRender="pnlCallDetail"/>
+        
+        <apex:inputHidden id="hdnRecordId" value="{!recordId}"/>
+        
+        <apex:outputPanel id="pnlCallDetail">
+            <div class="cpopupHeader">
+                <div style="float:left;">
+                	<img src="/img/icon/custom51_100/ipPhone16.png" style="float:left;margin-left:5px;"/>
+                	<span style="float:left;margin-left:3px;">Incoming Call</span>
+                </div>
+                <div class="btnclose" onclick="CallmarkChecked();">X</div>
+            </div>
+            
+            <div style="margin-top:10px; text-align:center;">
+                <p>You have a incoming call</p> 
+                <p>from</p> 
+                <p>{!incomingNumber}</p>
+            </div>
+            
+            <div style="margin-top:10px; text-align:center;">
+                <a id="linkrecord" href="/apex/nmIncomingCallDetail?id={!recordId}&lcid={!callerId}" target="_blank" class="callButton" onclick="CallmarkChecked();">Show Detail</a>
+            </div>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

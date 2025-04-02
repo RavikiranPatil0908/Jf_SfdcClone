@@ -1,0 +1,127 @@
+<apex:page controller="nmICinvoice" showHeader="false" renderAs="pdf" applyBodyTag="false"  applyHtmlTag="false" action="{!populateIcDetails}">
+ 
+
+<head>
+         <style type="text/css" media="print">
+               @page {
+                padding-top: 70px;
+                @top-center {
+                    content: element(header);
+                }
+                @bottom-left{
+                    content: element(footer);
+                    padding-bottom:2px;
+                }
+                margin-bottom:3.1cm;
+                margin-top:5cm;
+                margin-right:.6cm;
+                margin-left:.5cm;
+               
+            }
+            div.header {
+                padding: 10px;
+                position: running(header);
+            }
+           div.footer {
+                display: block;
+                position: running(footer);
+            }
+
+           p {
+           line-height:14px;
+           margin-left:.1cm;
+           margin-right:.1cm;
+           margin-top:.1cm;
+           margin-bottom:.1cm;
+           
+           
+           }
+   
+        </style>
+    </head>
+                <div style="width:98%;border:1px solid black ;word-spacing:30px;width:720px;position:relative;text-align: justify;">
+                <div style="margin-top:20px; margin-bottom:30px; width:710px;">
+                <div style="margin:.1px 0;font-size:16px;line-height:90%;">
+                    <center><b>INVOICE</b></center><br/>
+                </div>
+                <div align="right" style="font-size:13px;">
+                    Invoice Number:-<b> {!icPayment.Name} </b><br/>
+                </div> <br/>
+                <div align="right">
+                    <apex:outputText value="30-Jun-2017" label="Date" >
+                            
+                    </apex:outputText>
+                </div> 
+                    <div style="margin:.1px 0;font-size:12px;line-height:90%;">
+                    &nbsp;&nbsp; TO <br/>
+                    </div>
+                    <div style="margin:.1px 0;font-size:12px;line-height:90%;">
+                    &nbsp;&nbsp; NGA - SCE,<br/>
+                    </div>
+                    <div style="margin:.1px 0;font-size:12px;line-height:90%;">
+                    &nbsp;&nbsp; <b>SVKM'S NMIMS</b>
+                    </div>
+                   <div style="margin:.1px 0;font-size:13px;line-height:90%;">
+                    &nbsp;&nbsp; 2nd Floor,NMIMS New Building,
+                   </div> 
+                   <div style="margin:.1px 0;font-size:13px;line-height:90%;">
+                    &nbsp;&nbsp; Opp.Mithibai College , V.L.Mehta Road,
+                    </div>
+                    <div style="margin:.1px 0;font-size:13px;line-height:90%;">
+                    &nbsp;&nbsp; Vile Parle(West),Mumbai - 400 056.
+                    </div><br/><br/>
+                   <table style="width:100%;height=100%;border: 1px solid;border-top: 0.5px solid;border-bottom: 0.5px solid;word-spacing:30px;border-collapse:collapse;text-align:center;width:720px;font-size:10px;">
+                      
+                       <tr>                          
+                           <th style="border:0.5px solid ;width:380px;font-size:12px;">PARTICULARS</th>
+                           <th style="border:0.5px solid ;width:3px;text-align:right;font-size:12px;">Amount(Rs.)</th>                          
+                       </tr>
+                      <!---  <tr>                          
+                           <th style="border:0.5px solid ;width:150px;"></th>
+                           <th style="border:0.5px solid ;width:400px;text-align:left;padding-left: 0.2cm;">PARTICULARS</th>
+                           <th style="border:0.5px solid ;width:50px;">Amount</th>  
+                       </tr> --->
+                    
+                         <tr>                          
+                           <th style="border:0.5px solid ;width:380px;font-size:12px;text-align:left;padding-left: 0.2cm;">COMMISSION ON {!SelectedProgram} FOR THE Month : JUNE &nbsp; {!icPayment.Payment_Year__c} </th>
+                           <th style="border:0.5px solid ;width:3px;text-align:right;">{!TotalAfterTax}</th>
+                       </tr>
+                       <tr>                          
+                           <th style="border:0.5px solid ;width:380px;font-size:12px;text-align:left;padding-left: 0.2cm;"> Service Tax @ 14%</th>
+                           <th style="border:0.5px solid ;width:3px;text-align:right;">{!ServiceAmount}</th>  
+                       </tr>
+                       <tr>                          
+                           <th style="border:0.5px solid ;width:380px;font-size:12px;text-align:left;padding-left: 0.2cm;"> Swachh Bharat Cess @ 0.5% </th>
+                           <th style="border:0.5px solid ;width:3px;text-align:right;">{!SwachhBharat}</th>  
+                       </tr>
+                       <tr>                          
+                           <th style="border:0.5px solid ;width:380px;font-size:12px;text-align:left;padding-left: 0.2cm;"> Krishi Kalyan Cess @ 0.5% </th>
+                           <th style="border:0.5px solid ;width:3px;text-align:right;">{!KrishiKalyan}</th>  
+                       </tr>
+                       <tr>                          
+                           <th style="border:0.5px solid ;width:380px;font-size:12px;text-align:left;padding-left: 0.2cm;font-size:12px;">Total</th>
+                           <th style="border:0.5px solid ;width:3px;text-align:right;">{!GrossAmount}</th>  
+                       </tr>
+                       <tr>                          
+                           <th style="border:0.5px solid ;width:380px;font-size:12px;text-align:left;padding-left: 0.2cm;"><b>{!currencyInWords}</b></th>
+                           <th style="border:0.5px solid ;width:3px;"></th>  
+                       </tr>
+                  </table> 
+                  <br/> <br/>
+                  <div style="margin:.1px 0;font-size:13px;line-height:90%; margin-right:1cm;padding-left: 2cm;">
+                    &nbsp;&nbsp; Checked By   </div> 
+                  <div style="margin:.1px 0;font-size:13px;line-height:90%; margin-right:0.1cm;padding-left: 13cm;"> Authorised Signatory 
+                  </div> <br/>  <br/>
+                  <div style="margin:.1px 0;font-size:13px;line-height:90%;padding-left: 0.2cm;">
+                    <b> Cheques and TDS certificates be drawn in favour of "{!icPayment.IC_Company_Name__c}"</b>
+                  </div> <br/>  
+                    <div style="margin:.1px 0;font-size:13px;line-height:90%;padding-left: 0.2cm;">
+                    <b> S.T Registration No </b>  
+                    </div> <br/>
+                    <div style="margin:.1px 0;font-size:13px;line-height:90%;padding-left: 0.2cm;">
+                    <b> PAN NO. </b> 
+                    </div> <br/>
+                    
+              </div>
+          </div>
+</apex:page>

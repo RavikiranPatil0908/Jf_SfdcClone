@@ -1,0 +1,316 @@
+<!--
+  @Page Name          : PostPaymentPage.page
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : @vickysahu
+  @Last Modified On   : 03-06-2025
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author                 Modification
+  ==============================================================================
+  1.0    6/3/2019, 4:19:33 PM   shubhranshu     Initial Version
+-->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" controller="PostPaymentController" action="{!CareerServiceRedirect}" applyBodyTag="false" applyHtmlTag="false" cache="false">
+<html lang="en">
+    <head>
+        <c:HeaderGTagManager />
+
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <title>NMIMS Distance Education: Login</title>
+        <meta name="description"
+            content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs." />
+        <meta name="keywords"
+            content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/chosen.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Data,'js/vendor/modernizr-2.6.2-respond-1.1.0.min.js')}" />
+
+        <script type="text/javascript">
+            history.pushState(null, null, 'PostPaymentPage');
+            window.addEventListener('popstate', function () {
+                history.pushState(null, null, 'PostPaymentPage');
+            });
+        </script>
+
+        <!-- Conversion Pixel - NMIMS_PaymentConfimation_8378387 - DO NOT MODIFY -->
+        <script src="https://secure.adnxs.com/px?id=839255&seg=8378387&t=1" type="text/javascript"></script>
+        <!-- End of Conversion Pixel -->
+
+        <style>
+            .Processingview {
+                position: fixed;
+                background: url('{!URLFOR($Resource.loading_img)}');
+                background-repeat: no-repeat;
+                background-position: center;
+                width: 100%;
+                height: 100%;
+                z-index: 1004;
+                left: 3%;
+                top: 1%;
+    
+            }
+    
+            .required {
+                border: 2px solid #c00 !important;
+            }
+    
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 10;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+    
+            .poup {
+                position: fixed;
+                top: 30%;
+                width: 40%;
+                margin-left: 30%;
+                z-index: 11;
+            }
+    
+            .poupMobile {
+                position: fixed;
+                top: 10%;
+                width: 50%;
+                margin-left: 30%;
+                z-index: 11;
+            }
+    
+            /*  .messageCell
+            {
+                color:White !important;
+            } */
+            .LateFee {
+                Color: red;
+                float: right;
+                margin-right: 4%;
+                font-style: italic;
+            }
+        </style>
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-PG5275RJ');</script>
+        <!-- End Google Tag Manager -->
+    </head>
+    <body class="home">
+        <c:BodyGTagManager />
+        <!-- Header Begins Here -->
+        <c:HeaderPage BannerText="{!IF(!IsReRegistration,'Registration','Re-Registration')}" ActiveBadge="Payment" />
+        <!-- Header Ends Here -->
+
+        <!-- Payment -->
+        <apex:form >
+            <apex:pageMessages />
+            <div class="tab-wrapper">
+                <div class="container">
+                    <div class="tab-content">
+                        <div class="tab-pane active" style="padding:0">
+                            <div class="form-wrapper">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <apex:outputPanel rendered="{!errMessages ==null || errMessages  ==''}">
+                                            <div class="alert alert-success">
+                                                <p>Payment Completed Successfully</p>
+                                            </div>
+                                            <apex:outputText value="{!paymentSuccessInstructions}" escape="false">
+                                            </apex:outputText>
+                                        </apex:outputPanel>
+
+                                        <apex:outputPanel rendered="{!errMessages !=null}">
+                                            <div class="alert alert-danger">
+                                                <p>Error: {!errMessages}</p>
+                                            </div>
+                                            <apex:outputText value="{!paymentErrorInstructions}" escape="false">
+                                            </apex:outputText>
+                                        </apex:outputPanel>
+                                    </div>
+
+                                    <div class="clearfix"></div>
+                                    <div class="row">
+                                        <apex:outputlabel rendered="{!errMessages ==null || errMessages  ==''}">
+                                            <apex:commandButton value="Print Form" styleClass="btn btn-default" id="PrintForm" onclick="PrintForm();" />
+                                            <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom" action="{!downloadPaymentReceipt}" value="Download Payment Receipt"
+                                            target="_blank" />
+                                            <apex:outputlabel rendered="{!!isApplicant}">
+                                                <apex:commandlink styleClass="btn btn-primary btn-lg btn-custom" action="{!showDocuments}" target="_blank" value="Upload Documents" rendered="{!documentAvailable}"/>
+                                            </apex:outputlabel>
+                                            <apex:outputPanel rendered="{!!LoanSanctioned}" layout="none">
+                                                <apex:commandButton styleClass="btn btn-primary btn-lg btn-custom cancelLoan" value="Cancel Loan Application" action="{!cancelLoanApplication}"
+                                                rendered="{!IF(LoanType!=null && !loanApproved, true, false)}" onclick="return getConfirmationForLoanCancel();" />
+                                                 <apex:commandButton value="Proceed To Loan Application" styleClass="btn btn-default" rerender="none" id="showDisclaimer" onClick="showDisclaimer()"
+                                                 rendered="{!IF(LoanType!=null &&(LoanType == 'Zest' || LoanType == 'EduVanz' || LoanType == 'LiquiLoans' || LoanType == 'Propelld'|| LoanType == 'EzCred' || LoanType == 'GrayQuest' || LoanType == 'Avanse'), true, false)}" />
+                                                <script>
+                                                    function showDisclaimer(event) {
+                                                        $('[id$=AddDisclaimer]').css("display", "block");
+                                                        return false;
+
+                                                    }
+                                                    function PrintForm() {
+                                                        var printPageUrl = '';
+                                                        if ('{!IsReRegistration}' == 'true') {
+                                                            printPageUrl = '/apex/PrintReRegistrationForm?sem={!semester}&id={!recordId}';
+                                                        } else if ('{!opportunityId}' != '' && '{!opportunityId}' != null) {
+                                                            printPageUrl = '/apex/nmPrintAdmissionForm?id={!AccountId}';
+                                                        } else {
+                                                            printPageUrl = '/apex/nm_PrintRegistrationForm?id={!recordId}';
+                                                        }
+
+                                                        window.open(printPageUrl, '_blank');
+                                                    }
+                                                    $('body').on('click', '.disclaimerBtn', function () {
+                                                            $('[id$=AddDisclaimer]').css("display", "none");
+                                                            
+                                                        });
+                                                </script>
+                                            </apex:outputPanel>
+                                        </apex:outputlabel>
+                                        <apex:outputlabel rendered="{!isApplicant}">
+                                            <a href="/EnrollmentForm" target="_self" class="btn btn-primary btn-lg btn-custom">Access Application Status</a>
+                                        </apex:outputlabel>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:form>
+
+        <!-- Footer Component -->
+        <c:FooterPage />
+        <!--/ Footer Component -->
+
+        <!-- Search Popup -->
+        <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <form class="form-inline" id="">
+                            <input type="text" class="form-control" id="searchInput" placeholder="" />
+                            <button type="" class="icon-search"></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="display:none;" id="AddDisclaimer">
+            <div class="modal popup-wrapper">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Disclaimer:</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p><b>Terms and Conditions for Loan / funding-based admissions facilitated by NMIMS:</b></p> 
+                            <ul>
+                                <li> -&nbsp;&nbsp; For Interest loans: In case of cancellation of admission, the loan cancellation charges levied by the loan provider will have to be borne by the Student (Applicant).</li>
+                                <li> -&nbsp;&nbsp; On 0% Interest loans: The Interest discount is borne by University. In case of cancellation of admission, for cancellation of the loan, the Interest discount charges levied by the loan provider will have to be borne by the Student (Applicant).</li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <apex:form >
+                                <button type="button" class="btn disclaimerBtn" >Close</button>
+                                <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!ZestLoanApplicationRequest}" value="I Agree"
+                                target="_blank" rendered="{!LoanType =='Zest'}" oncomplete="redirectToSamePage()" />
+                                <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!EduVanzLoanApplicationRequest}" value="I Agree"
+                                target="_blank" rendered="{!IF(LoanType='EduVanz',true,false)}" oncomplete="redirectToSamePage()" />
+                                <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!liquiLoansApplicationRequest}" value="I Agree"
+                                target="_blank" rendered="{!IF(LoanType='LiquiLoans',true,false)}" oncomplete="redirectToSamePage()" />
+                                <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!propelldApplicationReqest}" value="I Agree"
+                                target="_blank" rendered="{!IF(LoanType='Propelld',true,false)}" oncomplete="redirectToSamePage()" />
+                                <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!ezcredApplicationReqest}" value="I Agree"
+                                target="_blank" rendered="{!IF(LoanType='EzCred',true,false)}" oncomplete="redirectToSamePage()" />
+                                <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!GrayQuestRequest}" value="I Agree"
+                                target="_blank" rendered="{!IF(LoanType='GrayQuest',true,false)}" oncomplete="redirectToSamePage()" />
+                                <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!avanseApplicationReqest}" value="I Agree"
+                                target="_blank" rendered="{!IF(LoanType='Avanse',true,false)}" oncomplete="redirectToSamePage()" />
+                            </apex:form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overlay"></div>
+        </div>
+        <!--All java script  -->
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min_.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}" />
+
+        <script>
+        
+            function redirectToSamePage() {
+                window.location.href = `/ResTrackId=${paymentTrackId}`;
+            }
+
+            function getConfirmationForLoanCancel() {
+                var retVal = confirm("Are you sure want to cancel the loan ?");
+                if (retVal == true) {
+                    console.log("User wants to continue!");
+                    return true;
+                } else {
+                    console.log("User does not want to continue!");
+                    return false;
+                }
+            }
+            
+            
+
+            $(document).ready(function () { 
+                $('.ProceedToLoanBtn').click(function() {
+                    $(this).attr("disabled", true);
+                });
+                $('body').on('click', '.disclaimerBtn', function () {
+                    $('[id$=AddDisclaimer]').css("display", "none");
+                    
+                });
+                $('body').on('click', '[id$=showDisclaimer]', function () {
+                console.log('showDisclaimer called');
+                  $('[id$=AddDisclaimer]').css("display", "block");
+                return false;
+                    
+                });
+            });
+            // GMT tracking 
+            function pushDataPostPayment(eventName,gtmRecordId) {
+                console.log('-----eventName-----',eventName,gtmRecordId);
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({'event': eventName,'leadId': gtmRecordId});  
+            }
+           
+            if('{!paymentmessage}' === 'Txn Successful' && '{!IsRegistrationPayment}' == true){
+                pushDataPostPayment('Initial Fee Paid','{!trackingLeadId}');
+            }
+
+            if('{!programType}' === 'Admission'){
+                pushDataPostPayment('Tuition Fee Paid','{!trackingLeadId}');
+            }
+        </script>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PG5275RJ"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+    </body>
+</html>
+</apex:page>

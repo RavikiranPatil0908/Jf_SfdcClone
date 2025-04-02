@@ -1,0 +1,88 @@
+<apex:page sidebar="FALSE"   Controller="SalesTargetController" readOnly="true">
+
+<style>
+table{
+width: 100%;
+}
+
+</style>
+    <apex:form id="formSctn" >
+
+    <apex:pageMessages />
+       <apex:pageBlock id="criterianBlk" title="Target Report">
+         <apex:inputField required="false" value="{!objTarget.Learning_Center__c}" label="Learning Center" html-placeHolder="Learning Center"/> &nbsp;&nbsp;
+
+           <apex:inputField label="Information Center" value="{!objTarget.InformationCenter__c}" html-placeHolder="Information Center"/> &nbsp;&nbsp;
+ 
+             <apex:inputField label="Information Center" value="{!objTarget.Session__c}" html-placeHolder="Session"/> &nbsp;&nbsp;
+ 
+               <apex:inputField label="Information Center" value="{!objTarget.Year__c}" html-placeHolder="Year"/>  &nbsp;&nbsp;
+
+       <apex:commandButton action="{!getAchievedRecord}" value="Generate Report"/>
+             </apex:pageBlock>
+                <apex:outputPanel id="showDetailId1" >
+                         <apex:PageBlock >
+                           <table>
+                               <tr>
+                                   <th>LC</th>
+                                   <th>IC</th>
+                                   <th colspan="2">Semester 1</th>
+                                   <th colspan="2">Semester 2</th>
+                                   <th colspan="2">Semester 3</th>
+                                   <th colspan="2">Semester 4</th>
+                               </tr>
+                              
+                              <tr>
+                                 <td>LC</td>
+                                 <td>IC</td>
+                                 <td>Target</td>
+                                 <td>Achieved</td>
+                                 <td>Target</td>
+                                 <td>Achieved</td>
+                                 <td>Target</td>
+                                 <td>Achieved</td>
+                                 <td>Target</td>
+                                 <td>Achieved</td>
+                              </tr>
+                              
+                        <apex:repeat value="{!lstTarget}" var="target">
+                               <tr>
+                                
+                                 <td>{!target.Learning_Center__r.Name}</td>
+                                
+                                 <td>{!target.InformationCenter__r.Name}</td>
+                                 <td>{!target.Admission_Target__c}</td>
+                                 <td>{!target.Admissions_Achieved__c}</td>
+                                 <td>{!target.nm_Sem2Target__c}</td>
+                                 <td>{!target.Achieved_for_Sem2__c}</td>
+                                 <td>{!target.nm_Sem3Target__c}</td>
+                                 <td>{!target.Achieved_for_Sem3__c}</td>
+                                 <td>{!target.nm_Sem4Target__c}</td>
+                                 <td>{!target.Achieved_for_Sem4__c}</td>
+                              </tr>
+                              </apex:repeat>
+                              
+                             
+                                  <tr>            
+                                              
+                                <td> Learning Center</td>
+                                <td>Total</td>
+                                <td><apex:outputText value="{!TotalSem1Target}"/></td>
+                                <td><apex:outputText value="{!TotalSem1Achived}"/></td>
+                                <td><apex:outputText value="{!TotalSem2Target}"/></td>
+                                <td><apex:outputText value="{!TotalSem2Achived}"/></td>
+                                <td><apex:outputText value="{!TotalSem3Target}"/></td>
+                                <td><apex:outputText value="{!TotalSem3Achived}"/></td>
+                                <td><apex:outputText value="{!TotalSem4Target}"/></td>
+                                <td><apex:outputText value="{!TotalSem4Achived}"/></td>
+                              </tr>
+                        
+               
+           
+                    </table>
+                        </apex:PageBlock>
+                 </apex:outputPanel>
+         
+        </apex:form> 
+ 
+</apex:page>

@@ -1,0 +1,85 @@
+.exampleHolder{
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 50vh;
+}
+
+.search-in-list{
+    width: var(--lwc-sizeSmall);
+}
+
+.bottom-border {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-bottom: 1px solid rgb(221, 219, 218) !important;
+}
+
+/* Mobile Css */
+.forceCommunityActionsContainerMobile .buttonOutsideOverflow {
+    flex-direction: column;
+}
+
+.forceCommunityActionButtonMobile.uiButton {
+    border-color: transparent;
+}
+
+.forceFilterListDeprecated {
+    max-width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.forceFilterListDeprecated .listTitleContainer {
+    padding: .75rem .75rem .75rem .75rem;
+    border-bottom: 1px solid rgb(212, 212, 212);
+}
+
+.uiBlock, .uiBlock .bBody {
+    overflow: hidden;
+    vertical-align: top;
+}
+
+.uiBlock .bLeft {
+    float: left;
+}
+
+.assistiveText {
+    height: 1px;
+    width: 1px;
+    clip: rect(1px, 1px, 1px, 1px);
+    position: absolute !important;
+    overflow: hidden;
+    margin: -1px;
+}
+
+.forceFilterListDeprecated .listTitle {
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 1.25rem;
+    font-weight: 300;
+    padding-left: 1rem;
+    line-height: 1.25;
+}
+
+.truncate, .uiTabset .tabHeader {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.forceFilterListDeprecated .listTitle .filterLabel {
+    text-overflow: ellipsis;
+}
+
+.forceFilterListDeprecated .listTitle .totalItemsLabel, .forceFilterListDeprecated .listTitle .filterLabel {
+    font-size: .875rem;
+    font-weight: 400;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.6);
+    padding-top: 2px;
+    display: block;
+}
+
+.forceFilterListDeprecated .filterIndicator {
+    white-space: pre-line;
+}

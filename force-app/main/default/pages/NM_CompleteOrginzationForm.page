@@ -1,0 +1,1679 @@
+<!--
+  @Page Name          : NM_CompleteOrginzationForm.page
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 11-09-2021
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author                 Modification
+  ==============================================================================
+  1.0    8/27/2019, 1:23:35 PM   shubhranshu     Initial Version
+-->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" controller="nmRegistration_Controller" cache="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+    <html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <title>NMIMS Distance Education: Login</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+        
+        <!-- StyleSheets -->
+        <apex:stylesheet value="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/css/bootstrap-datetimepicker.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/css/fonts.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/css/style.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/css/easy-autocomplete.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/css/easy-autocomplete.themes.min.css')}"/>
+        <apex:stylesheet value="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" html-integrity="sha256-FdatTf20PQr/rWg+cAKfl6j4/IY3oohFAJ7gVC3M34E=" html-crossorigin="anonymous" />
+
+
+        <!-- <script type="text/javascript">
+            history.pushState(null, null, 'nmCompleteFormBajaj');
+            window.addEventListener('popstate', function () {
+                history.pushState(null, null, 'nmCompleteFormBajaj');
+            });
+        </script> -->
+
+        <style>
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 10;
+                background-color: rgba(0,0,0,0.5);
+            }
+            .poup {
+                position: fixed;
+                top: 30%;
+                width: 40%;
+                margin-left: 30%;
+                text-align: center;
+                z-index: 11;
+            }
+            .camelcase {
+                text-transform:capitalize;
+            }
+                
+            @media (min-width: 1200px) {
+                .tab-wrapper .nav-tabs li {
+                    width: 16.6%;
+                }
+            }
+
+            .errorBorder {
+                border:1px solid red !important;
+            }
+
+        </style>
+    </head>
+    <body class="home">
+        <nav class="headerNavigation">
+            <div class="container">
+                <!-- <div class="logoImg"><a href="#"><apex:Image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive"/></a></div> -->
+                <div class="logoImg"><a href="#"><apex:Image url="{!URLFOR($Resource.NmimsGlobalCenter,'CorporateLogo/NGCDOE-Logo-PNG-847x332-5.png')}" styleClass="img-responsive"/></a></div>
+                <div class="headerLinks">
+                    <button class="mobileMenu"><span class="icon-menu"></span></button>
+                </div>
+            </div>
+        </nav>
+        <!--/ Logo & Navigation --> 
+
+        <!-- Breadcrumb & Social Icons -->
+        <div class="topSocialWrapper">
+            <div class="container">
+                <div class="grayWrapper">
+                    <ol class="breadcrumb">
+                        <li><h5>Home</h5></li>
+                        <li><h5>Admission Info</h5></li>
+                        <li class="active"><h5>Apply Now</h5></li>
+                    </ol>
+                </div>
+                
+                <div class="shareIcons">
+                    <ul>    
+                        <li><a href="https://plus.google.com/u/0/116325782206816676798" class="icon-google-plus"></a></li>
+                        <li><a href="https://twitter.com/NMIMS_SCE" class="icon-twitter"></a></li>
+                        <li><a href="https://www.facebook.com/NMIMSSCE" class="icon-facebook"></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--/ Bredcrums & Social Icons --> 
+
+        <!-- Banner -->
+        <div class="bannerContainer" style="background-image:url({!URLFOR($Resource.ImageResource,'images/')}banner.jpg);">
+            <div class="container">
+                <div class="bannerIns"><h2>REGISTRATION</h2></div>
+            </div>
+        </div>
+        <!--/ Banner -->  
+
+        <!-- Form Starts Here -->
+        <div class="tab-wrapper">
+            <div class="container">
+                <ul class="nav nav-tabs">
+                    <li class="active list-group" id="generateRegistrationNoTab"><a href="#generateRegistrationNoPanel" class="generateRegistrationNoTab" data-toggle="tab" data-tab="1">
+                        STEP 1<span>GENERATE REGISTRATION NO </span>
+                    </a></li>
+                    <li class="disabled list-group" id="personalInformationTab"><a href="#personalInformationPanel" class="personalInformationTab gotoTabs" data-toggle="tab" data-tab="2">
+                        STEP 2<span>PERSONAL INFORMATION</span>
+                    </a></li>
+                    <li class="disabled list-group" id="addressInformationTab"><a href="#addressInformationPanel" class="addressInformationTab gotoTabs" data-toggle="tab" data-tab="3">
+                        STEP 3<span>ADDRESS INFORMATION</span>
+                    </a></li>
+                    <li class="disabled list-group" id="programDetailsTab"><a href="#programDetailsPanel" class="programDetailsTab gotoTabs" data-toggle="tab" data-tab="4">
+                        STEP 4<span>PROGRAM DETAILS</span>
+                    </a></li>
+                    <li class="disabled list-group" id="academicInformationTab"><a href="#academicInformationPanel" class="academicInformationTab gotoTabs" data-toggle="tab" data-tab="5">
+                        STEP 5<span>ACADEMIC INFORMATION</span>
+                    </a></li>
+                    <li class="disabled list-group" id="workExperienceTab"><a href="#workExperiencePanel" class="workExperienceTab gotoTabs" data-toggle="tab" data-tab="6">
+                        STEP 6<span>WORK EXPERIENCE</span>
+                    </a></li>
+                </ul>
+                
+                <div class="tab-content">
+                    <!----------------------------------------------- Generate Reigistration number Starts Here -------------------------------->
+                    <div class="tab-pane fade in active " id="generateRegistrationNoPanel" >
+                        <apex:Form id="generateRegistrationNo">
+                            <!-- Hidden Field -->
+                            <apex:outputPanel id="ErrorPopUpPanel">
+                                <apex:inputHidden id="message" value="{!message}"/>
+                                <apex:inputHidden id="strSecToShow" value="{!strSecToShow}"/>
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel >
+                                <div class="message-box">PLEASE FILL THE BELOW DETAILS TO GENERATE THE REGISTRATION NUMBER.</div>
+                                <div class="form-wrapper">
+                                        <apex:actionFunction name="ChooseProgramChange" rerender="chooseProgramPanel"/>
+                                    <!-- Part I -->
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group required-label">
+                                                <div class="select-wrapper">
+                                                    <apex:inputField id="fsal" value="{!objLead.Salutation}" styleClass="form-control notnull ModifyFirstOptionForSalutation"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            <div class="form-group required-label">
+                                                <apex:inputField id="fnRegtrn" styleclass="form-control notnull onlyAlphabets camelcase" value="{!objLead.FirstName}" html-placeholder="First Name"/>
+                                            </div>
+                                        </div>
+                                                
+                                        <div class="col-md-5">
+                                            <div class="form-group required-label">
+                                                <div class="requiredInput">
+                                                    <div class="requiredBlock"></div>
+                                                    <apex:inputField id="lnRegtrn" styleclass="form-control notnull onlyAlphabets camelcase" value="{!objLead.LastName}" html-placeholder="Last Name"/>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                        
+                                        <div class="col-md-6">
+                                            <div class="form-group required-label">
+                                                <apex:inputText styleClass="form-control notnull trackChangeInValueClass emailValidation" id="emailForRegistratn"  html-placeholder="Email ID" value="{!objLead.Email}" disabled="{!IsReLogin}"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="form-group required-label">
+                                                <apex:inputText styleClass="form-control numberOfDigits mobileNoValidation notnull numonly trackChangeInValueClass" id="mobileForRegistratn"  html-placeholder="Mobile Number" value="{!objLead.MobilePhone}" disabled="{!IsReLogin}"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="form-group required-label">
+                                                <div class="input-group date datetimepicker1 dateOfBirth" data-date-format="DD/MM/YYYY" ><span class="dateInput dateOnlyInput">
+                                                <apex:inputfield value="{!objLead.nm_DateOfBirth__c}" styleClass="form-control notnull"  showDatePicker="false" id="DOBForRegistratn" html-placeholder="Date Of Birth"/>
+                                                </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="ageAsOn" />
+                                    </div>
+                                    <div class="clear-fix"></div>
+                                    <!-- Part 2 -->
+                                    <div class="row">
+                                        <div class="form-wrapper">
+                                            <div class="form-group">
+                                                <label >Choose a Program</label>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="radio">
+                                                            <label>
+                                                            <input type="radio" value="{!org_formConfig.Choose_Program__c}" name="programRadio" id="chooseProg" data-mode="2" class="iCheckRadio ChooseProgVal" checked="checked" />
+                                                            {!org_formConfig.Choose_Program__c}</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <apex:outputPanel id="chooseProgramPanel">
+                                                <apex:actionRegion >
+                                                    <apex:inputHidden id="hdnChooseProgram1" value="{!objLead.nm_ChooseaProgram__c}" />
+                                                    <div class="col-md-6">
+                                                        <div class="form-group required-label">
+                                                            <div class="select-wrapper">
+                                                                <apex:selectList id="Programs" value="{!objLead.nm_Program__c}" styleClass="form-control notnull" multiselect="false" size="1">
+                                                                    <apex:selectOptions value="{!ProgramsList}"/>
+                                                                </apex:selectList>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                        
+                                                    <div class="col-md-6">
+                                                        <div class="form-group required-label">
+                                                            <div class="select-wrapper">
+                                                                <apex:selectList value="{!objLead.nm_InformationCenter__c}" styleClass="form-control notnull selectedCenter" multiselect="false" size="1" style="width:99%;" id="CenterIdForRegitn" disabled="{!IsReLogin}">
+                                                                    <apex:selectOptions value="{!AllInformationCenters}"/>
+                                                                </apex:selectList> 
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <apex:inputHidden id="checkAllowPG" value="{!jsonMapOfCenterVsAllowPG}"/>
+                                                    <apex:inputHidden id="checkAllowMaster" value="{!jsonMapOfCenterVsAllowMaster}"/>
+                                                </apex:actionRegion>    
+                                            </apex:outputPanel>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Part 3 -->
+                                    <div class="row">
+                                        <div class="btn-group">
+                                            <apex:commandLink styleClass="btn pgSubmit " id="generateRegistrationNoButton"  value="Next" action="{!nextPage}" onclick="return gotoNextPage();" >
+                                                <apex:param name="section"  value="Generate Registration No" assignTo="{!sectionName}"/>
+                                            </apex:commandLink> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+                        </apex:Form>
+
+                    </div>
+                    <!----------------------------------------------- Generate Reigistration number Ends Here -------------------------------->
+                    
+                    <!----------------------------------------------- Personal Information Starts Here -------------------------------->
+                    <div class="tab-pane fade " id="personalInformationPanel" >
+                        <apex:form id="personalInformation">
+                            <div class="message-box">Your Name will appear as below in All University Documents. Please change First Name and Last Name if you wish to.<br/> <span class="fullNamePreview"></span></div>
+                            <div class="form-wrapper">
+                                <div class="row">
+
+                                    <div class="col-md-2">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField id="fnsal" value="{!objLead.Salutation}" styleClass="form-control notnull ModifyFirstOptionForSalutation"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-5">
+                                        <div class="form-group required-label">
+                                            <apex:inputField id="fn1" styleclass="form-control onlyAlphabets notnull prospectName" value="{!objLead.FirstName}" html-placeholder="First Name"/>
+                                            <p class="note"><span style="color:red;">*</span> Enter as per final mark-sheet:</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-5">
+                                        <div class="form-group required-label">
+                                            <div class="requiredInput">
+                                                <div class="requiredBlock"></div>
+                                                <apex:inputField id="ln1" styleclass="form-control onlyAlphabets notnull prospectName" value="{!objLead.LastName}" html-placeholder="Last Name"/>
+                                                <p class="note"><span style="color:red;">*</span> Enter as per final mark-sheet:</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField id="fnsalF" value="{!objLead.Father_Salutation__c}" styleClass="form-control notnull ModifyFirstOptionForSalutation"/>
+                                            </div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-md-5">
+                                        <div class="form-group required-label">
+                                        <apex:inputField styleClass="form-control onlyAlphabets notnull" html-placeholder="Fathers First Name" id="fname"  value="{!objLead.Father_First_Name__c}"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-5">
+                                        <div class="form-group required-label">
+                                        <apex:inputField styleClass="form-control onlyAlphabets notnull" html-placeholder="Fathers Last Name" id="fLname"  value="{!objLead.Father_Last_Name__c}"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-2">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField id="fnsalM" value="{!objLead.Mother_Salutation__c}" styleClass="form-control notnull ModifyFirstOptionForSalutation"/>
+                                            </div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-md-5">
+                                        <div class="form-group required-label">
+                                            <apex:inputField styleClass="form-control onlyAlphabets notnull" id="mname" html-placeholder="Mothers First Name" value="{!objLead.Mother_First_Name__c}"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-5">
+                                        <div class="form-group required-label">
+                                            <apex:inputField styleClass="form-control onlyAlphabets notnull" id="mLname" html-placeholder="Mothers Last Name" value="{!objLead.Mother_Last_Name__c}"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="input-group date datetimepicker1 dateOfBirth dateOfBirth12" data-date-format="DD/MM/YYYY" ><span class="dateInput dateOnlyInput">
+                                            <apex:inputfield value="{!objLead.nm_DateOfBirth__c}" styleClass="form-control notnull"  showDatePicker="false" id="dateOfBirth" html-placeholder="Date Of Birth"/>
+                                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField id="gender" value="{!objLead.nm_Gender__c}" styleClass="form-control notnull ModifyFirstOptionForGender"/>
+                                            </div> 
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField id="mstatus"  value="{!objLead.nm_MaritalStatus__c}" styleClass="form-control notnull ModifyFirstOptionForMaritalStatus"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <apex:inputField styleClass="form-control" id="spouse" html-placeholder="Spouse Name" value="{!objLead.nm_SpouseName__c}"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <apex:inputField value="{!objLead.AadharCardNumber__c}" styleclass="form-control  numonly" id="aadharCard"  html-placeholder="Aadhar Number"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6" id="pageId:formid1:idBloodGroup">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField id="bldgrp" value="{!objLead.nm_BloodGroup__c}" styleClass="form-control notnull ModifyFirstOptionBloodGroup"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" id="pageId:formid1:idCategory">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField id="ctgry" value="{!objLead.nm_Category__c}" styleClass="form-control notnull ModifyFirstOptionCategory"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField id="ntly" value="{!objLead.nm_Nationality__c}" styleClass="form-control notnull ModifyFirstOptionNationality "/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:selectList id="domicile" value="{!objLead.nm_Domicile__c}" styleClass="form-control notnull ModifyFirstOptionDomicile" size="1" multiselect="false" style="width:99%;" >
+                                                    <apex:selectOptions value="{!domicileList}"/>
+                                                </apex:selectList>
+                                            </div> 
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField id="motherTongue" value="{!objLead.nm_Mother_Tongue__c}" styleClass="form-control notnull ModifyFirstOptionMotherTongue "/>
+                                            </div> 
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 otherMotherTonguePanel" style="display:none;">
+                                        <div class="form-group required-label">
+                                            <apex:inputField id="otherMotherTongueId" value="{!objLead.nm_Other_Mother_Tongue__c}" styleClass="form-control " html-placeholder="If Mother Tongue Others, please specify:"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 text-left">
+                                        <apex:commandLink styleClass="btn pgSubmit " id="savePersonalDetails" onclick="return gotoAddressInformation();"  value="Next" action="{!nextPage}" rendered="{!!IsEditFormConfirmation}">
+                                            <apex:param name="section"  value="Personal Information" assignTo="{!sectionName}"/>
+                                        </apex:commandLink>
+                                        <apex:commandButton styleClass="btn pgSubmit " onclick="return onSubmit('personalInformation');" id="goToConfirmation1" value="SubmitDetails" action="{!GoToConfirmationForm}" rendered="{!IsEditFormConfirmation}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </apex:form>
+                    </div>
+                    <!----------------------------------------------- Personal Information Ends Here -------------------------------->
+                    
+                    <!----------------------------------------------- Address Information Starts Here -------------------------------->
+                    <div class="tab-pane fade " id="addressInformationPanel" >
+                        <apex:Form id="addressInformation">
+                            <!------------------------------------- Hidden Fields -------------------------------------------->
+                            <apex:inputHidden id="hdnpostalCode" value="{!PostalCode}"/>
+                            <apex:inputHidden id="hdnPermenentAddressChoice" value="{!CopyPermanantAddressFromTo}"/>
+                            <apex:inputhidden id="hdnAddressChoice" value="{!objLead.Shipping_Address_Choice__c}" /> 
+
+                            <apex:actionFunction name="getShipingCountryStateCityFromPostalAPI" action="{!getCountryStateCityFromPostalAPI}" reRender="txtSCity,txtSState,txtSCountry,postalCodeMessage" oncomplete="postalCodeStatus('sAddress');showShippingAddressPreview();"/>
+                            <apex:actionFunction name="getPermanentCountryStateCityFromPostalAPI" action="{!getCountryStateCityFromPostalAPI}" reRender="txtPCity,txtPState,txtPCountry,postalCodeMessage" oncomplete="postalCodeStatus('perAddress');"/>
+                            <apex:inputHidden value="{!PostalCodeMessage}" id="postalCodeMessage" />
+
+                            <div class="form-wrapper" style="padding-top:0">
+                                <div class="message-box text-center">Shipping Address</div>
+                                <br></br>
+                                <label for="ShippingAddress">Your study kit,ID Card and Fee Receipt will be shipped on the below Address</label>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group required-label">
+                                            <apex:inputField styleClass="form-control notnull numonly trackChangeInValueClass PincodeLength sAddress addressPreview"  id="txtSPostalCode"  html-placeholder="Pin Code" value="{!objLead.Zip_Postal_Code_Shipping__c}"  />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group required-label">
+                                            <apex:inputField styleclass="form-control notnull trackChangeInValueClass disabled sAddress addressPreview" id="txtSCity"  html-placeholder="City" value="{!objLead.Shipping_City__c}" html-disabled="true" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField id="txtSState"  value="{!objLead.State_Province_Shipping__c}" styleClass="form-control notnull trackChangeInValueClass sAddress addressPreview" html-disabled="true" html-placeholder="State"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group required-label">
+                                            <apex:inputField styleClass="form-control notnull trackChangeInValueClass addressPreview"  id="txtSHouseNumber" html-placeholder="Address line 1"  value="{!objLead.House_No_Name_Shipping__c}" html-maxlength="30"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group required-label">
+                                            <apex:inputField id="txtSStreet" value="{!objLead.Shipping_Street__c}" styleClass="form-control notnull trackChangeInValueClass addressPreview" html-placeholder="Address line 2" html-maxlength="35"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <apex:inputField styleClass="form-control trackChangeInValueClass addressPreview"  id="txtSLocality" html-placeholder="Address line 3" value="{!objLead.Locality_Name_Shipping__c}" html-maxlength="35"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField id="txtSCountry"  value="{!objLead.Country_Shipping__c}" styleClass="form-control notnull sAddress trackChangeInValueClass addressPreview" html-disabled="true" html-placeholder="Country"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <textarea cols="80" readonly="readonly" id="AddressPreview" maxlength="500"  row="12" placeholder="Shipping Address" class="form-control notnull" style="width: 340px; height: 60px"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4 col-md-4">
+                                        <div class="form-group">
+                                            <apex:inputField styleClass="form-control numonly"  id="txtBStdCode" html-placeholder="STD" value="{!objLead.nm_STDCode__c}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-8 col-md-4">
+                                        <div class="form-group">
+                                            <apex:inputField styleClass="form-control numonly" id="txtBPhone"  html-placeholder="Phone Number" value="{!objLead.Phone}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group required-label">
+                                            <apex:inputText styleClass="form-control numberOfDigits notnull numonly trackChangeInValueClass" id="mobileNumber"  html-placeholder="Mobile Number" value="{!objLead.MobilePhone}" disabled="{!IsReLogin}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <apex:inputText styleClass="form-control notnull trackChangeInValueClass" id="email1"  html-placeholder="Primary Email" value="{!objLead.Email}" disabled="{!IsReLogin}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <apex:inputField styleClass="form-control trackChangeInValueClass" id="altEmail" html-placeholder="Alternate Email" value="{!objLead.nm_SecondryEmail__c}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 form-group">
+                                        <div class="message-box text-center">Permanent Address</div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group required-label">
+                                            <div class="row">
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="radio">
+                                                        <label><input type="radio" value="SameAsShipping" name="permanentChoice" id="permanentChoiceSameAsShipping" data-mode="2" class="iCheckRadio" />Same As Shipping Address </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="radio">
+                                                        <label><input type="radio" value="NewAddress" name="permanentChoice" id="permanentChoiceNew" data-mode="2" class="iCheckRadio" />New Address</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="copyPermanentAddress" style="display:none;">
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText styleClass="form-control addNotNull numonly PincodeLength perAddress" maxlength="10" id="txtPPostalCode" html-placeholder="Pin Code" value="{!objLead.nm_PostalCode_P__c}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputField styleClass="form-control addNotNull  permanentcity disabled perAddress"  id="txtPCity" html-placeholder="City" value="{!objLead.nm_City_P__c}" html-disabled="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group required-label">
+                                                <div class="select-wrapper">
+                                                    <apex:inputField id="txtPState"  value="{!objLead.nm_StateProvince_P__c}" styleClass="form-control addNotNull trackChangeInValueClass perAddress" html-disabled="true" html-placeholder="State"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputField styleClass="form-control addNotNull" id="txtPHouseNumber" html-placeholder="Address line 1" value="{!objLead.nm_HouseNumber_P__c}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputField styleClass="form-control addNotNull" id="txtPStreet" html-placeholder="Address line 2" value="{!objLead.nm_Street_P__c}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group ">
+                                                <apex:inputField styleClass="form-control" id="txtPLocality" html-placeholder="Address line 3" value="{!objLead.nm_LocalityName_P__c}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group required-label">
+                                                <div class="select-wrapper">
+                                                    <apex:inputField id="txtPCountry"  value="{!objLead.nm_Country_P__c}" styleClass="form-control trackChangeInValueClass perAddress addNotNull" html-disabled="true" html-placeholder="Country"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6"></div>
+                                    </div>
+                                </div>
+                                <!-- End of Permanent Row -->
+                                <div class="row">
+                                    <div class="col-sm-6 text-left">
+                                        <apex:commandButton styleClass="btn btn-primary " value="Back" onclick="isPreviousPageToPersonalInformationTab();return false;"/>
+                                    </div>   
+                                    <div class="col-sm-6 text-right"> 
+                                        <apex:commandLink styleClass="btn btn-primary " id="saveAddressInformation" value="Next" onclick="return gotoProgramDetails();" action="{!nextPage}" rendered="{!!IsEditFormConfirmation}">
+                                            <apex:param name="section"  value="Address Information" assignTo="{!sectionName}"/>
+                                        </apex:commandLink> 
+                                        <apex:commandButton styleClass="btn pgSubmit " onclick="return onSubmit('addressInformation');"  id="goToConfirmation2" value="SubmitDetails" action="{!GoToConfirmationForm}" rendered="{!IsEditFormConfirmation}"/>    
+                                    </div>
+                                </div>
+                                <!-- End of Permanent Row Button -->
+                            </div>
+                        </apex:Form>
+                    </div>
+                    <!----------------------------------------------- Address Information Ends Here -------------------------------->
+                    
+                    <!----------------------------------------------- Program Details Starts Here -------------------------------->
+                    <div class="tab-pane fade " id="programDetailsPanel" >
+                        <apex:Form id="programDetails">
+                            <!-- Action Methods -->
+                            <apex:actionFunction name="getLateralStudentDetailsAPI" action="{!getLateralStudentDetailsAPI}" reRender="pnlLateral2,ErrorPopUpPanel" oncomplete="openPopUp();"/>
+                            <apex:actionFunction name="ChooseProgramChangeProgramDetails" rerender="chooseProgramPanel_ProgramDetails,pnlLateral1"/>
+                            <apex:actionFunction name="showShippingPopup" action="{!showShippingPopup}" reRender="ErrorPopUpPanel" oncomplete="openPopUp();"/>
+                    
+                            <div class="form-wrapper" style="padding-top:0">
+                                <div class="form-group">
+                                    <div class="message-box text-center">Program Details</div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Choose a Program</label>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="radio">
+                                                <label><input type="radio" value="{!objLead.nm_ChooseaProgram__c}" name="programRadio_ProgramDetails" id="Programval" data-mode="2" class="iCheckRadio" />{!org_formConfig.Choose_Program__c}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <apex:outputPanel id="chooseProgramPanel_ProgramDetails">
+                                    <apex:actionRegion >
+                                        <!-- Hidden Fields -->
+                                        <apex:inputHidden id="hdnChooseProgram2" value="{!objLead.nm_ChooseaProgram__c}" />
+                                        <apex:actionFunction name="checkIcValid" action="{!checkICValid}" reRender="chooseProgramPanel_ProgramDetails,ErrorPopUpPanel" oncomplete="setProgramRadio();"/>
+                                        <apex:actionFunction name="CallValidate" action="{!CallValidate}" reRender="academicValidation,ErrorPopUpPanel,totalWPEXP" oncomplete="openPopUp();"/>
+                                        <!-- <apex:actionFunction name="reRenderWEXP" reRender="totalWPEXP" /> -->
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <div class="select-wrapper">
+                                                        <!-- <apex:selectList id="ddlPrograms" value="{!objLead.nm_Program__c}" onchange="checkIcValid();" styleClass="form-control notnull " multiselect="false" size="1">
+                                                          <apex:selectOption itemValue="a00O000000fmPjDIAU" itemLabel="Diploma in Business Management for Bajaj Finance Limited"/>
+                                                        </apex:selectList> -->
+                                                        <apex:selectList id="ddlPrograms" value="{!objLead.nm_Program__c}" onchange="checkIcValid();" styleClass="form-control notnull " multiselect="false" size="1">
+                                                            <apex:selectOptions value="{!ProgramsList}"/>
+                                                        </apex:selectList>
+                                                    </div>
+                                                    <!-- <apex:inputField styleClass="form-control addNotNull" id="ddlPrograms" value="{!org_formConfig.Program__r.nm_ProgramName__c}" /> -->
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <div class="select-wrapper">
+                                                        <apex:selectList id="ddlEligibility" value="{!objLead.nm_EligiblityCriteria__c}" onchange="CallValidate();" styleClass="form-control notnull trackEligibility" size="1" multiselect="false" style="width:99%;" >
+                                                            <apex:selectOptions value="{!ElegibilityCriteriaList}"/>
+                                                        </apex:selectList>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <apex:outputPanel id="academicValidation">
+                                            <!-- Script to reload Academic Section -->
+                                            <apex:inputHidden value="{!jsonMapOfEligibilityVsRequiredAcademic}" id="jsonMapOfEligibility" />
+                                            <script>
+                                                $(document).ready(function() {
+                                                    $('.trackEligibility').select2({
+                                                        minimumResultsForSearch: -1
+                                                    });
+                                                    $('.trackEligibility').siblings('span').find('span.select2-selection--single').css({"border-style":"none","outline":"none","border-radius":"0px","height":"40px"});
+                                                    $('.trackEligibility').siblings('span').find('span.select2-selection--single').find('span.select2-selection__rendered').css({"padding":"6px 12px","font":"normal 1em Calibri-Light"});
+                                                    $('.trackEligibility').siblings('span').find('span.select2-selection--single').find('span.select2-selection__arrow').remove();
+                                                    
+                                                    academicValidation('{!IsReLogin}','{!jsonMapOfEligibilityVsWorkExp}','{!jsonMapOfEligibilityVsRequiredAcademic}','{!yearsEligibility}','{!jsonMapOfEligibilityVsRequiredAcademicPercentage}');
+                                                });
+                                            </script> 
+                                        </apex:outputPanel>
+
+                                    </apex:actionRegion>
+                                
+                                
+                                    <div class="row">
+                                        <apex:inputHidden id="checkAllowPG" value="{!jsonMapOfCenterVsAllowPG}"/>
+                                        <apex:inputHidden id="checkAllowMaster" value="{!jsonMapOfCenterVsAllowMaster}"/>
+                                        <div class="col-md-6">
+                                            <div class="form-group required-label">
+                                                <div class="select-wrapper">
+                                                    <apex:selectList value="{!objLead.nm_InformationCenter__c}" styleClass="form-control notnull" multiselect="false" size="1" style="width:99%;" id="infoCenterId" disabled="{!disabledIC}" >
+                                                        <apex:selectOptions value="{!AllInformationCenters}"/>
+                                                    </apex:selectList>   
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <apex:outputPanel rendered="{!IF(org_formConfig.Self_Learning_Material__c,true,false)}" styleClass="col-md-6" layout="block">
+                                            <div class="form-group required-label">
+                                                <div class="select-wrapper">
+                                                    <apex:selectList id="slf" value="{!objLead.nm_SelfLearningMaterial__c}" styleClass="form-control notnull selfLearningMaterial" size="1" multiselect="false" style="width:99%;" >
+                                                        <apex:selectOption itemValue="Send to my Corporate" itemLabel="Send to my Corporate"/>
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel id="Defence" rendered="{!IF(objLead.nm_ChooseaProgram__c !='Executive Programs' && org_formConfig.Allow_Defence__c,true,false)}">
+                                            <apex:outputPanel id="InnerDefencePanel">
+                                                <div class="col-md-6">
+                                                    <div class="form-group required-label">
+                                                        <div class="select-wrapper">
+                                                            <apex:actionRegion >
+                                                                <apex:inputField id="ddlDefence" value="{!objLead.Are_you_from_Defence__c}" styleClass="form-control notnull ModifyFirstOptionDefencePersonnal">
+                                                                    <apex:actionSupport event="onchange" reRender="InnerDefencePanel"/>
+                                                                </apex:inputField>
+                                                            </apex:actionRegion>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- this panel will rerender if student belong to defence-->
+                                                <apex:outputPanel id="DefencePanelShow" rendered="{!(objLead.Are_you_from_Defence__c == 'Yes')}">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group required-label">
+                                                            <apex:inputField id="txtService" value="{!objLead.nm_ServiceNumber__c}" styleClass="form-control notnull" html-placeholder="Service Number"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group required-label">
+                                                            <div class="select-wrapper">
+                                                                <apex:inputField id="rlt" value="{!objLead.Relationship__c}" styleClass="form-control notnull ModifyFirstOptionRelationship"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group required-label">
+                                                            <div class="input-group date datetimepicker1" data-date-format="DD/MM/YYYY" id="datetimepicker2"><span class="dateInput dateOnlyInput">
+                                                                <apex:inputfield value="{!objLead.nm_DateofCommission__c}" styleClass="form-control notnull" id="doc1" html-placeholder="Date Of Commission" showDatepicker="false" />
+                                                                </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group required-label">
+                                                            <div class="select-wrapper">
+                                                                <apex:inputField id="asc" value="{!objLead.Armed_Service__c}" styleClass="form-control notnull ModifyFirstOptionArmedService"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group required-label">
+                                                            <apex:inputField value="{!objLead.Rank__c}" styleClass="form-control notnull" id="txtRank" html-placeholder="Rank"/>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputPanel>
+
+                                                <!-- Custom Script -->
+                                                <script>
+                                                    $('.ModifyFirstOptionDefencePersonnal > option:first-child').text('Defence Personnel ?');
+                                                    $('.ModifyFirstOptionRelationship > option:first-child').text('RelationShip');
+                                                    $('.ModifyFirstOptionArmedService> option:first-child').text('Armed Service');
+                                                    $('.ModifyFirstOptionSelfLearningMaterial > option:first-child').text('Self Learning Material ?');
+                                                    $('.datetimepicker1').datetimepicker({
+                                                        format: 'DD/MM/YYYY',
+                                                        useCurrent: false,
+                                                        maxDate: moment()
+                                                    });
+                                                </script>
+                                            </apex:outputPanel> 
+                                        </apex:outputPanel>
+
+
+                                        <div class="clearfix"></div><br></br>
+                                    </div>
+                                    <apex:outputPanel id="lateral" rendered="{!IF(org_formConfig.Allow_Lateral__c,true,false)}">
+                                        <div class="form-group">
+                                            <label class="required-label" style="position:relative; padding:8px 15px 0px 0">Are you an exsiting student with NGA-SCE / Alumni </label>
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <div class="radio">
+                                                        <label>
+                                                        <input type="radio" value="Yes" name="AnyCourse" id="Any1" data-mode="1" class="iCheckRadio"  />
+                                                        Yes</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="radio">
+                                                        <label>
+                                                        <input type="radio" value="No" name="AnyCourse" id="Any2" data-mode="2" class="iCheckRadio" />
+                                                        No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                    
+                                    <div id="displayInfo" style="display:none;">
+                                        <div class="row">
+                                            <apex:outputPanel id="pnlLateral2">
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <apex:inputField value="{!objLead.Student_Number_Lateral__c}"  styleClass="form-control  notnullLateral stuNumber stuNumberFields notnull" id="studentNumberForLateral" html-placeholder="Student Number" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <div class="select-wrapper">
+                                                        <apex:inputField value="{!objLead.Course_Name_Lateral__c}" styleClass="form-control  ToAddClass notnullLateral ModifyFirstOptionCourseName stuNumberFields notnull" id="txtBLateral2" html-disabled="true"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <div class="select-wrapper">
+                                                        <apex:inputField value="{!objLead.Year_Of_Passing_Lateral__c}" styleClass="form-control  ToAddClass notnullLateral ModifyFirstOptionYearOfPassing stuNumberFields notnull"  style="width:99%;" id="txtBLateral3" html-disabled="true"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <div class="select-wrapper">
+                                                        <apex:inputField value="{!objLead.Month_Of_Passing_Lateral__c}" styleClass="form-control  ToAddClass notnullLateral ModifyFirstOptionMonthOfPassing stuNumberFields notnull"  style="width:99%;" id="txtBLateral4" html-disabled="true"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <apex:outputPanel id="pnlLateral1">
+                                                <apex:outputPanel rendered="{!objLead.nm_ChooseaProgram__c == 'Post Graduate Diploma Programs' || objLead.nm_ChooseaProgram__c == 'Certificate Programs' }" styleClass="col-md-6 lateralOptPanelId" >
+                                                    <div class="form-group">
+                                                        <div class="select-wrapper">
+                                                            <apex:selectList value="{!objLead.Is_Lateral__c}" styleClass="form-control notnull ToAddClass notnullLateral Is_Lateral"  style="width:99%;" id="lateralOptPanelId" size="1" multiselect="false">  
+                                                                <apex:selectOptions value="{!LateralOptions}"  />  
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                            <script>
+                                                $('.ModifyFirstOptionCourseName > option:first-child').text('Course Name');
+                                                $('.ModifyFirstOptionYearOfPassing > option:first-child').text('Year Of Passing');
+                                                $('.ModifyFirstOptionMonthOfPassing > option:first-child').text('Month Of Passing');
+                                            </script>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </div>
+                                </apex:outputPanel>
+                                <div class="row">
+                                    <div class="text-left col-sm-6">
+                                        <apex:commandButton styleClass="btn btn-primary " value="Back" onclick="isPreviousPageToAddressInformationTab();return false;"/>
+                                    </div>
+
+                                    <div class="text-right col-sm-6">
+                                        <apex:commandLink styleClass="btn btn-primary " id="saveProgramDetails"  value="Next" onclick="return gotoAcademicDetails();" action="{!nextPage}" rendered="{!!IsEditFormConfirmation}" >
+                                            <apex:param name="section"  value="Program Details" assignTo="{!sectionName}"/>
+                                        </apex:commandLink> 
+                                        <apex:commandButton styleClass="btn pgSubmit " onclick="return onSubmit('programDetails');"  id="goToConfirmation3" value="SubmitDetails" action="{!GoToConfirmationForm}" rendered="{!IsEditFormConfirmation}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </apex:Form>
+                    </div>
+                    <!----------------------------------------------- Program Details Ends Here -------------------------------->
+                    
+                    <!----------------------------------------------- Academic Details Starts Here -------------------------------->
+                    <div class="tab-pane fade " id="academicInformationPanel" >
+                        <apex:Form id="academicInformation">
+                            <div class="form-wrapper" style="padding-top:0">
+
+                                <!-- SSC Section -->
+                                <div class="form-group">
+                                    <div class="message-box text-center">SSC / 10th</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <apex:inputField value="{!objLead.nm_10thPercentage__c}" styleClass="form-control notnull floatingNumOnly percentageValidate" html-placeholder="Percentage"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField value="{!objLead.nm_NameofBoard__c}" styleClass="form-control notnull ModifyFirstOptionNameOfBoard10th" id="sscBoard" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <apex:outputPanel styleClass="sscOtherBoardPanelId" style="display:none;">
+                                        <div class="col-md-6">
+                                            <div class="form-group required-label">
+                                                <apex:inputField value="{!objLead.nm_10thClassStateBoardName__c}" styleClass="form-control" id="sscOtherStateBoard" html-placeholder="If State Board or Others, please specify:"/>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="input-group date datetimepicker4" ><span class="dateInput dateOnlyInput">
+                                            <apex:inputfield value="{!objLead.nm_YearofCompletion__c}" styleClass="form-control notnull" showDatePicker="false" id="thyear" html-placeholder="Year Of Completion"/>
+                                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <apex:inputField value="{!objLead.nm_NameofSchool__c}" styleClass="form-control notnull" html-placeholder="Name Of School"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- HSC / Diploma -->
+                                <div id="showHSC_Diploma_GraduationSection">
+                                    <div class="form-group required-label">
+                                        <div class="message-box text-center" id="diploam_HSCPanelId"></div>
+                                    </div>
+                                    <div class="row hscOrDiplomaPanel" style="display:none;">
+                                        <div class="col-md-6">
+                                            <div class="form-group required-label">
+                                                <div class="select-wrapper">
+                                                    <apex:inputField value="{!objLead.nm_Class12OrDiploma__c}" styleClass="form-control ModifyFirstHSCorDiploma acadDetails" id="hscOrDiploma"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- HSC Section -->
+                                    <apex:outputPanel id="HSCSectionPanelId" style="display:none;">
+                                        <div class="row clearfix">
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <apex:inputField value="{!objLead.nm_12thPercentage__c}" styleClass="form-control floatingNumOnly percentageValidate acadDetails hscDetails" id="hscPercentage" html-placeholder="Percentage"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <div class="select-wrapper">
+                                                        <div class="select-wrapper">
+                                                            <apex:inputField value="{!objLead.nm_NameofBoard12__c}" styleClass="form-control ModifyFirstOptionNameOfBoard12th acadDetails hscDetails" id="hscStateBoard"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <apex:outputPanel id="hscOtherStateBoardPanelId" style="display:none;">
+                                                <div class="col-md-6">
+                                                    <div class="form-group required-label">
+                                                        <apex:inputField value="{!objLead.nm_12thClassStateBoardName__c}" styleClass="form-control acadDetails" id="hscOtherStateBoard" html-placeholder="If State Board or Others, please specify:"/>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <div class="input-group date datetimepicker4" ><span class="dateInput dateOnlyInput">
+                                                    <apex:inputfield value="{!objLead.nm_YearofCompletion12__c}" styleClass="form-control notnull acadDetails hscDetails" showDatePicker="false" id="hscyrOfCompletion" html-placeholder="Year Of Completion"/>
+                                                    </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <apex:inputField value="{!objLead.nm_NameofSchool12__c}" styleClass="form-control acadDetails hscDetails" id="hscSchoolName" html-placeholder="Name Of School"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <apex:inputField value="{!objLead.nm_Stream__c}"  styleClass="form-control acadDetails hscDetails" id="hscStream" html-placeholder="Stream"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                    
+                                    <!-- Diploma Section -->
+                                    <apex:outputPanel id="DiplomaSectionPanelId" style="display:none;">
+                                        <div class="row clearfix">
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <apex:inputField value="{!objLead.Result_Diploma__c}" styleClass="form-control floatingNumOnly percentageValidate acadDetails diplomaDetails" id="diplomaPercentage" html-placeholder="Diploma Percentage"/>
+                                                </div>
+                                            </div>      
+
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <apex:inputField value="{!objLead.nm_DiplomaSchoolCollegeUniversityname__c}" styleClass="form-control acadDetails diplomaDetails" id="diplomaStateBoard" html-placeholder="Board Name"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <apex:inputHidden id="hdnDiplomayrOfCompletion" value="{!objLead.nm_DiplomaYearOfCompletion__c}" />
+                                                    <div class="input-group date datetimepicker4 diplomayrOfCompletion" ><span class="dateInput dateOnlyInput">
+                                                    <input type="text" class="form-control diplomaDetails acadDetails" id="diplomayrOfCompletion" placeholder="Year Of Completion" />
+                                                    </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <apex:inputField value="{!objLead.nm_DiplomaName__c}" styleClass="form-control acadDetails diplomaDetails" id="diplomaName" html-placeholder="Name Of College"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <apex:inputField value="{!objLead.nm_StreamDiploma__c}"  styleClass="form-control acadDetails diplomaDetails" id="diplomaStream" html-placeholder="Stream"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group required-label">
+                                                    <apex:inputField value="{!objLead.nm_DurationOfDiploma__c}" styleClass="form-control numonly acadDetails diplomaDetailsdiplomaDetails" id="diplomaDuration" html-placeholder="Duration Of Diploma"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                </div>
+
+                                <!---- Graduation ---->
+                                <div class="form-group">
+                                    <div class="message-box text-center">Graduation</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group graduationDegree">
+                                            <div class="select-wrapper">
+                                                <apex:inputField value="{!objLead.nm_BachelorsDegreeName__c}"  styleClass="form-control acadDetails ModifyFirstOptionBachelorDegreeName degreeDetails" id="degreeName"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group graduationDegree">
+                                            <apex:inputField value="{!objLead.nm_Specialization__c}"  styleClass="form-control acadDetails degreeDetails" html-placeholder="Specialization" id="degreeSpecialization"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group graduationDegree">
+                                            <apex:inputField value="{!objLead.nm_NameOfCollege__c}" styleClass="form-control acadDetails degreeDetails" html-placeholder="College Name" id="degreeCollegeName"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group graduationDegree">
+                                            <div class="select-wrapper">
+                                                <!-- <apex:selectList value="{!objLead.nm_NameofUniversity__c}" styleClass="form-control easyAuto autoCompleteUniversity acadDetails degreeDetails" multiselect="false" size="1" style="width:100%;" id="degreeUniversityName">
+                                                    <apex:selectOptions value="{!UniversityList}"/>
+                                                </apex:selectList>   -->
+                                                <select class="form-control easyAuto autoCompleteUniversity acadDetails degreeDetails" size="1" style="width:100%;" id="degreeUniversityName">
+                                                    <option value="">-- Select --</option>
+                                                </select>
+                                                <apex:inputHidden value="{!objLead.nm_NameofUniversity__c}" id="hiddendegreeUniversity"></apex:inputHidden>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 otherUniversityNamePanel" id="otherUniversityName" style="display:none;">
+                                        <div class="form-group">
+                                            <apex:inputField value="{!objLead.nm_Other_University_Name__c}"  styleClass="form-control otherUniversityName acadDetails" html-placeholder="Other University Name, please specify:"/>
+                                        </div>
+                                    </div>
+                                    <apex:inputHidden id="hdndegreeUniversityType" html-class="hdnUniversityType"  value="{!objLead.nm_University_Type__c}" />
+                                    <div class="col-md-6">
+                                        <div class="form-group graduationDegree">
+                                            <apex:inputField value="{!objLead.nm_BachelorsDegreePercentage__c}" styleClass="form-control floatingNumOnly acadDetails degreeDetails percentageValidate" html-placeholder="Bachelor's Degree Percentage" id="degreePercentage"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group graduationDegree">
+                                            <div class="select-wrapper">
+                                                <apex:selectList value="{!objLead.nm_GraduationDegreeMode__c}" styleClass="form-control acadDetails degreeDetails" multiselect="false" size="1" style="width:99%;" id="degreeMode">  
+                                                    <apex:selectOptions value="{!GraduationDegreeMode}"  />   
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group graduationDegree">
+                                            <div class="input-group date datetimepicker4" ><span class="dateInput dateOnlyInput">
+                                            <apex:inputfield value="{!objLead.nm_YearofCollegeCompletion__c}" styleClass="form-control acadDetails degreeDetails" showDatePicker="false" id="degreeYrOfCompletion" html-placeholder="Year Of Completion"/>
+                                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="Acad1" style="display:none;">
+                                    <div class="form-group">
+                                        <div class="cardSectionInfo">Qualification 2</div>
+                                    </div>
+
+                                    <div class="row clearfix">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Name_of_Program1__c}" styleClass="form-control Acad1 programName1" html-placeholder="Name of Program" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Name_of_College1__c}" styleClass="form-control Acad1 collegeName1" html-placeholder="Name of College" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Name_of_University1__c}" styleClass="form-control Acad1 universityName1" html-placeholder="Name of University" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group graduationDegree">
+                                                <div class="input-group date datetimepicker4" ><span class="dateInput dateOnlyInput">
+                                                <apex:inputText value="{!objLead.Year_of_Passing1__c}" styleClass="form-control Acad1 passingYear1" html-placeholder="Year Of Passing"/>
+                                                </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Percentage1__c}" styleClass="form-control floatingNumOnly Acad1 percentage1 percentageValidate" html-placeholder="Percentage" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Duration_of_Program1__c}" styleClass="form-control Acad1 numonly duration1" html-placeholder="Duration of Program in (Months)" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group graduationDegree required-label">
+                                                <div class="select-wrapper">
+                                                    <apex:selectList value="{!objLead.Graduation_Degree_Mode1__c}" styleClass="form-control Acad1 mode1 ModifyFirstOptionOfModeOfEducation" multiselect="false" size="1" style="width:100%;">
+                                                        <apex:selectOptions value="{!GraduationDegreeMode}"/>
+                                                    </apex:selectList>  
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div id="Acad2" style="display:none;">
+                                    <div class="form-group">
+                                        <div class="cardSectionInfo">Qualification 3</div>
+                                    </div>
+
+                                    <div class="row clearfix">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Name_of_Program2__c}" styleClass="form-control Acad2 programName2" html-placeholder="Name of Program" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Name_of_College2__c}" styleClass="form-control Acad2 collegeName2" html-placeholder="Name of College" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Name_of_University2__c}" styleClass="form-control Acad2 universityName2" html-placeholder="Name of University" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group graduationDegree">
+                                                <div class="input-group date datetimepicker4" ><span class="dateInput dateOnlyInput">
+                                                <apex:inputText value="{!objLead.Year_of_Passing2__c}" styleClass="form-control Acad2 passingYear2"  html-placeholder="Year Of Passing"/>
+                                                </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Percentage2__c}" styleClass="form-control floatingNumOnly Acad2 percentage2 percentageValidate" html-placeholder="Percentage" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Duration_of_Program2__c}" styleClass="form-control Acad2 duration2 numonly" html-placeholder="Duration of Program in (Months)" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group required-label graduationDegree">
+                                                <div class="select-wrapper">
+                                                    <apex:selectList value="{!objLead.Graduation_Degree_Mode2__c}" styleClass="form-control Acad2 mode2 ModifyFirstOptionOfModeOfEducation" multiselect="false" size="1" style="width:100%;">
+                                                        <apex:selectOptions value="{!GraduationDegreeMode}"/>
+                                                    </apex:selectList>  
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="Acad3" style="display:none;">
+                                    <div class="form-group">
+                                        <div class="cardSectionInfo">Qualification 4</div>
+                                    </div>
+
+                                    <div class="row clearfix">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Name_of_Program3__c}" styleClass="form-control Acad3 programName3" html-placeholder="Name of Program" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Name_of_College3__c}" styleClass="form-control Acad3 collegeName3" html-placeholder="Name of College" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Name_of_University3__c}" styleClass="form-control Acad3 universityName3" html-placeholder="Name of University" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group graduationDegree">
+                                                <div class="input-group date datetimepicker4" ><span class="dateInput dateOnlyInput">
+                                                <apex:inputText value="{!objLead.Year_of_Passing3__c}" styleClass="form-control Acad3 passingYear3"  html-placeholder="Year Of Passing"/>
+                                                </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Percentage3__c}" styleClass="form-control floatingNumOnly Acad3 percentage3 percentageValidate" html-placeholder="Percentage" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group required-label">
+                                                <apex:inputText value="{!objLead.Duration_of_Program3__c}" styleClass="form-control Acad3 duration3 numonly" html-placeholder="Duration of Program in (Months)" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group graduationDegree required-label">
+                                                <div class="select-wrapper">
+                                                    <apex:selectList value="{!objLead.Graduation_Degree_Mode3__c}" styleClass="form-control Acad3 mode3 ModifyFirstOptionOfModeOfEducation" multiselect="false" size="1" style="width:100%;">
+                                                        <apex:selectOptions value="{!GraduationDegreeMode}"/>
+                                                    </apex:selectList>  
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row clearfix">
+                                    <div class="col-md-3">
+                                        <apex:commandButton styleClass="btn btn-primary btn-lg btn-custom" id="addQualififcation" value="Add Qualification" onclick="Qualification(1);return false;"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <apex:commandButton styleClass="btn btn-danger btn-lg btn-custom pull-right" id="removeQualififcation" value="Remove Qualification" onclick="Qualification(0);return false;"/>
+                                    </div>
+                                </div>
+                                <br/>
+
+                                <div class="row">
+                                    <div class="text-left col-sm-6">
+                                        <apex:commandButton styleClass="btn btn-primary " value="Back" onclick="isPreviousPageToProgramDetailsTab();return false;"/>
+                                    </div>
+                                    <div class="text-right col-sm-6">
+                                        <apex:commandLink styleClass="btn btn-primary " id="saveAcademicInformation"  value="Next" onclick="return gotoWorkExperience();" action="{!nextPage}" rendered="{!!IsEditFormConfirmation}">
+                                            <apex:param name="section"  value="Academic Information" assignTo="{!sectionName}"/>
+                                        </apex:commandLink> 
+                                        <apex:commandButton styleClass="btn pgSubmit "  id="goToConfirmation4" value="SubmitDetails" onclick="return onSubmit('academicInformation');" action="{!GoToConfirmationForm}" rendered="{!IsEditFormConfirmation}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </apex:Form>
+                    </div>
+                    <!----------------------------------------------- Academic Details Ends Here -------------------------------->
+                    
+                    <!----------------------------------------------- Work Expereince Details Starts Here -------------------------------->
+                    <div class="tab-pane fade " id="workExperiencePanel" >
+                        <apex:Form id="workExperience">
+                            <div class="message-box text-center">Work Experience</div>
+                            <div class="form-wrapper">
+                                <div class="row clearfix"> 
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:selectList value="{!objLead.nm_WorkExperience__c}" styleClass="form-control totalWPEXP" multiselect="false" size="1" style="width:99%;" id="totalWPEXP">  
+                                                    <apex:selectOptions value="{!WorkExpTimeList}" />   
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <apex:outputPanel styleClass="nonWorkExpPanel">
+                                        <div class="col-md-6">
+                                            <div class="form-group required-label">
+                                                <div class="select-wrapper">
+                                                    <apex:inputField value="{!objLead.Reason__c}" styleClass="form-control notnull ModifyFirstOptionOfReason" id="ReasonForNotWorking"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+
+                                    <apex:outputPanel styleClass="nonWorkExpPanel" >
+                                        <div class="col-md-6 nonWorkExpInnerPanel" style="display:none;">
+                                            <div class="form-group required-label">
+                                                <apex:inputField value="{!objLead.nm_Other_Reason__c}" styleClass="form-control" id="OtherReasonForNotWorkingInner" html-placeholder="Other Reason for not working"/>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                </div>
+
+                                <div id="WorkExpereiencePanel" class="workExpPanel" style="display:none;">
+                                    <div class="row clearfix">
+                                        <apex:outputPanel id="InnerWorkExperiencePanel">
+                                            <apex:actionFunction name="addNewExperience" action="{!AddExperience}" rerender="InnerWorkExperiencePanel" oncomplete="loadTriggerField();"/>
+                                            <apex:actionFunction name="removeExperience" action="{!RemoveExperience}" rerender="InnerWorkExperiencePanel" oncomplete="loadTriggerField();"/>
+                                            
+                                            <apex:actionRegion >
+                                                <apex:variable var="c" value="{!0}" />
+                                                <apex:outputPanel id="withWorkExperiencePanelId" style="display:block;">
+                                                    <apex:repeat value="{!lstWorkExperience}" var="we">
+
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="checkbox">
+                                                                <apex:inputHidden value="{!we.Currently_Working_Here__c}" html-class="hdnCurrentlyWorking" />
+                                                                <div style="{!IF(c==0,'display:block;','display:none;')}">
+                                                                <label for="currentlyWorking{!c}" >
+                                                                    <input type="checkbox" class="with-gap currentlyWorking" id="currentlyWorking{!c}"  name="currentlyWorking" data-id="{!c}" disabled="disabled" /> Currently Working Here
+                                                                </label>
+                                                                <script>
+                                                                    if('{!c}' == '0') {
+                                                                        $(".hdnCurrentlyWorking").eq(0).val(true);
+                                                                        $(".currentlyWorking").trigger('change');
+                                                                        $('[id$=company0]').attr('disabled', true);
+                                                                    }
+                                                                </script>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                            <div class="form-group required-label">
+                                                                <div class="input-group date datetimepicker3 from" ><span class="dateInput dateOnlyInput">
+                                                                <apex:inputField value="{!we.nm_StartDate__c}" styleClass="form-control StartDate WKEXPDetails" showDatePicker="false" html-placeholder="Start Date"/>
+                                                                </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                            <div class="form-group required-label">
+                                                                <div class="input-group date datetimepicker3 end" ><span class="dateInput dateOnlyInput">
+                                                                <apex:inputField value="{!we.nm_EndDate__c}" styleClass="form-control EndDate WKEXPDetails" showDatePicker="false" html-placeholder="End Date" />
+                                                                </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                            <div class="form-group required-label">
+                                                                <div class="select-wrapper">
+                                                                    <apex:inputField value="{!we.Industry__c}" styleClass="form-control ModifyFirstOptionOfIndustry industry WKEXPDetails" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                            <div class="form-group required-label">
+                                                                <!-- <apex:outputPanel rendered="{!IF(org_formConfig.Company_Name__c != null,true,false)}">
+                                                                    <apex:inputHidden value="{!we.nm_CompanyName__c}" html-class="hdnCompanyValue" />
+                                                                </apex:outputPanel>
+                                                                <apex:outputPanel rendered="{!IF(org_formConfig.Company_Name__c == null,true,false)}">
+                                                                    <apex:inputHidden value="{!we.nm_CompanyName__c}" html-class="hdnCompanyName" />
+                                                                </apex:outputPanel>
+                                                                
+                                                                <input type="text" id="company{!c}" disabled="{!if(org_formConfig.Company_Name__c != null ,'true','false')}" placeholder="{!if(org_formConfig.Company_Name__c != null , org_formConfig.Company_Name__c ,'Company Name')}" class="form-control WKEXPDetails {!if(org_formConfig.Company_Name__c != null ,'','autoCompleteCompany')}" /> -->
+                                                                <apex:inputHidden value="{!we.nm_CompanyName__c}" html-class="hdnCompanyName hdnCurrentlyWorking{!c}" />
+                                                                <input type="text" id="company{!c}" placeholder="Company Name" class="form-control WKEXPDetails autoCompleteCompany"  />
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                            <div class="form-group required-label">
+                                                                <apex:inputField value="{!we.Department__c}"  styleClass="form-control WKEXPDetails department"  html-placeholder="Department"/>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                            <div class="form-group required-label">
+                                                                <div class="select-wrapper">
+                                                                    <apex:inputField value="{!we.nm_Designation__c}" styleClass="form-control ModifyFirstOptionOfDesignation WKEXPDetails designation"  html-placeholder="Designation"/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                            <div class="form-group {!if(org_formConfig.Make_Salary_Mandatory__c,'required-label','')}">
+                                                                <div class="select-wrapper">
+                                                                    <apex:inputField value="{!we.Annual_Income__c}" styleClass="form-control ModifyFirstOptionOfAnnualIncome WKEXPDetails annualIncome"  html-placeholder="Annual Income"/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <apex:variable var="c" value="{!c+1}" />
+                                                        <div class="col-md-12"></div>
+                                                        <hr />
+
+                                                    </apex:repeat>
+                                                </apex:outputPanel>
+                                            </apex:actionRegion>
+                                            <script>
+                                                $('.ModifyFirstOptionOfAnnualIncome> option:first-child').text('Annual Income');
+                                                $('.ModifyFirstOptionOfReason> option:first-child').text('Reason for not working');
+                                                $('.ModifyFirstOptionOfDesignation> option:first-child').text('Designation');
+                                                $('.ModifyFirstOptionOfIndustry> option:first-child').text('Industry');
+                                                $('[id$=company0]').attr('disabled', true);
+                                                $('[id$=company0]').val('{!org_formConfig.Company_Name__c}');
+                                                $('.hdnCurrentlyWorking0').val('{!org_formConfig.Company_Name__c}');
+                                            </script>
+                                        </apex:outputPanel>
+                                    </div>
+
+                                    <div class="row clearfix">
+                                        <div class="col-md-3">
+                                            <apex:commandButton styleClass="btn btn-primary btn-lg btn-custom addNewExperience" value="Add Experience" onclick="addNewExperience();return false;"/>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <apex:commandButton styleClass="btn btn-danger btn-lg btn-custom pull-right removeExperience" value="Remove Work Experience" onclick="removeExperience();return false;"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row clearfix" style="margin-top:15px;">
+                                    <div class="text-left col-sm-6">
+                                        <apex:commandButton styleClass="btn btn-primary " value="Back" onclick="isPreviousPageToAcademicInformationTab();return false;"/>
+                                    </div>
+                                    <div class="text-right col-sm-6">
+                                        <apex:commandLink styleClass="btn btn-primary " id="saveWorkExperience" onclick="return onSubmit('workExperience');"  value="submit" action="{!GoToConfirmationForm}" rendered="{!!IsEditFormConfirmation}" >
+                                            <apex:param name="section"  value="Work Experience" assignTo="{!sectionName}"/>
+                                        </apex:commandLink> 
+                                        <apex:commandButton styleClass="btn pgSubmit " onclick="return onSubmit('workExperience');"  id="goToConfirmation5" value="SubmitDetails" action="{!GoToConfirmationForm}" rendered="{!IsEditFormConfirmation}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </apex:Form>
+                    </div>
+                    <!----------------------------------------------- Work Expereince Details Ends Here -------------------------------->
+                </div>
+            </div>
+        </div>
+        
+        <div id="ErrorPopUp" style="display:none;">
+            <div class="modal popup-wrapper">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"><p id="errorTitle"></p></h4>
+                        </div>
+                        <div class="modal-body">
+                            <p id="errorMessage"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn" id="btnErr" onclick="hidePopup();">I Agree</button>
+                            <button type="submit" class="btn redirectToShipping" style="display:none;">Change Shipping Address</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overlay"></div>
+        </div>
+
+        <div style="margin:10px 0;font-size:18px;margin-top:0px; color:Red;">
+            <left><b> * mandatory fields</b></left>                              
+        </div>
+
+        <footer>
+            <div class="container">
+                <div class="row">
+                <div class="col-md-2 col-sm-4"></div>
+                <div class="col-md-3 col-sm-4"></div>
+                <div class="col-md-2 col-sm-4"></div>
+                <div class="clearfix visible-sm"></div>
+                <div class="col-md-5">
+                    <div class="connectWrapper">
+                        <div class="footerSocialIcons">
+                            <p class="small">Follow Us :</p>
+                            <p class="text">Connect with us via Social Media and get all our latest news and upcoming events.</p>
+                            <ul>
+                                <li><a href="#" class="icon-twitter"></a></li>
+                                <li><a href="#" class="icon-facebook"></a></li>
+                                <li><a href="#" class="icon-google-plus"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="footerBottom">
+                        <div class="copyRight">
+                            <p class="text">&copy; 2016 NMIMS. All Rights Reserved.</p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </footer>
+        
+       
+        <!-- Script -->
+        <script type="text/javascript" src="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/js/bootstrap.min.js')}" />
+        <script type="text/javascript" src="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/js/moment-range.js')}"/>
+        <!-- <script type="text/javascript" src="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/js/fontawesome.min.js')}" data-auto-replace-svg="nest"/> -->
+        <script type="text/javascript" src="{!URLFOR($Resource.jquery_easy_autocompleteJS)}"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js" integrity="sha256-d/edyIFneUo3SvmaFnf96hRcVBcyaOy96iMkPez1kaU=" crossorigin="anonymous"></script>
+        <!-- To load these scripts on the Header tag. -->
+        <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" />
+        <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js" html-integrity="sha256-TkEcmf5KSG2zToAaUzkq6G+GWezMQ4lEtaBiyaq6Jb4=" html-crossorigin="anonymous" />
+        <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js" html-integrity="sha256-kIiM3UOTsgRqR7ellGKPpjPN7/z88uz28qIiwk/cVsc=" html-crossorigin="anonymous"/>
+        <script>
+            // Global variables
+            var offline_Students = '{!$Label.Offline_Students}';
+        
+        </script>
+        <apex:include pageName="CorporateForm_Validation"/>
+
+        <script>
+            $(document).ready(function (){
+
+                var programname = '{!program_Name}';
+                console.log('programname' +programname);
+                var allowLateral = '{!allowLateral}';
+                console.log('allowLateral '+allowLateral);
+
+                if(allowLateral == 'false'){
+                    console.log('enterrr');
+                    $('[id$=studentNumberForLateral]').removeClass('notnull errorBorder');
+                }else{
+                    $('[id$=studentNumberForLateral]').addClass('notnull');
+                }
+                if(programname == 'Certificate Program in Women Leadership'){
+                    var gender = $('[id$=gender]').val();
+                    if(gender && gender != 'Female'){
+                        showHtmlMessage('Invalid Details','You are not eligible for '+programname);
+                        $('[id$=gender]').val('')
+                    }
+                }
+
+                if('{!org_formConfig.Company_Name__c}' !== ''){
+                    $('.hdnCompanyValue').val('{!org_formConfig.Company_Name__c}');
+                }
+
+                $('[id$=gender]').change(function(){
+                    if($(this).val() != 'Female' && programname == 'Certificate Program in Women Leadership'){
+                        showHtmlMessage('Invalid Details','You are not eligible for '+programname);
+                        $(this).val('');
+                    }
+                });
+
+                $('.ChooseProgVal').trigger('change');
+               // $('input[name$=programRadio]').trigger('change');
+                
+                var _message = 'For this eligibility criteria its mandatory to submit Work experience proof of';
+                var AllowNextTab = true;
+                if("{!strSecToShow}" =="PopUpError" && "{!message}".indexOf(_message) == -1){
+                    openPopUp();
+                    AllowNextTab = false;
+                }
+
+                /*------------------------------------------------After ReLogin check upto which tab details fill based upon that enabled tab -------*/     
+                var relogin = '{!IsReLogin}';
+                console.log('relogin--->'+relogin );
+                if('{!IsReLogin}' == 'true') {
+                    validateTabs(false);
+
+                    $('.gotoTabs').click(function( event ) {
+                        var parent = $(this).parent();
+
+                        //To differentiate between human and event click
+                        if(event.originalEvent != undefined && !parent.hasClass('disabled')) {
+                            var currentTab = $('li.active a.gotoTabs').attr('data-tab');
+                            var tabNumber = $(this).data('tab');
+                            var checkTab = false;
+
+                            console.log('currentTab -->'+currentTab);
+                            console.log('tabNumber -->'+tabNumber);
+                            
+                            if(currentTab > 1 && currentTab != tabNumber) {
+                                var checkTabNumber = validateTabs(true);
+
+                                if(checkTabNumber < tabNumber) {
+                                    switch (checkTabNumber) {
+                                        case 2:
+                                            isPreviousPageToPersonalInformationTab();
+                                            break;
+                                        case 3:
+                                            isPreviousPageToAddressInformationTab();
+                                            break;
+                                        case 4:
+                                            isPreviousPageToProgramDetailsTab();
+                                            break;
+                                        case 5:
+                                            isPreviousPageToAcademicInformationTab();
+                                            break;
+                                        default:
+                                            isPreviousPageToWorkExperienceTab();
+                                            break;
+                                    }
+                                    return false;
+                                }else{
+                                    return true;
+                                }
+                            }
+                        }
+                    });
+
+                }
+
+                if('{!sectionName}' == 'Generate Registration No' &&  '{!IsEditFormConfirmation}' != 'true' && AllowNextTab){
+                    onClickNextToPersonalInformationTab(false);
+                }else if('{!sectionName}' == 'Personal Information' && '{!IsEditFormConfirmation}' != 'true' && AllowNextTab){
+                    onClickNextToAddressInformationTab(false);
+                }else if('{!sectionName}' == 'Address Information' && '{!IsEditFormConfirmation}' != 'true' && AllowNextTab){
+                    onClickNextToProgramDetailsTab(false);
+                }else if('{!sectionName}' == 'Program Details' && '{!IsEditFormConfirmation}' != 'true' && AllowNextTab){
+                    onClickNextToAcademicInformationTab(false);
+                }else if('{!sectionName}' == 'Academic Information' && '{!IsEditFormConfirmation}' != 'true' && AllowNextTab){
+                    onClickNextToWorkExperienceTab(false);
+                }
+                
+                /*--------------------------------click from Confirmation Page-----------------*/
+                if('{!sectionName}' == 'Personal Information' && '{!IsEditFormConfirmation}' == 'true'){
+                    onClickNextToPersonalInformationTab(false);
+                }else if('{!sectionName}' == 'Address Information' && '{!IsEditFormConfirmation}' == 'true'){
+                    onClickNextToAddressInformationTab(false);
+                }else if('{!sectionName}' == 'Program Details' && '{!IsEditFormConfirmation}' == 'true'){
+                    onClickNextToProgramDetailsTab(false);
+                }else if('{!sectionName}' == 'Academic Information' && '{!IsEditFormConfirmation}' == 'true'){
+                    onClickNextToAcademicInformationTab(false);
+                }else if('{!sectionName}' == 'Work Experience' && '{!IsEditFormConfirmation}' == 'true'){
+                    onClickNextToWorkExperienceTab(false);
+                }
+                
+
+                function validateTabs(checkVal) {
+                    $('[id$=generateRegistrationNoTab]').addClass('disabled');
+                    var _flag9 = validateForm('[id$=personalInformation]',checkVal);
+                    if(_flag9 !=0){
+                        $('[id$=personalInformationTab]').removeClass('disabled');
+                        return 2;
+                    }else{
+                        _flag9 = validateForm('[id$=addressInformation]',checkVal);
+                        if (_flag9 != 0) {
+                            $('[id$=personalInformationTab]').removeClass('disabled');
+                            $('[id$=addressInformationTab]').removeClass('disabled');
+                            return 3;
+                        }else{
+                            _flag9 = validateForm('[id$=programDetails]',checkVal);
+                            if (_flag9 != 0) {
+                                $('[id$=personalInformationTab]').removeClass('disabled');
+                                $('[id$=addressInformationTab]').removeClass('disabled');
+                                $('[id$=programDetailsTab]').removeClass('disabled');
+                                return 4;
+                            }else{
+                                _flag9 = validateForm('[id$=academicInformation]',checkVal);
+                                if (_flag9 != 0) {
+                                    $('[id$=personalInformationTab]').removeClass('disabled');
+                                    $('[id$=addressInformationTab]').removeClass('disabled');
+                                    $('[id$=programDetailsTab]').removeClass('disabled');
+                                    $('[id$=academicInformationTab]').removeClass('disabled');
+                                    return 5;
+                                }else{
+                                    _flag9 = validateForm('[id$=workExperience]',checkVal);
+                                    if (_flag9 != 0) {
+                                        $('[id$=personalInformationTab]').removeClass('disabled');
+                                        $('[id$=addressInformationTab]').removeClass('disabled');
+                                        $('[id$=programDetailsTab]').removeClass('disabled');
+                                        $('[id$=academicInformationTab]').removeClass('disabled');
+                                        $('[id$=workExperienceTab]').removeClass('disabled');
+                                        return 6;
+                                    }else{
+                                        $('[id$=personalInformationTab]').removeClass('disabled');
+                                        $('[id$=addressInformationTab]').removeClass('disabled');
+                                        $('[id$=programDetailsTab]').removeClass('disabled');
+                                        $('[id$=academicInformationTab]').removeClass('disabled');
+                                        $('[id$=workExperienceTab]').removeClass('disabled');
+                                        return 6;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+        </script>
+    </body>
+    </html>
+</apex:page>

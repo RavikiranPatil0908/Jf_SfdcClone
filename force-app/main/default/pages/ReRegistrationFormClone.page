@@ -1,0 +1,1453 @@
+<!--
+  @File Name          : ReRegistrationFormClone.page
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 28-01-2025
+  @Modification Log   : 
+  Ver       Date            Author                  Modification
+  1.0    28/2/2020   @BK     Initial Version
+-->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" docType="html-5.0" controller="ReRegistrationForm"
+    cache="false">
+
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <title>NMIMS Distance Education: Login</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."
+        />
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <apex:stylesheet value="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/css/bootstrap-datetimepicker.min.css')}"/>
+        <!-- <apex:stylesheet value="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/css/style.css.map')}"/> -->
+        <apex:stylesheet value="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/css/fonts.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/css/style.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/css/easy-autocomplete.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/css/easy-autocomplete.themes.min.css')}"/>
+        <apex:stylesheet value="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" html-integrity="sha256-FdatTf20PQr/rWg+cAKfl6j4/IY3oohFAJ7gVC3M34E=" html-crossorigin="anonymous" />
+
+        
+        <script type="text/javascript">
+        //history.pushState(null, null, 'ReRegistrationForm');
+          //  window.addEventListener('popstate', function () {
+            //history.pushState(null, null, 'ReRegistrationForm');
+            });
+            </script>
+            
+
+        <style>
+            .Processingview {
+                position: fixed;
+                background: url('{!URLFOR($Resource.loading_img)}');
+                background-repeat: no-repeat;
+                background-position: center;
+                width: 100%;
+                height: 100%;
+                z-index: 1004;
+                left: 3%;
+                top: 1%;
+
+            }
+
+            .required {
+                border: 2px solid #c00 !important;
+            }
+
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 10;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+
+            .poup {
+                position: fixed;
+                top: 30%;
+                width: 40%;
+                margin-left: 30%;
+                z-index: 11;
+            }
+
+            .messageCell {
+                color: White !important;
+            }
+
+            .LateFee {
+                Color: red;
+                float: right;
+                margin-right: 4%;
+                font-style: italic;
+            }
+
+            .adddisableColour {
+                background-color: silver;
+                color: black;
+            }
+
+            .errorBorder {
+                border:1px solid red !important;
+            }
+
+            span.select2-results > ul.select2-results__options {
+                font: normal 1em Calibri-Light !important;
+            }
+
+            .transparent-background {
+                content: '';
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+            }
+   
+            .loader-center {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                display: block;
+                -webkit-transform: translate(-50%, -50%);
+                -ms-transform: translate(-50%, -50%);
+                transform: translate(-50%, -50%);
+            }
+   
+            .loader {
+                color: #ffffff;
+                font-size: 20px;
+                margin: 100px auto;
+                width: 1em;
+                height: 1em;
+                border-radius: 50%;
+                position: relative;
+                text-indent: -9999em;
+                -webkit-animation: load4 1.3s infinite linear;
+                animation: load4 1.3s infinite linear;
+                -webkit-transform: translateZ(0);
+                -ms-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+   
+            @-webkit-keyframes load4 {
+                0%,
+                100% {
+                    box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+                }
+                12.5% {
+                    box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+                }
+                25% {
+                    box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+                }
+                37.5% {
+                    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+                }
+                50% {
+                    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+                }
+                62.5% {
+                    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+                }
+                75% {
+                    box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+                }
+                87.5% {
+                    box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+                }
+            }
+   
+            @keyframes load4 {
+                0%,
+                100% {
+                    box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+                }
+                12.5% {
+                    box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+                }
+                25% {
+                    box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+                }
+                37.5% {
+                    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+                }
+                50% {
+                    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+                }
+                62.5% {
+                    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+                }
+                75% {
+                    box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+                }
+                87.5% {
+                    box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+                }
+            }
+
+        </style>
+    </head>
+
+    <body class="home">
+        <!-- Header component -->
+        <c:HeaderPage BannerText="Re - Registration" ActiveBadge="Re - Registration" />
+        <!-- Header component -->
+
+        <!-- Form begins Here -->
+
+        <apex:form id="ReRegInformation">
+            <apex:pageMessages />
+            <div class="transparent-background loaderPanel" style="display:none;">
+                <div class="loader-center">
+                    <div class="loader">Loading...</div>
+                </div>
+            </div>
+            <div class="tab-wrapper">
+                <div class="container">
+                    <p class="note-txt">
+                        <strong>Note:</strong> Kindly check Mobile Number, Email Address and choose option for delivery of self Learning
+                        Material.
+                    </p>
+                    <div class="tab-content">
+                        <div class="tab-pane active">
+                            <div class="message-box form-group text-center">Student Information</div>
+                            <div class="form-wrapper">
+                                <div class="row">
+                                    <apex:inputHidden id="csRecordId" value="{!csProgram.id}" />
+                                    <apex:inputHidden id="csName" value="{!csProgram.name}" />
+                                    <apex:inputHidden id="isEligible" value="{!csProgram.isEligible}" />
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <apex:outputText value="{!objAccount.nm_StudentNo__c}" styleClass="form-control" html-placeholder="Student No." />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <apex:outputText value="{!strRegFor}" styleClass="form-control" html-placeholder="Semester"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <apex:outputText value="{!objAccount.Name}" styleClass="form-control" html-placeholder="Name"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <apex:outputText value="{!objAccount.nm_Gender__c}" styleClass="form-control" html-placeholder="Gender"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <apex:outputText styleClass="form-control" value="{0,date,dd/MM/yyyy}">
+                                               <apex:param value="{!objAccount.nm_DateOfBirth__c}" />
+                                            </apex:outputText>
+       
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <apex:outputText value="{!strCurrentProgName}" styleClass="form-control" html-placeholder="Program Name"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <apex:outputText value="{!objAccount.nm_Centers__r.Name}" styleClass="form-control" html-placeholder="AEP Name" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input value="{!objAccount.House_No_Name_Shipping_Account__c},{!objAccount.Locality_Name_Shipping__c },{!objAccount.Shipping_Street__c}, {!objAccount.City_Shipping_Account__c }, {!objAccount.State_Province_Shipping__c }, {!objAccount.Zip_Postal_Code_Shipping__c }, {!objAccount.Country_Shipping__c}" class="form-control" placeholder="Address" disabled="true"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group ">
+                                            <apex:outputText value="{!objAccount.PersonMobilePhone}" styleClass="form-control" html-placeholder="Mobile No." />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group ">
+                                            <apex:outputText value="{!objAccount.PersonEmail}" styleClass="form-control" html-placeholder="Email"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6" style="display:none;">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:selectList value="{!objAccount.SLF__c}" styleClass="form-control" multiselect="false" size="1" style="width:99%;" id="slfLM">
+                                                    <apex:selectOptions value="{!SelfLearningMaterial}"/>
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 AddressDetails" style="display:none;">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:selectList value="{!address.addressChoice}" styleClass="form-control ModifyFirstOptionOfShippingChoice slfOption" multiselect="false" size="1" style="width:99%;" id="slfOption">
+                                                    <apex:selectOptions value="{!ShippingOption}"/>
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Error Popup panel -->
+                                <apex:outputPanel id="ErrorPopUpPanel">
+                                    <apex:inputHidden id="message" value="{!message}"/>
+                                    <apex:inputHidden id="strSecToShow" value="{!strSecToShow}"/>
+                                </apex:outputPanel>
+                                <!-- Error Popup panel -->
+
+                                <!-- ------------------------------------------ Address Section Begins Here--------------------------------------------- -->
+                                <apex:outputPanel styleClass="addessInformationPanel row" style="display:none;" layout="block">
+                                    <div class="col-md-12 form-group">
+                                        <div class="message-box text-center">Address Details</div>
+                                    </div>
+                                    <!-- ------------------------------------------------Editable Section------------------------------------------------------ -->
+                                    <apex:outputPanel styleClass="editableSection" style="display: none;">
+                                        <apex:actionFunction name="getShipingCountryStateCityFromPostalAPI" action="{!updateAddressDetails}" reRender="txtSCity,txtSState,txtSCountry,postalCodeMessage" oncomplete="postalCodeStatus();"/>
+                                        <apex:inputHidden value="{!address.postalCodeMessage}" id="postalCodeMessage" />
+
+                                        <div class="col-md-6">
+                                            <div class="form-group required-label">
+                                                <apex:inputText id="txtSPostalCode" value="{!address.postalCode}" html-placeholder="Pin Code" styleClass="form-control sAddress addField"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group required-label">
+                                                <apex:inputText id="txtSCity" value="{!address.city}" html-placeholder="City" styleClass="form-control sAddress" disabled="true"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group required-label">
+                                                <div class="select-wrapper">
+                                                    <apex:inputText id="txtSState"  value="{!address.state}" styleClass="form-control sAddress" disabled="true" html-placeholder="State"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group required-label">
+                                                <apex:inputText id="txtSHouseNumber" value="{!address.addressLine1}" styleClass="form-control sAddress" html-placeholder="Address line 1" maxlength="30"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group required-label">
+                                                <apex:inputText id="txtSStreet" value="{!address.addressLine2}" styleClass="form-control sAddress" html-placeholder="Address line 2" maxlength="35"/>
+                                            </div>
+                                        </div> 
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <apex:inputText id="txtSLocality" value="{!address.addressLine3}" styleClass="form-control" html-placeholder="Address line 3" maxlength="35"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group required-label">
+                                                <div class="select-wrapper">
+                                                    <apex:inputText id="txtSCountry" value="{!address.country}" html-placeholder="Country" styleClass="form-control sAddress" disabled="true"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script>
+                                            function postalCodeStatus(){
+                                                if($('[id$=postalCodeMessage]').val() == 'Error'){
+                                                    $('.addField').val('');
+                                                    showHtmlMessage('Invalid Information','Please enter valid India Pin Code');
+                                                }
+                                            }
+                                        </script>
+                                    </apex:outputPanel>
+
+                                    <!-- ------------------------------------------------Readable Section------------------------------------------------------ -->
+                                    <apex:outputPanel styleClass="readableSection" style="display: none;">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <apex:outputText value="{!objAccount.Zip_Postal_Code_Shipping__c}" html-placeholder="Pin Code" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <apex:outputText value="{!objAccount.City_Shipping_Account__c}" html-placeholder="City" styleClass="form-control"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="select-wrapper">
+                                                    <apex:outputText value="{!objAccount.State_Province_Shipping__c}" styleClass="form-control" html-placeholder="State"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <apex:outputText value="{!objAccount.House_No_Name_Shipping_Account__c}" styleClass="form-control" html-placeholder="Address line 1"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <apex:outputText value="{!objAccount.Shipping_Street__c}" styleClass="form-control" html-placeholder="Address line 2"/>
+                                            </div>
+                                        </div> 
+                                        <apex:outputPanel styleClass="col-md-6" rendered="{!IF(objAccount.Locality_Name_Shipping__c!='',true,false)}" layout="block">
+                                            <div class="form-group">
+                                                <apex:outputText value="{!objAccount.Locality_Name_Shipping__c}" styleClass="form-control" html-placeholder="Address line 3"/>
+                                            </div>
+                                        </apex:outputPanel>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="select-wrapper">
+                                                    <apex:outputText value="{!objAccount.Country_Shipping__c}" html-placeholder="Country" styleClass="form-control"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                <!-- ------------------------------------------ Address Section Ends Here--------------------------------------------- -->
+
+                                <!-- ------------------------------------------ Career Service Section Begins Here--------------------------------------------- -->
+                                <apex:outputPanel id="CSSectionPanel" style="display:none;">
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <div class="message-box text-center">Career Service</div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group required-label">
+                                                <div class="row">
+                                                    <div class="col-md-3 col-sm-12">
+                                                        <div class="radio"><strong>Opt for Career Service</strong></div>
+                                                    </div>
+                                                    <div class="col-md-2 col-sm-12">
+                                                        <div class="radio">
+                                                            <label><input type="radio" name="CSPackage" id="CSPackage1" class="iCheckRadio" data-mode="1" value="Yes"/>Yes</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-sm-12">
+                                                        <div class="radio">
+                                                            <label><input type="radio" name="CSPackage" id="CSPackage2" class="iCheckRadio" data-mode="2" value="No"/>No</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <apex:outputPanel styleClass="col-md-12" layout="block" id="CSPackagePanel">
+                                                    <div class="form-group required-label">
+                                                        <label>Choose Career Service Package</label>
+                                                        <div class="row" id="CSProgramPanel"></div>
+                                                    </div>
+                                                </apex:outputPanel>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </apex:outputPanel>
+                                <!-- ------------------------------------------ Career Service Section Ends Here--------------------------------------------- -->
+
+
+                                <!-- ------------------------------------ Program Change Section Begins Here-------------------------------------------- -->
+                                <apex:outputPanel layout="none" rendered="{!IF(feePaidSem < 3 && NOT(CONTAINS(objAccount.Batch__c,'_OFFline_')) && (objAccount.Program_Type__c!='M.Sc.' && objAccount.Program_Type__c!='Professional Diploma' && objAccount.Program_Type__c!='BBA' && objAccount.Program_Type__c!='BCom'),true,false)}">
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <div class="message-box text-center">Want to change program</div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group required-label">
+                                                <div class="row">
+                                                    <div class="col-md-3 col-sm-12">
+                                                        <div class="radio"><strong>Select an Option</strong></div>
+                                                    </div>
+                                                    <div class="col-md-2 col-sm-12">
+                                                        <div class="radio">
+                                                            <label><input type="radio" name="ChangeProg" id="ChangeProg1" class="iCheckRadio" data-mode="1" value="Yes"/>Yes</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-sm-12">
+                                                        <div class="radio">
+                                                            <label><input type="radio" name="ChangeProg" id="ChangeProg2" class="iCheckRadio" data-mode="2" value="No"/>No</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <apex:outputPanel id="ProgramChangePanel" style="display:none;">
+                                            <apex:actionRegion >
+                                                <apex:pageMessages id="ProgramChangeMessage" />
+                                                <apex:inputHidden id="hdnCngProg" value="{!changeProgram}"/>
+                                                <apex:inputHidden id="hdnChooseProgram" value="{!chooseProgram}" />
+                                                <apex:outputPanel styleClass="col-md-12" layout="block" rendered="{!checkProgramSwitch}">
+                                                    <apex:actionFunction name="ChooseProgramChangeProgramDetails" action="{!getProgramDetails}" reRender="ProgramDetails,editablePanel,ErrorPopUpPanel" oncomplete="openPopUp();"/>
+                                                    <apex:actionFunction name="CallValidate" action="{!callValidate}" reRender="academicValidation,editablePanel,ErrorPopUpPanel" oncomplete="openPopUp();"/>
+                                                    <div class="form-group required-label">
+                                                        <label >Choose a Program</label>
+                                                        <div class="row">
+                                                            <div class="col-md-3 col-sm-12">
+                                                                <div class="radio">
+                                                                    <label>
+                                                                    <input type="radio" value="Diploma Programs" name="programRadio" id="DiplomaPrograms" data-mode="2" class="iCheckRadio" />
+                                                                    Diploma Programs </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4 col-sm-12">
+                                                                <div class="radio">
+                                                                    <label>
+                                                                    <input type="radio" value="Post Graduate Diploma Programs" name="programRadio" id="PostGraduateDiplomaPrograms" data-mode="3" class="iCheckRadio" />
+                                                                    Post Graduate Diploma Programs </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <script>
+                                                        $('input[name$=programRadio]').change(function() {
+                                                            var _selectedOption = this.value;
+                                                            if(_selectedOption!=undefined) {
+                                                                $('[id$=hdnChooseProgram]').val(_selectedOption);
+                                                                console.log('method called');
+                                                                if($('[id$=ddlEligibility]').length) {
+                                                                    $('[id$=ddlEligibility]').val('');
+                                                                }
+                                                                ChooseProgramChangeProgramDetails();
+                                                            }
+                                                        });
+
+                                                        if("{!objAccount.nm_ChooseaProgram__c}" != "" && "{!chooseProgram}"=="") {
+                                                            $('input[name$=programRadio]').filter('[value="{!objAccount.nm_ChooseaProgram__c}"]').prop('checked', true);
+                                                        } else if("{!chooseProgram}"!="") {
+                                                            $('input[name$=programRadio]').filter('[value="{!chooseProgram}"]').prop('checked', true);
+                                                        }
+
+                                                    </script>
+                                                </apex:outputPanel>
+
+                                                <!---------------------------------------- Program change section begins Here----------------------------------- -->
+                                                <apex:outputPanel id="ProgramDetails">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group required-label">
+                                                            <div class="select-wrapper">
+                                                                <apex:selectList value="{!strSelectedProg}" styleClass="form-control notnull programChangeFields" multiselect="false" size="1" style="width:99%;" id="idChangePrg" >
+                                                                    <apex:selectOptions value="{!lstPrograms}"/> 
+                                                                </apex:selectList>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group required-label">
+                                                            <apex:inputText value="{!strProgChangeReason}" styleClass="form-control notnull programChangeFields" id="RsnChangeePgr" html-placeholder="Reason For Change Program"/>
+                                                        </div>
+                                                    </div>
+
+                                                    <apex:outputPanel id="ddlEligibilityPanel" styleClass="col-md-6" rendered="{!IF(chooseProgram!=objAccount.nm_ChooseaProgram__c && chooseProgram!='',true,false)}" layout="block">
+                                                        <div class="form-group required-label">
+                                                            <div class="select-wrapper">
+                                                                <apex:selectList id="ddlEligibility" value="{!strSelectedEligiblity}" styleClass="form-control notnull trackEligibility programChangeFields" size="1" multiselect="false" style="width:99%;font: normal 1em Calibri-Light;" onchange="CallValidate();">
+                                                                    <apex:selectOptions value="{!ElegibilityCriteriaList}"/>
+                                                                </apex:selectList>
+                                                            </div>
+                                                        </div>
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel id="academicValidation">
+                                                        <!-- Script to reload Academic Section -->
+                                                        <script>
+                                                            $(document).ready(function() {
+                                                                $('.trackEligibility').select2();
+                                                                $('.trackEligibility').siblings('span').find('span.select2-selection--single').css({"border-style":"none","outline":"none","border-radius":"0px","height":"40px"});
+                                                                $('.trackEligibility').siblings('span').find('span.select2-selection--single').find('span.select2-selection__rendered').css({"padding":"6px 12px","font":"normal 1em Calibri-Light"});
+                                                                $('.trackEligibility').siblings('span').find('span.select2-selection--single').find('span.select2-selection__arrow').remove();
+
+                                                                academicValidation('{!jsonMapOfEligibilityVsRequiredAcademicPercentage}');
+                                                            });
+                                                        </script> 
+                                                    </apex:outputPanel>
+                                                </apex:outputPanel>
+                                                <!---------------------------------------- Program change section ends Here----------------------------------- -->
+
+                                                <!-- ---------------------------------------Editable Section begins Here----------------------------------- -->
+                                                <apex:outputPanel id="editablePanel">
+                                                    <apex:outputPanel rendered="{!IF(chooseProgram!=objAccount.nm_ChooseaProgram__c && chooseProgram!='',true,false)}" layout="none">
+                                                        <!-- ----------------------------------------Academic Qualification begins here------------------------------------ -->
+                                                        <apex:outputPanel id="UpdateQualification" rendered="{!enableUpdateQualification}" layout="none">
+                                                            <div class="col-md-12 form-group">
+                                                                <div class="message-box text-center">Graduation</div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group required-label">
+                                                                        <div class="select-wrapper">
+                                                                            <apex:selectList value="{!objAccountClone.nm_BachelorsDegreeName__c}" styleClass="form-control acadDetails degreeDetails notnull" multiselect="false" size="1" style="width:100%;" id="degreeDetails">
+                                                                                <apex:selectOptions value="{!BachelorsDegreeName}"/>
+                                                                            </apex:selectList>  
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group required-label">
+                                                                        <apex:inputText value="{!objAccountClone.nm_Specialization__c}"  styleClass="form-control acadDetails degreeDetails notnull" html-placeholder="Specialization" id="degreeSpecialization"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group required-label">
+                                                                        <apex:inputText value="{!objAccountClone.nm_NameOfCollege__c}" styleClass="form-control acadDetails degreeDetails notnull" html-placeholder="College Name" id="degreeCollegeName"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group required-label">
+                                                                        <div class="select-wrapper">
+                                                                            <!-- <apex:selectList value="{!objAccountClone.nm_NameofUniversity__c}" styleClass="form-control easyAuto autoCompleteUniversity acadDetails degreeDetails notnull" multiselect="false" size="1" style="width:100%;" id="degreeUniversityName">
+                                                                                <apex:selectOptions value="{!UniversityList}"/>
+                                                                            </apex:selectList>   -->
+                                                                            <select class="form-control easyAuto autoCompleteUniversity acadDetails degreeDetails notnull" multiselect="false" size="1" style="width:100%;" id="degreeUniversityName">
+                                                                                <option value="">-- Select --</option>
+                                                                            </select>
+                                                                            <apex:inputHidden value="{!objAccountClone.nm_NameofUniversity__c}" id="programUniversity" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6 otherUniversityNamePanel" id="otherUniversityName" style="display:none;">
+                                                                    <div class="form-group required-label">
+                                                                        <apex:inputText value="{!objAccountClone.Other_University_Name__c}"  styleClass="form-control otherUniversityName acadDetails" html-placeholder="Other University Name, please specify:"/>
+                                                                    </div>
+                                                                </div>
+                                                                <apex:inputHidden id="hdndegreeUniversityType" html-class="hdnUniversityType"  value="{!objAccountClone.University_Type__c}" />
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group required-label">
+                                                                        <apex:inputText value="{!objAccountClone.Percentage_Bachlor__c}" styleClass="form-control floatingNumOnly acadDetails degreeDetails percentageValidate notnull" html-placeholder="Bachelor's Degree Percentage" id="degreePercentage"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group required-label">
+                                                                        <div class="select-wrapper">
+                                                                            <apex:selectList value="{!objAccountClone.nm_GraduationDegreeMode__c}" styleClass="form-control acadDetails degreeDetails notnull" multiselect="false" size="1" style="width:99%;" id="degreeMode">  
+                                                                                <apex:selectOptions value="{!GraduationDegreeMode}"  />   
+                                                                            </apex:selectList>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                            
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group required-label">
+                                                                        <div class="input-group date datetimepicker4" ><span class="dateInput dateOnlyInput">
+                                                                        <apex:inputText value="{!objAccountClone.nm_YearofCollegeCompletion__c}" styleClass="form-control acadDetails degreeDetails notnull" id="degreeYrOfCompletion" html-placeholder="Year Of Completion"/>
+                                                                        </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <script>
+                                                                $(document).ready(function() {
+
+                                                                    var url = '{!URLFOR($Resource.UniversityNameJS)}';
+                                                                    let triggerUniversityFlag = false;
+                                                                    var UniversityList = null;
+                                                                    $.getJSON(url, function (data) {
+                                                                        // responseData = data;
+                                                                        UniversityList = data;
+                                                                        let val = $('[id$=programUniversity]').val();
+                                                                        console.log('value1 '+val);
+                                                                        $.each(data, function (index, value) {
+                                                                            // APPEND OR INSERT DATA TO SELECT ELEMENT.
+                                                                            $('.autoCompleteUniversity').append('<option value="' + value.Name + '">' + value.Name + '</option>');
+                                                                            if(value.Name === val) {
+                                                                                $('.autoCompleteUniversity').val(value.Name);
+                                                                                triggerUniversityFlag = true;
+                                                                            }
+                                                                        });
+                                                                        if(triggerUniversityFlag) {
+                                                                            $('.autoCompleteUniversity').trigger('change');
+                                                                            console.log('triggerUniversityFlag==>'+triggerUniversityFlag);
+                                                                        }
+                                                                    });
+
+                                                                    $('.autoCompleteUniversity').select2({
+                                                                        "language": {
+                                                                            "noResults": function(){
+                                                                                return "No Results Found. <a href='javascript:void(0);' class='btn btn-primary selectOther' onclick='selectOther(this);'>Other</a>";
+                                                                            }
+                                                                        },
+                                                                        escapeMarkup: function (markup) {
+                                                                            return markup;
+                                                                        }
+                                                                    });
+
+                                                                    $('.autoCompleteUniversity').siblings('span').find('span.select2-selection--single').css({"border-style":"none","outline":"none","border-radius":"0px","height":"40px"});
+                                                                    $('.autoCompleteUniversity').siblings('span').find('span.select2-selection--single').find('span.select2-selection__rendered').css({"padding":"6px 12px","font":"normal 1em Calibri-Light"});
+                                                                    $('.autoCompleteUniversity').siblings('span').find('span.select2-selection--single').find('span.select2-selection__arrow').remove();
+                                                                    // var UniversityList = null;
+                                                                    $('body').on('change','.autoCompleteUniversity', function(){
+                                                                        var option = $(this).val();
+                                                                        $('[id$=programUniversity]').val(option);
+                                                                        var _indexVal = $(".autoCompleteUniversity").index(this);
+                                                                        if(option == 'Other'){
+                                                                            $('.otherUniversityNamePanel').show();
+                                                                            $('.otherUniversityName').addClass('notnull');
+                                                                        }else{
+                                                                            $('.otherUniversityNamePanel').hide();
+                                                                            $('.otherUniversityName').removeClass('notnull errorBorder');
+                                                                            $('.otherUniversityName').val('');
+                                                                            $('.otherUniversityName').prop('required',false);
+                                                                        }
+                                                                        
+                                                                        $.each(UniversityList, function(i, item) {
+                                                                            if(item.name == option){
+                                                                                $('.hdnUniversityType').val(item.type);
+                                                                            }
+                                                                        });
+                                                                        
+                                                                        $('.autoCompleteUniversity').siblings('span').find('span.select2-selection--single').css('border','');
+                                                                    });
+
+                                                                    $('.autoCompleteUniversity').each(function(){
+                                                                        if(!UniversityList){
+                                                                            $.getJSON("{!URLFOR($Resource.UniversityNameJS)}", function( json ) {
+                                                                                UniversityList = json;
+                                                                            }).done(function(){
+                                                                                var _indexVal2 = $(".autoCompleteUniversity").index(this);
+                                                                                $('.autoCompleteUniversity').eq(_indexVal2).trigger('change');
+                                                                            });
+                                                                        }else{
+                                                                            $(this).trigger('change');
+                                                                        } 
+                                                                    });
+
+                                                                    $('.datetimepicker4').datetimepicker({
+                                                                        viewMode: 'years',
+                                                                        format: 'YYYY',
+                                                                        minDate: moment().add(-50,'years'),
+                                                                        maxDate: moment(),
+                                                                        useCurrent: false
+                                                                    });
+                                                                });
+                                                            </script>
+                                                        </apex:outputPanel>
+                                                        <!-- ----------------------------------------Academic Qualification ends here------------------------------------- -->
+                                                        
+                                                        <!-- ----------------------------------------Work Expereince begins here------------------------------------- -->
+                                                        <apex:outputPanel id="UpdateWEXP" rendered="{!enableUpdateWRKEXP}" layout="none">
+                                                            <div class="col-md-12 form-group">
+                                                                <div class="message-box text-center">Work Experience</div>
+                                                            </div>
+                                                            <div class="row clearfix"> 
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group required-label">
+                                                                        <div class="select-wrapper">
+                                                                            <apex:selectList value="{!objAccountClone.nm_WorkExperience__c}" styleClass="form-control totalWPEXP notnull" multiselect="false" size="1" style="width:99%;" id="totalWPEXP">  
+                                                                                <apex:selectOptions value="{!WorkExpTimeList}" />   
+                                                                            </apex:selectList>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                            
+                                                            </div>
+
+                                                            <div id="WorkExpereiencePanel" class="workExpPanel" style="display:none;">
+                                                                <div class="row clearfix">
+                                                                    <apex:outputPanel id="InnerWorkExperiencePanel">
+                                                                        <apex:actionFunction name="addNewExperience" action="{!AddExperience}" rerender="InnerWorkExperiencePanel" oncomplete="loadTriggerField();"/>
+                                                                        <apex:actionFunction name="removeExperience" action="{!RemoveExperience}" rerender="InnerWorkExperiencePanel" oncomplete="loadTriggerField();"/>
+                                                                        
+                                                                        <apex:actionRegion >
+                                                                            <apex:variable var="c" value="{!0}" />
+                                                                            <apex:outputPanel id="withWorkExperiencePanelId" style="display:block;">
+                                                                                <apex:repeat value="{!lstWorkExperience}" var="we">
+                            
+                                                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                                        <div class="checkbox">
+                                                                                            <apex:inputHidden value="{!we.Currently_Working_Here__c}" html-class="hdnCurrentlyWorking" />
+                                                                                            <label for="currentlyWorking{!c}">
+                                                                                                <input type="checkbox" class="with-gap currentlyWorking" id="currentlyWorking{!c}"  name="currentlyWorking" value="" data-id="{!c}" /> Currently Working Here
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </div>
+                            
+                                                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                                                        <div class="form-group required-label">
+                                                                                            <div class="input-group date datetimepicker3 from" ><span class="dateInput dateOnlyInput">
+                                                                                            <apex:inputField value="{!we.nm_StartDate__c}" styleClass="form-control StartDate WKEXPDetails" showDatePicker="false" html-placeholder="Start Date"/>
+                                                                                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                                                                        </div>
+                                                                                    </div>
+                            
+                                                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                                                        <div class="form-group required-label">
+                                                                                            <div class="input-group date datetimepicker3 end" ><span class="dateInput dateOnlyInput">
+                                                                                            <apex:inputField value="{!we.nm_EndDate__c}" styleClass="form-control EndDate WKEXPDetails" showDatePicker="false" html-placeholder="End Date" />
+                                                                                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                                                                        </div>
+                                                                                    </div>
+                            
+                                                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                                                        <div class="form-group required-label">
+                                                                                            <div class="select-wrapper">
+                                                                                                <apex:inputField value="{!we.Industry__c}" styleClass="form-control ModifyFirstOptionOfIndustry industry WKEXPDetails" />
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                            
+                                                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                                                        <div class="form-group required-label">
+                                                                                            <apex:inputHidden value="{!we.nm_CompanyName__c}" html-class="hdnCompanyName" />
+                                                                                            <input type="text" id="company{!c}" placeholder="Company Name" class="form-control WKEXPDetails autoCompleteCompany" />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                                                        <div class="form-group required-label">
+                                                                                            <div class="select-wrapper">
+                                                                                                <apex:inputField value="{!we.nm_Department__c}"  styleClass="form-control ModifyFirstOptionOfDepartment WKEXPDetails department otherOption"  html-data-count="{!c}" html-data-id="Department" html-placeholder="Department" onchange="enableOtherField({!c},this,'Department'); return false;"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                            
+                                                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 otherDepartmentPanel" style="display:none;">
+                                                                                        <div class="form-group required-label">
+                                                                                            <apex:inputField value="{!we.Department__c}"  styleClass="form-control otherDepartment"  html-placeholder="Other Department"/>
+                                                                                        </div>
+                                                                                    </div>
+                            
+                                                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                                                        <div class="form-group required-label">
+                                                                                            <apex:inputText value="{!we.nm_Designation__c}" styleClass="form-control WKEXPDetails designation" html-placeholder="Designation" />
+                                                                                        </div>
+                                                                                    </div>
+                            
+                                                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                                                        <div class="form-group required-label">
+                                                                                            <div class="select-wrapper">
+                                                                                                <apex:inputField value="{!we.Experience_Level__c}" styleClass="form-control ModifyFirstOptionOfExpereinceLevel WKEXPDetails"  html-placeholder="Experience Level"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                            
+                                                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                                                        <div class="form-group required-label">
+                                                                                            <div class="select-wrapper">
+                                                                                                <apex:inputField value="{!we.Annual_Income__c}" styleClass="form-control ModifyFirstOptionOfAnnualIncome WKEXPDetails annualIncome"  html-placeholder="Annual Income"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <apex:variable var="c" value="{!c+1}" />
+                                                                                    <div class="col-md-12"></div>
+                            
+                                                                                </apex:repeat>
+                                                                                <script>
+                                                                                    $('.hdnCompanyName').each(function(index,elem) {
+                                                                                        if($(this).val() != null && $(this).val() != ''){
+                                                                                            $('.autoCompleteCompany').eq(index).val($(this).val());
+                                                                                            $('.autoCompleteCompany').eq(index).trigger('change');
+                                                                                        }
+                                                                                    });
+                                                                                </script>
+                                                                            </apex:outputPanel>
+                                                                        </apex:actionRegion>
+                                                                        <script>
+                                                                            $('.ModifyFirstOptionOfAnnualIncome> option:first-child').text('Annual Income');
+                                                                            $('.ModifyFirstOptionOfReason> option:first-child').text('Reason for not working');
+                                                                            $('.ModifyFirstOptionOfExpereinceLevel> option:first-child').text('Expereince Level');
+                                                                            $('.ModifyFirstOptionOfIndustry> option:first-child').text('Industry');
+                                                                            $('.ModifyFirstOptionOfDepartment> option:first-child').text('Department');
+                                                                        </script>
+                                                                    </apex:outputPanel>
+                                                                </div>
+                            
+                                                                <div class="row clearfix" style="padding-bottom:20px;">
+                                                                    <div class="col-md-3">
+                                                                        <apex:commandButton styleClass="btn btn-primary btn-lg btn-custom addNewExperience" value="Add Experience" onclick="addNewExperience();return false;"/>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <apex:commandButton styleClass="btn btn-danger btn-lg btn-custom pull-right removeExperience" value="Remove Work Experience" onclick="removeExperience();return false;"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <script>
+                                                                $(document).ready(function() {
+                                                                    $('body').on('change','.totalWPEXP',function() {
+                                                                        if($(this).val()) {
+                                                                            $('.workExpPanel').show();
+                                                                            $('.WKEXPDetails').addClass('notnull');
+                                                                            $('.StartDate').each(function (index,elem) {
+                                                                                var _currentlyWorking = $('.hdnCurrentlyWorking').eq(index).val();
+                                                                                if(_currentlyWorking == 'true') {
+                                                                                    $('.EndDate').eq(index).removeClass('notnull errorBorder');
+                                                                                }
+                                                                            });
+                                                                        }else{
+                                                                            $('.workExpPanel').hide();
+                                                                            $('.WKEXPDetails').removeClass('notnull errorBorder');
+                                                                            $('.WKEXPDetails').val('');
+                                                                        }
+                                                                    });
+
+                                                                    if($('[id$=totalWPEXP]').val()) {
+                                                                        $('[id$=totalWPEXP]').trigger('change');
+                                                                    }
+
+                                                                    loadObjDate();
+
+
+                                                                    //To bind easyAutoComplete 
+                                                                    $('.autoCompleteCompany').keyup(function(){
+                                                                        var options = {
+                                                                            url :'{!JSENCODE($Resource.CompanyNameJS)}',
+                                                                            getValue: "name",
+                                                                            list: {
+                                                                                match: {
+                                                                                    enabled: true
+                                                                                }
+                                                                            }
+                                                                        };  
+                                                                        $(this).easyAutocomplete(options);
+                                                                    });
+
+                                                                    $('body').on('change','.autoCompleteCompany', function(){
+                                                                        var _option = $(this).val();
+                                                                        var _indexVal3 = $(".autoCompleteCompany").index(this);
+                                                                        $('.hdnCompanyName').eq(_indexVal3).val(_option);
+                                                                    });
+
+
+                                                                    $('body').on('custom-event','.hdnCompanyName', function(){
+                                                                        var _indexVal4 = $('.hdnCompanyName').index(this);
+                                                                        if($(this).val() != null && $(this).val() != ''){
+                                                                            $('.autoCompleteCompany').eq(_indexVal4).val($(this).val());
+                                                                            $('.autoCompleteCompany').eq(_indexVal4).trigger('change');
+                                                                        }
+                                                                    });
+                                                                });
+                                                            </script>
+                                                        </apex:outputPanel>
+                                                        <!-- ----------------------------------------Work Expereince ends here------------------------------------- -->
+
+                                                    </apex:outputPanel>
+                                                </apex:outputPanel>
+                                                <!-- ---------------------------------------Editable Section ends Here----------------------------------- -->
+
+                                            </apex:actionRegion>
+                                        </apex:outputPanel>
+                                    </div>
+                                    
+                                    
+                                </apex:outputPanel>
+                                
+                                <!-- ------------------------------------------------------------- Program Change Section Ends Here -------------------------------------------- -->
+
+                                <!-- ------------------------------------------------------------- Submit Button -------------------------------------------- -->
+                                <div class="row">
+                                    <div class="col-sm-6 text-left">
+                                        <apex:commandButton styleClass="btn pgSubmit " value="Submit" action="{!save}" onclick="return onSubmit('ReRegInformation');"/>    
+                                    </div>
+
+                                    <div class="col-sm-6 text-right">
+                                        <apex:commandButton styleClass="btn btn-primary" value="Logout" action="{!logout}"/>
+                                    </div>  
+                                </div>
+                                <!-- ------------------------------------------------------------- Submit Button -------------------------------------------- -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ErrorPopUp" style="display:none;">
+                <div class="modal popup-wrapper">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title"><p id="errorTitle"></p></h4>
+                            </div>
+                            <div class="modal-body">
+                                <p id="errorMessage"></p>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="row">
+                                    <div class="col-md-6 text-left">
+                                        <apex:outputPanel rendered="{!IF(strSecToShow=='PopUpPayment',true,false)}">
+                                            <apex:commandButton styleClass="btn btn-default" value="LogOut" id="logbtt4" action="{!logout}"/>
+                                        </apex:outputPanel>
+                                    </div>
+                                    <div class="col-md-6 text-right">
+                                        <apex:commandButton rendered="{!IF(strSecToShow=='PopUpPayment' && !requireDocumentUpload,true,false)}" styleclass="btn btn-default" value="Make Payment" action="{!goPayment}" />
+                                        <apex:outputPanel rendered="{!IF(strSecToShow!='PopUpPayment',true,false)}" layout="none">
+                                            <button type="submit" class="btn" id="btnErr" onclick="hidePopup(); return false;">I Agree</button>
+                                        </apex:outputPanel>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="overlay"></div>
+            </div>
+        </apex:form>
+
+        <div style="margin:10px 0;font-size:18px;margin-top:0px; color:Red;">
+            <left><b> * mandatory fields</b></left>                              
+        </div>
+
+        <!-- Form ends Here -->
+
+        <!-- Footer Component -->
+        <c:FooterPage />
+        <!-- Footer Component -->
+
+        <!-- Script -->
+        <script type="text/javascript" src="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/js/bootstrap.min.js')}"
+        />
+        <script type="text/javascript" src="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/js/moment-range.js')}"
+        />
+        <script type="text/javascript" src="{!URLFOR($Resource.jquery_easy_autocompleteJS)}"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js" integrity="sha256-d/edyIFneUo3SvmaFnf96hRcVBcyaOy96iMkPez1kaU=" crossorigin="anonymous"></script>
+        <!-- To load these scripts on the Header tag. -->
+        <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" />
+        <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js" html-integrity="sha256-TkEcmf5KSG2zToAaUzkq6G+GWezMQ4lEtaBiyaq6Jb4="
+            html-crossorigin="anonymous" />
+        <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"
+            html-integrity="sha256-kIiM3UOTsgRqR7ellGKPpjPN7/z88uz28qIiwk/cVsc=" html-crossorigin="anonymous" />
+        <script>
+            var objDate = {};
+            var checkPercent = 0;
+            $(document).ready(function() {
+                
+                $('.notnull').attr('required','true');
+
+                if('{!JSENCODE(strSecToShow)}' =='PopUpError' || '{!JSENCODE(strSecToShow)}' =='PopUpPayment'){
+                    openPopUp();
+                }
+                
+                $('input[name$=ChangeProg]').change(function(event) {
+                    $('[id$=ProgramChangePanel]').hide();
+                    var selectedOpt = this.value;
+                    if(selectedOpt != undefined) {           
+                        $('[id$=hdnCngProg]').val(selectedOpt);
+                        if(selectedOpt == 'Yes'){
+                            $('[id$=ProgramChangePanel]').show();
+                            $('.programChangeFields').addClass('notnull');
+                            //To differentiate between human and event trigger
+                            if(event.originalEvent != undefined) {
+                                showHtmlMessage("Important Information","{!programChangeDiscalimer}");
+                            }
+                        }else if(selectedOpt == 'No') {
+                            $('.programChangeFields').val('').trigger('change');
+                            $('.programChangeFields').removeClass('notnull');
+                            $('.programChangeFields').removeAttr('required');
+                            $('[id$=hdnChooseProgram]').val('');
+                        }   
+                    }
+                });
+
+                $('input[name$=CSPackage]').change(function(event) {
+                    $('[id$=CSPackagePanel]').hide();
+                    var selectedOptCSPackage = this.value;
+                    if(selectedOptCSPackage != undefined) {           
+                        // $('[id$=hdnCngProg]').val(selectedOptCSPackage);
+                        if(selectedOptCSPackage == 'Yes'){
+                            $('[id$=CSPackagePanel]').show();
+                            $('input[name$=CSProgram]').addClass('notnull');
+                            // if(event.originalEvent != undefined) {
+                            //     showHtmlMessage("Important Information","{!programChangeDiscalimer}");
+                            // }
+                        }else if(selectedOptCSPackage == 'No') {
+                            $('input[name$=CSProgram]').attr('checked',false);
+                            $('input[name$=CSProgram]').removeClass('notnull');
+                            $('[id$=csRecordId]').val('');
+                            $('[id$=csName]').val('');
+                        }   
+                    }
+                });
+
+                $('body').on('change','input[name$=CSProgram]', function(){
+                    var selectedOptCSProgram = this.value;
+                    if(selectedOptCSProgram != undefined) {           
+                        $('[id$=csRecordId]').val($(this).data("recordid"));
+                        $('[id$=csName]').val(selectedOptCSProgram);
+                    }
+                });
+
+                // Address Section
+
+                $('.ModifyFirstOptionOfShippingChoice > option:first-child').text('Do you want to change Your Shipping Address ?');
+
+                $('[id$=slfOption]').change(function() {
+                    var slfOption = $(this).val();
+                    $('.editableSection').hide();
+                    $('.readableSection').hide();
+                    $('.sAddress').removeClass('notnull');
+                    $('.sAddress').removeAttr('required');
+                    if(slfOption) {
+                        $('.addessInformationPanel').show();
+                    } else {
+                        $('.addessInformationPanel').hide();
+                    }
+
+                    if(slfOption == 'Yes') {
+                        $('.editableSection').show();
+                        $('.sAddress').addClass('notnull');
+                    } else if(slfOption == 'No') {
+                        $('.readableSection').show();
+                    }
+                });
+
+                $('[id$=slfLM]').val('Send to my shipping address');
+
+                $('[id$=slfLM]').change(function() {
+                    var learningMaterial = $(this).val();
+                    if(learningMaterial == 'Send to my shipping address') {
+                        let programType = '{!objAccount.Program_Type__c}';
+                        if(programType != 'BBA' || programType != 'BCom') {
+                            $('.AddressDetails').show();
+                            $('[id$=slfOption]').addClass('notnull');
+                            $('[id$=slfOption]').trigger('change');
+                        }
+                    } else {
+                        $('.AddressDetails').hide();
+                        $('[id$=slfOption]').removeClass('notnull');
+                        $('[id$=slfOption]').removeAttr('required');
+                        $('[id$=slfOption]').val('');
+                        $('[id$=slfOption]').trigger('change');
+                    }
+                });
+
+                $('[id$=slfLM]').trigger('change');
+
+                $('[id$=txtSPostalCode]').change(function(){
+                    var pincode = $(this).val();
+                    getShipingCountryStateCityFromPostalAPI();
+                });
+
+                if("{!programChangeRequested}" == "true") {
+                    $("input[name$=ChangeProg][value=Yes]").prop('checked', true).trigger('change');
+                } else {
+                    $("input[name$=ChangeProg][value=No]").prop('checked', true).trigger('change');
+                }
+
+                $('body').on('change', '.notnull', function(e) {
+                    $(this).removeClass('errorBorder');
+                });
+
+                $('body').on('keypress', '.notnull', function(e) {
+                    $(this).removeClass('errorBorder');
+                });
+
+                $('body').on('dp.change', '.date', function() {
+                    $(this).find('input').removeClass('errorBorder');
+                });
+
+                $('body').on('change','.percentageValidate', function(){
+                    var percentage = parseFloat($(this).val());
+                    if(isNaN(percentage) || percentage > 100 || percentage < 1){
+                        showHtmlMessage('Invalid Information','Please Enter Percentage less than 100 and greater than zero.');
+                        $(this).val("");
+                        $(this).addClass('errorBorder');
+                    }else if($(this).hasClass('checkPercent') && percentage < checkPercent){
+                        showHtmlMessage('Important Information','Graduation percentage: minimum '+checkPercent+' percent required');
+                        $(this).val("");
+                        $(this).addClass('errorBorder');
+                    }
+                });
+
+                $('body').on('click','.currentlyWorking', function() {
+                    console.log('entered');
+                    $('input[name="' + this.name + '"]').not(this).prop('checked', false);
+                    $('.hdnCurrentlyWorking').val('false');
+                    $('.EndDate').addClass('notnull');
+                    $('.EndDate').attr('disabled',false);
+                    var _indexVal5 = $(this).data('id');
+                    if($(this).prop('checked') == true) {
+                        $('.end').eq(_indexVal5).data("DateTimePicker").clear();
+                        $('.hdnCurrentlyWorking').eq(_indexVal5).val('true');
+                        $('.EndDate').eq(_indexVal5).attr('disabled',true);
+                        $('.EndDate').eq(_indexVal5).removeClass('notnull errorBorder');
+                        objDate[_indexVal5].enddate = moment().format('DD/MM/YYYY');
+
+                    }else if($('.StartDate').eq(_indexVal5).val()) {
+                        $('.EndDate').eq(_indexVal5).attr('disabled',false);
+                        $('.EndDate').eq(_indexVal5).addClass('notnull');
+                        objDate[_indexVal5].enddate = '';
+                    }
+                });
+
+                //to show other option Field in Work Experience is any other
+                $('.otherOption').each(function(index, elem) {
+                    let indexVal = $(this).data('count');
+                    let field = $(this).data('id');
+                    enableOtherField(indexVal,this,field);
+                });
+
+                $('body').on('custom-event','.otherOption', function(){
+                    let indexVal = $(this).data('count');
+                    let field = $(this).data('id');
+                    enableOtherField(indexVal,this,field);
+                });
+
+                getStudentPackage();
+            });
+
+            function academicValidation(jsonMapOfEligibilityVsRequiredAcademicPercentage) {
+                var _selectedOption3 = $('[id$=ddlEligibility]').val();
+                checkPercent = 0;
+                if(_selectedOption3 !='' && _selectedOption3 !=null){
+                    var key = _selectedOption3+'-Graduation';
+                    var requiredPercentageMap = JSON.parse(jsonMapOfEligibilityVsRequiredAcademicPercentage);
+                    if(requiredPercentageMap[key]) {
+                        checkPercent = requiredPercentageMap[key];
+                        $('[id$=degreePercentage]').addClass('checkPercent');
+                        if($('[id$=degreePercentage]').val() < checkPercent) {
+                            $('[id$=degreePercentage]').val('');
+                        }
+                    }
+                }
+            }
+
+            function selectOther(elem){
+                var spans = document.querySelectorAll('.selectOther');
+                var _indexVal6 = Array.from(spans).indexOf(elem);
+                $('.autoCompleteUniversity').eq(_indexVal6).val('Other').trigger('change');
+                $('.autoCompleteUniversity').eq(_indexVal6).select2("close");
+            }
+
+            function onSubmit(Id){
+                var _flag8 = validateForm('[id$='+Id+']',true);
+                if (_flag8 != 0 ) {
+                    showHtmlMessage('Invalid Details','Please fill in all the required fields');
+                    return false;
+                } else {
+                    $('.loaderPanel').show();
+                    return true;
+                }
+            }
+
+            function validateForm(id,checkAlert){
+                var _flag2 = 0;
+                $(id).find('.notnull').each(function () {
+                    if(!$(this).prop('disabled')) {
+                        if($(this).val() !=null){
+                            if ($(this).val().trim().length == 0) {
+                                _flag2 = 1;
+                                console.log('Id Required Value --'+$(this).attr('id'));
+                                if(checkAlert){
+                                    $(this).focus();
+                                    $(this).addClass('errorBorder');
+                                    if($(this).hasClass('trackEligibility')) { 
+                                        $(this).siblings('span').addClass('errorBorder');
+                                    }
+                                    if($(this).hasClass('autoCompleteUniversity')) { 
+                                        $(this).siblings('span').find('span.select2-selection--single').css('border','1px solid red');
+                                    }
+                                }
+                            }else if($(this).attr('type') == 'radio') {
+                                var attrName = $(this).attr('name');
+                                if(!$("input[name='"+attrName+"']:checked").val()) {
+                                    _flag2 = 1;
+                                    if(checkAlert){
+                                        console.log('Id Required Value --'+$(this).attr('name'));
+                                        $(this).focus();
+                                        $(this).addClass('errorBorder');
+                                        if($(this).hasClass('trackEligibility')) { 
+                                            $(this).siblings('span').addClass('errorBorder');
+                                        }
+                                    }
+                                }
+                            }
+                        }else{
+                            _flag2 = 1;
+                            console.log('Id Required Value --'+$(this).attr('id'));
+                            if(checkAlert){
+                                $(this).focus();
+                                $(this).addClass('errorBorder');
+                                if($(this).hasClass('trackEligibility')) { 
+                                    $(this).siblings('span').addClass('errorBorder');
+                                }
+                                if($(this).hasClass('autoCompleteUniversity')) { 
+                                    $(this).siblings('span').find('span.select2-selection--single').css('border','1px solid red');
+                                }
+                            }
+                        }
+                    }
+                    
+                });
+                return _flag2;  
+            }
+
+            function loadObjDate() {
+                try {
+                    $(".datetimepicker3").each(function(){
+                        $(this).datetimepicker({
+                            format: 'DD/MM/YYYY',
+                            useCurrent: false,
+                            maxDate: moment()
+                        });
+                    });
+                } catch (error) {
+                    console.log('error ==>'+error.message);
+                }
+                
+
+                if($('.totalWPEXP').val()) {
+                    $('.WKEXPDetails').addClass('notnull');
+                }
+
+                $('.StartDate').each(function (index,elem) {
+                    var startdate = elem.value;
+                    console.log('startdate ==>'+startdate);
+                    var currentlyWorking = $('.hdnCurrentlyWorking').eq(index).val();
+                    var enddate = $('.EndDate').eq(index).val();
+                    console.log('enddate ==>'+enddate);
+                    if(currentlyWorking == 'true') {
+                        enddate = moment().format('DD/MM/YYYY');
+                        $('.currentlyWorking').eq(index).prop('checked', true);
+                        $('.EndDate').eq(index).removeClass('notnull errorBorder');
+                        $('.EndDate').eq(index).attr('disabled',true);
+                    }
+                    objDate[index] = {
+                        'startdate': startdate,
+                        'enddate': enddate
+                    };
+                    
+                    if(startdate && currentlyWorking == 'false') {
+                        $('.EndDate').eq(index).attr('disabled',false);
+                    }
+                });
+
+                //to remove objects after row deleted.
+                var removedIndex = $('.EndDate').length;
+                if (objDate.hasOwnProperty(removedIndex)) {
+                    delete objDate[removedIndex];
+                }
+
+                //to hide remove button
+                if($('.StartDate').length == 1) {
+                    $('.removeExperience').hide();
+                }else{
+                    $('.removeExperience').show();
+                }
+            }
+
+            function enableOtherField(count,e,field){
+                console.log(count + '==>' + field);
+                let panel = '.other'+field+'Panel';
+                let elem = '.other'+field;
+                if(e.value == 'Others'){
+                    $(panel).eq(count).show();
+                    $(elem).eq(count).addClass('notnull');
+                }else{
+                    $(panel).eq(count).hide();
+                    $(elem).eq(count).val('');
+                    $(elem).eq(count).removeClass('notnull');
+                }
+            }
+
+            function loadTriggerField(){
+                //To load trigger methods
+                $('.otherOption').trigger('custom-event');
+                $('.hdnCompanyName').trigger('custom-event');
+
+                //To bind easyAutoComplete 
+                $('.autoCompleteCompany').keyup(function(){
+                    var options = {
+                        url :'{!JSENCODE($Resource.CompanyNameJS)}',
+                        getValue: "name",
+                        list: {
+                            match: {
+                                enabled: true
+                            }
+                        }
+                    };  
+                    $(this).easyAutocomplete(options);
+                });
+
+                //to trigger date obj
+                loadObjDate();
+            }
+
+            function openPopUp() {
+                var strSecToShow = $('[id$=strSecToShow]').val();
+                var message = $('[id$=message]').val();
+                if(strSecToShow == 'PopUpError' || strSecToShow == 'PopUpPayment'){
+                    showHtmlMessage('Important Message!',message);
+                }
+                $('[id$=strSecToShow]').val('');
+                $('[id$=message]').val('');
+            }
+
+            function showHtmlMessage(header,message) {
+                $('#errorTitle').html(header);
+                $('#errorMessage').html(message);
+                $('#ErrorPopUp').show();
+            }
+
+            function hidePopup(){
+                $('#errorTitle').text('');
+                $('#errorMessage').text('');
+                $('#ErrorPopUp').hide();
+            }
+
+            function getStudentPackage() {
+                $('.loaderPanel').show();
+                var sapid = "{!objAccount.nm_StudentNo__c}";
+                var sem = parseInt("{!feePaidSem}") + 1;
+                sem = sem.toString();
+                console.log('sapid ==>'+sapid);
+                console.log('sem ==>'+sem);
+                try {
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.ReRegistrationForm.getCSAvailability}',
+                        sapid,sem,
+                        function(result, event){
+                            if (event.status) {
+                                // Get DOM IDs for HTML and Visualforce elements like this
+                                var response = $('<textarea />').html(result).text();
+                                console.log(response);
+                                try {
+                                    response = JSON.parse(response);
+                                } catch (error) {
+                                    console.log('error ==>'+error.message);
+                                    response = [];
+                                }
+                                if(response.length > 0) {
+                                    $('[id$=CSSectionPanel]').show();
+                                    $('input[name="CSPackage"]').addClass('notnull');
+                                    var html = ''; 
+                                    response.forEach(element => {
+                                        let name = element.familyName == 'Career Development & Assistance' ? 'Career Development and Assistant' : element.familyName;
+                                        if($('[id$=csRecordId]').val() == element.salesForceUID) {
+                                            html += `<div class="col-sm-12 col-md-4"><div class="radio"><label>
+                                            <input type="radio" name="CSProgram" class="iCheckRadio notnull" value="${name}" data-mode="1" data-recordid="${element.salesForceUID}" checked="true"/>
+                                            <span>${element.price} ${name}</span></label></div></div>`;
+                                        } else {
+                                            html += `<div class="col-sm-12 col-md-4"><div class="radio"><label>
+                                            <input type="radio" name="CSProgram" class="iCheckRadio notnull" value="${name}" data-mode="1" data-recordid="${element.salesForceUID}" />
+                                            <span>${element.price} ${name}</span></label></div></div>`;
+                                        }
+                                    });
+                                    $('[id$=CSProgramPanel]').html(html);
+                                    $('[id$=isEligible]').val('true');
+                                    if($('[id$=csRecordId]').val()) {
+                                        $("input[name=CSPackage][value='Yes']").prop("checked",true);
+                                    }
+                                }
+                            } else if (event.type === 'exception') {
+                                console.log('no records found');
+                            }
+                            $('.loaderPanel').hide();
+                        }, 
+                        {escape: true}
+                    );
+                } catch (error) {
+                    console.log('error ==>'+error);
+                    $('.loaderPanel').hide();
+                }
+            }
+        </script>
+    </body>
+</apex:page>

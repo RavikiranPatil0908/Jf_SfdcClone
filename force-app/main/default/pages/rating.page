@@ -1,0 +1,840 @@
+<!--
+@Page Name          : rating.page
+@Description        : 
+@Author             : @BK
+@Group              : 
+@Last Modified By   : @BK
+@Last Modified On   : 31/7/2019, 3:40:24 PM
+@Modification Log   : 
+==============================================================================
+Ver         Date                     Author                 Modification
+==============================================================================
+1.0    13/5/2019, 6:44:44 PM   @BK     Initial Version
+-->
+<apex:page standardStylesheets="false" showHeader="false" controller="RatingController">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+        <title>Student Rating</title>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.min.css"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Custom_Radio_Button_CSS)}"/>
+        <script src="../../soap/ajax/45.0/connection.js" type="text/javascript"></script>
+        <script src="../../soap/ajax/45.0/apex.js" type="text/javascript"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>  
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"> </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+        <style>
+            .form-group .control-label:after { 
+            content:"*";
+            color:red;
+            }
+        </style>
+    </head>
+    <body>
+        <apex:form id="formId" styleClass="evaluationForm">
+            <apex:actionFunction name="validateApplicantName" action="{!validateApplicantName}" reRender="EvaluationQuestions,checkIsValid,InnerProfilePanel" oncomplete="confirmStudent();openconformpage();"/>
+            <apex:outputpanel id="EvaluationQuestions">
+                <apex:inputHidden id="checkIsValid" value="{!isValid}" />
+                <apex:inputHidden id="objStdRatingId" value="{!objStdRatingId}"/>
+                <apex:inputHidden id="hdnErrorMsg" value="{!errorMessage}"/>
+                <apex:inputHidden id="Question1" html-class="hdnQuestionValue" html-data-id="Question1" value="{!objstdrating.Question_1_Student_Rating__c}"/>
+                <apex:inputHidden id="Question2" html-class="hdnQuestionValue" html-data-id="Question2" value="{!objstdrating.Question_2_Student_Rating__c}"/>
+                <apex:inputHidden id="Question3" html-class="hdnQuestionValue" html-data-id="Question3" value="{!objstdrating.Question_3_Student_Rating__c}"/>
+                <apex:inputHidden id="Question4" html-class="hdnQuestionValue" html-data-id="Question4" value="{!objstdrating.Question_4_Student_Rating__c}"/>
+                <apex:inputHidden id="Question5" html-class="hdnQuestionValue" html-data-id="Question5" value="{!objstdrating.Question_5_Student_Rating__c}"/>
+                <apex:inputHidden id="hdnQuestion5Comment" html-class="hdnQuestionCommentValue" html-data-id="Question5Comment" value="{!objstdrating.Q5_text__c}" />
+                <apex:inputHidden id="imageUpload" html-class="imageUpload" value="{!objstdrating.imageUpload__c}" />
+
+                <apex:inputHidden id="interviewScore" value="{!interviewScore}" />
+            </apex:outputpanel>
+            <!-- Student Details START -->
+            
+            
+            <div class="container mt-3">
+                <div class="card">
+                    <h3 class="card-header info-color white-text text-center py-4">
+                        <strong>STUDENT INTERVIEW EVALUATION FORM</strong>
+                    </h3>
+                    <h6 class="text-muted m-3">
+                        <p>Kindly fill the interview scores for the student on evalution as per the parameters mentioned below. The scores vary on a scale of 1 (lowest) to 10 (highest), please rate accordingly. You are required to add comments to support if a student is fit/recommended to join the rigorous MBA(WX) program.</p>
+                    </h6>
+                    <!--Card content-->
+                    <div class="card-body pt-0">
+                        <div id="candidateDetails" style="display:none;" class="candidateDetails">
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    Candidate Details
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="p-2"><b>Name</b>: {!objAccount.Name}</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="p-2"><b>Registration No</b>: {!applicantName}</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="p-2"><b>Eligibility Criteria</b>: {!objAccount.Eligibility_Criteria_Ref__c}</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="p-2"><b>Learning Center</b>: {!objAccount.LC_Name__c}</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="p-2"><b>AEP</b>: {!objAccount.IC_Name__c}</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="p-2"><b>Interview Date/Time</b>:<apex:outputText value="{0,date, dd/MM/yyyy h:mm a}">
+                                                <apex:param value="{!objAccount.InterviewDateTime__c+offset}" />
+                                                </apex:outputText>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="p-2"><b>LinkedIn URL</b>: {!objAccount.LinkedIn_URL__c}</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="p-2"><b>Interviewer Name</b>: {!objAccount.Interview_Slot__r.Faculty_name_1__c}</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="p-2"><b>Interview Score</b>: {!objAccount.Interview_Score__c}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="validateDetails" style="display:block;" class="validateDetails">
+                            <div class="form-group">
+                                <label class="col-md-6 control-label" id="applicantLabelName">Applicant Name:</label>
+                                <div class="col-md-6">
+                                    <strong><apex:outputText value="{!objAccount.Name}" /></strong>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-6 control-label" id="applicantLabelId">Applicant Registartion Number:</label>
+                                <div class="col-md-6">
+                                    <apex:inputText id="registartionNumber" styleClass="form-control numonly registartionNumber" value="{!applicantName}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <a href="javascript:void(0);" class="btn btn-primary pgSubmit btn-lg btn-custom waves-effect" id="validateRegistrationNumber" onclick="validateApplicantName();">View Student Details</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Question START -->
+                        <div class="form-group">
+                            <label class="control-label">
+                                <b>1. Communications Skills / Attitude</b>
+                            </label><br></br>
+                        <br></br>
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" id="Question1Opt10" name="Question1" value="10" class="radioOptions" tabindex="-1"/>
+                    <label for="Question1Opt10" tabindex="0" id="Question1Opt_10" class="clickRadioButtons">10</label>
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" id="Question1Opt9" name="Question1" value="9" class="radioOptions" tabindex="-1"/>
+                    <label for="Question1Opt9" tabindex="0" id="Question1Opt_9" class="clickRadioButtons">9</label>
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" id="Question1Opt8" name="Question1" value="8" class="radioOptions" tabindex="-1"/>
+                    <label for="Question1Opt8" tabindex="0" id="Question1Opt_8" class="clickRadioButtons">8</label>
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" id="Question1Opt7" name="Question1" value="7" class="radioOptions" tabindex="-1"/>
+                    <label for="Question1Opt7" tabindex="7" id="Question1Opt_7" class="clickRadioButtons">7</label>
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" id="Question1Opt6" name="Question1" value="6" class="radioOptions" tabindex="-1"/>
+                    <label for="Question1Opt6" tabindex="0" id="Question1Opt_6" class="clickRadioButtons">6</label>
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" id="Question1Opt5" name="Question1" value="5" class="radioOptions" tabindex="-1"/>
+                    <label for="Question1Opt5" tabindex="0" id="Question1Opt_5" class="clickRadioButtons">5</label>
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" id="Question1Opt4" name="Question1" value="4" class="radioOptions" tabindex="-1"/>
+                    <label for="Question1Opt4" tabindex="0" id="Question1Opt_4" class="clickRadioButtons">4</label>
+                    
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" id="Question1Opt3" name="Question1" value="3" class="radioOptions" tabindex="-1"/>
+                    <label for="Question1Opt3" tabindex="-1" id="Question1Opt_3" class="clickRadioButtons">3</label>
+                    
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" id="Question1Opt2" name="Question1" value="2" class="radioOptions" tabindex="-1"/>
+                    <label for="Question1Opt2" tabindex="-1" id="Question1Opt_2" class="clickRadioButtons">2</label>
+                    
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" id="Question1Opt1" name="Question1" value="1" class="radioOptions" tabindex="-1"/>
+                    <label for="Question1Opt1" tabindex="-1" id="Question1Opt_1" class="clickRadioButtons">1</label>
+                    
+                    <input type="radio" id="Question1Opt5" name="Question1" value="0" class="hide" tabindex="-1"/>
+                </div>
+                <br></br>
+            <br></br>
+        
+        
+        <div class="clearfix">
+            <div class="form-group">
+                <label class="control-label">
+                    <b>2. Academic Motivation / Achievements</b>
+                </label>
+                <br></br>
+            
+        </div>
+        <div class="form-group">
+            
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="Question2Opt10" name="Question2" value="10" class="radioOptions" tabindex="-1"/>
+            <label for="Question2Opt10" tabindex="0" id="Question2Opt10" class="clickRadioButtons">10</label>
+            
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="Question2Opt9" name="Question2" value="9" class="radioOptions" tabindex="-1"/>
+            <label for="Question2Opt9" tabindex="0" id="Question2Opt9" class="clickRadioButtons">9</label>
+            
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="Question2Opt3" name="Question2" value="8" class="radioOptions" tabindex="-1"/>
+            <label for="Question2Opt3" tabindex="0" id="Question2Opt3" class="clickRadioButtons">8</label>
+            
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="Question2Opt7" name="Question2" value="7" class="radioOptions" tabindex="-1"/>
+            <label for="Question2Opt7" tabindex="7" id="Question2Opt7" class="clickRadioButtons">7</label>
+            
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="Question2Opt6" name="Question2" value="6" class="radioOptions" tabindex="-1"/>
+            <label for="Question2Opt6" tabindex="0" id="Question2Opt6" class="clickRadioButtons">6</label>
+            
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="Question2Opt5" name="Question2" value="5" class="radioOptions" tabindex="-1"/>
+            <label for="Question2Opt5" tabindex="0" id="Question2Opt5" class="clickRadioButtons">5</label>
+            
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="Question2Opt4" name="Question2" value="4" class="radioOptions" tabindex="-1"/>
+            <label for="Question2Opt4" tabindex="0" id="Question2Opt4" class="clickRadioButtons">4</label>
+            
+            
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="Question2Opt3" name="Question2" value="3" class="radioOptions" tabindex="-1"/>
+            <label for="Question2Opt3" tabindex="-1" id="Question2Opt3" class="clickRadioButtons">3</label>
+            
+            
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="Question2Opt2" name="Question2" value="2" class="radioOptions" tabindex="-1"/>
+            <label for="Question2Opt2" tabindex="-1" id="Question2Opt2" class="clickRadioButtons">2</label>
+            
+            
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="Question2Opt1" name="Question2" value="1" class="radioOptions" tabindex="-1"/>
+            <label for="Question2Opt1" tabindex="-1" id="Question2Opt1" class="clickRadioButtons">1</label>
+            
+            <input type="radio" id="Question2Opt5" name="Question2" value="0" class="hide" tabindex="-1"/>
+        </div>
+    </div>
+    <br></br>
+<br></br>
+
+<div class="clearfix">
+    <div class="form-group">
+        <label class="control-label">
+            <b>3. Professional Achievements / Entrepreneurship Skills</b>
+        </label>
+        <br></br>
+    
+</div>
+<div class="form-group">
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question3Opt_10" name="Question3" value="10" class="radioOptions" tabindex="-1"/>
+    <label for="Question3Opt_10" tabindex="0" id="Question3Opt_10" class="clickRadioButtons">10</label>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question3Opt_9" name="Question3" value="9" class="radioOptions" tabindex="-1"/>
+    <label for="Question3Opt_9" tabindex="0" id="Question3Opt_9" class="clickRadioButtons">9</label>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question3Opt_8" name="Question3" value="8" class="radioOptions" tabindex="-1"/>
+    <label for="Question3Opt_8" tabindex="0" id="Question3Opt_8" class="clickRadioButtons">8</label>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question3Opt_7" name="Question3" value="7" class="radioOptions" tabindex="-1"/>
+    <label for="Question3Opt_7" tabindex="7" id="Question3Opt_7" class="clickRadioButtons">7</label>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question3Opt_6" name="Question3" value="6" class="radioOptions" tabindex="-1"/>
+    <label for="Question3Opt_6" tabindex="0" id="Question3Opt_6" class="clickRadioButtons">6</label>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question3Opt_5" name="Question3" value="5" class="radioOptions" tabindex="-1"/>
+    <label for="Question3Opt_5" tabindex="0" id="Question3Opt_5" class="clickRadioButtons">5</label>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question3Opt_4" name="Question3" value="4" class="radioOptions" tabindex="-1"/>
+    <label for="Question3Opt_4" tabindex="0" id="Question3Opt_4" class="clickRadioButtons">4</label>
+    
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question3Opt_3" name="Question3" value="3" class="radioOptions" tabindex="-1"/>
+    <label for="Question3Opt_3" tabindex="-1" id="Question3Opt_3" class="clickRadioButtons">3</label>
+    
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question3Opt_2" name="Question3" value="2" class="radioOptions" tabindex="-1"/>
+    <label for="Question3Opt_2" tabindex="-1" id="Question3Opt_2" class="clickRadioButtons">2</label>
+    
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question3Opt_1" name="Question3" value="1" class="radioOptions" tabindex="-1"/>
+    <label for="Question3Opt_1" tabindex="-1" id="Question3Opt_1" class="clickRadioButtons">1</label>
+    <input type="radio" id="Question3Opt5" name="Question3" value="0" class="hide" tabindex="-1"/>
+</div>
+</div>
+<br></br>
+<br></br>
+<div class="clearfix">
+    <div class="form-group">
+        <label class="control-label">
+            <b>4. Interviewer Score</b>
+        </label>
+        <br></br>
+    
+</div>
+<div class="form-group">
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question4Opt_10" name="Question4" value="10" class="radioOptions" tabindex="-1"/>
+    <label for="Question4Opt_10" tabindex="0" id="Question4Opt_10" >10</label>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question4Opt_9" name="Question4" value="9" class="radioOptions" tabindex="-1"/>
+    <label for="Question4Opt_9" tabindex="0" id="Question4Opt_9" class="clickRadioButtons">9</label>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question4Opt_8" name="Question4" value="8" class="radioOptions" tabindex="-1"/>
+    <label for="Question4Opt_8" tabindex="0" id="Question4Opt_8" class="clickRadioButtons">8</label>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question4Opt_7" name="Question4" value="7" class="radioOptions" tabindex="-1"/>
+    <label for="Question4Opt_7" tabindex="7" id="Question4Opt_7" class="clickRadioButtons">7</label>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question4Opt_6" name="Question4" value="6" class="radioOptions" tabindex="-1"/>
+    <label for="Question4Opt_6" tabindex="0" id="Question4Opt_6" class="clickRadioButtons">6</label>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question4Opt_5" name="Question4" value="5" class="radioOptions" tabindex="-1"/>
+    <label for="Question4Opt_5" tabindex="0" id="Question4Opt_5" class="clickRadioButtons">5</label>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question4Opt_4" name="Question4" value="4" class="radioOptions" tabindex="-1"/>
+    <label for="Question4Opt_4" tabindex="0" id="Question4Opt_4" class="clickRadioButtons">4</label>
+    
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question4Opt_3" name="Question4" value="3" class="radioOptions" tabindex="-1"/>
+    <label for="Question4Opt_3" tabindex="-1" id="Question4Opt_3" class="clickRadioButtons">3</label>
+    
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question4Opt_2" name="Question4" value="2" class="radioOptions" tabindex="-1"/>
+    <label for="Question4Opt_2" tabindex="-1" id="Question4Opt_2" class="clickRadioButtons">2</label>
+    
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question4Opt_1" name="Question4" value="1" class="radioOptions" tabindex="-1"/>
+    <label for="Question4Opt_1" tabindex="-1" id="Question4Opt_1" class="clickRadioButtons">1</label>
+    <input type="radio" id="Question4Opt5" name="Question4" value="0" class="hide" tabindex="-1"/>
+</div>
+</div>
+<br></br>
+<br></br> 
+
+<div class="clearfix">
+    <div class="form-group">
+        <label class="control-label">
+            <b>Student is recommended to join MBA(WX) program</b>
+        </label>
+        <br></br>
+    
+</div>
+<div class="form-group">
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question5Opt_10" name="Question5" value="Yes" class="radioOptions" tabindex="-1"/>
+    <label for="Question5Opt_10" tabindex="0" id="Question5Opt_10" >Yes</label>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" id="Question5Opt_9" name="Question5" value="No" class="radioOptions" tabindex="-1"/>
+    <label for="Question5Opt_9" tabindex="0" id="Question5Opt_9" class="clickRadioButtons">No</label>
+    <input type="radio" id="Question5Opt5" name="Question5" value="0" class="hide" tabindex="-1"/>
+</div>
+</div>
+
+<div class="clearfix">
+    <div class="form-group">
+        <label class="control-label">
+            <b>Reason(s) for above</b>
+        </label>
+        <apex:outputText value="{!objstdrating.Q5_text__c}" style="display:none;" styleClass="candidateDetails"/>
+        <textarea class="form-control textCharacterCounter validateDetails" rows="5" name="Question5Comment" id="Question5Comment" maxlength="1000"></textarea>
+        <h6 class="text-right text-muted" id="count_message_Question5Comment"></h6>
+    </div>
+    
+</div>
+<br></br>
+<br></br>
+<!-- Question END -->
+
+
+<!-- uploadImage START ---->
+
+<div class="clearfix">
+    <!-- <apex:outputpanel style="{!IF(objLead.Program_Type__c=='MBA (WX)' || objLead.Program_Type__c=='M.Sc. (AI & ML Ops)','display:block;','display:none;')}" id="photoUploadContainer"> -->
+    <apex:outputpanel style="display:block;" id="photoUploadContainer">
+        <apex:actionFunction name="photoUploadContainerChange" reRender="photoUploadContainer"/>
+        <b>Upload File (PNG, JPG, JPEG, OR PDF Must be less than 614 KB)</b>
+        
+         
+            <div class="body" id="collapseInstuctionSection">
+            
+                <br />
+                <apex:outputPanel rendered="true">
+                    <input onchange="uploadFile(this)" type="file" id="attached" Class="form-control-file file"/>
+                </apex:outputPanel>
+            </div>
+        
+    </apex:outputpanel>
+</div>
+
+<!-- UPload image END -->
+<br />
+<br />
+
+
+<div class="form-group">
+    <div class="col-md-9 col-md-offset-3">
+        <a href="javascript:void(0);" class="btn btn-primary pgSubmit btn-lg btn-custom waves-effect" id="savedetail45" value="Submit Detail" onclick="return validateNumber();">Submit Detail</a>
+        <!-- <apex:commandButton styleClass="btn btn-primary pgSubmit btn-lg btn-custom waves-effect"  id="savedetail45" value="Submit Detail" onclick="return validateNumber();"  action="{!SaveDetail}" /> -->
+    </div>
+</div>
+<!-- </form> -->
+<apex:outputpanel id="InnerProfilePanel">
+    <apex:outputPanel rendered="{!isValid}">
+        <script>
+        function openconformpage() {
+            if('{!LeadId}' != ''){
+                window.open("{!$Label.Site_Url}InterviewCandidateDetails?RegNo={!applicantName}&InterviewDate={!InterviewDateFormated}");
+            }
+        }
+        </script>
+    </apex:outputPanel>
+</apex:outputpanel>
+
+<!-- alert Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirm Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Please confirm details.</p>
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-primary" data-dismiss="modal">Confirm</button> -->
+                <button class="submtActionButton" style="display:none;"></button>
+                <apex:commandButton styleClass="btn btn-primary submtActionButton"  value="Submit Detail" action="{!SaveDetail}" />
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <script>
+$('.modal').modal('show');
+</script> -->
+<!-- End of alert Modal -->
+
+</div>
+<!-- Card content END -->
+</div>
+</div>
+
+<!-- Student Details END -->
+
+<!-- Form Vaidator START -->
+<script>
+$(document).ready(function() {
+    confirmStudent();
+    console.log('enter.........');
+    /*-- TextArea Character Counter Script START--*/
+    
+    $('#count_message_Question5Comment').html('1000 remaining');
+    
+    $('.textCharacterCounter').on('keyup', function (e) {
+        textAreaCharacterCount('#count_message_'+e.target.id,'1000',e.target.value.length);
+    });
+    
+    <!-- TextArea Character Counter Script END-->
+        //handle keydown event for radio buttons
+        $('.clickRadioButtons').on('keydown', function (e) {
+            clickNextRadio(e,e.target.id);
+        });
+    
+    
+    if($('[id$=hdnErrorMsg]').val()) {
+        Swal.fire('Important Message!',$('[id$=hdnErrorMsg]').val(),'warning');
+    }
+    
+    $('body').on('keypress','.numonly', function(e){ 
+        return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) ) ? false : true;
+    });
+    
+    /*---------------------------- to set the value on the field -----------------------------------*/
+    $('.radioOptions').change(function(){
+        let elemName = $(this).attr('name');
+        let selectedVal = $(`input[name="${elemName}"]:checked`).val();
+        if(selectedVal) {
+            $(`[id$=${elemName}]`).val(selectedVal);
+        }
+    });
+    
+    $('.textCharacterCounter').change(function() {
+        let elemName = $(this).attr('name');
+        let selectedVal = $(this).val();
+        if(selectedVal) {
+            $(`[id$=hdn${elemName}]`).val(selectedVal);
+        }
+    });
+    
+    $('[id$=savedetail45]').click(function(){
+        
+        let totalMarks = '';
+        let que1Value = parseInt($("input[name='Question1']:checked").val());
+        let que2Value = parseInt($("input[name='Question2']:checked").val());
+        let que3Value = parseInt($("input[name='Question3']:checked").val());
+        let que4Value = parseInt($("input[name='Question4']:checked").val());
+        if(que1Value && que2Value && que3Value && que4Value){
+            totalMarks = que1Value + que2Value + que3Value + que4Value;
+            /* alert("totalMarks - " + totalMarks); */
+            
+            $('[id$=interviewScore]').val(totalMarks);
+            let tt= $('[id$=interviewScore]').val();
+            console.log('totalMarks-->'+tt);
+        }
+    });
+    
+    <!------------------------------ on form submit ------------------------>
+    $( ".submtActionButton" ).click(function() {
+        console.log("FROM FORM SUBMIT");
+  uploadAttachment();
+});
+    
+    
+    
+    
+    /*----------------------------- Form validation ----------------------------------------*/
+    $('.evaluationForm').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            registartionNumber: {
+                validators: {
+                    notEmpty: {
+                        message: 'The Applicant Registartion number is required and cannot be empty'
+                    }
+                }
+            },
+            Question1: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please Select Overall Professional Disposition.'
+                    }
+                }
+            },
+            Question2: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please select Rating Option'
+                    }
+                }
+            },
+            Question3: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please select Rating Option'
+                    }
+                }
+            },
+            Question4: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please select Rating Option'
+                    }
+                }
+            },
+            Question5Comment: {
+                validators: {
+                    notEmpty: {
+                        message: 'The field is required and cannot be empty'
+                    }
+                }
+            },
+            Question5: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please select Above Option'
+                    }
+                }
+            }
+        }
+    });
+    
+    // To Hide and show candidateDetails on print.
+    $(window).keydown(function(event) {
+        if(event.ctrlKey && event.keyCode == 80) { 
+            event.preventDefault();
+            $('.candidateDetails').show();
+            $('.validateDetails').hide();
+            window.print();
+        }
+        $('.candidateDetails').hide();
+        $('.validateDetails').show();
+    });
+});
+
+function textAreaCharacterCount(msgId,text_max,actualLength){
+    var text_length = actualLength;
+    var text_remaining = text_max - text_length;
+    $(msgId).html(text_remaining + ' remaining');
+}
+
+
+function clickNextRadio(e, id){
+    if(e.keyCode === 39|| e.keyCode === 40 ){
+        var nextID = getNextRadioId(e.target.id);
+        
+    }
+    if(e.keyCode === 37 || e.keyCode === 38 ){
+        var nextID = getPrevRadioId(e.target.id);
+    }
+    
+    e.preventDefault();
+    if(document.getElementById(nextID )){
+        $('#'+nextID).focus()
+        $('#'+nextID).click()
+        $('#'+nextID).attr("tabindex", 0);
+        $('#'+nextID).attr("aria-checked", "true");
+        $('#'+id).attr("tabindex", -1);
+        $('#'+id).attr("aria-checked", "false");
+    }else{
+        $('#'+id).blur()
+    }
+}
+
+function getNextRadioId(id){
+    nextIdNo = id.slice(-1);
+    nextIdStr = id.substring(0,id.length-1)
+    return nextIdStr +  (parseInt(nextIdNo)-1);
+}
+function getPrevRadioId(id){
+    nextIdNo = id.slice(-1);
+    nextIdStr = id.substring(0,id.length-1)
+    return nextIdStr +  (parseInt(nextIdNo)+1);
+}
+
+function confirmStudent() {
+    let checkValid = $('[id$=checkIsValid]').val();
+    if(checkValid == 'false') {
+        $('.registartionNumber').val('').trigger('change');
+        Swal.fire('Important Message!','Invalid registration number.','warning');
+    }else{
+        if($('[id$=objStdRatingId]').val()) {
+            autoFillForm();
+        }   
+    }
+}
+
+function autoFillForm() {
+    $('.hdnQuestionValue').each(function(index, elem) {
+        let elemVal = $(elem).val();
+        let elemName = $(elem).data('id');
+        if(elemVal) {
+            $(`input[name="${elemName}"]`).filter(`[value="${elemVal}"]`).prop('checked', true).trigger('change');
+        }
+    });
+    
+    $('.hdnQuestionCommentValue').each(function(index, elem) {
+        let elemVal = $(elem).val();
+        let elemName = $(elem).data('id');
+        if(elemVal) {
+            $(`[id$=${elemName}]`).val(elemVal).trigger('change');
+        }
+    });
+}
+
+function validateNumber() {
+    if($('.registartionNumber').val()){
+        $('.modal').modal('show');
+        return false;
+    }else{
+        Swal.fire('Important Message!','Invalid registration number.','warning');
+        return false;
+    }
+}
+
+
+/*--------------------show Popup message Start -------------------*/
+function showHtmlMessage(header,message, warning) {
+    Swal.fire(
+        header,
+        message,
+        warning
+    )
+}
+/*----------------------show popup message end--------------------*/
+
+
+var attachment;
+var attachmentName;
+var fileSize;
+var positionIndex;
+var doneUploading;
+
+function previewFile(file) {
+    //  $('[id$=studPhoto]').attr('src','').css('display', 'none');
+    var validFileExtensions = [".jpg", ".jpeg", ".png", ".pdf"];
+    var FileSize = file.files[0].size / 614/ 614; // in KB
+    var sFileName = file.value;
+    if (sFileName.length > 0) {
+        var blnValid = false;
+        for (var j = 0; j < validFileExtensions.length; j++) {
+            var sCurExtension = validFileExtensions[j];
+            if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                blnValid = true;
+                console.log('blnValid in loop-->'+blnValid);
+                break;
+            }
+        }
+        console.log('blnValid-->'+blnValid);
+        if(!blnValid) {
+            showHtmlMessage('Invalid File Format',sFileName + ' is invalid, allowed extension are: '+ validFileExtensions.join(", "), 'warning');
+            $(file).val('');
+            return false;
+        }else if (FileSize > 1.63) {
+            showHtmlMessage('Invalid File','File size exceeds 614 KB', 'warning');
+            $(file).val('');
+            return false;
+        }
+        
+        //To set the object URLs of the file in the image.
+        // $('[id$=studPhoto]').attr('src', window.URL.createObjectURL(file.files[0])).css('display', 'block');
+        return true;
+    }
+    
+    return false;
+}
+
+// To encode the image base64 string.
+function uploadFile(profileimage) {
+    console.log(profileimage, "IMAGE");
+    var maxFileSize = 4350000;      
+    var maxStringSize = 6000000;
+    
+    var file = profileimage.files[0];
+    if(file != undefined && previewFile(profileimage)) {
+        if(file.size <= maxFileSize) {
+            attachmentName = file.name;
+            var fileReader = new FileReader();
+            fileReader.onloadend = function(e) {
+                attachment = window.btoa(this.result);  //Base 64 encode the file before sending it
+                positionIndex=0;
+                fileSize = attachment.length;
+                console.log("Total Attachment Length: " + fileSize);
+                doneUploading = false;
+                //  uploadAttachment();
+            }
+            fileReader.onerror = function(e) {
+                showHtmlMessage('Invalid File','There was an error reading the file.  Please try again.', 'warning');
+            }
+            fileReader.onabort = function(e) {
+                showHtmlMessage('Invalid File','There was an error reading the file.  Please try again.', 'warning');
+            }
+            fileReader.readAsBinaryString(file);  //Read the body of the file
+        } else {
+            showHtmlMessage('Invalid File','File size exceeds 4 MB', 'warning');
+        }
+    } else {
+        attachment = '';
+    }
+    
+} 
+
+
+//Method to send a file to be attached to the Account bound to the page by the standardController
+        //Sends parameters: Account Id, Attachment (body), Attachment Name, and the Id of the Attachment if it exists to the controller   
+        function uploadAttachment() {
+            //event.preventDefault();
+            console.log("Uploading image");
+            if(attachment) {
+                var attachmentBody = "";
+                var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000 characters
+                if(fileSize <= positionIndex + chunkSize) {
+                    attachmentBody = attachment.substring(positionIndex);
+                    doneUploading = true;
+                } else {
+                    attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+                }
+                sforce.connection.sessionId="{!GETSESSIONID()}";    
+                console.log("Uploading " + attachmentBody.length + " chars of " + fileSize);
+                attachmentName = generateFileName(attachmentName);
+                console.log("attachmentName "+ attachmentName);
+                var Result = sforce.apex.execute("UploadStudentProfileDocument", "uploadFile", {attachmentBody:attachmentBody, file_name:attachmentName });
+
+                if(Result.length > 0) {
+                    let objResult = Result[0];
+                    console.log('objResult -->'+ objResult);
+                    if(objResult) {
+                        $('.imageUpload').val(encodeURI(objResult));
+                        return true;
+                    }else {
+                        showHtmlMessage('Invalid Details','Internal error occured. Kindly contact your Authorized Enrolment Partner.');
+                        return false;
+                    }
+                }else {
+                    return false;
+                }
+            } else{
+                return false;
+            }
+            
+        }
+
+function generateFileName(filename) {
+            if(filename) {
+                var fileExtension = '.' + filename.split('.').pop();
+                var result = '';
+                var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                var charactersLength = characters.length;
+                for ( var i = 0; i < 18; i++ ) {
+                    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                }
+                return result + fileExtension;
+            } else{
+                return null;
+            }
+        }
+
+</script>
+<!-- Form Vaidator END -->
+</apex:form>
+
+</body>
+</apex:page>

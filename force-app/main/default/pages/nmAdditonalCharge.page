@@ -1,0 +1,562 @@
+<!--
+  @Page Name          : nmAdditonalCharge.page
+  @Description        :
+  @Author             : Balakrishnan
+  @Group              :
+  @Last Modified By   : @BK
+  @Last Modified On   : 03-01-2024
+  @Modification Log   :
+  ==============================================================================
+  Ver         Date                     Author              Modification
+  ==============================================================================
+  1.0    22/3/2019, 6:37:50 PM   Balakrishnan     Initial Version
+-->
+<apex:page showHeader="false" standardStylesheets="false" controller="nmAdditonalChargePaymentController" action="{!showMakePaymentButtonAfterWindowClosedDateAndShowDDMessgae}" applyBodyTag="false" cache="false" docType="html-5.0">
+    <head>
+        <c:HeaderGTagManager />
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <title>NMIMS Distance Education: Additional Charge</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."
+        />
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/chosen.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/paymentpage.css')}" />
+        <!--
+         <script type="text/javascript">
+            history.pushState(null, null, 'nmAdditonalCharge');
+                    window.addEventListener('popstate', function () {
+                    history.pushState(null, null, 'nmAdditonalCharge');
+              });
+       </script>
+       -->
+       <style>
+            .Processingview {
+                position: fixed;
+                background: url('{!URLFOR($Resource.loading_img)}');
+                background-repeat: no-repeat;
+                background-position: center;
+                width: 100%;
+                height: 100%;
+                z-index: 1004;
+                left: 3%;
+                top: 1%;
+
+            }
+
+            .required {
+                border: 2px solid #c00 !important;
+            }
+
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 10;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+
+            .poup {
+                position: fixed;
+                top: 30%;
+                width: 40%;
+                margin-left: 30%;
+                z-index: 11;
+            }
+
+            .messageCell {
+                color: White !important;
+            }
+
+            .LateFee {
+                Color: red;
+                float: right;
+                margin-right: 4%;
+                font-style: italic;
+            }
+        </style>
+    </head>
+    <body>
+        <c:BodyGTagManager />
+        <!-- Header Begins Here -->
+        <c:HeaderPage BannerText="Payment" ActiveBadge="Payment" />
+        <!-- Header Ends Here -->
+
+        <!-- Payment : START:-->
+        <apex:form >
+            <div class="transparent-background loaderPanel" style="display:none;">
+                <div class="loader-center">
+                    <div class="loader">Loading...</div>
+                </div>
+            </div>
+            <apex:pageMessages />
+            <apex:inputHidden id="hdngetWay" value="{!paymentGateWayName}" />
+            <apex:inputHidden id="hdnPaymentOption" value="{!paymentFor}" />
+
+
+            <apex:actionFunction name="callMakePayment" action="{!MakeOnlinePayment}" />
+            <apex:outputpanel id="successPopUp" rendered="{!strSecToShow !='error'}">
+                <form>
+                    <div class="tab-wrapper">
+                        <div class="container">
+                            <div class="tab-content">
+                                <div class="tab-pane active" style="padding:0">
+                                    <div class="form-wrapper">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="first_name">{!displayName}</label>
+                                                    <input type="Text" disabled="true" value="{!If(studentInfo!='',studentInfo,studentNo)}" class="form-control" />
+                                                    <br/>
+                                                    <apex:outputPanel rendered="{!(NOT(CONTAINS(paymentFor,'Late Fees')) || CONTAINS(paymentFor,'New AEP License Fee') || CONTAINS(paymentFor,'Application Fee')) }">
+                                                        <div class="form-group">
+                                                            <label for="first_name">{!paymentFor}{!IF(applicableLateFee > 0 ,' + Late Fees ','')} Amount </label>
+                                                            <input type="Text" disabled="true" value="{!mapOfProductAndAmount[paymentFor] + applicableLateFee }" class="form-control"></input>
+                                                        </div>
+                                                    </apex:outputPanel>
+
+                                                    <apex:outputPanel rendered="{!CONTAINS(paymentFor,'Late Fees')}">
+                                                        <div class="form-group">
+                                                            <label for="first_name">{!paymentFor} Amount</label>
+                                                            <input type="Text" disabled="true" value="{!mapOfProductAndAmount[paymentFor]}" class="form-control"></input>
+                                                        </div>
+                                                    </apex:outputPanel>
+
+
+                                                    <!-------------------------------Late Fee Note :-------------------------->
+                                                    <apex:outputPanel rendered="{!applicableLateFee > 0}">
+                                                        <div class="row">
+                                                            <p class="LateFee">*Late Fee Rs.{!applicableLateFee} is applicable from
+                                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                                    <apex:param value="{!LateFeeStartDate}" /></apex:outputText>
+                                                            </p>
+                                                        </div>
+                                                    </apex:outputPanel>
+                                                </div>
+                                            </div>
+                                            <!--------------------------------------Multiple Payment Option ------------------------------------------------------>
+                                            <apex:outputPanel layout="none" rendered="{!CONTAINS(paymentFor,'New AEP License Fee')}">
+                                                <div id="paymentOptionSection">
+                                                    <div class="message-box text-center form-group">Select a Payment Amount</div>
+                                                    <div class="form-group row">
+                                                        <div class="col-2">
+                                                            <div class="col-md-3">
+                                                                <div class="radio">
+                                                                    <strong>Payment For</strong>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-10">
+                                                            <apex:variable var="setOfAEPLicense123" value="{!''}{!setOfAEPLicense}" />
+                                                            <apex:outputPanel rendered="{!CONTAINS(setOfAEPLicense123,'1')}">
+                                                                <div class="col-sm-4 col-md-3">
+                                                                    <div class="radio">
+                                                                        <div class="radio">
+                                                                            <label>
+                                                                                <input type="radio" name="PaymentFor" id="PaymentFor1" class="iCheckRadio" value="{!licenseapplicable[1]}" data-mode="1"
+                                                                                />
+                                                                                <span>{!mapOfProductAndAmount[licenseapplicable[1]]}
+                                                                                    <b>{!licenseapplicable[1]}</b>
+                                                                                </span>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </apex:outputPanel>
+
+                                                            <apex:outputPanel rendered="{!CONTAINS(setOfAEPLicense123,'2')}">
+                                                                <div class="col-sm-4 col-md-3">
+                                                                    <div class="radio">
+                                                                        <div class="radio">
+                                                                            <label>
+                                                                                <input type="radio" name="PaymentFor" id="PaymentFor2" class="iCheckRadio" value="{!licenseapplicable[2]}" data-mode="1"
+                                                                                />
+                                                                                <span>{!mapOfProductAndAmount[licenseapplicable[2]]}
+                                                                                    <b>{!licenseapplicable[2]}</b>
+                                                                                </span>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </apex:outputPanel>
+
+                                                            <apex:outputPanel rendered="{!CONTAINS(setOfAEPLicense123,'3')}">
+                                                                <div class="col-sm-4 col-md-3">
+                                                                    <div class="radio">
+                                                                        <div class="radio">
+                                                                            <label>
+                                                                                <input type="radio" name="PaymentFor" id="PaymentFor3" class="iCheckRadio" value="{!licenseapplicable[3]}" data-mode="1"
+                                                                                />
+                                                                                <span>{!mapOfProductAndAmount[licenseapplicable[3]]}
+                                                                                    <b>{!licenseapplicable[3]}</b>
+                                                                                </span>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </apex:outputPanel>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <!--------------------------------------------End of multiple option-------------------------------------------------------------->
+                                            <!-------------------------------------------Payment Mode-------------------------------------------------->
+                                            <div class="message-box text-center form-group">Mode of Payment</div>
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <!-- <apex:outputPanel rendered="{!CONTAINS(paymentFor,'Renewal License Fee')}">
+                                                        <div class="col-md-3">
+                                                            <div class="radio">
+                                                                <strong>Select The Renewal fee </strong>
+                                                            </div>
+                                                        </div>
+                                                    
+                                                        <div class="form-group">
+                                                            <div class="col-sm-4 col-md-3">
+                                                                <div class="radio">
+                                                                    <label>
+                                                                        <input type="radio" name="PaymentModeFee" id="PaymentMode4" class="iCheckRadio" value="Renewal fee UG" data-mode="4" required="required"
+                                                                        />
+                                                                        <span>Renewal fee UG</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4 col-md-3">
+                                                                <div class="radio">
+                                                                    <label>
+                                                                        <input type="radio" name="PaymentModeFee" id="PaymentMode3" class="iCheckRadio" value="Renewal fee PG" data-mode="3" required="required"
+                                                                        />
+                                                                        <span>Renewal fee PG</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4 col-md-3">
+                                                                <div class="radio">
+                                                                    <label>
+                                                                        <input type="radio" name="PaymentModeFee" id="PaymentMode2" class="iCheckRadio" value="Renewal fee Master" data-mode="2"
+                                                                        required="required" />
+                                                                        <span>Renewal fee Master</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </apex:outputPanel> -->
+
+
+
+                                                    <div class="col-md-3">
+                                                        <div class="radio">
+                                                            <strong>Select a mode of payment</strong>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4 col-md-3">
+                                                        <div class="radio">
+                                                            <label>
+                                                                <input type="radio" name="PaymentMode" id="PaymentMode1" class="iCheckRadio" value="Online" data-mode="1" required="required"
+                                                                />
+                                                                <span>Online</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <apex:outputPanel styleClass="col-sm-4 col-md-3" rendered="{!IF(AND(AEPId=='' , AEPISPId ==''),true,false)}" layout="block">
+                                                        <div class="radio">
+                                                            <label>
+                                                                <input type="radio" name="PaymentMode" id="PaymentMode2" class="iCheckRadio" data-mode="2" value="Demand Draft" />
+                                                                <span>Demand Draft</span>
+                                                            </label>
+                                                        </div>
+                                                    </apex:outputPanel>
+                                                </div>
+                                            </div>
+
+                                            <!--------------------------------------------------------------------- DD Details ---------------------------------------------------------->
+                                            <apex:outputPanel rendered="{!!paymentWindowClosed && !IsICForMakingPayment}">
+                                                <div class="row" id="DDNote">
+                                                    <p class="note">
+                                                        <span style="color:red;">Note:</span> Kindly personally submit the Demand Draft to: {!centerAddressForDD}</p>
+                                                </div>
+                                            </apex:outputPanel>
+
+                                            <div class="clearfix"></div>
+                                            <apex:outputPanel rendered="{!!paymentWindowClosed && IsICForMakingPayment}">
+                                                <div class="row" id="DDNote">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group required-label">
+                                                            <apex:inputField id="ddNumber" value="{!objPayment.nm_DemandDraftNumber__c}" styleClass="form-control notnull" html-placeholder="Demand Draft Number"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <div class="form-group required-label">
+                                                            <apex:inputField id="ddBankName" value="{!objPayment.nm_NameoftheBank__c}" styleClass="form-control notnull" html-placeholder="Name Of the Bank"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <div class="form-group required-label">
+                                                            <div class="input-group date" data-date-format="DD/MM/YYYY" id="datetimepicker1">
+                                                                <span class="dateInput dateOnlyInput">
+                                                                    <apex:inputText value="{!objPayment.nm_DemandDraftDate__c}" styleClass="form-control notnull" id="dob" html-placeholder="Demand Draft Date"
+                                                                    />
+                                                                </span>
+                                                                <span class="input-group-addon">
+                                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <div class="form-group required-label">
+                                                            <apex:inputField id="ddBankLocation" value="{!objPayment.nm_BankLocation__c}" styleClass="form-control notnull" html-placeholder="Bank Location"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <div class="form-group required-label">
+                                                            <div class="input-group date" data-date-format="DD/MM/YYYY" id="datetimepicker2">
+                                                                <span class="dateInput dateOnlyInput">
+                                                                    <apex:inputText value="{!objPayment.nm_DispatchDate__c}" styleClass="form-control notnull" id="doc1" html-placeholder="Dispatch Date"
+                                                                    />
+                                                                </span>
+                                                                <span class="input-group-addon">
+                                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </apex:OutPutPanel>
+                                            <!--------------------------------------------------------------end -------------------------------------------------------------------------->
+                                            <div class="clearfix"></div>
+                                            <apex:outputPanel rendered="{!!paymentWindowClosed}">
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        <apex:commandButton value="Make Payment" styleClass="btn pgSubmit" id="PayBtn" onclick="return GoToPayment();" />
+                                                    </div>
+                                                    <apex:outputPanel rendered="{!IsICForMakingPayment}">
+                                                        <div class="col-sm-3">
+                                                            <apex:commandButton value="Save DD Details" styleClass="btn pgSubmit" id="PayBtndd" action="{!SaveDD}" />
+                                                        </div>
+                                                    </apex:OutPutPanel>
+                                                </div>
+                                            </apex:outputPanel>
+
+                                            <!--------------------------Window Closed Message -------------------------------------->
+                                            <apex:outputPanel rendered="{!paymentWindowClosed}">
+                                                <apex:outputText value="{!paymentClouserMessage}" style="float:left;"></apex:outputText>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </apex:outputpanel>
+            <!----------------------------------------------Payment GetWay Options -------------------------------------------->
+            <div style="display:none;" id="PaymentGateWayOption">
+                <div class="modal popup-wrapper">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Important Message</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p> Select Payment GateWay </p>
+                                <div class="cc-selector-2 row padding10">
+
+                                    <apex:outputPanel rendered="{!$Label.Environment == 'Production'}">
+                                        <!-- Google Tag Manager (noscript) -->
+                                        <noscript>
+                                            <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PG5275RJ"
+                                                    height="0" width="0" style="display:none;visibility:hidden">
+                                            </iframe>
+                                        </noscript>
+                                        <!-- End Google Tag Manager (noscript) -->
+                                    </apex:outputPanel>
+
+                                    <apex:outputPanel rendered="{!!objPaymentFormConfiguration.Use_different_payment_credentials__c}" layout="none">
+                                        <apex:outputPanel layout="block" styleclass="col-sm-3 text-center">
+                                            <input id="billDeskgateway" type="radio" name="paymentGatewayGrp" value="BillDesk GateWay" />
+                                            <label class="drinkcard-cc billDeskgateWay" for="billDeskgateway" />
+                                        </apex:outputPanel>
+
+                                        <!-- <apex:outputPanel layout="block" styleclass="col-sm-3 text-center">
+                                            <input id="razorpaygateway" type="radio" name="paymentGatewayGrp" value="Razorpay GateWay" />
+                                            <label class="drinkcard-cc razorpaygateWay" for="razorpaygateway" />
+                                        </apex:outputPanel> -->
+                                    </apex:outputPanel>
+
+                                    <!-- <apex:outputPanel layout="block" styleclass="col-sm-3 text-center">
+                                        <input id="hdfcgateway" type="radio" name="paymentGatewayGrp" value="HDFC GateWay" />
+                                        <label class="drinkcard-cc hdfcgateWay" for="hdfcgateway" />
+                                    </apex:outputPanel> -->
+
+                                    <!-- <apex:outputPanel layout="block" styleclass="col-sm-3 text-center">
+                                        <input id="paytmgateway" type="radio" name="paymentGatewayGrp" value="Paytm GateWay" />
+                                        <label class="drinkcard-cc paytmgateWay" for="paytmgateway" />
+                                    </apex:outputPanel>  -->
+
+                                    <apex:outputPanel layout="block" styleclass="col-sm-3 text-center" >
+                                        <input id="icicigateway" type="radio" name="paymentGatewayGrp" value="ICICI GateWay" />
+                                        <label class="drinkcard-cc icicigateway" for="icicigateway" />
+                                    </apex:outputPanel>
+
+                                </div>
+                                <!-- <div>
+                                    <p>Note: currently we are facing low success rate for payment made using billdesk</p>
+                                </div> -->
+                            </div>
+                            <div class="modal-footer">
+                                <div class="row">
+
+                                    <div class="col-sm-4" style="float:right;">
+                                        <apex:commandButton styleclass="btn btn-default" value="Cancel" id="btnCancel" onclick="hideme();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="overlay"></div>
+            </div>
+            <!------------------------------------------------end -------------------------------------------------------------->
+
+            <!----------------------------------------------Error Popup-------------------------------------------->
+            <apex:outputpanel id="ErrorPopUp" rendered="{!strSecToShow =='error'}">
+                <div class="modal popup-wrapper">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Important Message</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>{!errMessages}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="row">
+                                    <div class="col-sm-6 text-left">
+                                        <apex:commandButton styleclass="btn btn-default" value="I Agree" id="btnErr" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="overlay"></div>
+            </apex:outputpanel>
+            <!------------------------------------------------end -------------------------------------------------------------->
+
+        </apex:form>
+        <!-----Payment : END : -->
+
+        <!-- Footer Component -->
+        <c:FooterPage />
+        <!--/ Footer Component -->
+
+        <!-- Search Popup -->
+        <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <form class="form-inline" id="">
+                            <input type="text" class="form-control" id="searchInput" placeholder="" />
+                            <button type="" class="icon-search"></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--All java script  -->
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min_.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}" />
+
+        <!--------------------------------------------------------------------Script ------------------------------------------>
+        <script>
+            function GoToPayment() {
+                $('[id$=PaymentGateWayOption]').css("display", "block");
+                return false;
+            }
+
+            function hideme() {
+                $('[id$=PaymentGateWayOption]').css("display", "none");
+            }
+
+            $('[id$=btnErr]').click(function () {
+                $('[id$=ErrorPopUp]').hide();
+                return false;
+            });
+
+            $(document).ready(function () {
+                $('[id$=DDNote]').hide();
+                $('[id$=PayBtndd]').hide();
+                $('[id$=PayBtndfs]').hide();
+
+                $('body').on('change', '[name$=PaymentFor]', function () {
+                    var selectedOpt = this.value;
+                    if (selectedOpt != undefined) {
+                        $('[id$=hdnPaymentOption]').val(selectedOpt);
+                    }
+                });
+                    /*------------------------------------------Payment Options-----------------------------*/
+                    $('input[name$=PaymentMode]').change(function () {
+                        var selectedOpt = this.value;
+                        if (selectedOpt != undefined) {
+                            $('[id$=hdnPaymentMode]').val(selectedOpt);
+                            if (selectedOpt == 'Demand Draft') {
+                                $('[id$=DDNote]').show();
+                                $('[id$=PayBtn]').hide();
+                                $('[id$=PayBtndd]').show();
+                                $('[id$=PayBtndfs]').hide();
+                            } else if (selectedOpt == 'Online') {
+                                $('[id$=DDNote]').hide();
+                                $('[id$=PayBtn]').show();
+                                $('[id$=PayBtndd]').hide();
+                                $('[id$=PayBtndfs]').hide();
+                            }
+                        }
+                    });
+                $('input[type=radio][name=PaymentModeFee]').change(function () {
+                    console.log(this.value)
+                    console.log('Inside defautl ----')
+                    $('[id$=hdnPaymentOption]').val(this.value);
+                });
+                
+                    /*--------------------------------------------------------Payment Gate Way Options----------------------------------------*/
+                    $('input[type=radio][name=paymentGatewayGrp]').change(function () {
+                        var selectedOpt = this.value;
+                        $('[id$=hdngetWay]').val(selectedOpt);
+                        callMakePayment();
+                        $('.loaderPanel').show();
+                        $('[id$=PaymentGateWayOption]').css("display", "none");
+                    });
+
+            });
+
+
+        </script>
+    </body>
+</apex:page>

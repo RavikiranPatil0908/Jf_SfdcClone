@@ -1,0 +1,568 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 11--01--2025
+  @last modified by  : @Ravi
+-->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" cache="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" controller="HomePageController" action="{!validateSession}">
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs." />
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Centre for Distance and Online Education, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education" />
+        <title>NMIMS Centre for Distance and Online Education: Home</title>
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css"/>
+
+        <!-- Bootstrap Core Css -->
+        <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+
+         <!-- Moment Plugin Js -->
+         <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/momentjs/moment.js"></script>
+         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-range/4.0.1/moment-range.js"></script>  -->
+
+        <!-- Waves Effect Css -->
+        <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/node-waves/waves.css" rel="stylesheet" />
+
+        <!-- Animation Css -->
+        <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/animate-css/animate.css" rel="stylesheet"/>
+
+        <!-- Custom Css -->
+        <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/css/style.css" rel="stylesheet"/>
+
+        <!-- AdminBSB Themes. Steel Blue Custom Theme -->
+        <link href="{!URLFOR($Resource.AdminBSBMaterialDesign, 'AdminBSBMaterialDesign/css/themes/theme-steel-blue.css')}" rel="stylesheet" />
+
+        <style>
+            .row {
+                margin-right: 0px;
+                margin-left: 0px;
+            }
+            
+            .card .header.p-b-0.b-b-n {
+                padding-bottom: 0px;
+                border-bottom: none;
+            }
+    
+            .navbar-header .navbar-brand.logo {
+                background-image: url("{!URLFOR($Resource.ImageResource,'images/logo.png')}");
+                background-repeat: no-repeat;
+                width: 230px;
+                background-attachment: inherit;
+                background-position: center;
+                height: 60px;
+            }
+    
+            .leftsidebar .sidebar {
+                top: 80px;
+            }
+    
+            .spinner-layer.pl-steel-blue {
+                border-color: #337ab7;
+            }
+
+            .dropdown .dropdown-menu.profile-dropdown {
+                top: 100px;
+                background: #fff;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+                -webkit-border-radius: 2px;
+                -moz-border-radius: 2px;
+                -ms-border-radius: 2px;
+                border-radius: 2px;
+            }
+
+            @media (max-width: 430px) {
+                .container-fluid, .container-fluid .col-xs-12.col-sm-12.col-md-12.col-lg-12 {
+                    padding-left: 0px;
+                    padding-right: 0px;
+                }
+
+                .container-fluid .navbar-header {
+                    padding-left: 15px;
+                    padding-right: 15px;
+                }
+            }
+        </style>
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-PG5275RJ');</script>
+        <!-- End Google Tag Manager -->
+    </head>
+    
+    <body class="theme-steel-blue">
+        <!-- Page Loader -->
+        <div class="page-loader-wrapper">
+            <div class="loader">
+                <div class="preloader">
+                    <div class="spinner-layer">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+                <p>Please wait...</p>
+            </div>
+        </div>
+        <!-- #END# Page Loader -->
+        <!-- Overlay For Sidebars -->
+        <div class="overlay"></div>
+        <!-- #END# Overlay For Sidebars -->
+        <!-- Top Bar -->
+        <nav class="navbar">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
+                    <a href="javascript:void(0);" class="bars"></a>
+                    <a class="navbar-brand logo" href="javascript:void(0);"></a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <!-- <li><a href="javascript:void(0);"><i class="material-icons">live_help</i></a></li> -->
+                        <!-- Notifications -->
+                        <!-- <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                                <i class="material-icons">notifications</i>
+                                <span class="label-count">7</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">NOTIFICATIONS</li>
+                                <li class="body">
+                                    <ul class="menu">
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <div class="icon-circle bg-light-green">
+                                                    <i class="material-icons">person_add</i>
+                                                </div>
+                                                <div class="menu-info">
+                                                    <h4>12 new members joined</h4>
+                                                    <p>
+                                                        <i class="material-icons">access_time</i> 14 mins ago
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <div class="icon-circle bg-cyan">
+                                                    <i class="material-icons">add_shopping_cart</i>
+                                                </div>
+                                                <div class="menu-info">
+                                                    <h4>4 sales made</h4>
+                                                    <p>
+                                                        <i class="material-icons">access_time</i> 22 mins ago
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <div class="icon-circle bg-red">
+                                                    <i class="material-icons">delete_forever</i>
+                                                </div>
+                                                <div class="menu-info">
+                                                    <h4><b>Nancy Doe</b> deleted account</h4>
+                                                    <p>
+                                                        <i class="material-icons">access_time</i> 3 hours ago
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <div class="icon-circle bg-orange">
+                                                    <i class="material-icons">mode_edit</i>
+                                                </div>
+                                                <div class="menu-info">
+                                                    <h4><b>Nancy</b> changed name</h4>
+                                                    <p>
+                                                        <i class="material-icons">access_time</i> 2 hours ago
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <div class="icon-circle bg-blue-grey">
+                                                    <i class="material-icons">comment</i>
+                                                </div>
+                                                <div class="menu-info">
+                                                    <h4><b>John</b> commented your post</h4>
+                                                    <p>
+                                                        <i class="material-icons">access_time</i> 4 hours ago
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <div class="icon-circle bg-light-green">
+                                                    <i class="material-icons">cached</i>
+                                                </div>
+                                                <div class="menu-info">
+                                                    <h4><b>John</b> updated status</h4>
+                                                    <p>
+                                                        <i class="material-icons">access_time</i> 3 hours ago
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <div class="icon-circle bg-purple">
+                                                    <i class="material-icons">settings</i>
+                                                </div>
+                                                <div class="menu-info">
+                                                    <h4>Settings updated</h4>
+                                                    <p>
+                                                        <i class="material-icons">access_time</i> Yesterday
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="footer">
+                                    <a href="javascript:void(0);">View All Notifications</a>
+                                </li>
+                            </ul>
+                        </li> -->
+                        <!-- #END# Notifications -->
+                        <!-- Profile -->
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                                <i class="material-icons">close</i>
+                            </a>
+                            <ul class="dropdown-menu profile-dropdown">
+                                <li>
+                                    <a href="javascript:void(0);" class=" waves-effect waves-block" onclick="logout();"><i class="material-icons">input</i>Close</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- <li><a href="javascript:void(0);" title="Close" onclick="logout();"><i class="material-icons">close</i></a></li> -->
+                        <!-- #END# Profile -->
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- #Top Bar -->
+        <section class="leftsidebar">
+            <!-- Left Sidebar -->
+            <aside id="leftsidebar" class="sidebar">
+                <!-- Menu -->
+                <div class="menu">
+                    <ul class="list">
+                        <!-- <li class="header">MAIN NAVIGATION</li> -->
+                        <li class="nav-element dashboard-nav-element">
+                            <a href="javascript:void(0);" class="navigate" data-navigate="dashboard">
+                                <i class="material-icons">assignment</i>
+                                <span>Application Status</span>
+                            </a>
+                        </li>
+                        
+                        <apex:outputPanel rendered="{!IF(objSessionUser.objType == 'Lead',true,false)}" layout="none">
+                            <li class="nav-element form-nav-element">
+                                <a href="javascript:void(0);" class="menu-toggle">
+                                    <i class="material-icons">text_snippet</i>
+                                    <span>Registration Form</span>
+                                </a>
+                                <ul class="ml-menu form-sub-menu">
+                                    <li class="nav-element form1-nav-element">
+                                        <a href="javascript:void(0);" class="navigate Form1-Personal" data-navigate="form1">I. Personal Details</a>
+                                    </li>
+                                    <li class="nav-element form2-nav-element">
+                                        <a href="javascript:void(0);" class="navigate Form2-Address" data-navigate="form2">II. Address Details</a>
+                                    </li>
+                                    <li class="nav-element form3-nav-element">
+                                        <a href="javascript:void(0);" class="navigate Form3-Program" data-navigate="form3">III. Program Details</a>
+                                    </li>
+                                    <li class="nav-element form4-nav-element">
+                                        <a href="javascript:void(0);" class="navigate Form4-Educational" data-navigate="form4">IV. Educational Details</a>
+                                    </li>
+                                    <li class="nav-element form5-nav-element">
+                                        <a href="javascript:void(0);" class="navigate Form5-Work" data-navigate="form5">V. Work Experience</a>
+                                    </li>
+                                    
+                                </ul>   
+                            </li>
+                        </apex:outputPanel>
+
+                        <li class="nav-element reviewForm-nav-element">
+                            <a href="javascript:void(0);" class="navigate Preview-Form" data-navigate="reviewForm">
+                                <i class="material-icons">update</i>
+                                <span>Form Review And Submit</span>
+                            </a>
+                        </li>
+
+                        <apex:outputPanel rendered="{!IF(studentno == '' || studentStatus == 'Admission form & documents Approved' || studentStatus == 'Admission Form & Documents Provisional', true, false)}" layout="none">
+                            <li class="nav-element payment-nav-element">
+                                <a href="/EnrollmentForm?nav=payment" class="navigate" data-navigate="payment">
+                                    <i class="material-icons">payment</i>
+                                    <span>Payments</span>
+                                </a>
+                            </li>
+                        </apex:outputPanel>
+
+                        <li class="nav-element document-nav-element">
+                            <a href="javascript:void(0);" class="navigate Documents-Sub" data-navigate="document">
+                                <i class="material-icons">file_upload</i>
+                                <span>Documents Upload</span>
+                            </a>
+                        </li>
+
+                        <apex:outputPanel layout="none" rendered="{!IF(isInterviewEnabled && !isConfirmed,true,false)}">
+                            <li class="nav-element interview-nav-element">
+                                <a href="javascript:void(0);" class="navigate" data-navigate="interview"> 
+                                    <i class="material-icons">event_available</i>
+                                    <span>Schedule Interview</span>
+                                </a>
+                            </li>
+                        </apex:outputPanel>
+
+                        <apex:outputPanel rendered="{!IF(objSessionUser.objType == 'Account',true,false)}" layout="none">
+                            <li class="nav-element call-nav-element">
+                                <a href="/EnrollmentForm?nav=call" class="navigate" data-navigate="call">
+                                    <i class="material-icons">video_call</i>
+                                    <span>Call Verification</span>
+                                </a>
+                            </li>
+                        </apex:outputPanel>
+
+                        <!--  ticket-nav-element  need to change navigation url in homepagecontroller-->
+                        <apex:outputPanel rendered="{!IF(studentno == '', true, false)}" layout="none">
+                            <li class="nav-element ticket-nav-element">
+                                <a href="javascript:void(0);" class="navigate" data-navigate="ticket"> 
+                                    <i class="material-icons">question_answer</i>
+                                    <span>Raise a Query</span>
+                                </a>
+                            </li>
+                        </apex:outputPanel>
+
+                        <apex:outputPanel rendered="{!IF(isConfirmed == true, false, true)}" layout="none">
+                            <li class="nav-element history-nav-element">
+                                <a href="javascript:void(0);" class="navigate" data-navigate="history">
+                                    <i class="material-icons">email</i>
+                                    <span>Communication History</span>
+                                </a>
+                            </li>
+                        </apex:outputPanel>
+
+
+                        <apex:outputPanel rendered="{!IF(isConfirmed == true, true, false)}" layout="none">
+                            <li class="nav-element letter-nav-element">
+                                <a href="javascript:void(0);" class="navigate" data-navigate="letter">
+                                    <i class="material-icons">filter_frames</i>
+                                    <span>Welcome Letter</span>
+                                </a>
+                            </li>
+                        </apex:outputPanel>
+                       
+                    </ul>
+                </div>
+                <!-- #Menu -->
+                <!-- Footer -->
+                <div class="legal">
+                    <div class="copyright">
+                        &copy; 2024 <a href="javascript:void(0);">All Rights Reserved</a>.
+                    </div>
+                    <div class="version">
+                        <b>Version: </b> 1.0.5
+                    </div>
+                </div>
+                <!-- #Footer -->
+            </aside>
+            <!-- #END# Left Sidebar -->
+        </section>
+        <section class="content">
+            <apex:form >
+                <apex:actionFunction name="logout" action="{!logout}"/>
+                <apex:inputHidden value="{!pageBlock}" id="pageBlock" />
+                <apex:outputPanel id="mainContent" layout="block">
+                    <apex:actionFunction reRender="mainContent" name="reRenderPageBlock" action="{!validateSession}" oncomplete="stopPageLoader();"/>
+                    <!-- Dashboard Page -->
+                    <c:DashboardPage recordId="{!objSessionUser.recordId}" objType="{!objSessionUser.objType}" rendered="{!IF(pageBlock == 'dashboard',true, false)}"/>
+                    <!-- #END# Dashboard Page -->
+                    
+                    <!-- Form Page -->
+                    <apex:outputPanel layout="none" rendered="{!IF(objSessionUser.objType == 'Lead',true, false)}">
+                        <c:FormPage recordId="{!objSessionUser.recordId}" formName="{!pageBlock}" rendered="{!IF(BEGINS(pageBlock, 'form'),true, false)}"/>
+
+                        <c:FormReviewPage recordId="{!objSessionUser.recordId}"  reloadPageFlag="reviewForm" rendered="{!IF(pageBlock == 'reviewForm',true, false)}"/>
+                    </apex:outputPanel>
+                    <!-- #END# Form Page -->
+
+                    <!-- Form Page -->
+                    <apex:outputPanel layout="none" rendered="{!IF(objSessionUser.objType == 'Account',true, false)}">
+                        <c:FormReviewAccountPage recordId="{!objSessionUser.recordId}" rendered="{!IF(pageBlock == 'reviewForm',true, false)}"/>
+                    </apex:outputPanel>
+                    <!-- #END# Form Page -->
+
+                    <!-- Payment Page -->
+                    <c:PaymentPage recordId="{!objSessionUser.recordId}" objType="{!objSessionUser.objType}" rendered="{!IF(pageBlock == 'payment',true, false)}"/>
+                    <!-- #END# Payment Page -->
+
+                    <!-- Document Upload Page -->
+                    <c:DocumentUploadPage recordId="{!objSessionUser.recordId}" objType="{!objSessionUser.objType}" rendered="{!IF(pageBlock == 'document',true, false)}"/>
+                    <!-- #END# Document Upload Page -->                     
+                    
+                    <!-- Interview Slot Booking Page -->
+                    <c:InterviewFormPage recordId="{!objSessionUser.recordId}" objType="{!objSessionUser.objType}" rendered="{!IF(pageBlock == 'interview' && objSessionUser.objType == 'Account',true, false)}"/>
+                    <!-- #END# Interview Slot Booking Page -->
+                     
+                    <!-- Video Call Page -->
+                    <c:VideoCallVerificationPage recordId="{!objSessionUser.recordId}" objType="{!objSessionUser.objType}" rendered="{!IF(pageBlock == 'call' && objSessionUser.objType == 'Account',true, false)}"/>
+                    <!-- #END# Video Call Page -->
+
+                    <!-- Welcome Letter Page -->
+                    <c:WelcomeLetterPage recordId="{!objSessionUser.recordId}" rendered="{!IF(pageBlock == 'letter' && objSessionUser.objType == 'Account',true, false)}"/>
+                    <!-- #END# Welcome Letter Page -->
+
+                    <!-- Ticketing Tool Page -->
+                    <c:RaiseTicketPage recordId="{!objSessionUser.recordId}" objType="{!objSessionUser.objType}" rendered="{!IF(pageBlock == 'ticket',true, false)}"/>
+                    <!-- #END# Ticketing Tool Page -->
+
+                    <!-- Email Logs Page -->
+                    <c:EmailLogsPage recId="{!objSessionUser.recordId}" objType="{!objSessionUser.objType}" rendered="{!IF(pageBlock == 'history',true, false)}" />
+                     <!-- #END# Email Logs Page -->
+                  
+                </apex:outputPanel>
+            </apex:form>
+            
+        </section>
+    
+        <!-- Jquery Core Js -->
+        <apex:includeScript value="https://code.jquery.com/jquery-2.2.4.min.js"/>
+    
+        <!-- Bootstrap Core Js -->
+        <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/bootstrap/js/bootstrap.js"></script>
+    
+        <!-- Slimscroll Plugin Js -->
+        <script src="{!URLFOR($Resource.AdminBSBMaterialDesign, 'AdminBSBMaterialDesign/js/jquery.slimscroll.min.js')}"></script>
+
+        <!-- Bootstrap Notify Plugin Js -->
+        <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/bootstrap-notify/bootstrap-notify.js"></script>
+    
+        <!-- Waves Effect Plugin Js -->
+        <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/node-waves/waves.js"></script>
+    
+        <!-- Jquery CountTo Plugin Js -->
+        <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/jquery-countto/jquery.countTo.js"></script>
+
+        <!-- Sparkline Chart Plugin Js -->
+        <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/jquery-sparkline/jquery.sparkline.js"></script>
+
+        <!-- Custom Js -->
+        <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/admin.js"></script>
+
+        <!-- Apex Plugin Js -->
+        <script src="../../soap/ajax/55.0/connection.js" type="text/javascript"></script>
+        <script src="../../soap/ajax/55.0/apex.js" type="text/javascript"></script>
+    
+        <script>
+            $(document).ready(function () { 
+                if($('[id$=pageBlock]').val() !== '') {
+                    $(`.${$('[id$=pageBlock]').val()}-nav-element`).addClass("active");
+                }
+
+                $('body').on('click','.navigate',function() {
+                    $('.page-loader-wrapper').show();
+                    let path = $(this).data('navigate');
+                    $('[id$=pageBlock]').val(path);
+                    reRenderPageBlock();
+                });
+
+                restPageURL();
+            });
+
+            function stopPageLoader() {
+                try {
+                    let path = $('[id$=pageBlock]').val() ? $('[id$=pageBlock]').val() : 'dashboard';
+                    $('.nav-element').removeClass('active');
+                    if(path.includes('form')) {
+                        $(`.form-nav-element`).addClass("active");
+                        $(`.${path}-nav-element`).children('a').addClass('toggled');
+                    } else if($(`.form-nav-element`).children('a').hasClass('toggled')) {
+                        $(`.form-nav-element`).children('a').removeClass('toggled');
+                        $('.form-sub-menu').hide();
+                    }
+                    $(`.${path}-nav-element`).addClass("active");
+                    $('body').scrollTop(0);
+                    // To hide Side bar on Mobile View.
+                    if($('body').hasClass('ls-closed') && $('body').hasClass('overlay-open')) {
+                        $('body').removeClass('overlay-open');
+                        $('.overlay').hide();
+                    }
+                    $('.page-loader-wrapper').fadeOut();
+                } catch (error) {
+                    console.log(error)
+                }
+                
+            }
+
+            function restPageURL() {
+                history.pushState(null, null, 'EnrollmentForm');
+                window.addEventListener('popstate', function () {
+                    history.pushState(null, null, 'EnrollmentForm');
+                });
+            }
+
+            // GMT tracking 
+            function pushData(eventName) {
+                let gtmRecordId = '{!leadId}';
+
+                console.log('-----eventName-----', eventName, gtmRecordId, '{! objSessionUser.objType}');
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({ 'event': eventName, 'leadId': gtmRecordId });
+            }
+            pushData('Logged In');
+
+            if ('{! objSessionUser.objType}' === 'Lead') {
+                const Personal = document.getElementsByClassName("Form1-Personal");
+                Personal[0].addEventListener("click", function () {
+                    pushData('Form 1 - Personal');
+                });
+                const Address = document.getElementsByClassName("Form2-Address");
+                Address[0].addEventListener("click", function () {
+                    pushData('Form 2 - Address');
+                });
+                const Program = document.getElementsByClassName("Form3-Program");
+                Program[0].addEventListener("click", function () {
+                    pushData('Form 3 - Program');
+                });
+                const Educational = document.getElementsByClassName("Form4-Educational");
+                Educational[0].addEventListener("click", function () {
+                    pushData('Form 4- Educational');
+                });
+                const Work = document.getElementsByClassName("Form5-Work");
+                Work[0].addEventListener("click", function () {
+                    pushData('Form 5 - Work');
+                });
+            }
+            const Preview = document.getElementsByClassName("Preview-Form");
+            Preview[0].addEventListener("click", function () {
+                pushData('Preview Form');
+            });
+
+            const DocumentsSub = document.getElementsByClassName("Documents-Sub");
+            DocumentsSub[0].addEventListener("click", function () {
+                pushData('Documents Submission Page Reached');
+            });
+        </script>
+       
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PG5275RJ"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+
+        
+    </body>
+</html>
+</apex:page>

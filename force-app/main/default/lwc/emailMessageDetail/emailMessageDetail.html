@@ -1,0 +1,132 @@
+<!--
+  @File Name          : emailMessageDetail.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 12-11-2020
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    22/6/2020   @BK     Initial Version
+-->
+<template>
+    <lightning-card title="Email Message Detail" tabindex="0">
+        <lightning-accordion allow-multiple-sections-open active-section-name={activeSections}>
+            <lightning-accordion-section name="A" label="Information">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <dl class="slds-list_horizontal slds-wrap">
+                            <template if:true={emailMessage.rec.caseNumber}>
+                            <dt class="slds-item_label slds-text-color_weak slds-truncate"
+                                title="Parent Case">Parent Case:</dt>
+                            <dd class="slds-item_detail slds-truncate"
+                                title={emailMessage.rec.caseNumber}>{emailMessage.rec.caseNumber}</dd></template>
+                            <dt class="slds-item_label slds-text-color_weak slds-truncate"
+                                title="Message Date">Message Date:</dt>
+                            <dd class="slds-item_detail slds-truncate" title={emailMessage.date}>
+                                {emailMessage.date}</dd>
+                        </dl>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <dl class="slds-list_horizontal slds-wrap">
+                            <template if:true={emailMessage.rec.caseStatus}>
+                            <dt class="slds-item_label slds-text-color_weak slds-truncate"
+                                title="Status">Status:</dt>
+                            <dd class="slds-item_detail slds-truncate"
+                                title={emailMessage.rec.caseStatus}>{emailMessage.rec.caseStatus}</dd> </template>
+                            <dt class="slds-item_label slds-text-color_weak slds-truncate"
+                                title="Created Date">Created Date:</dt>
+                            <dd class="slds-item_detail slds-truncate" title={emailMessage.date}>
+                                {emailMessage.date}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </lightning-accordion-section>
+
+            <lightning-accordion-section name="B" label="Address Information">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <dl class="slds-list_horizontal slds-wrap">
+                            <dt class="slds-item_label slds-text-color_weak slds-truncate"
+                                title="From Address">
+                                From Address:</dt>
+                            <dd class="slds-item_detail slds-truncate"
+                                title={emailMessage.rec.fromAddress}>
+                                {emailMessage.rec.fromAddress}</dd>
+                            <dt class="slds-item_label slds-text-color_weak slds-truncate"
+                                title="To Address">To
+                                Address:</dt>
+                            <dd class="slds-item_detail slds-truncate"
+                                title={emailMessage.rec.toAddress}>
+                                {emailMessage.rec.toAddress}</dd>
+                            <dt class="slds-item_label slds-text-color_weak slds-truncate"
+                                title="BCC Address">
+                                BCC Address:</dt>
+                            <dd class="slds-item_detail slds-truncate"
+                                title={emailMessage.rec.bccAddress}>
+                                {emailMessage.rec.bccAddress}</dd>
+                        </dl>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <dl class="slds-list_horizontal slds-wrap">
+                            <dt class="slds-item_label slds-text-color_weak slds-truncate"
+                                title="From Name">
+                                From Name:</dt>
+                            <dd class="slds-item_detail slds-truncate"
+                                title={emailMessage.rec.fromName}>
+                                {emailMessage.rec.fromName}</dd>
+                            <dt class="slds-item_label slds-text-color_weak slds-truncate"
+                                title="CC Address">CC
+                                Address:</dt>
+                            <dd class="slds-item_detail slds-truncate"
+                                title={emailMessage.rec.ccAddress}>
+                                {emailMessage.rec.ccAddress}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </lightning-accordion-section>
+
+            <lightning-accordion-section name="C" label="Message Content">
+                <dl class="slds-list_horizontal slds-wrap">
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Subject">
+                        Subject:</dt>
+                    <dd class="slds-item_detail slds-truncate" title={emailMessage.rec.subject}>
+                        {emailMessage.rec.subject}</dd>
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Text Body">
+                        Text Body:</dt>
+                    <dd class="slds-item_detail">
+                        <lightning-formatted-rich-text value={emailMessage.textBody}>
+                        </lightning-formatted-rich-text>
+                    </dd>
+                </dl>
+            </lightning-accordion-section>
+
+            <lightning-accordion-section name="D" label="Attachments"
+                if:true={emailMessage.hasAttachment}>
+                <ul>
+                    <template for:each={emailMessage.rec.attachments} for:item="file">
+                        <li class="slds-var-p-horizontal_medium slds-var-p-vertical_xx-small" key={file.attachmentId}>
+                            <a href="javascript:void(0)" title={file.name} onclick={downloadFile} data-key={file.attachmentId}>
+                                <div class="slds-size_1-of-1 filerow">
+                                    <div class="slds-size_12-of-12 slds-grid slds-nowrap">
+                                        <div class="slds-show_inline-block slds-float_left slds-align-middle thumbnailImg medium">
+                                            <lightning-icon icon-name="doctype:attachment" alternative-text="Attachment" title="file"></lightning-icon>
+                                        </div>
+                                        <div class="slds-show_inline-block slds-float_left slds-var-p-left_x-small slds-truncate slds-var-m-right_x-small">
+                                            <span class="slds-scrollable_none slds-show itemTitle slds-text-body_regular desktop uiOutputText"
+                                                title={file.name}>{file.name}</span>
+                                            <p class="slds-m-around_none secondaryFields slds-text-body_small slds-truncate">
+                                                <span class="itemLabel uiOutputText" title="Attachment" >Attachment</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="cover"></div>
+                        </li>
+                    </template>
+                </ul>
+            </lightning-accordion-section>
+        </lightning-accordion>
+    </lightning-card>
+</template>

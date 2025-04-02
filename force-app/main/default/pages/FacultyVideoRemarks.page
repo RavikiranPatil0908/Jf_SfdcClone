@@ -1,0 +1,331 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 16-07-2024
+  @last modified by  : @BK
+-->
+<apex:page controller="FacultyVideoRemarksController" showHeader="false" sidebar="false" standardStylesheets="false" cache="false" lightningStylesheets="true">
+    <apex:includeLightning />
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+        <title>Video Remark Form</title>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+          <style>
+                #auraErrorMessage {
+                    display: none;
+                }
+
+                .form-group .control-label:after { 
+                    content:"*";
+                    color:red;
+                }
+
+                .lightboxContainer {
+                    position:relative;
+                    display:inline-block;
+                }
+                
+                .lightboxContainer:after {
+                    content: url("{!URLFOR($Resource.FacultyRemarkDocuments,'playBtn.png')}");
+                    z-index:999;
+                    position:absolute;
+                    display: inline-block;
+                    top:50%;
+                    left:50%;
+                    margin-left:-32px;
+                    margin-top:-32px;
+                    opacity:0.8;
+
+                }
+
+                .lightboxContainer:hover:after {
+                    opacity:1;
+                }
+
+                
+                .lightboxContainer img {
+                    width: 1280px;
+                    height: 500px;
+                    position: relative;
+                }
+
+            </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="transparent-background loaderPanel" style="display:none;">
+                <div class="loader-center">
+                    <div class="loader">Loading...</div>
+                </div>
+            </div>
+            <div class="text-center">
+                <img class="d-block mx-auto mb-4" src="{!URLFOR($Resource.Images,'images/logo.png')}" alt="" width="200" height="72" />
+                <h3>Video Remark Form</h3>
+            </div>
+            <h4>Subject: {!asyncShootPostObject.Subject__c}</h4>
+            <h4>Program: {!asyncShootPostObject.Program__c}</h4>
+            <h5>Record Page Link: {!asyncShootPostObject.Name}</h5>
+            <h5>Video Link Version: {!remark}</h5>
+            <h5>Coordinator/Internal comments: {!internalRemark}</h5>
+            <!-- For Youtube -->
+            <apex:iframe scrolling="true" src="{!generatedEmbeddedLink}" html-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" height="500px" rendered="{!isYoutube}"/>
+            
+            <!-- For Non Youtube Videos -->
+            <apex:outputPanel layout="block" rendered="{!!isYoutube}">
+                <a class="wplightbox" href="{!generatedEmbeddedLink}" target="_blank" title="Click Here to Play">
+                    <div class="lightboxContainer">
+                        <img src="{!URLFOR($Resource.FacultyRemarkDocuments,'Banner.png')}" alt="Video Banner" />
+                    </div>
+                </a>
+                    
+            </apex:outputPanel>
+
+            
+
+            <div class="img-wrapper">
+                
+              </div>
+
+            <apex:form >
+                <apex:inputHidden value="{!facultyRemarks}" id="videoRemark"></apex:inputHidden>
+                <div class="row">
+                    <apex:outputPanel rendered="{!IF(existingRemark!=null && existingRemark!='',true,false)}" style="padding-top: 10px;" styleClass="col-md-6" layout="block">
+                        <h5>Previous Remarks for Version {!remark}:</h5>
+                        <apex:outputText value="{!existingRemark}"  escape="false" />
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(existingRemarkV1!=null && existingRemarkV1!='',true,false)}" style="padding-top: 10px;" styleClass="col-md-6" layout="block">
+                        
+                        <h5>Previous Remarks for Version 1:</h5>
+                        <apex:outputText value="{!existingRemarkV1}"  escape="false" />
+                    </apex:outputPanel>
+                     
+                </div>
+
+                <apex:outputPanel rendered="{!IF((existingRemark!=null && existingRemark!='') || (existingRemarkV1!=null && existingRemarkV1!=''),true,false)}" layout="none">
+                    <hr/>
+                </apex:outputPanel>
+                
+                <div class="row clearfix">
+                    <apex:outputpanel styleClass="col-lg-12 col-md-12 col-sm-12 col-xs-12" layout="block">
+                        <div class="form-group">
+                            <div class="form-line">
+                                <apex:outputlabel styleClass="form-label " value="Mapping Status:" />
+                                <apex:selectList id="mapStatus" styleClass="form-control" value="{!mappingStatus}" size="1">
+                                    <apex:selectOption itemValue="" itemLabel="Select Mapping Status"/>
+                                    <apex:selectOption itemValue="No Current mapping in TOC" itemLabel="No Current mapping in TOC"/>
+                                    <apex:selectOption itemValue="No video link to verify contents" itemLabel="No video link to verify contents"/>
+                                </apex:selectList>
+                            </div>
+                        </div>
+                    </apex:outputpanel>
+
+                    <apex:outputpanel styleClass="col-lg-6 col-md-6 col-sm-12 col-xs-12" layout="block">
+                        <div class="form-group">
+                            <div class="form-line">
+                                <apex:outputlabel styleClass="form-label " value="Video Title:">
+                                    <apex:outputText style="color:red;font-style:bold" value=" *" /></apex:outputLabel>
+                                <apex:inputText id="topic" styleClass="form-control" value="{!topics}" required="true"/>
+                            </div>
+                        </div>
+                    </apex:outputpanel>
+
+                    <apex:outputpanel styleClass="col-lg-6 col-md-6 col-sm-12 col-xs-12" layout="block">
+                        <div class="form-group">
+                            <div class="form-line">
+                                <apex:outputlabel styleClass="form-label " value="Video Coverage:">
+                                    <apex:outputText style="color:red;font-style:bold" value=" *" /></apex:outputLabel>
+                                <apex:inputText id="subtopic" styleClass="form-control" value="{!subTopics}" required="true"/>
+                            </div>
+                        </div>
+                    </apex:outputpanel>
+
+                    <apex:outputpanel styleClass="col-lg-6 col-md-6 col-sm-12 col-xs-12" layout="block">
+                        <div class="form-group">
+                            <div class="form-line">
+                                <apex:outputlabel styleClass="form-label " value="Learning Objectives:">
+                                    <apex:outputText style="color:red;font-style:bold" value=" *" /></apex:outputLabel>
+                                <apex:inputTextarea id="learnob" styleClass="form-control summernote" value="{!learnOb}" required="true"/>
+                            </div>
+                        </div>
+                    </apex:outputpanel>
+
+                    <apex:outputpanel styleClass="col-lg-6 col-md-6 col-sm-12 col-xs-12" layout="block">
+                        <div class="form-group">
+                            <div class="form-line">
+                                <apex:outputlabel styleClass="form-label " value="Learning Outcomes:">
+                                    <apex:outputText style="color:red;font-style:bold" value=" *" /></apex:outputLabel>
+                                <apex:inputTextarea id="learnoc" styleClass="form-control summernote" value="{!learnoc}" required="true"/>
+                            </div>
+                        </div>
+                    </apex:outputpanel>
+                </div>
+
+                
+                <div class="table-responsive" style="padding-top: 10px;">
+                    <table id="tbl" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="col-md-2">Timestamp</th>
+                                <th class="col-md-2">Error found</th>
+                                <th class="col-md-3">Correction needed</th>
+                                <th class="col-md-3">Faculty Remarks</th>
+                                <th class="col-md-2">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="col-md-2"><input class="form-control form-control-sm" type="text" name="time[]" /></td>
+                                <td class="col-md-2"><input class="form-control form-control-sm" type="text" name="ef[]" /></td>
+                                <td class="col-md-3"><input class="form-control form-control-sm" type="text" name="ce[]" /></td>
+                                <td class="col-md-3"><textarea class="form-control form-control-sm" name="fr[]"></textarea></td>
+                                <td class="col-md-2">
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="addRow(this)">+Add Row</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteRow(this)">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="text-center">
+                                <td colspan="5">
+                                    <apex:commandButton styleClass="btn btn-primary btn-sm" onclick="return onSubmit();" id="save_table" value="Submit" action="{!submitRemark}" />
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                
+            </apex:form>
+            <div id="LightningComponentid" />
+            <script>
+                $('.summernote').summernote({
+                    placeholder: '',
+                    tabsize: 2,
+                    height: 100
+                });
+
+                function addRow() {
+                    let newRow = document.createElement('tr');
+                    newRow.innerHTML = `
+                        <td class="col-md-2"><input class="form-control form-control-sm" type='text' name='time[]'></td>
+                        <td class="col-md-2"><input class="form-control form-control-sm" type="text" name="ef[]" /></td>
+                        <td class="col-md-3"><input class="form-control form-control-sm" type="text" name="ce[]" /></td>
+                        <td class="col-md-3"><textarea class="form-control form-control-sm" name="fr[]"></textarea></td>
+                        <td class="col-md-2">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="addRow()">+Add Row</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteRow(this)">Delete</button>
+                        </td>
+                    `;
+                    document.querySelector('#tbl tbody').appendChild(newRow);
+                }
+
+                function deleteRow(r) {
+                    let count = $('#tbl tr').length;
+                    console.log(count);
+                    if(count > 3) {
+                        let i = r.parentNode.parentNode.rowIndex;
+                        document.getElementById("tbl").deleteRow(i);
+                    }
+                }
+
+                function onSubmit() {
+                    console.log('Function called');
+                    let topic = $('[id$=topic]').val();
+                    let subtopic = $('[id$=subtopic]').val();
+                    let learnob = $('[id$=learnob]').val();
+                    let learnoc = $('[id$=learnoc]').val();
+                    if(topic === '' || subtopic === '' || learnob === '' || learnoc === ''){
+                        // alert('Please fill in all required fields.');
+                        Swal.fire({
+                            icon: "error",
+                            title: "Important Message..",
+                            text: "Please fill in all required fields.",
+                        });
+                        return false;
+                    }
+
+                    let confirmation = confirm(`Have you finished reviewing the video?\nSubmit all review comments?`);
+                    if(confirmation === true) {
+                        setVideoRemark();
+                    } else {
+                        Swal.fire({
+                            icon: "info",
+                            title: "Important Message..",
+                            text: "Kindly confirm to save the changes.",
+                        });
+                        return false;
+                    }
+                }
+
+                function setVideoRemark() {
+                    try {
+                        $('.loaderPanel').show();
+                        // Create a new Blob with the user inputs in the table
+                        let tableContent = '';
+                        let tableRows = document.querySelectorAll('#tbl tbody tr');
+
+                        tableRows.forEach(function (row) {
+                            tableContent += '<tr style="border: 1px solid;">';
+                            row.querySelectorAll('input, textarea').forEach(
+                                function (input) {
+                                    if (input.value != 'Remove') {
+                                        tableContent +=
+                                            '<td style="border: 1px solid;">' + input.value + '</td>';
+                                    }
+                                }
+                            );
+                            tableContent += '</tr>';
+                        });
+
+                        let tableHTML = `<table style="border: 1px solid;">
+                            <thead>
+                                <tr style="border: 1px solid;">
+                                    <th style="border: 1px solid;">Timestamp</th>
+                                    <th style="border: 1px solid;">Error found</th>
+                                    <th style="border: 1px solid;">Correction needed</th>
+                                    <th style="border: 1px solid;">Faculty Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>${tableContent}</tbody></table>`;
+                        $('[id$=videoRemark]').val(tableHTML);
+                        console.log(tableHTML);
+                        return true;
+                    } catch(error) {
+                        console.log('error');
+                        $('.loaderPanel').hide();
+                        return false;
+                        
+                    }
+                }
+
+                if('{!showSuccess}' === 'true') {
+                    alert('Remaks has been updated successfully');
+                }
+
+                if('{!errorMsg}' !== '') {
+                    alert('{!errorMsg}');
+                }
+            </script>
+            <script>
+                $Lightning.use("c:aepPurchaseLicesneApp", function() {
+                    $Lightning.createComponent("c:attachTocToAsyncVideos",{
+                        recordId: "{!$CurrentPage.parameters.recordId}"
+                    },
+                    "LightningComponentid",
+                    function (cmp) {
+                        console.log('faculty component created successfully ...');
+                    });
+                });
+            </script>
+        </div>
+    </body>
+</apex:page>

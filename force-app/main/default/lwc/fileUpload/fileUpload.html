@@ -1,0 +1,22 @@
+<template>
+		<div class="slds-m-left_xx-large slds-m-right_xx-large slds-m-top_xx-small slds-m-bottom_xx-large">
+		<div class="slds-col slds-size_1-of-1">
+                            	<p> File size should be less than 3 MB (pdf, png, jpg, jpeg) </p>
+															<lightning-input type="file"
+																	class="text"
+                         					label="Attachment"
+                         					onchange={handleFileUploaded}
+																	accept = {acceptedFormats}
+																	variant="destructive-text"
+                         					multiple>
+        											</lightning-input>
+        											{error}
+															<div class="container">
+        												<template for:each={filesUploaded} for:item="file">
+            											<lightning-pill key={file.Title} label={file.Title} data-fid={file.Title} onremove={handleRemove} class="slds-text-body_small"></lightning-pill>
+        												</template> 
+															</div>                       
+                        		</div>
+		<lightning-button class="slds-align_absolute-center" variant="brand" label="Upload"  type="submit" onclick={attachFiles}> </lightning-button>
+		</div>
+</template>

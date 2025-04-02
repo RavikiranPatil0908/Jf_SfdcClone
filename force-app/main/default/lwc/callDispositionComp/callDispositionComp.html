@@ -1,0 +1,119 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 02-12-2023
+  @last modified by  : @BK
+-->
+<template>
+    <lightning-card variant="Narrow"  title={cardLabel} icon-name="standard:task" >
+        <template if:false={showForm}>
+            <div if:true={hasRecords}>
+                <lightning-datatable
+                    key-field="id"
+                    data={data}
+                    columns={columns}
+                    onrowaction={handleRowAction}>
+                </lightning-datatable>
+            </div>
+            <div if:false={hasRecords}>
+                <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                    <c-illustration-image image-name="misc:no_content"></c-illustration-image>
+                    <div class="slds-text-color_weak">
+                        <h3 class="slds-text-heading_medium">No Records Found</h3>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template if:true={showForm}>
+            <div class="slds-form__row slds-form-element slds-form-element_compound slds-var-p-horizontal_medium">
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-input name="Subject" label="Subject" value={taskRecord.Subject} onchange={handleChange} data-field="Subject" required="true"></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-combobox
+                            name="Purpose__c"
+                            label="Purpose"
+                            value={taskRecord.Purpose__c}
+                            placeholder="Select Purpose"
+                            options={optionsForPurpose}
+                            onchange={handleChange}
+                            data-field="Purpose__c"
+                            required
+                    ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-combobox
+                            name="Query_Resolved__c"
+                            label="Query Resolved"
+                            value={taskRecord.Query_Resolved__c}
+                            placeholder="Select Query Resolved"
+                            options={optionsForQR}
+                            onchange={handleChange}
+                            data-field="Query_Resolved__c"
+                            required
+                    ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-combobox
+                            name="Status"
+                            label="Status"
+                            value={taskRecord.Status}
+                            placeholder="Select Status"
+                            options={optionsForStatus}
+                            onchange={handleChange}
+                            data-field="Status"
+                            required
+                    ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-combobox
+                            name="Call_Category__c"
+                            label="Call Category"
+                            value={taskRecord.Call_Category__c}
+                            placeholder="Select Call Category"
+                            options={optionsForCallCategory}
+                            onchange={handleChange}
+                            data-field="Call_Category__c"
+                            required
+                    ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-combobox
+                            name="Disposition__c"
+                            label="Disposition"
+                            value={taskRecord.Disposition__c}
+                            placeholder="Select Disposition"
+                            options={optionsForDisposition}
+                            onchange={handleChange}
+                            data-field="Disposition__c"
+                            disabled={disbaleDisposition}
+                            required
+                    ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning-textarea label="Comment" name="Description" value={taskRecord.Description} data-field="Description" onchange={handleChange} required></lightning-textarea><br/>
+
+                </div>
+               <div class="slds-col slds-size_1-of-1">
+                    <lightning-button variant="brand-outline" label="Cancel" title="Cancel" onclick={closeForm} class="slds-var-p-right_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Submit" title="Submit" onclick={handleSubmit}></lightning-button>
+                </div>
+
+            </div>
+            <!-- <lightning-record-edit-form object-api-name="Task" record-id={taskId}>
+                <lightning-input-field field-name="Subject"></lightning-input-field>
+                <lightning-input-field field-name={purposeField}></lightning-input-field>
+                <lightning-input-field field-name="Query_Resolved__c"></lightning-input-field>
+                <lightning-input-field field-name="Status"></lightning-input-field>
+                <lightning-input-field field-name="Call_Category__c"></lightning-input-field>
+                <lightning-input-field field-name="Disposition__c"></lightning-input-field>
+                <lightning-input-field field-name="Description"></lightning-input-field>
+                <div class="slds-var-m-top_medium">
+                    <lightning-button variant="brand" type="submit" label="Save" onclick={handleClick}>
+                    </lightning-button>
+                </div>
+            </lightning-record-edit-form> -->
+        </template>
+    </lightning-card>
+</template>

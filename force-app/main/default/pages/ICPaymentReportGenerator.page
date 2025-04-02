@@ -1,0 +1,411 @@
+<apex:page sidebar="FALSE"  standardController="IC_Payment__c" extensions="nmPaymentReportExtension" readOnly="true">
+
+<head>
+<style>
+@page {
+            size: letter;
+            margin: 5mm;
+           
+            @bottom-center {
+                content: "Page " counter(page) " of " counter(pages);
+            }
+        }
+        
+        
+body {
+    width: 100%;
+    margin: 10px auto;
+    font-family: 'trebuchet MS', 'Lucida sans', Arial;
+    font-size: 14px;
+    color: #444;
+}
+
+table {
+    *border-collapse: collapse; /* IE7 and lower */
+    border-spacing: 0;
+    width: 100%;    
+}
+
+.bordered {
+    border: solid #ccc 1px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 1px 1px #ccc; 
+    -moz-box-shadow: 0 1px 1px #ccc; 
+    box-shadow: 0 1px 1px #ccc;         
+}
+
+.bordered tr:hover {
+    background: #fbf8e9;
+    -o-transition: all 0.1s ease-in-out;
+    -webkit-transition: all 0.1s ease-in-out;
+    -moz-transition: all 0.1s ease-in-out;
+    -ms-transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out;     
+}    
+    
+.bordered td, .bordered th {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    padding: 5px;
+    text-align: left;  
+    nowrap: nowrap;  
+}
+
+.bordered th {
+    background-color: #dce9f9;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ebf3fc), to(#dce9f9));
+    background-image: -webkit-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image:    -moz-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image:     -ms-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image:      -o-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image:         linear-gradient(top, #ebf3fc, #dce9f9);
+    -webkit-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset; 
+    -moz-box-shadow:0 1px 0 rgba(255,255,255,.8) inset;  
+    box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;        
+    border-top: none;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5); 
+}
+
+.bordered td:first-child, .bordered th:first-child {
+    border-left: none;
+}
+
+.bordered th:first-child {
+    -moz-border-radius: 6px 0 0 0;
+    -webkit-border-radius: 6px 0 0 0;
+    border-radius: 6px 0 0 0;
+}
+
+.bordered th:last-child {
+    -moz-border-radius: 0 6px 0 0;
+    -webkit-border-radius: 0 6px 0 0;
+    border-radius: 0 6px 0 0;
+}
+
+.bordered th:only-child{
+    -moz-border-radius: 6px 6px 0 0;
+    -webkit-border-radius: 6px 6px 0 0;
+    border-radius: 6px 6px 0 0;
+}
+
+.bordered tr:last-child td:first-child {
+    -moz-border-radius: 0 0 0 6px;
+    -webkit-border-radius: 0 0 0 6px;
+    border-radius: 0 0 0 6px;
+}
+
+.bordered tr:last-child td:last-child {
+    -moz-border-radius: 0 0 6px 0;
+    -webkit-border-radius: 0 0 6px 0;
+    border-radius: 0 0 6px 0;
+}
+
+
+
+/*----------------------*/
+
+.zebra td, .zebra th {
+    padding: 10px;
+    border-bottom: 1px solid #f2f2f2;    
+}
+
+.zebra tbody tr:nth-child(even) {
+    background: #f5f5f5;
+    -webkit-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset; 
+    -moz-box-shadow:0 1px 0 rgba(255,255,255,.8) inset;  
+    box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;        
+}
+
+.zebra th {
+    text-align: left;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5); 
+    border-bottom: 1px solid #ccc;
+    background-color: #eee;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f5f5f5), to(#eee));
+    background-image: -webkit-linear-gradient(top, #f5f5f5, #eee);
+    background-image:    -moz-linear-gradient(top, #f5f5f5, #eee);
+    background-image:     -ms-linear-gradient(top, #f5f5f5, #eee);
+    background-image:      -o-linear-gradient(top, #f5f5f5, #eee); 
+    background-image:         linear-gradient(top, #f5f5f5, #eee);
+}
+
+.zebra th:first-child {
+    -moz-border-radius: 6px 0 0 0;
+    -webkit-border-radius: 6px 0 0 0;
+    border-radius: 6px 0 0 0;  
+}
+
+.zebra th:last-child {
+    -moz-border-radius: 0 6px 0 0;
+    -webkit-border-radius: 0 6px 0 0;
+    border-radius: 0 6px 0 0;
+}
+
+.zebra th:only-child{
+    -moz-border-radius: 6px 6px 0 0;
+    -webkit-border-radius: 6px 6px 0 0;
+    border-radius: 6px 6px 0 0;
+}
+
+.zebra tfoot td {
+    border-bottom: 0;
+    border-top: 1px solid #fff;
+    background-color: #f1f1f1;  
+}
+
+.zebra tfoot td:first-child {
+    -moz-border-radius: 0 0 0 6px;
+    -webkit-border-radius: 0 0 0 6px;
+    border-radius: 0 0 0 6px;
+}
+
+.zebra tfoot td:last-child {
+    -moz-border-radius: 0 0 6px 0;
+    -webkit-border-radius: 0 0 6px 0;
+    border-radius: 0 0 6px 0;
+}
+
+.zebra tfoot td:only-child{
+    -moz-border-radius: 0 0 6px 6px;
+    -webkit-border-radius: 0 0 6px 6px
+    border-radius: 0 0 6px 6px
+}
+  
+</style>
+</head>
+
+
+ <apex:form id="formSctn" >
+  
+  <apex:pageBlock id="criterianBlk" title="Please select the criteria">
+   
+   <apex:outputText style="font-family:monospace;font-weight:bolder"   value="Select the Center"/><BR/>
+   <apex:inputField value="{!IC_Payment__c.Centers__c}" label="Centers"/> 
+   
+   <p style="font-family:monospace;font-weight:bolder">Select the timeline: <apex:actionStatus style="text-align:center" id="objLoading">
+   <apex:facet name="start">
+            <apex:image url="{!$Resource.ajaxLoader}"/>
+        </apex:facet>
+    </apex:actionStatus>
+    </p>
+   <apex:pageBlockSection id="criterianSctn" columns="1">
+     
+     
+      <apex:selectRadio value="{!selectedFilter}">
+            <apex:selectOptions value="{!availFilters}"/>
+            <apex:actionSupport event="onchange" status="objLoading" reRender="criterianSctn,formSctn" action="{!reportFlagFalse}"/>
+       </apex:selectRadio>
+   
+    
+    <apex:inputField required="false" value="{!IC_Payment__c.Payment_Due_Date__c}" label="From Date"/>
+    <apex:inputField label="To Date" value="{!IC_Payment__c.toDate__c}"/>
+    
+    
+   <!--<apex:outputtext value="Select the Month"/>-->
+    <apex:inputField value="{!IC_Payment__c.Payment_Month__c}" label="Month" rendered="{!IF(selectedFilter=='MMYYYY',TRUE,FALSE)}"/> 
+    
+   <!-- <apex:outputtext value="Select the Year"/>-->
+    <apex:inputField value="{!IC_Payment__c.Payment_Year__c}" label="Year" rendered="{!IF(selectedFilter=='MMYYYY',TRUE,FALSE)}"/>
+
+   </apex:pageBlockSection>
+  
+  <apex:pageBlockButtons location="bottom">
+   <apex:commandButton action="{!findReport}" value="Generate Report"/>
+  </apex:pageBlockButtons>
+  </apex:pageBlock>
+  
+  <apex:pageMessages />
+  
+  <apex:pageBlock id="reportSctn" title="The report is:" rendered="{!renderReport}">
+  <table class="bordered">
+   <tr>
+    <td>
+      Center: 
+    </td>
+    <td>
+     <apex:outputField value="{!IC_Payment__c.Centers__c}"/>
+    </td>
+   </tr>
+   
+     <tr>
+    <td>
+       <apex:outputLabel value="From Date: " rendered="{!IF(selectedFilter=='MMYYYY',FALSE,TRUE)}"/>
+       <apex:outputLabel value="Payment Month: " rendered="{!IF(selectedFilter=='MMYYYY',TRUE,FALSE)}"/>
+    </td>
+    <td>
+     <apex:outputField value="{!IC_Payment__c.Payment_Due_Date__c}" rendered="{!IF(selectedFilter=='MMYYYY',FALSE,TRUE)}"/>
+     <apex:outputField value="{!IC_Payment__c.Payment_Month__c}" rendered="{!IF(selectedFilter=='MMYYYY',TRUE,FALSE)}"/>
+    </td>
+   </tr>
+
+
+   <tr>
+    <td>
+     <apex:outputLabel value="To Date: " rendered="{!IF(selectedFilter=='MMYYYY',FALSE,TRUE)}"/>
+      <apex:outputLabel value="Payment Year: " rendered="{!IF(selectedFilter=='MMYYYY',TRUE,FALSE)}"/>
+    </td>
+    <td>
+      
+      <apex:outputField value="{!IC_Payment__c.Payment_Year__c}" rendered="{!IF(selectedFilter=='MMYYYY',TRUE,FALSE)}"/>
+     <apex:outputField value="{!IC_Payment__c.toDate__c}" rendered="{!IF(selectedFilter=='MMYYYY',FALSE,TRUE)}"/>
+    </td>
+   </tr>
+  <tr>
+         <td>
+            Total Amount: 
+         </td>
+         <td>
+            <apex:outputtext value="{!totalAmount}"/> INR/- 
+                        
+         </td>
+     </tr>
+   <!--
+       <tr>
+         <td>
+            Commission till 31st March: 
+         </td>
+         <td>
+            <apex:outputtext value="{!Creditbefore31}"/> INR/- 
+                        
+         </td>
+     </tr>
+     -->
+      <tr>
+         <td>
+           Commission: 
+         </td>
+         <td>
+            <apex:outputtext value="{!Creditafter31}"/> INR/- 
+                        
+         </td>
+     </tr>
+    <tr>
+         <td>
+            Gross Taxable Amount: 
+         </td>
+         <td>           
+               <apex:outputtext value="{!TotalAfterTax }"/> INR/-                       
+         </td>
+     </tr>
+      <tr>
+         <td>
+            GST (18%): 
+         </td>
+         <td>
+               <apex:outputtext value="{!ServiceAmount}"/> INR/-
+         </td>
+     </tr>
+     <!--
+    <tr>
+         <td>
+            Swacch Bharat Tax (0.5%): 
+         </td>
+         <td>
+              <apex:outputtext value="{!SwachhBharat}"/> INR/-
+         </td>
+     </tr>
+     <tr>
+         <td>
+            Krishi Kalyan Tax (0.5%): 
+         </td>
+         <td>
+             <apex:outputtext value="{!KrishiKalyan }"/> INR/-
+         </td>
+     </tr>
+     -->
+      <tr>
+         <td>
+            Gross after Tax: 
+         </td>
+         <td>
+              <apex:outputtext value="{!GrossAmount}"/> INR/-    
+         </td>
+     </tr>
+      <tr>
+         <td>
+            TDS Amount : 
+         </td>
+         <td>           
+               <apex:outputtext value="{!TDSAmount }"/> INR/-                     
+         </td>
+     </tr>
+
+     <tr>
+         <td>
+           Postage Debit: 
+         </td>
+         <td>
+            <apex:outputtext value="{!DebitAmount}"/> INR/- 
+                        
+         </td>
+     </tr>
+  
+      <tr>
+         <td>
+            Net Amount : 
+         </td>
+         <td>           
+               <apex:outputtext value="{!NetAmount }"/> INR/-                     
+         </td>
+     </tr>
+   
+    <tr>
+    <td>
+      Report Generation Date: 
+    </td>
+    <td>
+     <apex:outputText value="{!TODAY()}"/>
+    </td>
+   </tr>
+
+  </table>
+
+<br/><br/>
+<!--  Main table with values -->
+<apex:variable var="closingBalance" value="{!0}"/>
+<apex:variable var="srNo" value="{!0}"/>
+
+
+
+<table class="bordered">
+  <thead>
+     <tr>
+        <th>Date</th>
+        <th>Narration</th>
+        <th>Reference Number</th>
+        <th>Student Number</th>
+        <th>Transaction Type</th>
+        <th>Credit</th>
+        <th>Debit</th>
+        <th>Closing Balance</th>
+     </tr>
+  </thead>
+  <apex:repeat value="{!reportResultList}" var="r">
+  <tr>
+  
+   <td><apex:outputText value="{!DAY(r.Date__c)}/{!MONTH(r.Date__c)}/{!YEAR(r.Date__c)}"/></td>
+   <td><apex:outputText value="{!r.Narration__c}"/></td>
+   <td><apex:outputText value="{!r.Reference_Number__c}"/></td>
+   <td><apex:outputField value="{!r.Student_No__c}"/></td>
+   <td><apex:outputField value="{!r.Transaction_Type__c}"/></td>
+   <td><apex:outputField rendered="{!IF(CONTAINS(r.Transaction_Type__c,"Credit"),TRUE,FALSE)}" value="{!r.Amount__c}"/></td>
+   <td><apex:outputField rendered="{!IF(CONTAINS(r.Transaction_Type__c,"Debit"),TRUE,FALSE)}" value="{!r.Amount__c}"/></td>
+   <td><apex:variable rendered="{!IF(CONTAINS(r.Transaction_Type__c,"Credit"),TRUE,FALSE)}" var="closingBalance" value="{!closingBalance + r.Amount__c}"/>
+        <apex:variable rendered="{!IF(CONTAINS(r.Transaction_Type__c,"Debit"),TRUE,FALSE)}" var="closingBalance" value="{!closingBalance - r.Amount__c}"/>
+        <apex:outputText value="{!closingBalance}"/>
+   </td>
+   </tr>
+    </apex:repeat> 
+   </table>
+
+  <apex:pageBlockButtons >
+  </apex:pageBlockButtons>
+  </apex:pageBlock>
+  
+  
+   <apex:commandButton action="{!generatePDF}" value="Save as PDF"/>
+ </apex:form> 
+
+</apex:page>

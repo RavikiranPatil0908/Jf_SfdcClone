@@ -1,0 +1,1101 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 03-03-2025
+  @last modified by  : @vickysahu
+-->
+<apex:component access="global" allowDML="true" controller="PaymentPageController">
+    <apex:attribute access="global" name="recordId" type="ID" description="Record Id" assignTo="{!objectId}"/>
+    <apex:attribute access="global" name="objType" type="String" description="Object Type" assignTo="{!objectType}"/>
+    <!-- Custom Css -->
+    <link href="{!URLFOR($Resource.AdminBSBMaterialDesign, 'AdminBSBMaterialDesign/css/payment.css')}" rel="stylesheet"/>
+    <!-- Bootstrap DatePicker Css -->
+    <link href="{!URLFOR($Resource.AdminBSBMaterialDesign, 'AdminBSBMaterialDesign/css/bootstrap-datetimepicker.min.css')}" rel="stylesheet" />
+
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <apex:outputPanel >
+                <apex:inputHidden id="hdngetWay" value="{!paymentGateWayName}" />
+                <apex:actionFunction name="callMakePayment" action="{!makeOnlinePayment}" />
+                <apex:inputHidden id="hdnPaymentMode" value="{!objPayment.nm_ModeOfPayment__c}" />
+                <apex:inputHidden id="hdnPaymentOption" value="{!paymentFor}" />
+                <apex:inputHidden id="hdnLiveLecturesOption" value="{!objDetails.liveLecType}" />
+                <apex:inputHidden id="hdnCourseList" value="{!objDetails.courseList}" />
+                <apex:inputHidden id="hdnBacklogList" value="{!objDetails.backlogList}" />
+                <apex:inputHidden id="hdnDepositeAmount" value="{!depositAmount}" />
+                <apex:inputHidden id="hdnTenure" value="{!objLoanDetails.Tenure}" />
+                <apex:inputHidden id="hdnEMI" value="{!objLoanDetails.EMI}" />
+                <apex:inputHidden id="hdnInterestrate" value="{!objLoanDetails.InterestRate}" />
+                <apex:inputHidden id="hdnLoanType" value="{!objLoanDetails.LoanType}" />
+                <apex:inputHidden value="{!objDetails.applicableCareerServiceFee}" id="applicableCareerServiceFee" />
+                <apex:inputHidden value="{!objCoursera.applicableCourseraFee}" id="applicableCourseraFee"/>
+                <apex:inputHidden id="hdnSubjectsCount" value="{!jsonMapOfLectureTypeAndSubjects}" />
+                <apex:inputHidden id="checkCareerServiceOpted" value="{!objDetails.CareerServiceOpted}" />
+                <apex:inputHidden id="checkCourseraOpted" value="{!objCoursera.checkCourseraOpted}" />
+                <apex:inputHidden value="{!jsonMapOfProductAndAmount}" id="jsonStringOfProductVsAmount" />
+            </apex:outputPanel>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="body">
+                        <h2 class="card-inside-title">Your Details</h2>
+                        <div class="row studentDetails">
+                            <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span class="table-label">Registration ID</span></div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!objStudentDetails.studentNo}</span></div>
+                            </div>
+                            <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span class="table-label">Applicant Name</span></div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!objStudentDetails.studentName}</span></div>
+                            </div>
+                            <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span class="table-label">Program Category</span></div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!programCategory}</span></div>
+                            </div>
+                            <apex:outputPanel rendered="{!!ISBLANK(objDetails.program)}" layout="none">
+                                <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span class="table-label">Program Name</span></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!objDetails.program}</span></div>
+                                </div>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!ISBLANK(objDetails.program)}" layout="none">
+                                <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span class="table-label">Program Name</span></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!objDetails.program}</span></div>
+                                </div>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(ISBLANK(objDetails.program) && ISBLANK(objDetails.programSpecialisaton),true,false)}" layout="none">
+                                <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span class="table-label">Program Name</span></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!objDetails.programName}</span></div>
+                                </div>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!ISBLANK(objDetails.programSpecialisaton)}" layout="none">
+                                <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span class="table-label">Specialisation</span></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!objDetails.programSpecialisaton}</span></div>
+                                </div>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!objDetails.isPaymentMade}">
+                                <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-0">
+                                    <apex:outputPanel styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" rendered="{!IF(!objLoanDetails.isDownPaymentMade || objAdmissionAmount.isRedirect, true, false)}">
+                                        <a href="javascript:void(0);" class="btn btn-primary btn-lg btn-custom waves-effect toggle-download"><apex:outputText value="{!IF(objAdmissionAmount.isRedirect, 'Make Payment','Download Transaction Advise')}"></apex:outputText></a>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" layout="block" rendered="{!IF(objLoanDetails.isLoanOpted && !objLoanDetails.loanSanctioned, true, false)}">
+                                        <a href="{!$Label.Site_Url}PostPaymentPage?ResTrackId={!objLoanDetails.loanPaymentTrackId}" class="btn btn-primary btn-lg btn-custom waves-effect">View Loan Details</a>
+                                    </apex:outputPanel>
+                                </div>
+                            </apex:outputPanel>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- to render if form is submited -->
+            <apex:outputPanel rendered="{!isFormSubmitted}" layout="none">
+                <apex:outputPanel rendered="{!objDetails.isPaymentMade}" layout="none">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 payment-table hide" >
+                        <div class="card">
+                            <div class="header p-b-0 b-b-n p-t-0 p-l-0 p-r-0">
+                                <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue">
+                                    <li class="active">
+                                        <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                            <span class="list-group-item-heading font-18 font-bold">Payment Details</span>
+                                        </a>
+                                    </li>                     
+                                </ul>
+                            </div>
+                            <div class="body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>REFERNCE NUMBER</th>
+                                                <th>TRANSACTION DATE</th>
+                                                <th>AMOUNT</th>
+                                                <th>DOWNLOAD</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <apex:actionRegion >
+                                                <apex:variable var="c" value="{!1}" />
+                                                <apex:repeat value="{!objDetails.mapOfPaymentsMade}" var="i">
+                                                    <tr>
+                                                        <th scope="row">{!c}</th>
+                                                        <td>{!objDetails.mapOfPaymentsMade[i].nm_Merchant_Track_Id__c}</td>
+                                                        <td>
+                                                            <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                                <apex:param value="{!objDetails.mapOfPaymentsMade[i].nm_TransactionDate__c}" /> 
+                                                            </apex:outputText>
+                                                        </td>
+                                                        <td>&#8377; {!objDetails.mapOfPaymentsMade[i].nm_ActualPaymentAmmount__c}</td>
+                                                        <td>
+                                                            <a href="{!$Label.Site_Url}{!IF(objDetails.mapOfPaymentsMade[i].nm_PaymentType__c=='Registration','nmThankYou','nmRegistrationThankYou')}?PaymentId={!objDetails.mapOfPaymentsMade[i].Id}" class="btn btn-primary waves-effect waves-light btn-custom" target="_blank">
+                                                                <i class="material-icons">file_download</i>
+                                                                <span>Transaction Advise</span>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    <apex:variable var="c" value="{!c+1}" />
+                                                </apex:repeat>
+                                            </apex:actionRegion>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </apex:outputPanel>
+
+                <apex:outputPanel rendered="{!IF(!objLoanDetails.isDownPaymentMade || objAdmissionAmount.isRedirect, true, false)}" layout="none">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 payment-detail">
+                        <!------------------------------------------------ Fee Type -------------------------------------------------->
+                        <div class="card" id="paymentOptionSection">
+                            <div class="header p-b-0 b-b-n p-t-0 p-l-0 p-r-0">
+                                <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue">
+                                    <li class="active" id="FeeTypeTab">
+                                        <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                            <span class="list-group-item-heading font-18 font-bold">Select Payment Category</span>
+                                        </a>
+                                    </li>                     
+                                </ul>
+                            </div>
+                            <div class="body">
+                                <div class="row clearfix" >
+                                    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 br-b-2">
+                                        <!-------------------------------------------------------------- Payment Fee Type Section -------------------------------->
+                                        <div class="text-align font-bold p-l-15 p-r-15 m-b-10 col-philippine-silver">
+                                            Fee Payment Type
+                                        </div>
+                                        <div class="row clearfix paymentSection">
+                                            <apex:variable var="setOfApplicablePaymentOption" value="{!''}{!setOfApplicablePaymentOptionForStudent}" />
+                                            <apex:variable var="setOfPaymentOption" value="{!''}{!setOfPaymentOptionsAvailable}" />
+
+                                            <apex:outputpanel rendered="{!CONTAINS(setOfApplicablePaymentOption,'Registration Fee') && !objfee.AlreadyPaidRegistrationFee}" 
+                                                styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                                <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                    <div class="" >
+                                                        <input name="group1" type="radio" class="with-gap form-control" id="radio_1"  data-mode="1" data-value="Registration" data-label="Registration {!IF(objDetails.MergeAdmissionFeeWithRegistration,' + Initial amount','')} {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')}" data-amount="{!( mapOfProductAndAmount['Registration Fee']  +objDetails.applicableCareerServiceFee+objCoursera.applicableCourseraFee+ IF(objDetails.MergeAdmissionFeeWithRegistration, mapOfProductAndAmount['Initial Payment'],0) )}"/>
+                                                        <label for="radio_1">Registration {!IF(objDetails.MergeAdmissionFeeWithRegistration,' + Initial amount','')} {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} (INR {!( mapOfProductAndAmount['Registration Fee']  +objDetails.applicableCareerServiceFee+objCoursera.applicableCourseraFee+ IF(objDetails.MergeAdmissionFeeWithRegistration, mapOfProductAndAmount['Initial Payment'],0) )})</label>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+            
+                                            <apex:outputpanel rendered="{!CONTAINS(setOfApplicablePaymentOption,'InitialAdmission') && !objfee.AlreadyPaidInitialAdmissionfee && objDetails.ShowInitialAdmissionPayment}"
+                                                styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                                <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                    <div class="" >
+                                                        <input name="group1" type="radio" class="with-gap form-control" id="radio_2"  data-mode="1" data-value="InitialAdmissionFee" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} Initial Admission Payment {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}"/>
+                                                        <label for="radio_2">{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} Initial Admission Payment {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')} (INR {!(mapOfProductAndAmount['InitialAdmissionFee'] +objDetails.applicableCareerServiceFee+ objCoursera.applicableCourseraFee+ objDetails.applicableLateFee +IF(objfee.AlreadyPaidRegistrationFee,0,mapOfProductAndAmount['Registration Fee']) )})</label>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+            
+                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'Admission')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                                <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                    <div class="" >
+                                                        <input name="group1" type="radio" class="with-gap form-control" id="radio_3"  data-mode="1" data-value="Admission" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} Admission {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')} {!IF(CONTAINS(objDetails.ICName,'Verizon'),'+Exam Fee','')}"/>
+                                                        <label for="radio_3">{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} Admission {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')} {!IF(CONTAINS(objDetails.ICName,'Verizon'),'+Exam Fee','')} (INR {!(mapOfProductAndAmount['Admission'] + objDetails.applicableCareerServiceFee+ objCoursera.applicableCourseraFee+ objDetails.applicableLateFee + IF(objfee.AlreadyPaidRegistrationFee,0,mapOfProductAndAmount['Registration Fee']))})</label>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+            
+                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'AnnualFee')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                                <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                    <div class="" >
+                                                        <input name="group1" type="radio" class="with-gap form-control" id="radio_4"  data-mode="1" data-value="AnnualFee" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} AnnualFee {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}"/>
+                                                        <label for="radio_4">{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} AnnualFee {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')} (INR {!mapOfProductAndAmount['AnnualFee'] + objDetails.applicableCareerServiceFee+ objCoursera.applicableCourseraFee+ objDetails.applicableLateFee + IF(objfee.AlreadyPaidRegistrationFee,0,mapOfProductAndAmount['Registration Fee']) })</label>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+
+                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'AnnualFeeLoan')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                                <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                    <div class="" >
+                                                        <input name="group1" type="radio" class="with-gap form-control" id="radio_5"  data-mode="1" data-value="AnnualFeeLoan" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} AnnualFeeLoan {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}"/>
+                                                        <label for="radio_5">{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} AnnualFeeLoan {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')} (INR {! mapOfProductAndAmount['AnnualFeeLoan'] + objDetails.applicableCareerServiceFee + objCoursera.applicableCourseraFee+ objDetails.applicableLateFee + IF(objfee.AlreadyPaidRegistrationFee,0,mapOfProductAndAmount['Registration Fee']) })</label>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+            
+                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'2TermFee')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                                <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                    <div class="" >
+                                                        <input name="group1" type="radio" class="with-gap form-control" id="radio_6"  data-mode="1" data-value="2TermFee" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} 2TermFee {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}"/>
+                                                        <label for="radio_6">{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} 2TermFee {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')} (INR {!mapOfProductAndAmount['2TermFee'] + objDetails.applicableCareerServiceFee+ objCoursera.applicableCourseraFee+ objDetails.applicableLateFee + IF(objfee.AlreadyPaidRegistrationFee,0,mapOfProductAndAmount['Registration Fee']) })</label>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+            
+                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'3SemFee')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                                <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                    <div class="" >
+                                                        <input name="group1" type="radio" class="with-gap form-control" id="radio_7"  data-mode="1" data-value="3SemFee" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} {!IF(objDetails.isTerm,'3TermFee','3SemFee')} {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}"/>
+                                                        <label for="radio_7">{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} {!IF(objDetails.isTerm,'3TermFee','3SemFee')} {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')} (INR {! mapOfProductAndAmount['3SemFee'] + objDetails.applicableCareerServiceFee + objCoursera.applicableCourseraFee+ objDetails.applicableLateFee + IF(objfee.AlreadyPaidRegistrationFee,0,mapOfProductAndAmount['Registration Fee']) })</label>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+            
+                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'4SemFee')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                                <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                    <div class="" >
+                                                        <input name="group1" type="radio" class="with-gap form-control" id="radio_8"  data-mode="1" data-value="4SemFee" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} {!IF(objDetails.isTerm,'4TermFee','4SemFee')} {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}"/>
+                                                        <label for="radio_8">{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} {!IF(objDetails.isTerm,'4TermFee','4SemFee')} {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')} (INR {! mapOfProductAndAmount['4SemFee'] + objDetails.applicableCareerServiceFee + objCoursera.applicableCourseraFee+ objDetails.applicableLateFee + IF(objfee.AlreadyPaidRegistrationFee,0,mapOfProductAndAmount['Registration Fee']) })</label>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+            
+                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'5SemFee')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                                <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                    <div class="" >
+                                                        <input name="group1" type="radio" class="with-gap form-control" id="radio_9"  data-mode="1" data-value="5SemFee" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} {!IF(objDetails.isTerm,'5TermFee','5SemFee')} {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}"/>
+                                                        <label for="radio_9">{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} {!IF(objDetails.isTerm,'5TermFee','5SemFee')} {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')} (INR {! mapOfProductAndAmount['5SemFee'] + objDetails.applicableCareerServiceFee + objCoursera.applicableCourseraFee+ objDetails.applicableLateFee + IF(objfee.AlreadyPaidRegistrationFee,0,mapOfProductAndAmount['Registration Fee']) })</label>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+            
+                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'MultipleSemFee')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                                <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                    <div class="" >
+                                                        <input name="group1" type="radio" class="with-gap form-control" id="radio_10"  data-mode="1" data-value="MultipleSemFee" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} Multiple Sem Fee {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}"/>
+                                                        <label for="radio_10">{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} Multiple Sem Fee {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')} (INR {! mapOfProductAndAmount['MultipleSemFee'] +objDetails.applicableCareerServiceFee+ objCoursera.applicableCourseraFee+ objDetails.applicableLateFee + IF(objfee.AlreadyPaidRegistrationFee,0,mapOfProductAndAmount['Registration Fee']) })</label>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+            
+                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'3TermFee')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                                <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                    <div class="" >
+                                                        <input name="group1" type="radio" class="with-gap form-control" id="radio_11"  data-mode="1" data-value="3TermFee" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} 3TermFee {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}"/>
+                                                        <label for="radio_11">{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} 3TermFee {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')} (INR {! mapOfProductAndAmount['3TermFee'] +objDetails.applicableCareerServiceFee + objCoursera.applicableCourseraFee+ objDetails.applicableLateFee + IF(objfee.AlreadyPaidRegistrationFee,0,mapOfProductAndAmount['Registration Fee']) })</label>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+            
+                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'FullFee')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                                <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                    <div class="" >
+                                                        <input name="group1" type="radio" class="with-gap form-control" id="radio_12"  data-mode="1" data-value="FullFee" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} FullFee {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}"/>
+                                                        <label for="radio_12">{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} FullFee {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')} (INR {! mapOfProductAndAmount['FullFee'] + objDetails.applicableCareerServiceFee + objCoursera.applicableCourseraFee+ objDetails.applicableLateFee + IF(objfee.AlreadyPaidRegistrationFee,0,mapOfProductAndAmount['Registration Fee']) })</label>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+            
+                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'FullFeeLoan')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                                <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                    <div class="" >
+                                                        <input name="group1" type="radio" class="with-gap form-control" id="radio_13"  data-mode="1" data-value="FullFeeLoan" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} FullFeeLoan {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}"/>
+                                                        <label for="radio_13">{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} FullFeeLoan {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')} (INR {! mapOfProductAndAmount['FullFeeLoan'] + objDetails.applicableCareerServiceFee + objCoursera.applicableCourseraFee+ objDetails.applicableLateFee + IF(objfee.AlreadyPaidRegistrationFee,0,mapOfProductAndAmount['Registration Fee']) })</label>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+            
+                                            <!-- 
+                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'FullFeeLoan')}">
+                                                <button type="button" class="btn btn-secondary PaymentForTuitionPayment m5" data-mode="1" data-value="FullFeeLoan" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} FullFeeLoan {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}">
+                                                </button>
+                                            </apex:outputpanel> -->
+                                        </div>
+                                        <!-------------------------------------------------------------- #END# Payment Fee Type Section -------------------------------->
+            
+                                        <!-------------------------------------------------------------- Live Lecture Section -------------------------------->
+                                        <apex:outputPanel rendered="{!objDetails.showliveLectureBasedOnSY}" styleClass="livelectureSection" style="display:none;">
+                                            <!-------------------------------------------------------------- Live Lectures Payment -------------------------------->
+                                            <div class="text-align font-bold p-l-15 p-r-15 m-b-10 col-philippine-silver">Payment - Live Lectures</div>
+                                            <div class="row clearfix paymentSection">
+            
+                                                <apex:outputpanel rendered="{!CONTAINS(setOfApplicablePaymentOption,'1SemLecturesFee')}" 
+                                                    styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block" style="display:none;">
+                                                    <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                        <div class="" >
+                                                            <input name="liveLectureBtnGroup" type="radio" class="with-gap form-control SemBundles PaymentForLiveLectures" id="radiol_1"  data-mode="1" data-value="1SemLecturesFee"/>
+                                                            <label for="radiol_1">1 Semester (INR {!mapOfProductAndAmount['1SemLecturesFee']})</label>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputpanel>
+            
+                                                <apex:outputpanel rendered="{!CONTAINS(setOfApplicablePaymentOption,'2SemLecturesFee')}" 
+                                                    styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block" style="display:none;">
+                                                    <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                        <div class="" >
+                                                            <input name="liveLectureBtnGroup" type="radio" class="with-gap form-control SemBundles PaymentForLiveLectures" id="radiol_2"  data-mode="2" data-value="2SemLecturesFee"/>
+                                                            <label for="radiol_2">Annual (2 Semesters) (INR {!mapOfProductAndAmount['2SemLecturesFee']})</label>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputpanel>
+            
+                                                <apex:outputpanel rendered="{!IF(CONTAINS(setOfApplicablePaymentOption,'3SemLecturesFee') && ((CONTAINS(setOfApplicablePaymentOption,'3SemFee') || CONTAINS(setOfApplicablePaymentOption,'MultipleSemFee')) && !objfee.AlreadyPaidFullFee && !objfee.AlreadyPaid4SemFee && !objfee.AlreadyPaid5SemFee),true,false)}" 
+                                                    styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block" style="display:none;">
+                                                    <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                        <div class="" >
+                                                            <input name="liveLectureBtnGroup" type="radio" class="with-gap form-control SemBundles PaymentForLiveLectures" id="radiol_3"  data-mode="3" data-value="3SemLecturesFee"/>
+                                                            <label for="radiol_3">Multiple (3 Semesters) (INR {!mapOfProductAndAmount['3SemLecturesFee']})</label>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputpanel>
+            
+                                                <apex:outputpanel rendered="{!CONTAINS(setOfApplicablePaymentOption,'4SemLecturesFee')}" 
+                                                    styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block" style="display:none;">
+                                                    <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                        <div class="" >
+                                                            <input name="liveLectureBtnGroup" type="radio" class="with-gap form-control SemBundles PaymentForLiveLectures" id="radiol_4"  data-mode="4" data-value="4SemLecturesFee"/>
+                                                            <label for="radiol_4">Program (All 4 Sems) (INR {!mapOfProductAndAmount['4SemLecturesFee']})</label>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputpanel>
+            
+                                                <apex:outputpanel rendered="{!CONTAINS(setOfApplicablePaymentOption,'Custom')}" 
+                                                    styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                                    <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                        <div class="" >
+                                                            <input name="liveLectureBtnGroup" type="radio" class="with-gap form-control SemBundles PaymentForLiveLectures" id="radiol_5"  data-mode="5" data-value="Custom"/>
+                                                            <label for="radiol_5">Choose Subjects for {!semester}<apex:outputText value="{!CASE(MOD(VALUE(semester),10),1,"st",2,"nd",3,"rd","th")}"/> Semester</label>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputpanel>
+            
+                                                <apex:outputpanel rendered="{!CONTAINS(setOfApplicablePaymentOption,'Custom')}" 
+                                                    styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block" >
+                                                    <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                        <div class="" >
+                                                            <input name="liveLectureBtnGroup" type="radio" class="with-gap form-control PaymentForLiveLectures" id="radiol_6"  data-mode="6" data-value="No"/>
+                                                            <label for="radiol_6">No Live Lectures</label>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputpanel>
+                                            </div>
+            
+                                            <!-------------------------------------------------------------- Choose Subjects -------------------------------->
+                                            <span class="SubjectSection hide">
+                                                <div class="text-align font-bold p-l-15 p-r-15 m-b-10 col-philippine-silver">
+                                                    Semester {!semester}
+                                                    <small>Subjects</small>
+                                                </div>
+                                                <div class="row clearfix paymentSection">
+                                                    <apex:repeat value="{!mapOfCourseKeyVsCurrentCourseObj}" var="key">
+                                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+                                                            <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                                <div class="" >
+                                                                    <input name="liveLectureBtnGroup" type="radio" class="with-gap form-control ChooseSubjects" id="{!mapOfCourseKeyVsCurrentCourseObj[key].Id}" data-value="{!mapOfCourseKeyVsCurrentCourseObj[key].Student_Zone_Course_Id__c}" />
+                                                                    <label for="{!mapOfCourseKeyVsCurrentCourseObj[key].Id}">{!mapOfCourseKeyVsCurrentCourseObj[key].Name}</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </apex:repeat>
+                                                </div>
+                                            </span>
+                                        </apex:outputPanel>
+                                        <!-------------------------------------------------------------- #END# Live Lecture Section -------------------------------->
+            
+                                        <!-------------------------------------------------------------- Backlog Livw Lectures Payment -------------------------------->
+                                        <!-- <apex:outputPanel rendered="{!sizeOfMapOfBacklogCourseIdVsBacklogObject > 0}" layout="none">
+                                            <div class="text-align font-bold p-l-15 p-r-15 m-b-10 col-philippine-silver">
+                                                Backlog Subjects
+                                            </div>
+                                            <div class="row clearfix paymentSection">
+                                                <apex:repeat value="{!mapOfBacklogCourseIdVsBacklogObject}" var="key">
+                                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+                                                        <div class="form-group form-group-lg m-b-0 rm-m-b">
+                                                            <div class="" >
+                                                                <input name="liveLectureBtnGroup" type="radio" class="with-gap form-control ChooseBacklogSubjects" id="{!mapOfBacklogCourseIdVsBacklogObject[key].courseId}" data-value="{!mapOfBacklogCourseIdVsBacklogObject[key].courseId}" />
+                                                                <label for="{!mapOfBacklogCourseIdVsBacklogObject[key].courseId}">SEM - {!mapOfBacklogCourseIdVsBacklogObject[key].sem} - {!mapOfBacklogCourseIdVsBacklogObject[key].subject}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </apex:repeat>
+                                            </div>
+                                        </apex:outputPanel> -->
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 br-l-2">
+                                        <div class="text-align font-bold p-l-15 p-r-15 m-b-10 col-philippine-silver">
+                                            My Cart
+                                        </div>
+                                        <div class="form-group mycartClass">
+                                            <center><img src="{!URLFOR($Resource.AdminBSBMaterialDesign, 'AdminBSBMaterialDesign/images/empty-cart.png')}" class="img-responsive"/></center>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!------------------------------------------------ #END# Fee Type -------------------------------------------->
+            
+                        <!-------------------------------------------Installment Down Payment Section -------------------------------->
+                        <div class="card" id="InstallmentDownPaymentSection" style="display:none;">
+                            <div class="header p-b-0 b-b-n p-t-0 p-l-0 p-r-0">
+                                <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue">
+                                    <li class="active" id="InstallmentTab">
+                                        <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                            <span class="list-group-item-heading font-18 font-bold">Make Installment Payment</span>
+                                        </a>
+                                    </li>                     
+                                </ul>
+                            </div>
+                            <div class="body">
+                                <div class="row clearfix">
+                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                        <apex:variable value="{!objDetails.intTotalInstallmentApplicable + 1}" var="noOfInstallmentsApplicable" />
+                                        <div class="form-group installemt-group">
+                                            <div class="form-line">
+                                                <input id="downPaymentForInstallment" type="text" class="form-control numonly" placeholder="Enter Down Payment Amount" spellcheck="false" data-ms-editor="true" />
+                                                <label class="form-label installemt-label">(Minimum Amount payable is 20 % of the Amount opted or 5000 whichever is greater)</label>
+                                            </div>
+                                        </div>
+                                        <p class="font-italic font-bold col-pink LateFee" id="LoandepositAmountPanel" style="display:none;">
+                                            * There will be Only {!noOfInstallmentsApplicable} Installments Option Available
+                                        </p>
+                                        <p class="font-italic font-bold col-pink LateFee" id="depositAmountPanel" style="display:none;">* Balance Amount To Be Pay INR <span id="balanceAmountToPay"></span></p>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <apex:outputText value="{!objPaymentFormConfiguration.Installment_Disclaimer__c}" escape="false"></apex:outputText>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-------------------------------------- #END# Installment Down Payment Section ------------------------------>
+            
+                        <!-------------------------------------------Loan Down Payment Section -------------------------------->
+                        <div class="card" id="LoanPaymentSection" style="display:none;">
+                            <div class="header p-b-0 b-b-n p-t-0 p-l-0 p-r-0">
+                                <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue">
+                                    <li class="active" id="LoanTab">
+                                        <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                            <span class="list-group-item-heading font-18 font-bold">Loan (EMI Summary)</span>
+                                        </a>
+                                    </li>                     
+                                </ul>
+                            </div>
+                            <div class="body">
+                                <div class="row clearfix">
+                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input id="downPaymentForLoanApplication" type="text" class="form-control numonly" placeholder="Enter Down Payment Amount" spellcheck="false" data-ms-editor="true" />
+                                                <label class="form-label"><span style="color:red;font-style:bold"> *</span> Down Payment</label>
+                                            </div>
+                                        </div>
+                                        <p class="font-italic font-bold col-pink LateFee" id="LoandepositAmountPanel" style="display:none;">* Balance Amount To Be Pay INR <span id="LoanbalanceAmountToPay"></span></p>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="display:none;" id="proceedtoLoanSection">
+                                        <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom waves-effect eduVanzProceed " onclick="return validateLoanApplicationBtn();"
+                                            action="{!proceedToDirectLoan}" value="Proceed To Loan Application"/>
+                                    </div>
+                                    <!-- <apex:outputPanel layout="none" rendered="{!IF(programSpecialization=='MBA (X)' || programSpecialization=='MBA - X' || programSpecialization=='MBA (WX)' || programSpecialization=='M.Sc.',true,false)}">
+                                        <p class="font-italic font-bold col-pink LateFee" style="float:none;">EMI Moratorium offered by only Propelld, EMI to start from July. For more info connect with your counsellor</p>
+                                    </apex:outputPanel> -->
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 row">
+                                        <apex:outputPanel styleClass="col-xs-12 col-sm-6 col-md-12 col-lg-12 showFullFeeLoanOpt showZestLoanBtn " rendered="{!objPaymentFormConfiguration.Show_Zest_Loan_Option__c}" layout="block">
+                                            <button type="button" class="btn btn-primary btn-lg btn-custom waves-effect btn-block loanButton zestLoanApp LoanBtn" data-value="zestLoanSection">Zest Loan Application</button>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel styleClass="col-xs-12 col-sm-6 col-md-12 col-lg-12 showEduVanzLoan showEduVanzLoanBtn " rendered="{!IF(objPaymentFormConfiguration.Show_Eduvaz_Loan_Option__c,true,false)}" layout="block">
+                                            <button type="button" class="btn btn-primary btn-lg btn-custom waves-effect btn-block loanButton eduvanzLoanApp LoanBtn" data-value="eduvanzLoanSection">Eduvanz Loan Application</button>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel styleClass="col-xs-12 col-sm-6 col-md-12 col-lg-12 showLiquiLoansLoanBtn " rendered="{!IF(objPaymentFormConfiguration.Show_LiquiLoans_Loan_Option__c,true,false)}" layout="block">
+                                            <button type="button" class="btn btn-primary btn-lg btn-custom waves-effect btn-block loanButton liquiloanApp LoanBtn" data-value="liquiloanLoanSection">LiquiLoans Application</button>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel styleClass="col-xs-12 col-sm-6 col-md-12 col-lg-12 showPropelldLoanBtn " rendered="{!objPaymentFormConfiguration.Show_Propelld_Loan_Option__c}" layout="block">
+                                            <button type="button" class="btn btn-primary btn-lg btn-custom waves-effect btn-block loanButton propelldLoanApp LoanBtn" data-value="propelldLoanSection">Propelld Loan Application</button>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel styleClass="col-xs-12 col-sm-6 col-md-12 col-lg-12 showFullFeeLoanOpt showEzCredLoanBtn " rendered="{!objPaymentFormConfiguration.Show_Ezcred_Loan_Option__c}" layout="block">
+                                            <button type="button" class="btn btn-primary btn-lg btn-custom waves-effect btn-block loanButton ezcredLoanApp LoanBtn" data-value="ezcredLoanSection">EzCred Loan Application</button>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel styleClass="col-xs-12 col-sm-6 col-md-12 col-lg-12 showFullFeeLoanOpt showGrayQuestLoanBtn " rendered="{!objPaymentFormConfiguration.Show_GrayQuest_Loan_Option__c}" layout="block">
+                                            <button type="button" class="btn btn-primary btn-lg btn-custom waves-effect btn-block loanButton grayquestLoanApp LoanBtn" data-value="grayquestLoanSection">GrayQuest Loan Application</button>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel styleClass="col-xs-12 col-sm-6 col-md-12 col-lg-12 showAvanseLoanBtn " rendered="{!IF(objPaymentFormConfiguration.Show_Avanse_Loan_Option__c && objDetails.hasAvanseProgramCode,true,false)}" layout="block">
+                                            <button type="button" class="btn btn-primary btn-lg btn-custom waves-effect btn-block loanButton avanseLoanApp LoanBtn" data-value="avanseLoanSection">Avanse Loan Application</button>
+                                        </apex:outputPanel>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                                        <!-- Zest Loan Section begins here  -->
+                                        <div class="zestLoanSection LoanSection" style="display: none;">
+                                            <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue padding-0">
+                                                <li class="active" id="LoanTab">
+                                                    <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                                        <span class="list-group-item-heading font-18 font-bold">Zest Loan Application</span>
+                                                    </a>
+                                                </li>                     
+                                            </ul>
+                                            <div class="col-md-4 table-responsive" id="ZestLoanSection"></div>
+                                            <apex:outputPanel styleClass="col-md-8" rendered="{!IF(CONTAINS(programSpecialization,'MBA (WX)') || CONTAINS(programSpecialization,'MBA (X)') || CONTAINS(programSpecialization,'MBA - X'),false,true)}" layout="block">
+                                                <apex:outputText value="{!objPaymentFormConfiguration.Zest_Loan_Payment_Disclaimer__c}" escape="false"></apex:outputText>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel styleClass="col-md-8" rendered="{!IF(CONTAINS(programSpecialization,'MBA (WX)') || CONTAINS(programSpecialization,'MBA (X)') || CONTAINS(programSpecialization,'MBA - X'),true,false)}" layout="block">
+                                                <apex:outputText value="{!objPaymentFormConfiguration.Annual_Fee_Type_Disclaimer_for_Zest__c}" escape="false"></apex:outputText>
+                                            </apex:outputPanel>
+                                        </div>
+        
+                                        <!-- EduVanz Loan Section begins here  -->
+                                        <div class="eduvanzLoanSection LoanSection" style="display: none;">
+                                            <div class="showEduVanzLoan">
+                                                <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue padding-0">
+                                                    <li class="active" id="LoanTab">
+                                                        <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                                            <span class="list-group-item-heading font-18 font-bold">EduVanz Loan Application</span>
+                                                        </a>
+                                                    </li>                     
+                                                </ul>
+                                                <div class="col-md-4 table-responsive" id="EduVanzLoanSection"></div>
+                                                <apex:outputPanel rendered="{!!IF(objPaymentFormConfiguration.FeeTypeBased_Loan__c,true,false)}" layout="block">
+                                                    <div class="col-md-8 showOtherTypeLiquiLoan" style="display: none;">
+                                                        <apex:outputText value="{!objPaymentFormConfiguration.EduVanz_Loan_Payment_Disclaimer__c}" escape="false"></apex:outputText>
+                                                    </div>
+                                                    <div class="col-md-8 showFullFeeLoanLiquiLoan" style="display: none;">
+                                                        <apex:outputText value="{!objPaymentFormConfiguration.Annual_Fee_Type_Disclaimer_for_Eduvanz__c}" escape="false"></apex:outputText>
+                                                    </div>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(objPaymentFormConfiguration.FeeTypeBased_Loan__c,true,false)}" layout="block">
+                                                    <div class="LoanFullFeeDis" style="display: none;">
+                                                        <div class="col-md-8">
+                                                            <apex:outputText value="{!objPaymentFormConfiguration.EduVanz_Loan_Payment_Disclaimer__c}" escape="false"></apex:outputText>
+                                                        </div>
+                                                    </div>
+                                                    <div class="LoanAnnualFeeDis" style="display: none;">
+                                                        <div class="col-md-8">
+                                                            <apex:outputText value="{!objPaymentFormConfiguration.Annual_Fee_Type_Disclaimer_for_Eduvanz__c}" escape="false"></apex:outputText>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputPanel>
+                                            </div>
+                                        </div>
+        
+                                        <!-- LiquiLoans Loan Section begins here  -->
+                                        <div class="liquiloanLoanSection LoanSection" style="display: none;">
+                                            <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue padding-0">
+                                                <li class="active" id="LoanTab">
+                                                    <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                                        <span class="list-group-item-heading font-18 font-bold">LiquiLoans Loan Application</span>
+                                                    </a>
+                                                </li>                     
+                                            </ul>
+                                            <div class="col-md-4 table-responsive" id="LiquiLoansLoanSection"></div>
+                                            <apex:outputPanel rendered="{!!IF(objPaymentFormConfiguration.FeeTypeBased_Loan__c,true,false)}" layout="block">
+                                                <div class="col-md-8 showOtherTypeLiquiLoan otherTypeLoan" style="display: none;">
+                                                    <apex:outputText value="{!objPaymentFormConfiguration.LiquiLoans_Loan_Payment_Disclaimer__c}" escape="false"></apex:outputText>
+                                                </div>
+                                                <div class="col-md-8 annualFeeLoan" style="display: none;">
+                                                    <apex:outputText value="{!objPaymentFormConfiguration.Annual_Fee_Loan_for_LiquiLoans__c}" escape="false"></apex:outputText>
+                                                </div>
+                                                <div class="col-md-8 showFullFeeLoanLiquiLoan fullFeeLoan" style="display: none;">
+                                                    <apex:outputText value="{!objPaymentFormConfiguration.Annual_Fee_Type_Disclaimer__c}" escape="false"></apex:outputText>
+                                                </div>
+                                                
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(objPaymentFormConfiguration.FeeTypeBased_Loan__c,true,false)}" layout="block"> 
+                                                <div class="LoanFullFeeDis" style="display: none;">
+                                                    <div class="col-md-8">
+                                                        <apex:outputText value="{!objPaymentFormConfiguration.LiquiLoans_Loan_Payment_Disclaimer__c}" escape="false"></apex:outputText>
+                                                    </div>
+                                                </div>
+                                                <div class="LoanAnnualFeeDis" style="display: none;">
+                                                    <div class="col-md-8">
+                                                        <apex:outputText value="{!objPaymentFormConfiguration.Annual_Fee_Type_Disclaimer__c}" escape="false"></apex:outputText>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </div>
+            
+                                        <!-- Propelld Loan Section begins here  -->
+                                        <div class="propelldLoanSection LoanSection" style="display: none;">
+                                            <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue padding-0">
+                                                <li class="active" id="LoanTab">
+                                                    <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                                        <span class="list-group-item-heading font-18 font-bold">Propelld Loan Application</span>
+                                                    </a>
+                                                </li>                     
+                                            </ul>
+                                            <div class="col-md-4 table-responsive" id="PropelldLoanSection"></div>
+                                            <apex:outputPanel rendered="{!IF(objPaymentFormConfiguration.FeeTypeBased_Loan__c,false,true)}" layout="block">
+                                                <div class="col-md-8 showOtherTypePropelldLoan otherTypeLoan" style="display: none;">
+                                                    <apex:outputText value="{!objPaymentFormConfiguration.Propelld_Loan_Payment_Disclaimer__c}" escape="false"></apex:outputText>
+                                                </div> 
+                                                <div class="col-md-8 annualFeeLoan" style="display: none;">
+                                                    <apex:outputText value="{!objPaymentFormConfiguration.Annual_Fee_Loan_for_Propelld__c}" escape="false"></apex:outputText>
+                                                </div>   
+                                                <div class="col-md-8 showFullFeeLoanPropelld fullFeeLoan" style="display: none;">
+                                                    <apex:outputText value="{!objPaymentFormConfiguration.Annual_Fee_Type_Disclaimer_for_Propelld__c}" escape="false"></apex:outputText>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(objPaymentFormConfiguration.FeeTypeBased_Loan__c,true,false)}" layout="block">
+                                                <div class="LoanFullFeeDis" style="display: none;">
+                                                    <div class="col-md-8">
+                                                        <apex:outputText value="{!objPaymentFormConfiguration.Propelld_Loan_Payment_Disclaimer__c}" escape="false"></apex:outputText>
+                                                    </div>
+                                                </div>
+                                                <div class="LoanAnnualFeeDis" style="display: none;">
+                                                    <div class="col-md-8">
+                                                        <apex:outputText value="{!objPaymentFormConfiguration.Annual_Fee_Type_Disclaimer_for_Propelld__c}" escape="false"></apex:outputText>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </div>
+
+                                        <!-- Avanse Loan Section begins here  -->
+                                        <div class="avanseLoanSection LoanSection" style="display: none;">
+                                            <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue padding-0">
+                                                <li class="active" id="LoanTab">
+                                                    <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                                        <span class="list-group-item-heading font-18 font-bold">Avanse Loan Application</span>
+                                                    </a>
+                                                </li>                     
+                                            </ul>
+                                            <div class="col-md-4 table-responsive" id="AvanseLoanSection"></div>
+                                            <apex:outputPanel rendered="{!IF(objPaymentFormConfiguration.FeeTypeBased_Loan__c,false,true)}" layout="block">
+                                                <div class="col-md-8 showOtherTypeAvanseLoan otherTypeLoan" style="display: none;">
+                                                    <apex:outputText value="{!objPaymentFormConfiguration.Avanse_Loan_Payment_Disclaimer__c}" escape="false"></apex:outputText>
+                                                </div> 
+                                                <div class="col-md-8 annualFeeLoan" style="display: none;">
+                                                    <apex:outputText value="{!objPaymentFormConfiguration.Annual_Fee_Loan_for_Avanse__c}" escape="false"></apex:outputText>
+                                                </div>   
+                                                <div class="col-md-8 showFullFeeLoanAvanse fullFeeLoan" style="display: none;">
+                                                    <apex:outputText value="{!objPaymentFormConfiguration.Annual_Fee_Type_Disclaimer_for_Avanse__c}" escape="false"></apex:outputText>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(objPaymentFormConfiguration.FeeTypeBased_Loan__c,true,false)}" layout="block">
+                                                <div class="LoanFullFeeDis" style="display: none;">
+                                                    <div class="col-md-8">
+                                                        <apex:outputText value="{!objPaymentFormConfiguration.Avanse_Loan_Payment_Disclaimer__c}" escape="false"></apex:outputText>
+                                                    </div>
+                                                </div>
+                                                <div class="LoanAnnualFeeDis" style="display: none;">
+                                                    <div class="col-md-8">
+                                                        <apex:outputText value="{!objPaymentFormConfiguration.Annual_Fee_Type_Disclaimer_for_Avanse__c}" escape="false"></apex:outputText>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </div>
+            
+                                        <!-- EzCred Loan Section begins here  -->
+                                        <div class="ezcredLoanSection LoanSection" style="display: none;">
+                                            <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue padding-0">
+                                                <li class="active" id="LoanTab">
+                                                    <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                                        <span class="list-group-item-heading font-18 font-bold">EzCred Loan Application</span>
+                                                    </a>
+                                                </li>                     
+                                            </ul>
+                                            <div class="col-md-4 table-responsive" id="EzCredLoanSection">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <apex:outputText value="{!objPaymentFormConfiguration.Ezcred_Loan_Payment_Disclaimer__c}" escape="false"></apex:outputText>
+                                            </div>
+                                        </div>
+            
+                                        <!-- GrayQuest Loan Section begins here  -->
+                                        <div class="grayquestLoanSection LoanSection" style="display: none;">
+                                            <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue padding-0">
+                                                <li class="active" id="LoanTab">
+                                                    <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                                        <span class="list-group-item-heading font-18 font-bold">GrayQuest Loan Application</span>
+                                                    </a>
+                                                </li>                     
+                                            </ul>
+                                            <div class="col-md-4" id="GrayQuestLoanSection"></div>
+                                            <apex:outputPanel rendered="{!IF(objPaymentFormConfiguration.FeeTypeBased_Loan__c,false,true)}" layout="block">
+                                                <div class="col-md-8 showOtherTypeGrayQuestLoan otherTypeLoan" style="display: none;">
+                                                    <apex:outputText value="{!objPaymentFormConfiguration.GrayQuest_Loan_Payment_Disclaimer__c}" escape="false"></apex:outputText>
+                                                </div>  
+                                                <div class="col-md-8 annualFeeLoan" style="display: none;">
+                                                    <apex:outputText value="{!objPaymentFormConfiguration.Annual_Fee_Loan_for_GrayQuest__c}" escape="false"></apex:outputText>
+                                                </div>  
+                                                <div class="col-md-8 showFullFeeLoanGrayQuest fullFeeLoan" style="display: none;">
+                                                    <apex:outputText value="{!objPaymentFormConfiguration.Full_Fee_Loan_GrayQuest_Disclaimer__c}" escape="false"></apex:outputText>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(objPaymentFormConfiguration.FeeTypeBased_Loan__c,true,false)}" layout="block">
+                                                <div class="LoanFullFeeDis" style="display: none;">
+                                                    <div class="col-md-8">
+                                                        <apex:outputText value="{!objPaymentFormConfiguration.GrayQuest_Loan_Payment_Disclaimer__c}" escape="false"></apex:outputText>
+                                                    </div>
+                                                </div>
+                                                <div class="LoanAnnualFeeDis" style="display: none;">
+                                                    <div class="col-md-8">
+                                                        <apex:outputText value="{!objPaymentFormConfiguration.Full_Fee_Loan_GrayQuest_Disclaimer__c}" escape="false"></apex:outputText>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </div>
+                                        <!--End    -->
+            
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-------------------------------------- #END# Loan Down Payment Section ------------------------------>
+                    </div>
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 payment-detail">
+                        <div class="card">
+                            <div class="header p-b-0 b-b-n p-t-0 p-l-0 p-r-0">
+                                <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue">
+                                    <li class="active" id="InterivewFormTab">
+                                        <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                            <span class="list-group-item-heading font-18 font-bold" id="modOfPaymentMessgaeId">Select Mode of Payment</span>
+                                        </a>
+                                    </li>                     
+                                </ul>
+                            </div>
+                            <div class="body">
+                                <div class="row clearfix modeOfPayment">
+                                    <apex:outputPanel layout="block" id="onlineRadionButton" style="display:none;" 
+                                        styleClass="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-0 rm-m-b">
+                                        <div class="form-group form-group-lg">
+                                            <div class="">
+                                                <input name="PaymentMode" id="PaymentMode1" value="Online" data-mode="1" type="radio" class="with-gap form-control PaymentMode" />
+                                                <label for="PaymentMode1">Pay Online</label>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+
+                                    <apex:outputPanel layout="block" id="DDRadionButton" style="display:none;" 
+                                        styleClass="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-0 rm-m-b">
+                                        <div class="form-group form-group-lg">
+                                            <div class="">
+                                                <input name="PaymentMode" id="PaymentMode6" value="DemandDraft" data-mode="2" type="radio" class="with-gap form-control PaymentMode" />
+                                                <label for="PaymentMode6">Demand Draft</label>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+            
+                                    <apex:outputPanel rendered="{!!objDetails.loanWindowClosed}" layout="block" 
+                                        id="LoanRadionButton" style="display:none;" styleClass="col-xs-12 col-sm-12 col-md-4 col-lg-4 m-b-0 rm-m-b">
+                                        <div class="form-group form-group-lg">
+                                            <div class="">
+                                                <input type="radio" name="PaymentMode" id="PaymentMode3" data-mode="2" value="Loan" class="with-gap form-control PaymentMode" />
+                                                <label for="PaymentMode3">Loan</label>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+            
+                                    <apex:outputPanel rendered="{!objPaymentFormConfiguration.show_Installment__c}" style="display:none;"
+                                        styleClass="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-0 rm-m-b"  id="InstallmentRadionButton">
+                                        <div class="form-group form-group-lg">
+                                            <div class="">
+                                                <input type="radio" name="PaymentMode" id="PaymentMode5" data-mode="2" value="Installment" class="with-gap form-control PaymentMode" />
+                                                <label for="PaymentMode5">Installment</label>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                </div>
+
+                                <!--======================================================== Demand Draft Section ================================================-->
+                                <div class="row clearfix paymentOptions" id="DDNote">
+                                    <div class="col-md-4">
+                                        <div class="form-group required-label">
+                                            <apex:inputField id="ddNumber" value="{!objPayment.nm_DemandDraftNumber__c}" styleClass="form-control notnull" html-placeholder="Demand Draft Number"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group required-label">
+                                            <apex:inputField id="ddBankName" value="{!objPayment.nm_NameoftheBank__c}" styleClass="form-control notnull" html-placeholder="Name Of the Bank"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group required-label">
+                                            <div class="input-group date" data-date-format="DD/MM/YYYY" id="datetimepicker1">
+                                                <span class="dateInput dateOnlyInput">
+                                                    <apex:inputText value="{!objPayment.nm_DemandDraftDate__c}" styleClass="form-control notnull" id="dob" html-placeholder="Demand Draft Date"
+                                                    />
+                                                </span>
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group required-label">
+                                            <apex:inputField id="ddBankLocation" value="{!objPayment.nm_BankLocation__c}" styleClass="form-control notnull" html-placeholder="Bank Location"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group required-label">
+                                            <div class="input-group date" data-date-format="DD/MM/YYYY" id="datetimepicker2">
+                                                <span class="dateInput dateOnlyInput">
+                                                    <apex:inputText value="{!objPayment.nm_DispatchDate__c}" styleClass="form-control notnull" id="doc1" html-placeholder="Dispatch Date"
+                                                    />
+                                                </span>
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--======================================================== #END# of Demand Draft Section ================================================-->
+
+            
+                                <div class="row clearfix">
+                                    <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions PayBtn">
+                                        <a href="javascript:void(0);" class="btn btn-primary btn-block btn-lg btn-custom waves-effect" id="PayBtn" onclick="return GoToPayment();">Make Payment</a>
+                                    </div>
+            
+                                    <!-- <apex:outputPanel styleClass="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions PayBtndd" rendered="{!IsICForMakingPayment}" layout="block">
+                                        <apex:commandButton value="Save DD Details" styleClass="btn btn-block btn-primary btn-lg btn-custom waves-effect" id="PayBtndd" action="{!SaveDD}" />
+                                    </apex:outputPanel> 
+                                    
+                                    <apex:outputPanel rendered="{!IsHOForMakingPayment && false}" styleClass="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions PayBtnNEFT" layout="block">
+                                        <apex:commandButton value="Save NEFT Details" styleClass="btn btn-block btn-primary btn-lg btn-custom waves-effect" id="PayBtnNEFT" action="{!SaveDD}" />
+                                    </apex:OutPutPanel> -->
+            
+                                    <apex:outputPanel style="display:none;" layout="block" styleClass="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions proceedToLoan">
+                                        <a href="javascript:void(0);" id="proceedToLoan" class="btn btn-block btn-primary btn-lg btn-custom waves-effect">Proceed</a>
+                                    </apex:outPutPanel>
+            
+                                    <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions InstallmentPaymentButton" id="InstallmentPaymentButton" style="display:none;">
+                                        <a href="javascript:void(0);" id="PayBtnInstallment" class="btn btn-block btn-primary btn-lg btn-custom waves-effect">Installment</a>
+                                    </div>
+            
+                                    <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2 showBackToHomeButton"  style="display:none;">
+                                        <a href="javascript:void(0);" onclick="backToPaymentSection();" id="showBackToHomeButton" class="btn btn-block btn-primary btn-lg btn-custom waves-effect">Back</a>
+                                    </div>
+                                </div>
+                                
+                                <p class="font-italic" style="color: #777;"><span class="font-bold">Note:</span> Admission Processing (Registration) Fee is non-refundable.</p>
+                                <!-- <p class="font-italic" style="color: #777;">July 2024 Batch admissions are closed. January 2025 Batch details will be updated shortly.</p> -->
+                                <p class="font-italic" style="color: #777;"><apex:outputText id="paymentMessage" value="{!objDetails.paymentClouserMessage}" /></p>
+                            </div>
+                        </div>
+                    </div>
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+            <!-- to render if form is not submited -->
+            <apex:outputPanel rendered="{!!isFormSubmitted}" layout="none">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+                    <div class="card">
+                        <div class="header p-b-0 b-b-n p-t-0 p-l-0 p-r-0">
+                            <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue">
+                                <li class="active">
+                                    <a href="javascript:void(0);" style="color: #fff;cursor:default;">
+                                        <span class="list-group-item-heading font-18 font-bold">Payment Details</span>
+                                    </a>
+                                </li>                     
+                            </ul>
+                        </div>
+                        <div class="body align-center">
+                            <img src="/img/chatter/OpenRoad.svg" class="img-responsive" style="display: block;
+                                margin-left: auto;
+                                margin-right: auto;
+                                width: 50%"/>
+                            <h4>Kindly 'review and submit' your Application Form (left panel on screen) to proceed with the fee payment. Thank you!</h4>
+                        </div>
+                    </div>
+                </div>
+            </apex:outputPanel>
+            
+        </div>
+
+        <!-- ================================================= Payment GetWay Options ===================================================================== -->
+        <div class="modal fade" id="PaymentGateWayOption" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="defaultModalLabel">Select Payment GateWay</h4>
+                    </div>
+                    <div class="modal-body row">
+                        <apex:outputPanel rendered="{!objPaymentFormConfiguration.BillDesk_Gateway__c}" layout="block" styleclass="col-lg-6 col-md-6 col-sm-6 col-xs-12" >
+                            <div class="info-box hover-zoom-effect pointer paymentGatewayGrp" data-value="BillDesk GateWay">
+                                <div class="icon">
+                                    <center>
+                                        <img style="height:80px;" src="{!URLFOR($Resource.PaymentGatewayImages, 'PaymentGatewayImages/BillDeskV2.jpg')}" class="img-responsive"/>
+                                    </center>
+                                </div>
+                                <div class="content">
+                                    <div class="number">BillDesk</div>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!objPaymentFormConfiguration.HDFC_Gateway__c}" layout="block" styleclass="col-lg-6 col-md-6 col-sm-6 col-xs-12" >
+                            <div class="info-box hover-zoom-effect pointer paymentGatewayGrp" data-value="HDFC GateWay">
+                                <div class="icon">
+                                    <center>
+                                        <img src="{!URLFOR($Resource.PaymentGatewayImages, 'PaymentGatewayImages/hdfc.webp')}" class="img-responsive"/>
+                                    </center>
+                                </div>
+                                <div class="content">
+                                    <div class="number">HDFC</div>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!objPaymentFormConfiguration.Paytm_Gateway__c}" layout="block" styleclass="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+                            <div class="info-box hover-zoom-effect pointer paymentGatewayGrp" data-value="Paytm GateWay">
+                                <div class="icon">
+                                    <center>
+                                        <img src="{!URLFOR($Resource.PaymentGatewayImages, 'PaymentGatewayImages/paytm.png')}" class="img-responsive"/>
+                                    </center>
+                                </div>
+                                <div class="content">
+                                    <div class="number">Paytm</div>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!objPaymentFormConfiguration.ICICI_Gateway__c}" layout="block" styleclass="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+                            <div class="info-box hover-zoom-effect pointer paymentGatewayGrp" data-value="ICICI GateWay">
+                                <div class="icon" >
+                                    <center>
+                                        <img src="{!URLFOR($Resource.PaymentGatewayImages, 'PaymentGatewayImages/CashfreePayments.png')}" class="img-responsive" style="height: 75px;" />
+                                    </center>
+                                </div>
+                                <div class="content">
+                                    <div class="number">CashFree</div>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!objPaymentFormConfiguration.Razorypay_Gateway__c}" layout="block" styleclass="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+                            <div class="info-box hover-zoom-effect pointer paymentGatewayGrp" data-value="Razorpay GateWay">
+                                <div class="icon">
+                                    <center>
+                                        <img src="{!URLFOR($Resource.PaymentGatewayImages, 'PaymentGatewayImages/razorpay2.png')}" class="img-responsive" />
+                                    </center>
+                                </div>
+                                <div class="content">
+                                    <div class="number">Razorpay</div>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-lg btn-custom waves-effect" data-dismiss="modal">CLOSE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================================================== Error PopUp Options ===================================================================== -->
+        <apex:outputPanel styleClass="modal fade" html-tabindex="-1" html-role="dialog" id="errorPoupId" rendered="{!strSecToShow =='PopUpError' || strSecToShow == 'error'}">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="defaultModalLabel">Important Message:</h4>
+                    </div>
+                    <div class="modal-body row">
+                        <p>{!errMessages}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <apex:commandButton styleClass="btn btn-primary btn-lg btn-custom waves-effect" value="I Agree" rendered="{!returnUrl == null || returnUrl =''}"
+                            html-data-dismiss="modal" />
+                        <apex:outputPanel rendered="{!returnUrl!=null}">
+                            <a href="{!returnUrl}" class="btn btn-primary btn-lg btn-custom waves-effect">I Agree</a>
+                        </apex:outputPanel>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+    </div>
+
+    <!-- Notification Plugin Js -->
+    <!-- <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/pages/ui/notifications.js"></script> -->
+    <!-- Bootstrap Datepicker Plugin Js -->
+    <script src="{!URLFOR($Resource.AdminBSBMaterialDesign, 'AdminBSBMaterialDesign/js/bootstrap-datetimepicker.js')}"></script>
+    <!-- Custom Js -->
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/pages/widgets/infobox/infobox-1.js"></script>
+
+    <apex:outPutPanel id="ProductScriptSection">
+        <script>
+            function getApplicableAmountForPayment() {
+                let jsonStringOfProductVsAmount = $('[id$=jsonStringOfProductVsAmount]').val();
+                let mapOfProductVsAmount = JSON.parse(jsonStringOfProductVsAmount);
+                let applicableAmount = 5000;
+                let applicableLateFee = '{!objDetails.applicableLateFee}';
+                let registrationFeePaid = '{!objfee.AlreadyPaidRegistrationFee}';
+                let applicableCareerServiceFee = '{!objDetails.applicableCareerServiceFee}';
+                let applicableCourseraFee = '{!objCoursera.applicableCourseraFee}';
+                let paymentMode = $('[id$=hdnPaymentMode]').val();
+                let selectedOption = $('[id$=hdnPaymentOption]').val();
+                let registrationFee = 0;
+
+                //if(paymentMode == 'Installment' || paymentMode == 'Loan'){
+                if (checkMode == 'Installment' || checkMode == 'Loan') {
+                    selectedOption = selectedOption.includes('-') ? selectedOption.split('-')[1] : selectedOption;
+                    console.log('selectedOption -->' + selectedOption);
+                }
+                if (selectedOption != undefined && mapOfProductVsAmount.hasOwnProperty(selectedOption)) {
+                    applicableAmount = mapOfProductVsAmount[selectedOption];
+                }
+
+                if (registrationFeePaid == 'false') {
+                    registrationFee = parseFloat('{!registrationFee}');
+                    console.log('registrationFee ---' + registrationFee);
+                }
+
+                // to calculate the late fee with product amount for installment and loan.
+                if (parseFloat(applicableLateFee) > 0) {
+                    applicableAmount = parseFloat(applicableAmount) + parseFloat(applicableLateFee);
+                    console.log('applicableAmount with Late Fee ---' + applicableAmount);
+                }
+
+                let total_amount = (parseInt(applicableAmount) + parseInt(applicableCareerServiceFee) + parseInt(registrationFee) + parseInt(applicableCourseraFee));
+                console.log('applicableAmount -->' + total_amount);
+                return total_amount;
+
+                // return applicableAmount;
+            }
+
+            function getApplicableAmountForSpecificPayment(paymentFor) {
+                let jsonStringOfProductVsAmount = $('[id$=jsonStringOfProductVsAmount]').val();
+                let mapOfProductVsAmount = JSON.parse(jsonStringOfProductVsAmount);
+                paymentFor = paymentFor == 'Registration' ? 'Registration Fee' : paymentFor;
+                paymentFor = paymentFor == 'Initial Admission Payment' ? 'InitialAdmissionFee' : paymentFor;
+                console.log(mapOfProductVsAmount, paymentFor);
+                return mapOfProductVsAmount.hasOwnProperty(paymentFor) ? mapOfProductVsAmount[paymentFor] : 0;
+            }
+
+            function getApplicableAmountForLiveLectures() {
+                let jsonStringOfProductVsAmount = $('[id$=jsonStringOfProductVsAmount]').val();
+                let mapOfProductVsAmount = JSON.parse(jsonStringOfProductVsAmount);
+                let selectedOptionLiveLectures = $('[id$=hdnLiveLecturesOption]').val();
+                let applicableAmountLL = 0;
+                let lstOfLiveLectureFeeType = ['1SemLecturesFee','2SemLecturesFee','3SemLecturesFee','4SemLecturesFee'];
+                console.log('selectedOptionLiveLectures ==>'+selectedOptionLiveLectures);
+                if (selectedOptionLiveLectures != undefined) {
+                    if (lstOfLiveLectureFeeType.includes(selectedOptionLiveLectures)) {
+                        applicableAmountLL = mapOfProductVsAmount[selectedOptionLiveLectures];
+                    } else if (selectedOptionLiveLectures == 'Custom') {
+                        let singleSub = mapOfProductVsAmount.hasOwnProperty('Live Lectures') ? mapOfProductVsAmount['Live Lectures'] : 0;
+                        let selectedSub = $('[id$=hdnCourseList]').val();
+                        let selectedOptionArray = selectedSub != null && selectedSub != '' ? selectedSub.split(',') : [];
+                        applicableAmountLL = singleSub * selectedOptionArray.length;
+                    }
+                }
+                return applicableAmountLL;
+            }
+
+            function getApplicableAmountForBacklog() {
+                let jsonStringOfProductVsAmount = $('[id$=jsonStringOfProductVsAmount]').val();
+                let mapOfProductVsAmount = JSON.parse(jsonStringOfProductVsAmount);
+                let applicableAmountLL = 0;
+                let singleSub = mapOfProductVsAmount.hasOwnProperty('Backlog') ? mapOfProductVsAmount['Backlog'] : 0;
+                let selectedSub = $('[id$=hdnBacklogList]').val();
+                let selectedOptionArray = selectedSub != null && selectedSub != '' ? selectedSub.split(',') : [];
+                applicableAmountLL = singleSub * selectedOptionArray.length;
+
+                console.log('applicableAmountLL ==>' + applicableAmountLL);
+                return applicableAmountLL;
+            }
+
+        </script>
+    </apex:outPutPanel>
+
+    <!-- Custom Script -->
+    <c:PaymentValidationPage programCategory="{!programCategory}" objPaymentFormConfiguration="{!objPaymentFormConfiguration}" isRedirect="{!objAdmissionAmount.isRedirect}"
+        totalAmountPaid="{!objDetails.totalAmountPaid}" applicableLateFee="{!objDetails.applicableLateFee}" registrationFee="{!registrationFee}" strSecToShow="{!strSecToShow}"
+        subventionPrograms="{!objDetails.subventionPrograms}" courseList="{!objLiveLecturePayment.CourseList}" programSpecialization="{!programSpecialization}" 
+        AlreadyMadeAllInstallment="{!objfee.AlreadyMadeAllInstallment}" showliveLectureBasedOnSY="{!objDetails.showliveLectureBasedOnSY}" EMIFeeType="{!objLoanDetails.EMIFeeType}"
+        AlreadyPaidLiveLectureFee="{!objLiveLecturePayment.AlreadyPaidLiveLectureFee}" LiveLectureTypeOpted="{!objLiveLecturePayment.LiveLectureTypeOpted}" semester="{!semester}"
+        maxInstalmentAmt="{!objDetails.maxInstalmentAmt}" AlreadyPaidRegistrationFee="{!objfee.AlreadyPaidRegistrationFee}" isDownPaymentMade="{!objLoanDetails.isDownPaymentMade}"
+        redirectURL="{!objAdmissionAmount.returnURL}"
+    />
+
+</apex:component>

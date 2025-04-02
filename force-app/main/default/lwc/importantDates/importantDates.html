@@ -1,0 +1,375 @@
+<!--
+  @description       : 
+  @author            : @vickysahu
+  @group             : 
+  @last modified on  : 01-14-2025
+  @last modified by  : @vickysahu
+-->
+<template>
+    <!-- <template if:false={isCancelDateVisible}> -->
+
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col">
+                <lightning-combobox name="programType" label="Choose Program Type" placeholder="Choose Program Type"
+                    options={chooseProgramType} onchange={onChooseProgramChange}></lightning-combobox>
+            </div>
+            <div class="slds-col">
+                <lightning-combobox name="program" label="Choose Program" placeholder="Choose Program"
+                    options={programSelectedList} onchange={onProgramChange}></lightning-combobox>
+            </div>
+        </div>
+        <br />
+        <template if:true={isButtonAvailable}>
+            <lightning-button variant="brand-outline" label="Interview Dates" onclick={onOpenInterviewModal}
+                class="slds-m-left_x-small"></lightning-button>
+        </template>
+        <br />
+        <div>
+            <!-- <lightning-datatable key-field="label" hide-checkbox-column wrap-text-max-lines="10"
+                data={transposeSelectedProgram} columns={transposeColumn}>
+            </lightning-datatable> -->
+        </div>
+        <br />
+        <br />
+        <template if:true={isTableHasRow}>
+            <div class="slds-p-horizontal_small">
+                <c-multi-select-dropdown-pick-list multi-select="true" onselectoption={handleSelectOptionList}
+                    options={multiSelectedPickList} selectedvalue={multiSelectedValue} data-api-name="Status"
+                    data-field-key="1" data-field-type="MultiplePickList" label="Category">
+                </c-multi-select-dropdown-pick-list>
+            </div>
+            <div>
+                <!-- <table class="slds-table slds-table_cell-buffer slds-table_bordered"
+                    aria-labelledby="element-with-table-label other-element-with-table-label">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <template for:each={transposeColumn} for:item="column" for:index="i">
+                                <th key={column} class="" scope="col">
+                                    <div class="slds-truncate" title={column.label}>{column.label}</div>
+                                </th>
+                            </template>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="slds-line-height_reset">
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Edit">Edit</div>
+                            </th>
+                            <template for:each={transposeColumnFIrstColumRemoved} for:item="column" for:index="i">
+                                <th key={column} class="" scope="col">
+                                    <div class="slds-truncate" title={column.label}>
+                                        <button type="button" class="slds-button slds-button_neutral" data-editindex={i}
+                                            onclick={onHandleEdit}>Edit</button>
+                                    </div>
+                                </th>
+                            </template>
+                        </tr>
+                        <template for:each={transposeSelectedProgram} for:item="tate">
+                            <tr key={tate} class="slds-hint-parent ratingTableAppend">
+                                <template for:each={tate} for:item="col">
+                                    <td key={col} data-label="Account Name">
+                                        <div class="slds-truncate wrapText" title="Cloudhub">{col}</div>
+                                    </td>
+                                </template>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table> -->
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <template for:each={transposeColumn} for:item="column" for:index="i">
+                                <th key={column} class="" scope="col">
+                                    <div class="slds-truncate" title={column.label}>{column.label}</div>
+                                </th>
+                            </template>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Iterate through the table data and create rows dynamically -->
+                        <template for:each={tableData} for:item="row">
+                            <tr key={row.id}>
+                                <td>{row.fieldLabel}</td>
+                                <!-- Iterate dynamically over records -->
+                                <template for:each={row.records} for:item="record">
+                                    <td key={record.key}>
+                                        <template if:true={row.showCancelDateButton}>
+                                            <lightning-button label="View" onclick={handleCancelDateClick}
+                                                data-id={row.id} data-key={record.key}>
+                                            </lightning-button>
+                                        </template>
+                                        <template if:true={row.showEditButton}>
+                                            <lightning-button label="Edit" onclick={onHandleEdit}
+                                                data-key={record.key}>
+                                            </lightning-button>
+                                        </template>
+                                        <template if:false={row.showCancelDateButton}>
+                                            {record.value}
+                                        </template>
+                                    </td>
+                                </template>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+        <template if:false={isTableHasRow}>
+            No Dates Found
+        </template>
+
+
+
+
+        <template if:true={isInterviewModalOpen}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-03" aria-modal="true"
+                aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="width: 100%;max-width: 100rem;">
+                    <!-- Modal/Popup Box LWC header here -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            type="button" title="Close" onclick={onCloseInterviewModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                type="button" size="small">
+                            </lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-03" class="slds-text-heading_medium slds-hyphenate">Interview Dates</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-3">
+                        <lightning-datatable key-field="Id" hide-checkbox-column data={lstInterviewSlot}
+                            columns={interSlotColumn}>
+                        </lightning-datatable>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={onCloseInterviewModal} type="button"
+                            title="Back">Back</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <template if:true={isEditModalOpen}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-04" aria-modal="true"
+                aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="width: 100%;max-width: 100rem;">
+                    <!-- Modal/Popup Box LWC header here -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            type="button" title="Close" onclick={onCloseEditModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                type="button" size="small">
+                            </lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-04" class="slds-text-heading_medium slds-hyphenate">Edit(
+                            {editColumn.specialization} )</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-4">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input type="text" label="Admission Category"
+                                    value={editColumn.admissionCategory} readonly></lightning-input>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input type="text" label="Semester" value={editColumn.semester}
+                                    readonly></lightning-input>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input type="text" label="Session" value={editColumn.session}
+                                    readonly></lightning-input>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input type="text" label="Year" value={editColumn.year}
+                                    readonly></lightning-input>
+                            </div>
+                        </div>
+                        <template if:true={isNeedToShowApplicationInput}>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input type="date" label="Application Start Date"
+                                        data-input-name="ApplicationStartDateUTC"
+                                        value={editColumn.ApplicationStartDateUTC}
+                                        onchange={handleInputChange}></lightning-input>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input type="date" label="Application End Date"
+                                        data-input-name="ApplicationEndDateUTC" value={editColumn.ApplicationEndDateUTC}
+                                        onchange={handleInputChange}></lightning-input>
+                                </div>
+                            </div>
+
+                        </template>
+                        <template if:true={isNeedToShowPaymentInput}>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input type="datetime" label="Payment Start Date"
+                                        data-input-name="paymentStartDateUTC" value={editColumn.paymentStartDateUTC}
+                                        onchange={handleInputChange}></lightning-input>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input type="datetime" label="Payment End Date"
+                                        data-input-name="paymentEndDateUTC" value={editColumn.paymentEndDateUTC}
+                                        onchange={handleInputChange}></lightning-input>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input type="datetime"
+                                        label="Loan Window Start Date (same as Payment Start Date)" readonly
+                                        data-input-name="loanWindowStartDateUTC" value={loanPaymentStartDateReadOnly}
+                                        onchange={handleInputChange}></lightning-input>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input type="datetime" label="Loan Window End Date"
+                                        data-input-name="loanWindowEndDateUTC" value={editColumn.loanWindowEndDateUTC}
+                                        onchange={handleInputChange}></lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:true={isNeedToShowLateFeeInput}>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input type="date" label="Late Fee Start Date Slab 1"
+                                        data-input-name="LateFeeStartDateSlab1UTC"
+                                        value={editColumn.LateFeeStartDateSlab1UTC}
+                                        onchange={handleInputChange}></lightning-input>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input type="date" label="Late Fee End Date Slab 1"
+                                        data-input-name="LateFeeEndDateSlab1UTC"
+                                        value={editColumn.LateFeeEndDateSlab1UTC}
+                                        onchange={handleInputChange}></lightning-input>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input type="date" label="Late Fee Start Date Slab 2"
+                                        data-input-name="LateFeeStartDateSlab2UTC"
+                                        value={editColumn.LateFeeStartDateSlab2UTC}
+                                        onchange={handleInputChange}></lightning-input>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input type="date" label="Late Fee End Date Slab 2"
+                                        data-input-name="LateFeeEndDateSlab2UTC"
+                                        value={editColumn.LateFeeEndDateSlab2UTC}
+                                        onchange={handleInputChange}></lightning-input>
+                                </div>
+                            </div>
+                            <!-- <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input type="date" label="Late Fee Start Date Slab 3"
+                                        data-input-name="LateFeeStartDateSlab3UTC"
+                                        value={editColumn.LateFeeStartDateSlab3UTC}
+                                        onchange={handleInputChange}></lightning-input>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input type="date" label="Late Fee End Date Slab 3"
+                                        data-input-name="LateFeeEndDateSlab3UTC" value={editColumn.LateFeeEndDateSlab3UTC}
+                                        onchange={handleInputChange}></lightning-input>
+                                </div>
+                            </div> -->
+                        </template>
+                        <template if:true={isNeedToShowVideoVerification}>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input type="date" label="Last Date for Video Verification"
+                                        data-input-name="videoVerificationLastDateUTC"
+                                        value={editColumn.videoVerificationLastDateUTC}
+                                        onchange={handleInputChange}></lightning-input>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template if:true={isNeedToShowCancellationDate}>
+                            <!-- <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-04" aria-modal="true"
+                            aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
+                                <div class="slds-modal__container" style="width: 100%;max-width: 100rem;"> -->
+                                    <c-Show-Cancelation-Dates payment-config-id={paymentConfigId} check={count} onclose={handleCancelDateClose}></c-Show-Cancelation-Dates>
+                                <!-- </div>
+                            </section> -->
+                        </template>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_brand" onclick={onSaveEditValue} type="button"
+                            title="Back">Save</button>
+                        <button class="slds-button slds-button_neutral" onclick={onCloseEditModal} type="button"
+                            title="Back">Back</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <template if:true={isSummaryModalOPen}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-05" aria-modal="true"
+                aria-describedby="modal-content-id-5" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="width: 100%;max-width: 100rem;">
+                    <!-- Modal/Popup Box LWC header here -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            type="button" title="Close" onclick={onCloseSummaryModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                type="button" size="small">
+                            </lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-05" class="slds-text-heading_medium slds-hyphenate">Summary</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-5">
+                        <lightning-datatable key-field="CalenderId" hide-checkbox-column wrap-text-max-lines="10"
+                            data={editSummaryData} columns={editSummaryColumn}>
+                        </lightning-datatable>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_brand" onclick={handleConfirmClick} type="button"
+                            title="Back">Save Changes</button>
+                        <button class="slds-button slds-button_neutral" onclick={onCloseSummaryModal} type="button"
+                            title="Back">Back</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <template if:true={isCancelDateVisible}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-04" aria-modal="true"
+                aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="width: 100%;max-width: 100rem;">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            type="button" title="Close" onclick={onCloseCancelationDateModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                type="button" size="small">
+                            </lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-06" class="slds-text-heading_medium slds-hyphenate">Cancelation Dates</h2>
+                    </header>
+                    <c-Show-Cancelation-Dates payment-config-id={paymentConfigId}
+                    onclose={handleCancelDateClose} ></c-Show-Cancelation-Dates>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={onCloseCancelationDateModal} type="button"
+                            title="Back">Back</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <template if:true={isShowSpinner}>
+            <lightning-spinner alternative-text="Loading" size="xx-small"></lightning-spinner>
+        </template>
+    <!-- </template> -->
+
+    <!-- Render Child Component Dynamically -->
+    <!-- <template if:true={isCancelDateVisible}>
+        <c-Show-Cancelation-Dates payment-config-id={paymentConfigId}
+            onclose={handleCancelDateClose}></c-Show-Cancelation-Dates>
+    </template> -->
+
+</template>

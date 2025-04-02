@@ -1,0 +1,98 @@
+h1 {
+	font-size: 15px;
+	color: white;
+	font-weight: bold;
+}
+
+h2 {
+	font-size: 15px;
+	color: #212529;
+	font-weight: bold;
+}
+
+h3 {
+	font-size: 15px;
+	color: #212529;
+	font-weight: bold;
+}
+
+
+h4 {
+	font-size: 15px;
+	color: #212529;
+}
+
+.title {
+	font-size: 30px;
+	color: #212529;
+	font-weight: bold;
+}
+
+lightning-card {
+	--slds-c-card-color-background: #BA0517;
+	--slds-c-card-spacing-block-end: 0rem;
+	--slds-c-card-spacing-block-start: 0rem;
+}
+
+.top-nav {
+	background-color: #BA0517;
+	height: 30px;
+	display: flex;
+	align-items: center;
+}
+
+.table-margin {
+	margin-top: 10px;
+}
+
+.border {
+	color: #BA0517;
+	border-color: #BA0517;
+	--slds-c-button-spacing-inline-start: 1rem;
+	--slds-c-button-spacing-inline-end: 1rem;
+}
+
+.c-hcCasesHeader_hcCasesHeader {
+	color: white;
+	font-size: 20px;
+}
+
+.c-border_color {
+	border-color: white;
+}
+
+.slds-button_color {
+	background-color: #212529;
+}
+
+.slds-button_width {
+	--slds-c-button-spacing-block-end: 0.3rem;
+	--slds-c-button-spacing-block-start: 0.3rem;
+}
+
+.slds-icon-action-new-child-case {
+	--slds-c-icon-color-background: #BA0517;
+	margin-right: 10px;
+}
+
+.slds-icon-action-call {
+	--slds-c-icon-color-background: #212529;
+	margin-right: 10px;
+}
+
+.slds-modal__container {
+	max-width: 40rem !important;
+	width: 40% !important;
+}
+
+.myTable .slds-th__action .slds-th__action-button {
+	display: none;
+}
+
+.slds-button_icon-bare {
+	display: none;
+}
+
+.slds-pointer {
+	cursor: pointer;
+}

@@ -1,0 +1,61 @@
+<!--
+  @description       : 
+  @author            : @Ravi
+  @group             : 
+  @last modified on  : 08-28-2024
+  @last modified by  : @Ravi
+-->
+<template>
+    <lightning-card >
+        <div class="page-section page-main" style="text-align: center; margin-bottom: 20px;">
+            <h5 slot="title" style="font-size: 20px; font-weight: bold;">
+                Internal Ticket
+            </h5>
+        </div>
+        <div class="slds-size_4-of-6" style="margin-left: 100px;">
+            <template if:true={showSpinner}>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </template>
+
+            <lightning-card >
+                <h1 slot="title">
+                    <lightning-icon icon-name="standard:case" size="medium" style="margin-left:10px;"></lightning-icon> &nbsp;&nbsp;
+                    Change Case Status
+                </h1>
+
+                <div class="slds-wrap slds-grid">
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-textarea label="Enter Comment" data-field="Case_Comment__c" value={Case_Comment} 
+                            onchange={handleChange} variant="label-inline" required>
+                        </lightning-textarea>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-input type="checkbox" label="Do you want to attach related files/screenshots?"
+                            onchange={handleCheckChange} unchecked>
+                        </lightning-input>
+                    </div>
+                    <template if:true={isUploadFile}>
+                        <div class="slds-col slds-size_1-of-1 slds-var-p-around_small">
+                            <p> File size should be less than 3MB(pdf, png, jpg, jpeg, doc,ppt, xls) formats. </p>
+                            <lightning-input type="file" class="text" label="Attachment" 
+                                 accept={acceptedFormats} variant="destructive-text"
+                                multiple onchange={handleFileUploaded}>
+                            </lightning-input>
+                            <div class="slds-text-color_error">{fileUploadError}</div>
+                            <div class="container">
+                                <template for:each={filesUploaded} for:item="file">
+                                    <lightning-pill key={file.Title} label={file.Title} data-fid={file.Title}
+                                        onremove={handleRemove} class="slds-text-body_small"></lightning-pill>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <div class="slds-col slds-size_1-of-1 slds-var-m-top_medium" style="margin-left: 275px;">
+                        <lightning-button variant="brand" type="submit" label="Save" onclick={handleSubmit}></lightning-button> &nbsp;&nbsp;
+                        <lightning-button variant="neutral" type="button" label="Cancel" onclick={handleCancel}></lightning-button>
+                    </div>
+                </div>
+            </lightning-card>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,82 @@
+<apex:page sidebar="FALSE" controller="nmICinvoice">
+<br>  </br>
+<br/>
+<head>
+        <style type="text/css" media="print">
+               @page {
+                padding-top: 60px;
+                @top-center {
+                    content: element(header);
+                }
+                @bottom-left{
+                    content: element(footer);
+                    padding-bottom:2px;
+                }
+                margin-bottom:3.1cm;
+                margin-top:20cm;
+                margin-right:.9cm;
+                margin-left:.8cm;
+               
+            }
+            div.header {
+                padding: 10px;
+                position: running(header);
+            }
+            div.footer {
+                display: block;
+                position: running(footer);
+            }
+   
+        </style>
+    </head>
+<apex:form id="formSctn" >
+   <apex:pageBlock id="criterianBlk" title="Please select the criteria">
+    <apex:pageBlockSection columns="1" id="pbSctn">
+    
+        <apex:selectList value="{!SelectedCenter}" size="1" styleClass="ModifiedInformationCenterName" label="Information Center">
+            <apex:selectOptions value="{!InfoCenterRelatedToLC}"/>
+        </apex:selectList> 
+         
+       <apex:inputField required="TRUE" value="{!icPayment.Payment_Month__c}" /> 
+           
+     <!--   <apex:outputText style="font-family:monospace;font-weight:bolder;font-size:medium"   value="Type the Year"/>   -->          
+      <div>
+           <label>  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+           <b> Payment Year </b></label>
+         &nbsp;&nbsp; &nbsp;&nbsp; 2017
+      </div>
+      <apex:inputHidden value="{!icPayment.Payment_Year__c}" id="hdnYear"/>
+      
+   <apex:selectList value="{!SelectedProgram }" size="1" styleClass="ModifiedInformationCenterName1" label="Choose Program" id="degree">  
+                            <apex:selectOptions value="{!ChooseProgram}" id="ChooseProgram" />   
+                       </apex:selectList>
+                       
+    </apex:pageBlockSection>
+    <apex:pagemessages ></apex:pagemessages>
+    
+   <apex:pageBlockButtons location="bottom">
+      <apex:commandButton value="Go to IC Invoice" action="{!redirect}"/>
+    </apex:pageBlockButtons>
+  </apex:pageBlock>
+</apex:form>
+
+<apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min_.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"/>
+    
+    <script type="text/javascript">
+   
+    $(document).ready(function(){
+   
+    $('.ModifiedInformationCenterName> option:first-child').text('Information Center');
+    $('.ModifiedInformationCenterName1> option:first-child').text('Choose Program');
+      $("input[id*='hdnYear']").val("2017");
+      $("input[id*='hdnYear1']").val("2017");
+    });
+    </script>
+</apex:page>

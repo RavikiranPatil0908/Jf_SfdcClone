@@ -1,0 +1,429 @@
+<!--
+  @Page Name          : InterviewForm.page
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @vickysahu
+  @Last Modified On   : 08-07-2024
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author                 Modification
+  ==============================================================================
+  1.0    13/5/2019, 4:44:04 PM   @BK     Initial Version
+-->
+<apex:page id="InterviewID" showHeader="false" sidebar="false" controller="InterviewScheduleController" standardStylesheets="false" cache="false"  >
+    <head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}"/>
+    <!--------------------------------------Sweet Alert ---------------------------------->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.0/sweetalert2.all.min.js"></script>
+    <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+    
+    <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/css/style.css" rel="stylesheet"/>
+    <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/node-waves/waves.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css"/>
+    <apex:stylesheet value="{!URLFOR($Resource.easyAutoCompleteCSS)}"/>
+    
+    <apex:stylesheet value="{!URLFOR($Resource.fontawesome_icons,'/font-awesome-4.7.0/css/font-awesome.css')}"/>
+    <script type="text/javascript">
+        /* history.pushState(null, null, 'InterviewForm');
+                window.addEventListener('popstate', function () {
+                history.pushState(null, null, 'InterviewForm');
+                });*/
+                </script>
+    </head>
+    <!-- Additional CSS -->
+    <apex:define name="custom-style">
+    <style>
+    .navBarStyle{
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+        z-index: 12;
+        margin-bottom: 20px;
+        background-color:#fff;
+        
+    
+    }
+    @media (min-width: 1200px) {
+    .container{
+        max-width: 1350px;
+        }
+    }
+    
+    .btn-custom{
+        border-bottom:5px solid #285e8e;
+        position:relative;
+        margin-right: 5px;
+    }
+
+    .form-group .form-line .form-label {
+            top: -10px;
+        }
+    .cardSectionInfo {
+        margin-top: -10px;
+        margin-bottom: 20px;
+        display: block;
+        font-size: 13px;
+        color: #444;
+    }
+    
+    .btn-custom:hover {
+        top:0.5px;
+        border-bottom-width:2.5px;
+    }
+    .col-lg-3 col-md-3 col-sm-3 col-xs-6{
+    
+    }
+    .btn-custom:active {
+        top:5px;
+        border-bottom:0;
+    }
+    .bootstrap-datetimepicker-widget table td.disabled, .bootstrap-datetimepicker-widget table td.disabled:hover {
+        background: rgba(255, 0, 0, 0.13) !important;
+        color: black;
+        cursor: not-allowed;
+    }
+    .zindex4 {
+        z-index:4;
+    }
+    .h-34 {
+        height:34px !important;
+    }
+    </style>
+    </apex:define>
+    <body>
+    
+    <apex:form id="registrationWapperPage">
+        <div class="container clearfix">
+            <div class="row navBarStyle">
+                <div class="col-md-4"><apex:image value="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleclass="img-responsive" style="height:70px;padding-left:0px;"/></div>
+                <!--<div class="demo-google-material-icon"> <a href="{!loginPageUrl}" ><i class="material-icons" style="margin-left:650px;">power_settings_new</i> <span class="icon-name" style="color:#d02630;">Log Out</span></a></div>-->
+            </div>
+            <div class="card">
+            <!--
+                <apex:outputlabel rendered="{!message !=null}">
+                    <div class="alert alert-danger">
+                        <strong>Warning! <apex:outputText value="{!message}" escape="false"/></strong>
+                    </div>
+                </apex:outputlabel>
+                -->
+                <apex:outputlabel style="display:none;" id="browserDisabledErrorId">
+                    <div class="alert alert-danger">
+                        <strong>Warning! Use Chrome for better experience</strong>
+                    </div>
+                </apex:outputlabel>
+                
+                <div class="header">
+                    <h2><i class="fa fa-user-circle" aria-hidden="true"></i> &nbsp;Instructions</h2>
+                    <ul class="nav navbar-right" style="margin-top:-25px;float:right!important;">
+                        <li><a class="collapse-link fa fa-chevron-up" data-toggle="collapse" href="#instructions" aria-expanded="false" aria-controls="instructions">
+                            </a></li>
+                    </ul>
+                
+                </div>
+                <div class="body collapse in" id="instructions" aria-expanded="true">
+                    <div >
+                        <ul>
+                            <li>Please confirm your details first and then only proceed to pick the interview slot</li>
+                            <li>Select the interview date and time very carefully before submission, the changes will not be entertained later</li>
+                            <li>In case of any queries, please feel free to call us at 1800 1025 136 (Mon - Sat) 9am - 7pm or drop a mail to ngasce@nmims.edu</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </apex:form>
+    
+    <div class="container clearfix">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+                <ul class="nav nav-pills nav-justified thumbnail setup-panel">
+                    <li class="active" id="InterivewFormTab"><a href="#InterivewForm">
+                        <h4 class="list-group-item-heading">INTERVIEW SLOT SELECTION FORM</h4>
+                    </a></li>                     
+                </ul>
+            </div>
+        </div>
+    
+    <!-------------------------------------------------------end------------------------------------------------>
+        <div class="setup-content" id="InterivewForm">
+            <apex:form id="InterivewForm">
+                <apex:inputHidden id="message" value="{!message}"/>
+                <apex:inputHidden id="strSecToShow" value="{!strSecToShow}"/>
+                <div class="clearfix"></div>                
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="card">
+                            <div class="header">
+                            <br></br>
+                                <apex:image id="stdimage" value="{!objAccount.nm_StudentImageUrl__c}" width="100" height="120" alt="Student Image"/> 
+                                <br></br>
+                                <br></br>
+                                <br></br>
+                            </div>
+                            
+                            <div class="body">                                                                                        
+                                <div class="row clearfix">
+                                    <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <div class="form-line">   
+                                                <apex:outputlabel styleClass="form-label required" value="Salutation"></apex:outputLabel>
+                                                <apex:inputField id="ivssal" styleClass="form-control" value="{!objAccountclone.Salutation}"  html-disabled="true" />
+                                            </div>
+                                        </div>
+                                    </apex:outputpanel>
+                                    
+                                    <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <div class="form-line">   
+                                                <apex:outputlabel styleClass="form-label required" value="First Name"></apex:outputLabel>
+                                                <apex:inputField id="ivsfirstName" styleClass="form-control" value="{!objAccountclone.FirstName}"  html-disabled="true" />
+                                            </div>
+                                        </div>
+                                    </apex:outputpanel>
+                                    
+                                    <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <div class="form-line">   
+                                                <apex:outputlabel styleClass="form-label required" value="Last Name"></apex:outputLabel>
+                                                <apex:inputField id="ivslastName" styleClass="form-control" value="{!objAccountclone.LastName}"  html-disabled="true" />
+                                            </div>
+                                        </div>
+                                    </apex:outputpanel>
+                                </div>
+                                <div class="row clearfix">
+                                    <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <div class="form-line">   
+                                                <apex:outputlabel styleClass="form-label required" value="Registration Number"></apex:outputLabel>
+                                                <apex:inputField id="ivsreg" styleClass="form-control" value="{!objAccount.nm_RegistrationNumber__c}"  html-disabled="true" />
+                                            </div>
+                                        </div>
+                                    </apex:outputpanel>
+                                    
+                                    <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <div class="form-line">   
+                                                <apex:outputlabel styleClass="form-label required" value="Program"></apex:outputLabel>
+                                                <apex:inputField id="ivsprogramName" styleClass="form-control" value="{!objAccount.nmStudent_Program__c}"  html-disabled="true" />
+                                            </div>
+                                        </div>
+                                    </apex:outputpanel>
+                                    
+                                    <!-- <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <div class="form-line">   
+                                                <apex:outputlabel styleClass="form-label required" value="AEP"></apex:outputLabel>
+                                                <apex:inputField id="ivsaep" styleClass="form-control" value="{!objAccount.IC_Name__c}"  html-disabled="true" />
+                                            </div>
+                                        </div>
+                                    </apex:outputpanel> -->
+                                </div>
+                                <!---->
+                                <div class="row clearfix">
+                                    <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <div class="form-line">   
+                                                <apex:outputlabel styleClass="form-label required" value="Phone Number"></apex:outputLabel>
+                                                <!-- <apex:inputField id="stdphone" styleClass="form-control" value="{!objAccount.PersonMobilePhone}"  html-disabled="true" /> -->
+                                                <span id="stdphone" class="form-control" disabled="true" >{!objAccount.PersonMobilePhone}</span>
+                                            </div>
+                                        </div>
+                                    </apex:outputpanel>
+                                    
+                                    <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <div class="form-line">   
+                                                <apex:outputlabel styleClass="form-label required" value="Email"></apex:outputLabel>
+                                                <apex:inputField id="ivsemail" styleClass="form-control" value="{!objAccount.PersonEmail}"  html-disabled="true" />
+                                            </div>
+                                        </div>
+                                    </apex:outputpanel>
+                                    
+                                    <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        
+                                    </apex:outputpanel>
+                                </div>
+                                
+                                <!---->
+                                
+                                <div class="clearfix"></div>
+                                <h2 class="card-inside-title"> Select Your Interview Slot</h2>
+                                    
+                                    <!---------------------------------------- for ------------------------------------------>
+                                <div class="row clearfix" id="InterviewModule" >
+
+                                    <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <div class="form-line">   
+                                                <apex:outputlabel styleClass="form-label" value="Interview Date"><span style="color:red;font-style:bold"> *</span></apex:outputLabel>
+                                                <apex:selectList value="{!objAccount.Interview_Date__c}" styleClass="form-control notnull h-34" multiselect="false" size="1" style="width:99%;" id="interviewdate">
+                                                    <apex:selectOptions value="{!InterviewDate}"/>
+                                                    <apex:actionSupport event="onchange" rerender="chooseVenuePanel4" />
+                                                </apex:selectList> 
+                                            </div>
+                                        </div>
+                                    </apex:outputpanel>
+
+                                    <apex:outputPanel id="chooseVenuePanel4"> 
+                                        <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Interview Time"><span style="color:red;font-style:bold"> *</span></apex:outputLabel>                                                    
+                                                    <apex:selectList value="{!objAccount.Time_Range__c}" styleClass="form-control notnull h-34" multiselect="false" size="1" style="width:99%;" id="interviewtime1">
+                                                        <apex:selectOptions value="{!InterviewTime}"/>
+                                                    </apex:selectList> 
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel> 
+                                    </apex:outputpanel>
+
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-md-9"></div>
+                                    <div class="col-md-3">                                          
+                                        <!-- <apex:commandButton styleClass="btn btn-primary pgSubmit btn-lg btn-custom waves-effect" id="savedetail45" value="Submit Detail"  action="{!SaveDetail}" onclick="return validateForm();" /> -->
+                                        <a href="javascript:void(0);" class="btn btn-primary pgSubmit btn-lg btn-custom waves-effec" id="savedetail45" onclick="validateForm();">Submit Detail</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>   
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Confirm Details</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Please confirm details.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <!-- <button type="button" class="btn btn-primary" data-dismiss="modal">Confirm</button> -->
+                                <apex:commandButton styleClass="btn btn-primary" value="Submit Detail" onclick="return hideButton();"  id="InterviewSubmit" action="{!SaveDetail}" />
+                                <button type="button" class="btn btn-primary" id="pleasewait" disabled="true" style="display:none;">Please wait...</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+            </apex:form>
+        </div>
+    </div>
+
+    <!-------------------------------------------------------------------end--------------------------------------------------------->
+        
+    <!-- Custom Js -->
+    <apex:includeScript value="{!URLFOR($Resource.JSZIP, 'jQuery.min.js')}"/>
+    
+    <!-- jQuery Js -->
+    <apex:includeScript value="{!URLFOR($Resource.JSZIP, 'admin.js')}"/>
+    
+    <!-- jQuery Js -->
+    <apex:includeScript value="{!URLFOR($Resource.JSZIP, 'bootstrap.js')}"/>
+    
+    <!-- Waves Effect Plugin Js -->
+    <apex:includeScript value="{!URLFOR($Resource.JSZIP, 'waves.js')}"/>
+    
+    <!---------------Date Picker Js -------------------------------------------->
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquery_easy_autocompleteJS)}"/>
+    <script>
+        $(document).ready(function(){
+            
+            /*-------------------------------------------------------Common validation class Names -------------------------------------*/
+            $('.required').append('<span style="color:red;font-style:bold"> *</span>');
+
+            $('body').on('change', '.notnull', function(e) {
+                $(this).closest('div.form-group').children('span.error').remove();
+            });
+
+            $('body').on('dp.change', '.date', function() {
+                $(this).closest('div.form-group').children('span.error').remove();
+            });
+
+        });
+
+        function validateForm(){
+            var flag = 0;
+            $('[id$=InterivewForm]').find('.notnull').each(function () {
+                if($(this).val() !=null){
+                    if ($(this).val().trim().length == 0) {
+                        flag = 1;
+                        console.log('Id Required Value --'+$(this).attr('id'));
+                        $(this).focus();
+                        $(this).closest('div.form-group').children('span.error').remove();
+                        $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+                    }else if($(this).attr('type') == 'radio') {
+                        let attrName = $(this).attr('name');
+                        console.log('radio btn checked'+$("input[name='"+attrName+"']:checked").val());
+                        if(!$("input[name='"+attrName+"']:checked").val()) {
+                            flag = 1;
+                            console.log('Id Required Value --'+$(this).attr('id'));
+                            $(this).focus();
+                            $(this).siblings('span.error').remove();
+                            $(this).siblings('label').after('<br/> <span class="error" style="color:red;font-size: 13px;">Please select value.</span>');
+                        }
+                    }
+                }else{
+                    flag = 1;
+                    console.log('Id Required Value --'+$(this).attr('id'));
+                    $(this).focus();
+                    $(this).closest('div.form-group').children('span.error').remove();
+                    $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+                }
+            });
+            
+            if(flag == 0){
+                $('.modal').modal('show');
+                return true;
+            }else{
+                return false;
+            }  
+        }
+
+        /*--------------------show error Popup message -------------------*/
+        function showHtmlMessage(header,message) {
+            swal({
+                title: header+"!",
+                text: message,
+                type: "warning"
+            });
+        }
+
+        if('{!strSecToShow}' =='PopUpError'){
+            console.log('openPopUp');
+            var strSecToShow = $('[id$=strSecToShow]').val();
+            var message = $('[id$=message]').val();
+            if(strSecToShow == 'PopUpError'){
+                showHtmlMessage('Important Message!',message);
+            }
+            $('[id$=strSecToShow]').val('');
+            $('[id$=message]').val('');
+        }
+
+        function hideButton() {
+            $('[id$=InterviewSubmit]').hide();
+            $('#pleasewait').show();
+
+            setTimeout(function() {
+                $('[id$=InterviewSubmit]').show();
+                $('#pleasewait').hide();
+            },3000);
+
+            return true;
+        }
+
+
+    </script>
+
+    </body>  
+</apex:page>

@@ -1,0 +1,291 @@
+<apex:page controller="nmLateFees" showHeader="false" sidebar="false" standardStylesheets="false">
+     <style>
+        .Processingview
+        {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;           
+            width:  100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+           
+        }
+        .required
+        {
+            border: 2px solid #c00 !important;
+        }
+        .overlay
+        {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+          background-color: rgba(0,0,0,0.5);
+        }
+        .poup
+        {
+            position: fixed;
+            top: 30%;
+            width: 40%;
+            margin-left: 30%;
+            z-index: 11;
+        }
+        .messageCell
+        {
+            color:White !important;
+        }
+        .LateFee
+        {
+            Color: red;
+            float: right;
+            margin-right: 4%;
+            font-style: italic;
+        }
+     </style>
+     <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>NMIMS Distance Education: Login</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        
+        
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/typography.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/font-awesome.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap-theme.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap-datetimepicker.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/flat/grey.css')}"/> 
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/main.css')}"/>
+        
+        <apex:includeScript value="{!URLFOR($Resource.Data,'js/vendor/modernizr-2.6.2-respond-1.1.0.min.js')}"/>
+    </head>
+    <body class="home">
+    
+    <header>
+        
+      <section class="main-header">
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-18 col-sm-6">
+              <a href="http://distance.nmims.edu/" target="_blank"><apex:image url="{!URLFOR($Resource.Data,'images/logo.png')}"/></a>
+            </div> <!-- /col-xs-10 -->
+            <div class="col-xs-18 col-sm-12">
+              <h1 class="text-right">Payment</h1>
+            </div> <!-- /col-xs-8 -->
+          </div> <!-- /row -->
+        </div> <!-- /container -->
+      </section> <!-- /main-header -->  
+      
+    </header> <!-- /header -->
+    
+    <apex:form id="formid1">
+    
+    
+    <apex:actionStatus id="processing" startStyleClass="Processingview"/>
+
+    <div class="col-sm-5">&nbsp;</div>
+    <section class="content-container" style="" id="full">
+        <div class="container" >
+            <div class="row">
+                <div class="col-sm-18">
+                    <div class="registration-box complete">
+                      <apex:outputPanel rendered="{!(strSecToShow == 'error')}" >
+                        <p>{!errMessages}</p>
+                    </apex:outputPanel>
+                   
+                    <apex:outputPanel >
+                       
+                        <h2>Select a Payment Amount</h2>
+  
+                        <div class="row">
+                          <div class="col-xs-18 col-sm-4">&nbsp;</div> <!-- /col-xs-4 -->
+                          <div class="col-xs-18 col-sm-3">
+                            <label for="diplomahsc" class="radio-label">Payment For</label>
+                          </div> <!-- /col-sm-2 -->
+                          
+                          <apex:outputpanel >
+                          <div class="col-xs-18 col-sm-3">
+                            <div class="radio">
+                              <label>
+                                <input type="radio" name="PaymentFor" id="PaymentFor1" class="iCheckRadio" value="registration" data-mode="1" checked="false" />
+                                <span> {!LateFees} Late Fees </span>
+                              </label>
+                            </div> <!-- /radio -->
+                          </div> <!-- /col-xs-9 -->
+                          </apex:outputpanel>
+                       
+                          
+                         
+                          
+                          <div class="col-xs-18 col-sm-4">&nbsp;</div> <!-- /col-xs-4 -->
+                        </div> <!-- /row --> 
+                        
+                       
+                        
+                        <h2>Mode of Payment</h2>
+  
+                        <div class="row">
+                          <div class="col-xs-18 col-sm-4">&nbsp;</div> <!-- /col-xs-4 -->
+                          <div class="col-xs-18 col-sm-3">
+                            <label for="diplomahsc" class="radio-label">Select a mode of payment</label>
+                          </div> <!-- /col-sm-2 -->
+                          <div class="col-xs-18 col-sm-3">
+                            <div class="radio">
+                              <label>
+                                <input type="radio" name="PaymentMode" id="PaymentMode1" class="iCheckRadio" value="Online" data-mode="1" checked="false" />
+                                <span>Online</span>
+                              </label>
+                            </div> <!-- /radio -->
+                          </div> <!-- /col-xs-9 -->
+                          <div class="col-xs-18 col-xs-4">
+                            <div class="radio">
+                              <label>
+                                <input type="radio" name="PaymentMode" id="PaymentMode2" class="iCheckRadio" data-mode="2" value="Demand Draft" />
+                                <span>Demand Draft</span>
+                              </label>
+                            </div> <!-- /radio -->
+                            
+                          </div> <!-- /col-sm-9 -->
+                          <div class="col-xs-18 col-sm-4">&nbsp;</div> <!-- /col-xs-4 -->
+                        </div> <!-- /row --> 
+                        
+                        <div class="row" id="DDNote">
+                            <p class="note">
+                                <!-- <span style="color:red;">Note:</span> Kindly personally submit the Acknowledgement
+                                        Receipt along with the Print of the Admission Form to: {!objlead.nm_InformationCenter__r.name} {!objlead.nm_InformationCenter__r.Address__c}</p> -->
+                                        
+                                  <span style="color:red;">Note:</span> Kindly personally submit the Demand Draft to: {!strInformationAddress} </p>
+                                               
+                        </div> <!-- /row -->
+                         <apex:outputPanel >  
+                        <div class="row">
+                        
+                            <center>
+                            <apex:commandButton value="Make Payment" styleClass="btn btn-default"  id="PayBtn" action="{!MakeOnlinePayment}" style="width:20%;"/>
+                            </center>
+                            
+                        </div>
+                        </apex:outputPanel> 
+                    </apex:outputPanel>    
+                    </div>    
+                </div> <!-- /col-xs-18 -->
+
+            </div> <!-- /row -->
+        </div> <!-- /container -->
+    </section>
+    
+    <div style="display:none;" id="AddDisclaimer">
+        <div class="overlay"></div>
+        <div class="container poup" >
+            <div class="row">
+                <div class="col-sm-18">
+                    <div class="registration-box complete">
+                        <h2>Disclaimer:</h2>
+                        <p>Complete fee payment does not guarantee admission. Admission confirmation is subject to document submission by the Student and document approval by the University as per the Eligibility Criteria’s defined by the University. In case documents are not submitted or get rejected after complete fee payment, the tuition fee will be refunded to the student by the University.</p>
+                        <div class="row" style="margin-top:5%;">
+               
+                             <div  >
+                                  <button type="submit" class="btn btn-default proceed-page-4" id="disclaimerBtn">I Agree<span class="glyphicon"/></button>
+                             </div> <!-- /col-xs-8 -->
+                             
+                        </div>
+                    </div>
+                </div> <!-- /row -->
+            </div> <!-- /container -->
+        </div>
+    </div>     
+   
+    <apex:inputHidden id="hdnPaymentMode" value="{!strModeOfPaymnet}"/>
+    
+   
+    <!-- Short Form-->
+    
+    <footer>
+      
+      <div class="footer-links">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-10">
+              <a href="http://distance.nmims.edu/sitemap.html">Sitemap</a> | <a href="http://distance.nmims.edu/privacy-policy.html">Privacy Policy</a> | <a href="http://distance.nmims.edu/disclaimer.html">Disclaimer</a><br />&copy; 2014 NMIMS. All Rights Reserved. 
+            </div>
+            <div class="col-sm-8">
+              <ul class="footer-icons clearfix">
+                <li><a class="footer-social ico-facebook" href="https://www.facebook.com/NMIMSSCE" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                <li><a class="footer-social ico-twitter" href="https://twitter.com/NMIMS_SCE" target="_blank"><i class="fa fa-twitter"></i></a></li>    
+                <li><a class="footer-social ico-google-plus" href="https://plus.google.com/u/0/115020127358464487864/about" target="_blank"><i class="fa fa-google-plus"></i></a></li>  
+                <li><a class="footer-social ico-youtube" href="https://www.youtube.com/user/NMIMSSCE" target="_blank"><i class="fa fa-youtube"></i></a></li>    
+              </ul>  
+            </div>
+          </div> <!-- /row -->
+        </div> <!-- /container -->
+      </div> <!-- /footer-links -->
+      
+    </footer>
+    
+    </apex:form>
+    <script >
+    $(document).ready(function(){
+        
+        var opt = $('[id$=hdnPaymentMode]').val();
+       
+       
+            $('[id$=DDNote]').hide();
+            $('[id$=PayBtn]').show();
+      
+        
+        $('input[name$=PaymentFor]').on('ifChanged', function(event){
+            var selectedOpt = $(this).filter(':checked').val(); 
+            if(selectedOpt != undefined)   
+            {           
+                $('[id$=hdnPaymentOption]').val(selectedOpt);
+                if( selectedOpt == 'admission'|| selectedOpt == 'fullFee' )
+                {
+                    $('[id$=AddDisclaimer]').css("display", "block");;
+                }
+            }
+        });
+        
+        $('[id$=disclaimerBtn]').click(function(){
+            
+            $('[id$=AddDisclaimer]').css("display", "none");;
+        });
+        
+        $('input[name$=PaymentMode]').on('ifChanged', function(event){
+            var selectedOpt = $(this).filter(':checked').val(); 
+            if(selectedOpt != undefined)   
+            {        
+                $('[id$=hdnPaymentMode]').val(selectedOpt);
+               
+                if( selectedOpt == 'Demand Draft' )
+                {
+                    $('[id$=DDNote]').show();
+                    $('[id$=PayBtn]').hide();
+                }
+                else if( selectedOpt == 'Online' )
+                {
+                    $('[id$=DDNote]').hide();
+                    $('[id$=PayBtn]').show();
+                }
+            }
+        });
+    });
+    </script>
+    
+    
+    <!--All java script  -->
+    <apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/jquery-1.11.0.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/jquery.validate.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/additional-methods.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/moment.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/bootstrap-datetimepicker.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/icheck.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Data, 'js/main.js')}"/>
+    </body>    
+</apex:page>

@@ -1,0 +1,85 @@
+<apex:page Controller="MassUpdateWelcomeKitController" sidebar="false" readOnly="false">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"/>
+</head>
+<style>
+.activeTab {background-color: #236FBD; color:white;background-image:none}
+.inactiveTab { background-color: lightgrey; color:black;background-image:none}
+</style>
+
+<apex:form >
+  <apex:pageMessages id="error"/>
+<apex:pageBlock mode="edit">
+    <apex:pageblockSection columns="1">
+      <apex:pageBlockSectionItem >
+            <apex:outputLabel for="startingstudentno">
+                   
+            </apex:outputLabel>
+      
+            <apex:panelGroup >
+      
+                  <p>Please enter student number ","(comma) seperated</p>
+                  
+      
+            </apex:panelGroup>
+      </apex:pageBlockSectionItem>
+         <apex:pageBlockSectionItem >
+               <apex:outputLabel for="startingstudentno"> <b>Student Numbers:</b></apex:outputLabel>
+               
+               <apex:panelGroup >
+                  
+                  <apex:inputTextarea id="studentNumbers" value="{!listOfStudentNumbers}"  rows="10"  cols="50"/> <span class="red">*</span> <br />
+                 
+               </apex:panelGroup>
+            </apex:pageBlockSectionItem>
+            
+            
+            <apex:pageBlockSectionItem >
+                 
+                  <apex:outputLabel for="selectList"><b>Select Type Of Update </b></apex:outputLabel>
+                 <apex:outputPanel id="OuterPanel">
+                <apex:outputPanel id="InnerPanel">
+                  <apex:selectList id="selectList" value="{!typeOfUpdate}" size="1" multiselect="false">
+                        <apex:selectOptions value="{!OptionList}"/>
+                  <apex:actionSupport event="onchange" reRender="InnerPanel"/>
+                  </apex:selectList>
+            <apex:outputPanel id="ShowPanel" rendered="{!(typeOfUpdate == 'Fee Receipt')}">
+            
+            <apex:pageBlockSectionItem >
+           <apex:outputLabel for="semesterVal"><b>Select Semester For Update  :-</b></apex:outputLabel>
+             <apex:selectList id="semesterVal" value="{!semesterValue}" size="1" multiselect="false">
+                        <apex:selectOptions value="{!SemesterList}"/>
+                  
+                  </apex:selectList>
+            </apex:pageBlockSectionItem>
+              
+              </apex:outputPanel>
+            </apex:outputPanel> 
+            </apex:outputPanel>
+          
+            </apex:pageBlockSectionItem>
+              
+          
+           
+          
+    </apex:pageblockSection>
+            <apex:pageBlockButtons location="bottom">   
+           <apex:commandButton id="onButtonClick" action="{!UpdateStudentNumber}" value="Update Records"/>
+            </apex:pageBlockButtons>
+
+    
+</apex:pageBlock>
+</apex:form>
+<script>
+$(document).ready(function(){
+$("[id$='studentNumbers']").change(function(){
+var stringList = $("[id$='studentNumbers']").val();
+var arrayOfStudentNumbers = new Array();
+arrayOfStudentNumbers = stringList.split(',');
+$("[id$='studentNumbers']").val($.unique(arrayOfStudentNumbers));
+
+});
+
+});
+</script>
+</apex:page>

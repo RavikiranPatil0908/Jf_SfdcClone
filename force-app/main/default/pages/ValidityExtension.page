@@ -1,0 +1,396 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 29-08-2024
+  @last modified by  : @BK
+-->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" controller="ValidityExtension">
+ <style>
+        .Processingview
+        {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;           
+            width:  100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+           
+        }
+        .required
+        {
+            border: 2px solid #c00 !important;
+        }
+        .overlay
+        {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+          background-color: rgba(0,0,0,0.5);
+        }
+        .poup
+        {
+            position: fixed;
+            top: 30%;
+            width: 40%;
+            margin-left: 30%;
+            z-index: 11;
+        }
+        .messageCell
+        {
+            color:White !important;
+        }
+        .LateFee
+        {
+            Color: red;
+            float: right;
+            margin-right: 4%;
+            font-style: italic;
+        }
+     </style>
+     <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>NMIMS Distance Education: Login</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        
+            <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/logo.png')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/select-bg.png')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/banner.jpg')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/chosen.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/style.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/vars.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css.map')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css.map')}"/>
+     </head>   
+
+     <!-- Header Begins Here -->
+     <c:HeaderPage BannerText="Validity Extension" ActiveBadge="Validity Extension" />
+     <!-- Header Ends Here -->
+        
+       <!-- Apply Now -->
+<apex:form id="myForm">  
+  <apex:actionFunction name="callLogOut" action="{!LogOut}" immediate="true"/>
+  <div class="tab-wrapper">
+    <div class="container">
+      <p class="note-txt"><strong>Note:</strong> Validity Extension</p>
+      <div class="tab-content">
+        <div class="tab-pane active">
+         <h2>Student Information</h2>
+                     <div class="row">
+                        <div class="col-xs-18 col-sm-9" >  
+                             <div class="form-group" >
+                               <div class="">
+                                   <div >
+                                     <label for="blood-group">Student No</label>
+                                   </div> <!-- /col-sm-2 -->
+                                   <div>
+                                        <apex:outputText value="{!objAccount.nm_StudentNo__c}" styleClass="form-control " />
+                                   </div><!--  /col-sm-4 -->
+                                   <div class="col-sm-6">&nbsp;</div> <!-- /col-sm-6 -->
+                                 </div> <!-- /row -->
+                             </div> <!-- /form-group -->
+                         </div> <!-- /col-xs-18 col-sm-9 -->
+                        <div class="col-xs-18 col-sm-9" >  
+                             <div class="form-group" >
+                               <div class="">
+                                   <div >
+                                     <label for="blood-group">Student Name</label>
+                                   </div> <!-- /col-sm-2 -->
+                                   <div>
+                                   
+                                       <apex:outputText value="{!objAccount.Name}" styleclass="form-control " />
+                                      
+                                   </div><!--  /col-sm-4 -->
+                                   <div class="col-sm-6">&nbsp;</div> <!-- /col-sm-6 -->
+                                 </div> <!-- /row -->
+                             </div> <!-- /form-group -->
+                         </div> <!-- /col-xs-18 col-sm-9 -->
+                         
+                        
+                         
+                         
+                        
+                        
+                        <div class="col-xs-18 col-sm-9" >  
+                             <div class="form-group" >
+                               <div class="">
+                                   <div >
+                                     <label for="blood-group">Information Center</label>
+                                   </div> <!-- /col-sm-2 -->
+                                   <div>
+                                      <apex:outputText value="{!objAccount.nm_Centers__r.Name}" styleClass="form-control " />
+                                   </div><!--  /col-sm-4 -->
+                                   <div class="col-sm-6">&nbsp;</div> <!-- /col-sm-6 -->
+                                 </div> <!-- /row -->
+                             </div> <!-- /form-group -->
+                         </div> <!-- /col-xs-18 col-sm-9 -->
+
+                         
+                         
+                         
+                         
+                         
+                         <div class="col-xs-18 col-sm-9" >  
+                              
+                             <div class="form-group" >
+                               <div class="">
+                                   <div >
+                                     <label for="blood-group">Mobile Number<span class="red">*</span></label>
+                                   </div> <!-- /col-sm-2 -->
+                                   <div>
+                                      <apex:inputText value="{!objAccount.PersonMobilePhone}" styleClass="form-control " />
+                                   </div><!--  /col-sm-4 -->
+                                   <div class="col-sm-6">&nbsp;</div> <!-- /col-sm-6 -->
+                                 </div> <!-- /row -->
+                             </div> <!-- /form-group -->
+                         </div> <!-- /col-xs-18 col-sm-9 -->
+                         
+                         
+                          <div class="col-xs-18 col-sm-9" >  
+                             <div class="form-group" >
+                               <div class="">
+                                   <div >
+                                     <label for="blood-group">Email Address<span class="red">*</span></label>
+                                   </div> <!-- /col-sm-2 -->
+                                   <div>
+                                      <apex:inputText value="{!objAccount.PersonEmail}" styleClass="form-control " />
+                                   </div><!--  /col-sm-4 -->
+                                   <div class="col-sm-6">&nbsp;</div> <!-- /col-sm-6 -->
+                                 </div> <!-- /row -->
+                             </div> <!-- /form-group -->
+                         </div> <!-- /col-xs-18 col-sm-9 -->
+                         
+                          <div class="col-xs-18 col-sm-9" >  
+                              
+                             <div class="form-group" >
+                               <div class="">
+                                   <div >
+                                     <label for="blood-group">Batch Name<span class="red"></span></label>
+                                   </div> <!-- /col-sm-2 -->
+                                   <div>
+                                      <apex:outputText value="{!objAccount.nm_Batch_Name2__c}" styleClass="form-control " />
+                                   </div><!--  /col-sm-4 -->
+                                   <div class="col-sm-6">&nbsp;</div> <!-- /col-sm-6 -->
+                                 </div> <!-- /row -->
+                             </div> <!-- /form-group -->
+                         </div> <!-- /col-xs-18 col-sm-9 -->
+                         
+                          
+                         
+                         <div class="col-xs-18 col-sm-9" >  
+                             <div class="form-group" >
+                               <div class="">
+                                   <div >
+                                     <label for="blood-group">Student Program<span class="red"></span></label>
+                                   </div> <!-- /col-sm-2 -->
+                                   <div>
+                                      <apex:outputText value="{!objStudentProg.nm_Program__r.nm_ProgramName__c}" styleClass="form-control " />
+                                   </div><!--  /col-sm-4 -->
+                                   <div class="col-sm-6">&nbsp;</div> <!-- /col-sm-6 -->
+                                 </div> <!-- /row -->
+                             </div> <!-- /form-group -->
+                         </div> <!-- /col-xs-18 col-sm-9 -->
+                        
+                       </div >
+<!-----------------------------------------------Self Learning Material Start------------------------------------------------------------------>              
+             
+                      
+            </div>
+            
+              <div class="message-box form-group text-center">Do you want to extend validity by {!months} ?</div>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-sm-3 col-md-2">
+                  <div class="radio"><strong>Select an Option</strong></div>
+                </div>
+                <div class="col-xs-6 col-sm-2">
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="ExtendValidity" id="extValid1" class="iCheckRadio" value="Yes" data-mode="1" />
+                     <span>Yes</span >
+                      </label>
+                  </div>
+                </div>
+                <div class="col-xs-6 col-sm-2">
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="ExtendValidity" id="extValid2" class="iCheckRadio" data-mode="2" value="No" />
+                      <span>No</span >
+                      </label>   
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+                     
+<!---------------------------------------------------------end of self Learning material Section------------------------------------------------------------------------------------------------------>            
+         
+    </div>
+    </div>
+    </div>
+  
+<!----------------------------------------------------------popUp section ---------------------------------------------------------->
+  <!--<apex:outputPanel rendered="{!strSecToShow == 'PopUpError'}" id="ErrorPopUp">  
+  <div class="modal popup-wrapper">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Important Message</h4>
+              </div>
+              <div class="modal-body">
+                <p>{!message}</p>
+               </div>
+              <div class="modal-footer">
+                <button type="submit" id="btnErr" class="btn btn-default">OK</button>
+              </div>
+            </div>
+          </div>
+        </div>
+     <div class="overlay"></div>
+ </apex:outputPanel>   
+  
+  -->
+  
+  <apex:actionFunction action="{!ProceedToPaymentPage}" name="CallPaymentPage"/>
+ <div id="PaymentPopUp" style="display:none;">
+ <div class="modal popup-wrapper">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Submit Detail</h4>
+      </div>
+      <div class="modal-body">
+         <p>Are you sure want to Submit your Detail and proceed futher for payment?</p>
+       </div>
+      <div class="modal-footer">
+       <div class="row">
+       <center>
+         <apex:commandButton id="YesPayment" styleclass="btn btn-default" value="Yes" action="{!ProceedToPaymentPage}" immediate="true"/>
+
+         <button type="Submit" id="NoPayment" class="btn"> No </button>
+       </center>  
+      </div>  
+      </div>
+    </div>
+  </div>
+  </div>
+    <div class="overlay"></div>
+</div>
+ 
+  <div style="display:none;" id="AddDisclaimer">                
+        <div class="modal popup-wrapper">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Important Message</h4>
+              </div>
+              <div class="modal-body">
+                <p>Validity Extension Fee {!extensionFeeAmount } is applicable to extend Validity for {!months}.</p>
+               </div>
+              <div class="modal-footer">
+                <input type="button" class="btn" id="disclaim" value="I Agree"/>
+              </div>
+            </div>
+          </div>
+        </div>
+     <div class="overlay"></div>
+    </div>   
+ 
+<!--------------------------------------------------end of PopUp Section ------------------------------------------------------->
+</apex:form>
+   
+<!--/ Apply Now --> 
+
+   <!-- Footer Component -->
+   <c:FooterPage />
+   <!--/ Footer Component -->    
+    <!-- Search Popup -->
+    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <form class="form-inline" id="">
+              <input type="text" class="form-control" id="searchInput" placeholder=""/>
+              <button type="" class="icon-search"></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ Search Popup --> 
+   
+   <script type="text/javascript">
+     $(document).ready(function(){
+    
+    $(".disable").attr('disabled', 'disabled');
+    $('input[name$=ExtendValidity]').change(function(event){
+    var SelectedOpt=$(this).val();
+    
+      if(SelectedOpt!=undefined)
+      {
+         if(SelectedOpt =='Yes')
+         { 
+           $('[id$=AddDisclaimer]').css("display","block");
+         }
+         else if(SelectedOpt =='No')
+         {
+             callLogOut();
+         }
+  
+      }
+      
+  
+     });
+       $('[id$=btnErr]').click(function(){
+            
+            $('[id$=ErrorPopUp]').hide();
+            return false;
+            
+        });
+   
+   
+  }); 
+ 
+    $('[id$=disclaim]').click(function(){
+       
+        $('[id$=PaymentPopUp]').css("display","block");
+        $('[id$=AddDisclaimer]').css("display","none");  
+    });
+       </script> 
+       
+
+   <script type ="text/javascript">
+    
+    function GoTo()
+    {
+     CallPaymentPage();
+     }
+    </script>  
+    
+   
+    
+
+  
+     <!--All java script  -->
+   <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+     <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}"/> 
+</apex:page>

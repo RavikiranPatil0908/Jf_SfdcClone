@@ -1,0 +1,14 @@
+<apex:page >
+  <form id="nmEmailVerification"  method="post" action="{!$Label.Site_Url}V">
+    <input type="hidden" value="{!$CurrentPage.parameters.id}" name="id" id="recordid" />
+    <input type="hidden" value="{!$CurrentPage.parameters.type}" name="type" id="typeOfrecord" />
+    <input type="hidden" value="{!$CurrentPage.parameters.verify}" name="verify" id="verify" />
+    </form>
+    
+    <script>
+ window.onload=function()
+{
+   document.getElementById('nmEmailVerification').submit(); 
+};
+</script>
+</apex:page>

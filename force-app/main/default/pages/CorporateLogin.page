@@ -1,0 +1,664 @@
+<!--
+  @File Name          : CorporateLogin.page
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 14/11/2019, 4:02:03 pm
+  @Modification Log   : 
+  Ver       Date            Author                  Modification
+  1.0    11/9/2019   shubhranshu     Initial Version
+-->
+<apex:page showHeader="false" standardStylesheets="false" controller="nmLogin_new" action="{!studentZOneReRegistrationLogin}"
+  cache="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+  <html>
+
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>NMIMS Distance Education: Login</title>
+    <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."
+    />
+    <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/chosen.min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}"/>
+
+    <script>
+      function showForm() {
+        var type = '{!strtype}';
+        var registrationNo = getUrlParameter('registrationNo');
+        var dob = getUrlParameter('dob');
+        console.log('type ' + type + ' registrationNo ' + registrationNo + ' dob' + dob);
+        if (registrationNo != null && dob != null && type == 'registration') {
+
+          document.getElementById('new_checkbox').style.display = 'none';
+          document.getElementById('idCompleteForm').style.display = 'block';
+          document.getElementById('messageboxSection').style.display = 'none';
+          document.getElementById('messageboxSectionforReg').style.display = 'block';
+
+        } else if (type == 'registration') {
+          document.getElementById('new_checkbox').style.display = 'block';
+          document.getElementById('idReRegistration').style.display = 'none';
+        }
+        else if (type == 'reregistration') {
+          document.getElementById('new_checkbox').style.display = 'none';
+          document.getElementById('idReRegistration').style.display = 'block';
+        }
+      }
+    </script>
+    <style>
+      .Processingview {
+        position: fixed;
+        background: url('{!URLFOR($Resource.loading_img)}');
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 100%;
+        height: 100%;
+        z-index: 1004;
+        left: 3%;
+        top: 1%;
+      }
+
+      .required {
+        border: 2px solid #c00 !important;
+      }
+
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .poup {
+        position: fixed;
+        top: 30%;
+        width: 40%;
+        margin-left: 30%;
+        z-index: 11;
+      }
+
+      .messageCell {
+        color: White !important;
+      }
+
+      .LateFee {
+        Color: red;
+        float: right;
+        margin-right: 4%;
+        font-style: italic;
+      }
+
+      .pt40 {
+        padding-top: 40px;
+      }
+
+      .svg-inline--fa {
+        vertical-align: top;
+      }
+    </style>
+  </head>
+
+  <body class="home" onload="showForm();">
+    <nav class="headerNavigation">
+        <div class="container">
+          <div class="logoImg"><a href="#"><apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive"/></a></div>
+         
+        </div>
+      </nav>
+      <!--/ Logo & Navigation --> 
+        <!-- Breadcrumb & Social Icons -->
+      <div class="topSocialWrapper">
+        <div class="container">
+          <div class="grayWrapper">
+            <ol class="breadcrumb">
+              <li><a href="#">
+                <h5>Home</h5>
+                </a></li>
+              <li><a href="#">
+                <h5>Admission Info</h5>
+                </a></li>
+              <li class="active">
+                <h5>Login</h5>
+              </li>
+            </ol>
+          </div>
+          <div class="shareIcons">
+            <ul>    
+             <li><a href="https://plus.google.com/u/0/116325782206816676798" class="icon-google-plus"></a></li>
+             <li><a href="https://twitter.com/NMIMS_SCE" class="icon-twitter"></a></li>
+             <li><a href="https://www.facebook.com/NMIMSSCE" class="icon-facebook"></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!--/ Bredcrums & Social Icons --> 
+
+      <!-- Banner -->
+      <div class="bannerContainer" style="background-image:url({!URLFOR($Resource.ImageResource,'images/')}banner.jpg);">
+      
+        <div class="container">
+          <div class="bannerIns">
+            <h2><apex:outputText value="{!if(strtype == 'registration','Registration','Re-Registration')}" /></h2>
+          </div>
+        </div>
+      </div>
+      <!--/ Banner --> 
+    <apex:form >
+      <apex:actionFunction name="callmakepayment" action="/apex/{!strBtnURL}" />
+      <div class="tab-wrapper">
+        <div class="container">
+          <div class="tab-content">
+            <div class="tab-pane active">
+              <div class="message-box text-center" id="messageboxSectionforReg" style="display:none;">
+                <apex:outputText value="{!if(strtype == 'registration','Registration','')}" />
+              </div>
+              <div class="message-box text-center" id="messageboxSection" style="display:block;">
+                <apex:outputText value="{!if(strtype == 'registration','Choose an Option','Re-Registration')}" />
+              </div>
+              <div class="form-wrapper">
+                <div class="row">
+                  <div class="radio">
+                    <div id="new_checkbox" class="col-xs-18" style="display:none;">
+                      <div class="col-md-4 col-xs-18 col-sm-9" style="{!IF(Src == 'upGrad','display:none','')}">
+                        <label>
+                          <input type="radio" name="OptRadio" id="NewApp" class="iCheckRadio" value="NewApp" data-mode="1" />
+                          <span>
+                            <apex:outputText value="{!IF(Src == 'CareerService','New Applicant (Kindly register to a PG program first)','New Applicant')}"
+                            />
+                            <span style="color:red;">*</span>
+                          </span>
+                        </label>
+                      </div>
+                      <div class="col-md-4 col-xs-18 col-sm-9">
+                        <label>
+                          <input type="radio" name="OptRadio" id="CmpltReg" class="iCheckRadio" data-mode="2" value="CmpltReg" />
+                          <span>
+                            <apex:outputText value="{!IF(Src == 'CareerService','Already Applied to a PG Program','Complete Registration/Payment')}"
+                            />
+                            <span style="color:red;">*</span>
+                          </span>
+
+                          <div>(Enter Registration no. and DOB)</div>
+                        </label>
+                      </div>
+                      <div class="col-md-4 col-xs-18 col-sm-9" style="display:{!IF(Src == 'CareerService','block','none')}">
+                        <label>
+                          <input type="radio" name="OptRadio" id="CarrerReg" class="iCheckRadio" data-mode="2" value="CarrerReg" />
+                          <span>Existing PG Student / PG or Diploma Alumni
+                            <span style="color:red;">*</span>
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    <!---------------------------------complete form Link---------------------------------------------------------------------------->
+                    <div id="idNew" style="display:none;" class="pt40">
+                      <div class="tab-wrapper">
+                        <div class="tab-content">
+                          <div class="form-wrapper">
+                            <div class="row">
+                              <div class="col-md-4 form-group">
+                                <select id="chooseProgram" class="form-control" onchange="changeUrl(this.value)">
+                                  <option value=" ">Choose Program Type</option>
+                                  <option value="certificate">Certificate</option>
+                                  <option value="Diploma">Diploma</option>
+                                  <option value="PGDM">PGDM</option>
+                                  <option value="Masters">Masters</option>
+                                </select>
+                              </div>
+                              <apex:outputPanel styleClass="col-md-12 form-group saveProceedBtn" rendered="{!checkExpireDateforBatch}" layout="block">
+                                <a href="javascript:void(0);" id="leadRouteLink" class="btn btn-default">Next</a>
+                             </apex:outputPanel>
+                             <apex:outputPanel styleClass="col-md-12 form-group regWindowdiv" rendered="{!!checkExpireDateforBatch}" layout="block">
+                                <h4 style="color: red;">Registration window is closed as of now...</h4>
+                            </apex:outputPanel>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <!-- <div class="col-xs-18 col-sm-9" >  
+                           <div class="form-group" >
+                              <div class="">
+                                <a href="/apex/QuickPayForm"><span style="color:red;">Click Here to go to Registration Form</span></a><br/>
+                                <a href="/apex/NMIMS_Executive_MBA"><span style="color:red;">Click Here to go to Executive MBA Registration Form</span></a>
+                             </div>
+                         </div> 
+                      </div> -->
+                    </div>
+                    <!---------------------------------------------------end-------------------------------------------------------------------------------->
+                    <!-----------------------------------------------Lead Login-------------------------------------------------------------------------------->
+
+                    <apex:actionFunction action="{!LeadLogin}" name="call" />
+
+                    <div id="idCompleteForm" style="display:none;" class="pt40">
+                      <div class="tab-wrapper">
+                        <div>
+                          <div class="tab-content">
+                            <div class="form-wrapper">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <!--
+                            <label for="blood-group">Registration No<span style="color:red;">*</span></label>
+                            -->
+                                    <apex:inputField value="{!objLead.nm_RegistrationNo__c}" styleClass="form-control notnull" html-placeholder="Registration No"
+                                    />
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <!--
+                             <label for="dob">Date of Birth <span style="color:red;">*</span></label>
+                             -->
+                                    <div class="input-group date" data-date-format="DD/MM/YYYY" id="datetimepicker1">
+                                      <span class="dateInput dateOnlyInput">
+                                        <apex:inputField value="{!objLead.nm_DateOfBirth__c}" styleClass="form-control notnull" showDatePicker="false" html-placeholder="Date of Birth"
+                                        />
+                                      </span>
+                                      <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-md-6"></div>
+                                  <div class="col-md-6 col-md-offset-3">
+                                    <input type="submit" value="Sign In" class="btn btn-default" onclick="Go();return false;"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!---------------------------------------------------end of Lead Login-------------------------------------------------------------------------->
+                    <!----------------------------------------------------------student Login ---------------------------------------------------------------------->
+
+                    <apex:actionFunction action="{!studentLogin}" name="callTo" />
+                    <div id="idReRegistration" style="display:none;">
+                      <div class="tab-wrapper">
+                        <div class="container">
+                          <div class="tab-content">
+                            <div class="form-wrapper">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <apex:inputField value="{!objAccount.nm_StudentNo__c}" html-placeholder="Student Number" styleClass="form-control notnull"
+                                    />
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <div class="input-group date" data-date-format="DD/MM/YYYY" id="datetimepicker2">
+                                      <span class="dateInput dateOnlyInput">
+                                        <apex:inputField id="dateOfBirthAccount" value="{!objAccount.nm_DateOfBirth__c}" showDatePicker="false" styleClass="form-control notnull"
+                                          html-placeholder="Date of Birth" />
+                                      </span>
+                                      <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-md-6"></div>
+                                  <div class="col-md-6 col-md-offset-3">
+                                    <input type="submit" value="Sign In" class="btn btn-default" onclick="GoTo();return false;" />
+                                    <button type="button" class="btn btn-success" style="{!IF(allowValidityExtension,'display:inline-block;','display:none;')}">
+                                      <a href="/apex/ApplyForValidityExtension">
+                                        <span style="color:white;">Do You Want To Extend Program Validity ?</span>
+                                      </a>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-----------------------------------------------------end of Student Login------------------------------------------------------------------------>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <apex:outputPanel rendered="{!strSecToShow == 'msg'}" id="MsgPopUp">
+        <!---->
+        <div class="modal popup-wrapper">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">{!HeaderMessage}</h4>
+              </div>
+              <div class="modal-body">
+                <apex:repeat value="{!lstMsg}" var="msg">
+                  <p>{!msg}</p>
+                </apex:repeat>
+              </div>
+              <div class="modal-footer">
+                <!-- <apex:outputLabel rendered="{!IF(strBtnURL !=null && strBtnURL !='',true,false)}">
+                 <a href="/apex/{!strBtnURL}"  class="btn btn-default"> OK </a>
+                 </apex:outputLabel>-->
+                <!--<input type="Button" value="OK" class="btn btn-default" onclick="callpayment();return false;"/>-->
+                <apex:commandButton value="Print Interview Form" styleClass="btn btn-default pull-left" id="btn2" status="processing" action="/apex/{!pdfBtnURL}"
+                  rendered="{! pdfBtnURL != '' }" />
+                <apex:commandButton value="{!IF(pdfBtnURL != '','Change Slot','OK')}" styleClass="btn btn-default " id="btn1" status="processing"
+                  action="/apex/{!strBtnURL}" rendered="{! strBtnURL != '' }" />
+                <apex:outputLabel rendered="{!IF(strBtnURL ==null || strBtnURL !='',true,false)}">
+                  <button type="button" onclick="hideMe();return false;" class="btn btn-default ">CANCEL</button>
+                </apex:outputLabel>
+                <!--
+                   <apex:outputLabel rendered="{!IF(strBtnURL2 ==null || strBtnURL2 !='',true,false)}">
+                   <apex:commandButton value="{!strBtnLB}" styleClass="btn btn-default "  id="btn3" status="processing" action="/apex/{!strBtnURL2}" rendered="{! strBtnURL2 != '' }"/>
+                      <!-- <button type="button"  onclick="hideMe();return false;"  class="btn btn-default ">Apply for Interview</button>
+                 </apex:outputLabel>
+                 -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </apex:outputPanel>
+
+      <apex:outputPanel id="AlertPopUp" style="display:none;">
+        <div class="modal popup-wrapper">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Important Message!</h4>
+              </div>
+              <div class="modal-body">
+                <p>Please login to your Student Zone account to register for Career Services.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" onclick="hideMe();return false;" class="btn btn-default ">CANCEL</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </apex:outputPanel>
+
+
+      <apex:outputPanel rendered="{!strSecToShow == 'otpVerify'}" id="otpPopUp">
+        <div class="modal popup-wrapper">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">OTP Verification!</h4>
+              </div>
+              <div class="modal-body">
+                <apex:repeat value="{!lstMsg}" var="msg">
+                  <p>{!msg}</p>
+                </apex:repeat>
+                <br/>
+                <apex:inputText id="otp" rendered="{!IF(gupshupStatus == 'OTP Sent',true,false)}" styleClass="form-control numonly" value="{!Otp}"
+                  html-placeholder="Enter OTP.." />
+              </div>
+              <div class="modal-footer" style="{!IF(gupshupStatus == 'OTP Sent', 'display:block', 'display:none')}">
+                <apex:commandButton value="Resend OTP" styleClass="btn btn-default pull-left disabled" id="sendBtn" onclick="sendOTP();"
+                  action="{!sendOTP}" oncomplete="{!IF(LoginType == 'Lead','confirmLogin();','confirmLogin1();')}" />
+                <apex:commandButton value="Confirm" styleClass="btn btn-default pull-right" onclick="if(validate()) return false;" id="verifyBtn"
+                  action="{!VerifyOTP}" oncomplete="{!IF(LoginType == 'Lead','confirmLogin();','confirmLogin1();')}" rendered="{!IF(gupshupStatus == 'OTP Sent',true,false)}"
+                />
+                <apex:actionFunction name="confirmLogin" action="{!LeadLogin}" rerender="otpPopUp" />
+                <!-- <apex:actionFunction name="confirmLogin1" action="{!studentLogin}" rerender="otpPopUp" /> -->
+                <div class="container" style="margin: 10px 0;" id="divTimer">
+                  <div class="row">
+                    <span style="float: left;">If you haven't recieved the OTP in
+                      <span class="timer"></span> seconds, click resend</span>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer" style="{!IF(gupshupStatus == '903' || gupshupStatus == '907', 'display:block', 'display:none')}">
+                <apex:commandButton value="Resend OTP" styleClass="btn btn-default pull-left" id="sendBtn2" onclick="sendOTP();" action="{!sendOTP}"
+                  oncomplete="{!IF(LoginType == 'Lead','confirmLogin();','confirmLogin1();')}" />
+              </div>
+              <apex:inputHidden value="{!resendOtp}" id="hdnResendCode" />
+            </div>
+          </div>
+        </div>
+        <script>
+          otpTimer();
+          function sendOTP() {
+            $('[id$=hdnResendCode]').val('true');
+          }
+          function validate() {
+            if ($('[id$=otp]').val()) {
+              return false;
+            }
+            return true;
+          }
+        </script>
+      </apex:outputPanel>
+
+    </apex:form>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-2 col-sm-4">
+           
+            </div>
+            <div class="col-md-3 col-sm-4">
+              
+            </div>
+            <div class="col-md-2 col-sm-4">
+              
+            </div>
+            <div class="clearfix visible-sm"></div>
+            <div class="col-md-5">
+              <div class="connectWrapper">
+               
+                <div class="footerSocialIcons">
+                  <p class="small">Follow Us :</p>
+                  <p class="text">Connect with us via Social Media and get all our latest news and upcoming events.</p>
+                  <ul>
+                    <li><a href="#" class="icon-twitter"></a></li>
+                    <li><a href="#" class="icon-facebook"></a></li>
+                    <li><a href="#" class="icon-google-plus"></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div class="row">
+            <div class="col-md-12">
+              <div class="footerBottom">
+              
+                <div class="copyRight">
+                  <p class="text">&copy; 2016 NMIMS. All Rights Reserved.</p>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+              <!--/ Footer --> 
+    <!-- Search Popup -->
+    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <form class="form-inline" id="">
+              <input type="text" class="form-control" id="searchInput" placeholder="" />
+              <button type="" class="icon-search"></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ Search Popup -->
+
+    <script type="text/javascript">
+      $('.numonly').keypress(function (e) {
+        return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) ? false : true;
+      });
+
+      function hideMe() {
+        $('[id$=MsgPopUp]').hide();
+        $('[id$=AlertPopUp]').hide();
+      }
+      $(document).ready(function () {
+
+
+        $('input[name$=OptRadio]').change(function () {
+          console.log(this.value);
+
+          var selectedOpt = this.value;
+          if (selectedOpt != undefined) {
+
+            $('[id$=hdnPaymentMode]').val(selectedOpt);
+            if (selectedOpt == 'NewApp') {
+              $('[id$=idNew]').css('display', 'block');
+              $('[id$=idCompleteForm]').css('display', 'none');
+              $('[id$=idReRegistration]').css('display', 'none');
+            }
+            else if (selectedOpt == 'CmpltReg') {
+              $('[id$=idNew]').css('display', 'none');
+              $('[id$=idCompleteForm]').css('display', 'block');
+              $('[id$=idReRegistration]').css('display', 'none');
+            }
+            else if (selectedOpt == 'ReReg') {
+              $('[id$=idNew]').css('display', 'none');
+              $('[id$=idCompleteForm]').css('display', 'none');
+              $('[id$=idReRegistration]').css('display', 'block');
+            }
+            else if (selectedOpt == 'CarrerReg') {
+              console.log('selectedOpt -->' + selectedOpt);
+              $('[id$=idNew]').css('display', 'none');
+              $('[id$=idCompleteForm]').css('display', 'none');
+              $('[id$=AlertPopUp]').show();
+            }
+          }
+        });
+        $('[id$=btn2]').click(function () {
+          $('[id$=MsgPopUp]').hide();
+          return false;
+        });
+
+      });
+    </script>
+    <script type="text/javascript">
+      function Go() {
+        call();
+      }
+      function GoTo() {
+        callTo();
+      }
+      function callpayment() {
+        callmakepayment();
+
+      }
+
+      // Current Page Parameter
+      function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) {
+          var sParameterName = sURLVariables[i].split('=');
+          if (sParameterName[0] == sParam) {
+            return sParameterName[1];
+          }
+        }
+      }
+      function changeUrl(selectedProgram) {
+        let hrefVal = 'javascript:void(0);';
+        var batchName = '{!JSENCODE($Label.Conneqt_Batch)}';
+        if (!isEmptyOrSpaces(selectedProgram)) {
+          hrefVal = selectedProgram == 'Masters' ? '/nm/CorporateMBACompleteForm?batch='+batchName : '/nm/corporatecompleteForm?batch='+batchName;
+        }
+        $('#leadRouteLink').attr('href', hrefVal);
+      }
+
+      function isEmptyOrSpaces(str) {
+        return str === null || str.match(/^ *$/) !== null;
+      }
+
+      (function (p, l, o, w, i, n, g) {
+        if (!p[i]) {
+        p.GlobalSnowplowNamespace = p.GlobalSnowplowNamespace || [];
+          p.GlobalSnowplowNamespace.push(i); p[i] = function () {
+            (p[i].q = p[i].q || []).push(arguments)
+          }; p[i].q = p[i].q || []; n = l.createElement(o); g = l.getElementsByTagName(o)[0]; n.async = 1;
+          n.src = w; g.parentNode.insertBefore(n, g)
+        }
+      }(window, document, "script", "//az686941.vo.msecnd.net/assets/sp.min.js", "a73"));
+
+      window.a73('newTracker', 'cf', 'tg.audience73.com', {
+        appId: '64',
+        platform: 'web'
+      });
+
+      // for the logged in users.
+      window.a73('setUserId', '<REPLACE_USER_ID>');
+      window.a73('enableActivityTracking', 30, 10);
+      window.a73('trackPageView');
+
+
+      //For the OTP Timer.
+      function otpTimer() {
+        $('.timer').html(timeVal);
+        clearInterval(loadTimer);
+        loadTimer = setInterval(refreshTimer, timerInterval);
+        refreshTimer();
+      }
+
+      // Alloted time in seconds
+      var timeVal = 90;
+      $('.timer').html(timeVal);
+      refreshTimer();
+
+      // Interval
+      var timerInterval = 1000;
+      var loadTimer = setInterval(refreshTimer, timerInterval);
+
+      // Refresh Timer
+      function refreshTimer() {
+        setTimeout(function () {
+          var myTime = parseInt($('.timer').html()) - 1;
+          if (myTime > 0) {
+            $('.timer').html(myTime);
+          } else {
+            $('.timer').html('');
+            $('#divTimer').addClass('hidden');
+            $("[id$=sendBtn]").removeClass('disabled');
+          }
+        }, 1);
+      }
+    </script>
+  </body>
+
+  <!--All java script  -->
+  <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}"/>
+  <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}"/>
+  <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}"/>
+  <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+   <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"/>
+  <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}"/> 
+  <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}"/>
+
+  </html>
+</apex:page>

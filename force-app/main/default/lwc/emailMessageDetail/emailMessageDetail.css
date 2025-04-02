@@ -1,0 +1,16 @@
+.filerow {
+    display: table;
+    table-layout: fixed;
+}
+
+.thumbnailImg.medium {
+    height: auto;
+    min-width: 30px;
+    max-width: 30px;
+    max-height: 35px;
+}
+
+.itemTitle {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

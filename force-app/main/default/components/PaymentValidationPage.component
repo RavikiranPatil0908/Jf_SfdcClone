@@ -1,0 +1,1350 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 02-21-2025
+  @last modified by  : @vickysahu
+-->
+<apex:component access="global" >
+    <apex:attribute access="global" name="programCategory" type="String" description="Program Category"/>
+    <apex:attribute access="global" name="totalAmountPaid" type="String" description="Total Amount Paid"/>
+    <apex:attribute access="global" name="applicableLateFee" type="String" description="Applicable Late Fee"/>
+    <apex:attribute access="global" name="maxInstalmentAmt" type="String" description="Max Instalment Amt"/>
+    <apex:attribute access="global" name="AlreadyPaidRegistrationFee" type="String" description="Already Paid Registration Fee"/>
+    <apex:attribute access="global" name="AlreadyMadeAllInstallment" type="String" description="Already Made All Installment"/>
+    <apex:attribute access="global" name="AlreadyPaidLiveLectureFee" type="String" description="Already Paid Live Lecture Fee"/>
+    <apex:attribute access="global" name="LiveLectureTypeOpted" type="String" description="Live Lecture Type Opted"/>
+    <apex:attribute access="global" name="registrationFee" type="String" description="Registration Fee"/>
+    <apex:attribute access="global" name="subventionPrograms" type="String" description="Subvention Programs" />
+    <apex:attribute access="global" name="objPaymentFormConfiguration" type="NM_Payment_Form_Configuration__c" description="Form Configurations"/>
+    <apex:attribute access="global" name="courseList" type="String" description="Live Lecture CourseList" />
+    <apex:attribute access="global" name="programSpecialization" type="String" description="Program Specialization" />
+    <apex:attribute access="global" name="showliveLectureBasedOnSY" type="String" description="Show liveLecture BasedOnSY" />
+    <apex:attribute access="global" name="EMIFeeType" type="String" description="EMI FeeType" />
+    <apex:attribute access="global" name="strSecToShow" type="String" description="strSec To Show" />
+    <apex:attribute access="global" name="semester" type="String" description="Semester" />
+    <apex:attribute access="global" name="isDownPaymentMade" type="Boolean" description="Already Paid DownPayment Fee" />
+    <apex:attribute access="global" name="isRedirect" type="Boolean" description="Is Additional Charge Pending and redirect" />
+    <apex:attribute access="global" name="redirectURL" type="String" description="Redirect URL" />
+
+<script>
+    //Global variable.
+    //To check if Loan is selected
+    var checkMode = '';
+    var TuitionPaymentType = '';
+    var subventionSchemePrograms = '{!subventionPrograms}';
+    var onLoadQuery = true;
+    window.cartMap = new Map();
+    window.loanSchemeObject  = "";
+    window.loanSpecificObject = ""; 
+    window.FeeTypeValue = "";
+    // For to escape the originalEvent Check 
+    var escapeOriginalEvent = false; 
+
+    $(document).ready(function () {
+        
+        $('[id$=DDNote]').hide();
+        $('[id$=NEFTNote]').hide();
+        $('.InstallmentPaymentButton').hide();
+        $('[id$=depositAmountPanel]').hide();
+        $('[id$=LoandepositAmountPanel]').hide();
+        $('.proceedToLoan').hide();
+        let typeVsClass = {
+            'Zest':'zestLoanSection',
+            'EduVanz':'eduvanzLoanSection',
+            'LiquiLoans':'liquiloanLoanSection',
+            'Propelld':'propelldLoanSection',
+            'EzCred':'ezcredLoanSection',
+            'GrayQuest':'grayquestLoanSection',
+            'Avanse':'avanseLoanSection'
+        };
+        var LoanType = $('[id$=hdnLoanType]').val();
+        if(LoanType && typeVsClass.hasOwnProperty(LoanType)){
+            $(`.${typeVsClass[LoanType]}`).css("display", "block");
+        }else{
+            $('.LoanSection').css("display", "none");
+        }
+
+        if('{!strSecToShow}' === 'PopUpError' || '{!strSecToShow}' === 'error') {
+            $('[id$=errorPoupId]').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+        }
+
+        $('body').on('keypress','.numonly', function(e){ 
+            return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) ) ? false : true;
+        });
+
+        $('body').on('click', '.LoanBtn', function () {
+            let val = $(this).data('value');
+            let LoanType = $(this).attr('data-loantype');
+            console.log('val '+val);
+            $('.LoanSection').css("display", "none");
+            $('.'+val).css("display", "block");
+        });
+
+        // get the Loan Details
+        getLoanDetails();
+
+        $('body').on('click','input[name="group1"]', function() {
+            $("input[type=radio][name=PaymentMode]").prop('checked', false);
+            TuitionPaymentType = $(this).data('value');
+            window.FeeTypeValue = TuitionPaymentType;
+            var progCategory = '{!programCategory}';
+            var progSpec = '{!programSpecialization}';
+            let feetypes = ['AnnualFee','MultipleSemFee','3SemFee','4SemFee','5SemFee','FullFee','FullFeeLoan', '2TermFee', '3TermFee','AnnualFeeLoan'];
+            let loanFeeTypes = ['FullFeeLoan','AnnualFeeLoan'];
+            $('[id$=onlineRadionButton]').show();
+            if (TuitionPaymentType != undefined) {
+                
+                $('[id$=hdnPaymentOption]').val(TuitionPaymentType);
+                // show Disclaimer
+                if(feetypes.includes(TuitionPaymentType) || (TuitionPaymentType == 'Admission' && (progSpec != 'M.Sc. (AI & ML Ops)' && progSpec != 'M.Sc. (AI)' ))) {
+                    $('.livelectureSection').show();
+                    
+                    $('[id$=LoanRadionButton]').show();
+
+                    if(loanFeeTypes.includes(TuitionPaymentType)) {
+                        $('[id$=onlineRadionButton]').hide();
+                        $('[id$=InstallmentRadionButton]').hide();
+                    } else {
+                        if ('{!AlreadyMadeAllInstallment}' == 'false') {
+                            $('[id$=InstallmentRadionButton]').show();
+                        }
+                    }
+                } else {
+                    $('[id$=InstallmentRadionButton]').hide();
+                    $('[id$=LoanRadionButton]').hide();
+                    $('.proceedToLoan').hide();
+                }
+
+                
+                
+                // For M.Sc. (AI & ML Ops) with liquiloan subvention
+                console.log('progSpec '+progSpec);
+                if(progSpec == 'M.Sc. (AI & ML Ops)' || progSpec == 'M.Sc. (AI)'){
+                    console.log('check for annual and fullfee'+TuitionPaymentType);
+                    if(TuitionPaymentType == 'AnnualFee'){
+                        $('.LoanAnnualFeeDis').show();
+                        $('.LoanFullFeeDis').css("display","none");
+                        //$('[id$=onlineRadionButton]').hide();
+                        //$('[id$=InstallmentRadionButton]').hide();
+                        //$('[id$=DDRadionButton]').hide();
+                    }else if(TuitionPaymentType == 'FullFee'){
+                        $('.LoanAnnualFeeDis').css("display","none");
+                        $('.LoanFullFeeDis').css("display","block");
+                        $('[id$=onlineRadionButton]').hide();
+                        $('[id$=InstallmentRadionButton]').hide();
+                        $('[id$=DDRadionButton]').hide();
+                        $('[id$=NEFTRadionButton]').hide();
+                    }else if(TuitionPaymentType == 'Admission'){
+                        $('[id$=InstallmentRadionButton]').show();
+                    }else{
+                        $('.LoanAnnualFeeDis').css("display","block");
+                        $('.LoanFullFeeDis').css("display","block");
+                        $('[id$=onlineRadionButton]').show();
+                        $('[id$=DDRadionButton]').show();
+                        $('[id$=NEFTRadionButton]').show();
+                    }
+                }
+                else {
+                    if (TuitionPaymentType === 'FullFeeLoan') {
+                        $('.fullFeeLoan').css("display", "block");
+                        $('.annualFeeLoan').css("display", "none");
+                        $('.otherTypeLoan').css("display", "none");
+                    }
+                    else if (TuitionPaymentType === 'AnnualFeeLoan') {
+                        $('.annualFeeLoan').css("display", "block");
+                        $('.otherTypeLoan').css("display", "none");
+                        $('.fullFeeLoan').css("display", "none");
+                    }
+                    else {
+                        $('.otherTypeLoan').css("display", "block");
+                        $('.fullFeeLoan').css("display", "none");
+                        $('.annualFeeLoan').css("display", "none");
+                    }
+                }
+
+                //to show live lectures types based on the Tuition Payment type
+                let objOffeetTypeVsLectureType = {
+                    'Admission': '1SemLecturesFee',
+                    'AnnualFee': '2SemLecturesFee',
+                    'MultipleSemFee': '3SemLecturesFee',
+                    '3SemFee': '3SemLecturesFee',
+                    'FullFee': '4SemLecturesFee',
+                    'FullFeeLoan': '4SemLecturesFee'
+                };
+
+                if(objOffeetTypeVsLectureType.hasOwnProperty(TuitionPaymentType)) {
+                    let lectureType = objOffeetTypeVsLectureType[TuitionPaymentType];
+                    let selectedlectureType = $('[id$=hdnLiveLecturesOption]').val();
+                    let sem = parseInt(lectureType.charAt(0));
+                    $('.SemBundles').hide();
+                    $('.SemBundles').removeClass('activeBundle');
+                    for (let index = 1; index <= sem; index++) {
+                        let lectures = `${index}SemLecturesFee`;
+                        let elem = $(`.SemBundles[data-value="${lectures}"]`);
+                        if(lectures === '1SemLecturesFee') {
+                            elem.addClass('activeBundle');
+                        }
+                        elem.show();
+                    }
+
+                    // to reset the cart list if the tution type has been changed. 
+                    if(selectedlectureType && selectedlectureType!='Custom' && selectedlectureType!='No') {
+                        let selectedSem = parseInt(selectedlectureType.charAt(0));
+                        if(selectedSem > sem) {
+                            cartMap.delete('livelecture');
+                            $('[id$=hdnLiveLecturesOption]').val('');
+                            $('.PaymentForLiveLectures').removeClass('active');
+                        }
+                    }
+
+                    // already paid for the live lectures then hide the section
+                    if('{!AlreadyPaidLiveLectureFee}'=='true' && lectureType=='{!LiveLectureTypeOpted}') {
+                        $('.livelectureSection').hide();
+                        $('[id$=hdnLiveLecturesOption]').val(lectureType);
+                        $('[id$=hdnCourseList]').val('{!courseList}');
+                    }
+                } else {
+                    $('.livelectureSection').hide();
+                    cartMap.delete('livelecture');
+                    $('[id$=hdnLiveLecturesOption]').val('');
+                    $('.PaymentForLiveLectures').removeClass('active');
+                    $('[id$=hdnCourseList]').val('');
+                    $('.ChooseSubjects').removeClass('active');
+                }
+
+                // to show update in my cart
+                let applicableCareerServiceFee = parseFloat($('[id$=applicableCareerServiceFee]').val());
+                let applicableCourseraFee = parseFloat($('[id$=applicableCourseraFee]').val());
+                let applicableLateFee = parseFloat('{!applicableLateFee}');
+
+                // let totalAmount = TuitionPaymentType === 'Registration' ? parseFloat($(this).data('amount')) : getApplicableAmountForPayment();
+                let label = $(this).data('label');
+                console.log('label --> ' + label);
+                let otherLabel = ['Career Services','Coursera','Late Fee'];
+                
+                cartMap.clear();
+                // if(label.includes('Career Services') || label.includes('Coursera') || applicableLateFee > 0) {
+                //     totalAmount = totalAmount - (parseFloat(applicableCareerServiceFee) + parseFloat(applicableCourseraFee) + applicableLateFee);
+                // }
+
+                console.log('TuitionPaymentType---> ' + TuitionPaymentType)
+
+                if(TuitionPaymentType === 'Registration') {
+                    let lstLabel = label.split('+');
+                    console.log('lstLabel ', lstLabel, label);
+                    addToCart(lstLabel[0].trim(), parseFloat($(this).data('amount')), 'paymentFor');
+                    if (lstLabel.length >1 && lstLabel[1].trim() == 'Initial amount') {
+                        cartMap.clear();
+                        addToCart(lstLabel[0].trim(), getApplicableAmountForSpecificPayment(lstLabel[0].trim()), lstLabel[0].trim());
+                        addToCart(lstLabel[1].trim(), getApplicableAmountForSpecificPayment('Initial Payment'), lstLabel[1].trim());
+                    }
+                } else {
+                    let labelVal = label.trim();
+                    if(label.includes('+')) {
+                        let lstLabel = label.split('+');
+                        console.log('lstLabel ', lstLabel, label);
+                        let secVal = otherLabel.includes(lstLabel[1].trim()) ? false : true;
+                        if(secVal) {
+                            addToCart(getLabelName(lstLabel[0].trim()), getApplicableAmountForSpecificPayment(lstLabel[0].trim()), lstLabel[0].trim());
+                            addToCart(getLabelName(lstLabel[1].trim()), getApplicableAmountForSpecificPayment(lstLabel[1].trim()), lstLabel[1].trim());
+                        } else {
+                            addToCart(getLabelName(lstLabel[0].trim()), getApplicableAmountForSpecificPayment(lstLabel[0].trim()), lstLabel[0].trim());
+                        }
+                    } else {
+                        addToCart(getLabelName(labelVal), getApplicableAmountForSpecificPayment(labelVal), labelVal);
+                    }
+                }
+
+                
+                if(label.includes('Career Services')) {
+                    addToCart('Career Services', applicableCareerServiceFee, 'careerservice');
+                }
+                if(label.includes('Coursera')) {
+                    addToCart('Coursera', applicableCourseraFee, 'coursera');
+                }
+                if(label.includes('Late Fee')) {
+                    addToCart('Late Fee', applicableLateFee, 'latefee');
+                }
+                console.log(cartMap);
+
+                if (($('[id$=hdnLiveLecturesOption]').val() && $('[id$=hdnCourseList]').val())) {
+                    setSelectedSubjects();
+                }
+                if (($('[id$=hdnBacklogList]').val())) {
+                    setSelectedBacklogSubjects();
+                }
+                onLoadQuery = false;
+                updateCart();
+            }
+        });
+
+        /*------------------------hide and Show Down Payment Options -----------------------------*/
+        $('body').on('click', '[id$=proceedToLoan]', function () {
+
+            //iterate and set Loan details.
+            let loanTypes = ['Zest','EduVanz','LiquiLoans','Propelld','EzCred','GrayQuest','Avanse'];
+            loanTypes.forEach(element => {
+                let renderId = `${element}LoanSection`;
+                renderLoanDetails(element,window.FeeTypeValue,renderId);
+            });
+
+            $('[id$=proceedtoLoanSection]').hide();
+            $('[id$=paymentOptionSection]').hide();
+            $('.showBackToHomeButton').show();
+            $('[id$=InstallmentRadionButton]').hide();
+            $('[id$=LoanRadionButton]').hide();
+            $('.InstallmentPaymentButton').hide();
+            $('.proceedToLoan').hide();
+            $('[id$=LoanPaymentSection]').show();
+            $('[id$=ShowEMISection]').hide();
+            // var selectedOpt = $('[name$=PaymentFor]').val();
+            var paymentOption = $('[id$=hdnPaymentOption]').val();
+            var progSpec = '{!programSpecialization}';
+            var progCategory = '{!programCategory}';
+            $('[id$=hdnPaymentOption]').val('DownPayment-' + paymentOption);
+
+            document.getElementById("modOfPaymentMessgaeId").innerHTML = 'Make Down Payment';
+            var downPaymentPercentage = parseFloat('{!objPaymentFormConfiguration.DownPayment_Percentage__c}');
+            var minAmountToPay = getDownPaymentAmount(downPaymentPercentage, 'Loan');
+            $('[id$=hdnDepositeAmount]').val(minAmountToPay);
+            $('[id$=downPaymentForLoanApplication]').val(minAmountToPay);
+
+            var selectedAmount = minAmountToPay;
+            var applicableAmount = parseInt(getApplicableAmountForPayment()) + parseInt(getApplicableAmountForLiveLectures()) + parseInt(getApplicableAmountForBacklog());
+            console.log('applicableAmount ==>'+ applicableAmount);
+            $('[id$=LoandepositAmountPanel]').show();
+
+            var resultForcheckPrevPayment = CheckForPreviousPayment();
+            var checkforDownPaymentapplicableToZero = resultForcheckPrevPayment.checkForPreviousPayment;
+
+            if(progSpec == 'M.Sc. (AI & ML Ops)' || progSpec == 'M.Sc. (AI)'){
+                console.log('check for annual and fullfee ==>'+paymentOption);
+                if(paymentOption == 'FullFee' || paymentOption == 'AnnualFee'){
+                    $('[id$=onlineRadionButton]').show();
+                }else{
+                    $('[id$=onlineRadionButton]').hide();
+                }
+            }
+
+            if(progCategory == 'MBA (Online) Programs' || progCategory == 'Bachelor Programs'){
+                console.log('check for fullfeeloan ==>'+paymentOption);
+                if(paymentOption == 'FullFeeLoan'){
+                    $('[id$=onlineRadionButton]').show();
+                }
+                if (progCategory == 'Bachelor Programs' && paymentOption == 'AnnualFeeLoan') {
+                    $('[id$=onlineRadionButton]').show();
+                }
+            }
+
+            if (checkforDownPaymentapplicableToZero == true) {
+                minAmountToPay = resultForcheckPrevPayment.pendingAmount;
+                selectedAmount = resultForcheckPrevPayment.pendingAmount;
+                $('[id$=downPaymentForLoanApplication]').val(minAmountToPay);
+                if (minAmountToPay == 0) {
+                    $('[id$=proceedtoLoanSection]').show();
+                    $('.modeOfPayment').hide();
+                } else {
+                    $('.modeOfPayment').show();
+                }
+            } else {
+                $('.modeOfPayment').show();
+            }
+
+            var loanBalanceAmt = applicableAmount - selectedAmount;
+            console.log('loanBalanceAmt ' + loanBalanceAmt);
+
+            // if (loanBalanceAmt < 10000) {
+            //     $('.showEduVanzLoan').css('display', 'none');
+            // } else {
+            //     $('.showEduVanzLoan').css('display', 'block');
+            // }
+
+            if (loanBalanceAmt < 15000) {
+                $('.showPropelldLoanBtn').css('display', 'none');
+                $('.showAvanseLoanBtn').css('display', 'none');
+            } else {
+                $('.showPropelldLoanBtn').css('display', 'block');
+                $('.showAvanseLoanBtn').css('display','block');
+            }
+              
+            // hide id selected payment amount is less than 99000
+            console.log('progSpec '+progSpec+' loanBalanceAmt '+loanBalanceAmt);
+            showHideLiquiloansTenure(progSpec,loanBalanceAmt);
+
+            document.getElementById("LoanbalanceAmountToPay").innerHTML = loanBalanceAmt;
+            console.log('minAmountToPay -->' + minAmountToPay);
+            showEMIOnPage(minAmountToPay, 0);
+        });
+
+        /*------------------------------------------Payment Options -----------------------------*/
+        $('body').on('change', 'input[name="PaymentMode"]', function () {
+            console.log(TuitionPaymentType);
+            if (TuitionPaymentType) {
+                var selectedOpt = this.value;
+                if (selectedOpt != undefined) {
+                    let liveLecture = $('[id$=hdnLiveLecturesOption]').val();
+                    let courseList = $('[id$=hdnCourseList]').val();
+                    if((liveLecture && (liveLecture!='Custom' || courseList)) || '{!objPaymentFormConfiguration.ShowLiveLectures__c}' === 'false' || TuitionPaymentType === 'Registration' || '{!showliveLectureBasedOnSY}' === 'false') {
+                        $('[id$=hdnPaymentMode]').val(selectedOpt);
+                        // To hide All the Options.
+                        // $('.paymentOptions').hide();
+                        if (selectedOpt == 'Demand Draft') {
+                            $('.paymentOptions').hide();
+                            $('.PayBtndd').show();
+                            $('[id$=DDNote]').show();
+                        } else if (selectedOpt == 'NEFT') {
+                            $('[id$=NEFTNote]').show();
+                            $('.paymentOptions').hide();
+                            $('.PayBtnNEFT').show();
+                        } else if (selectedOpt == 'Online') {
+                            $('.paymentOptions').hide();
+                            $('.PayBtn').show();
+                        } else if (selectedOpt == 'Loan') {
+                            $('.paymentOptions').hide();
+                            $('.proceedToLoan').show();
+                            checkMode = 'Loan';
+                        } else if (selectedOpt == 'Installment') {
+                            $('.paymentOptions').hide();
+                            $('.InstallmentPaymentButton').show();
+                            checkMode = 'Installment';
+                        }
+                    } else {
+                        showMsg('Please select the Payment - Live Lectures');
+                        this.checked = false;
+                    }
+                }
+            } else {
+                showMsg('Please select the payment amount');
+                this.checked = false;
+            }
+        });
+
+        $('body').on('keyup', '[id$=downPaymentForLoanApplication]', function () {
+            var selectedAmount = this.value;
+            var applicableAmount = parseInt(getApplicableAmountForPayment()) + parseInt(getApplicableAmountForLiveLectures()) + parseInt(getApplicableAmountForBacklog());
+            $('[id$=LoandepositAmountPanel]').show();
+            var EMI = $('[id$=hdnEMI]').val();
+            var Tenure = $('[id$=hdnTenure]').val();
+            var LoanType = $('[id$=hdnLoanType]').val();
+            var downPaymentPercentage = parseFloat('{!objPaymentFormConfiguration.DownPayment_Percentage__c}');
+            var minAmountToPay = getDownPaymentAmount(downPaymentPercentage, 'Loan');
+            var balanceAmountToPaid = parseFloat(applicableAmount) - selectedAmount;
+            setBalanceAmount(applicableAmount,selectedAmount,minAmountToPay,LoanType,EMI,Tenure);
+            showEMIOnPage(minAmountToPay, balanceAmountToPaid);
+
+            // to remove the selected EMI Option if downpayment amount is chaged for liquiloans.
+            if($('input[name=EMIOption]:checked').length >= 0 && $('input[name=EMIOption]:checked').hasClass("liquiLoansOption")){
+                $('input[name=EMIOption]').prop("checked", false);
+            }
+            /*----- Un select Radio Button on back ------*/
+            escapeOriginalEvent = false;
+            $('[id$=downPaymentForLoanApplication]').trigger('change');
+        });
+
+        $('body').on('change', '[id$=downPaymentForLoanApplication]', function ( event ) {
+            var selectedAmount = this.value;
+            $('[id$=hdnDepositeAmount]').val(selectedAmount);
+            var downPaymentPercentage = parseFloat('{!objPaymentFormConfiguration.DownPayment_Percentage__c}');
+            var minAmountToPay = getDownPaymentAmount(downPaymentPercentage, 'Loan');
+            var EMI = $('[id$=hdnEMI]').val();
+            var Tenure = $('[id$=hdnTenure]').val();
+            var LoanType = $('[id$=hdnLoanType]').val();
+            var resultForcheckPrevPayment = CheckForPreviousPayment();
+            console.dir(resultForcheckPrevPayment);
+            var checkforDownPaymentapplicableToZero = resultForcheckPrevPayment.checkForPreviousPayment;
+            var eduvanzDownpaymentVal = $('[id$=downPaymentForLoanApplication]').val();
+            let applicableAmount = parseInt(getApplicableAmountForPayment()) + parseInt(getApplicableAmountForLiveLectures()) + parseInt(getApplicableAmountForBacklog());
+
+            console.log('minAmountToPay-->' + minAmountToPay + ' selectedAmount-->' + selectedAmount + ' LoanType-->' + LoanType + ' checkforDownPaymentapplicableToZero--' + checkforDownPaymentapplicableToZero + 'eduvanzDownpaymentVal--' + eduvanzDownpaymentVal);
+            console.log('resultForcheckPrevPayment.pendingAmount -->'+resultForcheckPrevPayment.pendingAmount);
+            console.log('event.originalEvent -->'+event.originalEvent);
+            console.log('escapeOriginalEvent -->'+event.originalEvent)
+            if (LoanType != 'Zest' && LoanType != 'EduVanz' && LoanType != 'LiquiLoans' && LoanType != 'Propelld' && LoanType !='EzCred' && LoanType !='GrayQuest' && LoanType !='Avanse') {
+                if (EMI != '' && Tenure != '3') {
+                    minAmountToPay = parseFloat(minAmountToPay) + parseFloat(EMI);
+                } else {
+                    minAmountToPay = parseFloat(minAmountToPay);
+                }
+            }
+
+            if (checkforDownPaymentapplicableToZero == true && eduvanzDownpaymentVal == 0 && resultForcheckPrevPayment.pendingAmount == 0) {
+                $('[id$=proceedtoLoanSection]').show();
+                $('.modeOfPayment').hide();
+            } else {
+                $('[id$=proceedtoLoanSection]').hide();
+                $('.modeOfPayment').show();
+            }
+            if ( ((!checkforDownPaymentapplicableToZero && selectedAmount < minAmountToPay) ||
+                (checkforDownPaymentapplicableToZero && selectedAmount < resultForcheckPrevPayment.pendingAmount)) 
+                && (event.originalEvent != undefined || escapeOriginalEvent) ) {
+                
+                if (checkforDownPaymentapplicableToZero) {
+                    minAmountToPay = resultForcheckPrevPayment.pendingAmount;
+                }
+                $('[id$=proceedtoLoanSection]').hide();
+                document.getElementById("LoanbalanceAmountToPay").innerHTML = '';
+                $('[id$=hdnDepositeAmount]').val('');
+                showMsg('Min Installment to Pay is ' + minAmountToPay);
+                $(this).val('');
+                showEMIOnPage(minAmountToPay, 0);
+                escapeOriginalEvent = false;
+
+                // to remove the selected EMI Option if downpayment amount is chaged for liquiloans
+                if($('input[name=EMIOption]:checked').length >= 0 && $('input[name=EMIOption]:checked').hasClass("liquiLoansOption")){
+                    $('input[name=EMIOption]').prop("checked", false);
+                }
+            }
+            // else if(parseFloat(applicableAmount) <= parseFloat(selectedAmount)) {
+            //     // document.getElementById("LoanbalanceAmountToPay").innerHTML = '';
+            //     $('[id$=hdnDepositeAmount]').val('');
+            //     showMsg('Down Payment should be less than Admission Amount.\nPlease enter a valid amount.');
+            //     $(this).val('');
+            //     setBalanceAmount(applicableAmount,selectedAmount,minAmountToPay,LoanType,EMI,Tenure);
+            // }
+            else if ($('[id$=hdnEMI]').val()) {
+                var balanceAmountToPaid = parseFloat(applicableAmount) - selectedAmount;
+                var InterestRate = $('[id$=hdnInterestrate]').val();
+                let loanTypeListForFlat = ['EduVanz','LiquiLoans','EzCred','GrayQuest','Propelld','Avanse'];
+                if (loanTypeListForFlat.includes(LoanType)) {
+                    EMI = calculateEMI(balanceAmountToPaid, Tenure, InterestRate, 'flat', LoanType);
+                } else if(LoanType == 'Zest') {
+                    EMI = calculateEMI(balanceAmountToPaid, Tenure, InterestRate, 'reducing', LoanType);
+                } else {
+                    EMI = calculateEMI(balanceAmountToPaid, Tenure, InterestRate, null, LoanType);
+                }
+                $('[id$=hdnEMI]').val(EMI);
+            }
+        });
+
+        $('body').on('click', '[id$=PayBtnInstallment]', function () {
+            $('[id$=InstallmentDownPaymentSection]').show();
+            $('[id$=paymentOptionSection]').hide();
+            $('.showBackToHomeButton').show();
+            $('[id$=InstallmentRadionButton]').hide();
+            $('[id$=LoanRadionButton]').hide();
+            $('.InstallmentPaymentButton').hide();
+            $('[id$=ShowEMISection]').hide();
+            var registrationFeePaid = '{!AlreadyPaidRegistrationFee}';
+            var applicableLateFee = '{!applicableLateFee}';
+            var paymentOption = $('[id$=hdnPaymentOption]').val();
+            $('[id$=hdnPaymentOption]').val('Installment-' + paymentOption);
+
+            var minAmountToPay = getDownPaymentAmount(20, 'Instalment');
+            console.log('minAmountToPay before--' + minAmountToPay);
+
+            console.log('minAmountToPay after--' + minAmountToPay);
+            $('[id$=hdnDepositeAmount]').val(minAmountToPay);
+            $('[id$=downPaymentForInstallment]').val(minAmountToPay);
+
+            var selectedAmount = minAmountToPay;
+            var applicableAmount = parseInt(getApplicableAmountForPayment()) + parseInt(getApplicableAmountForLiveLectures()) + parseInt(getApplicableAmountForBacklog());
+            if (parseFloat(applicableLateFee) > 0) {
+                applicableAmount = parseFloat(applicableAmount) + parseFloat(applicableLateFee);
+                console.log('applicableAmount in installment ---' + applicableAmount);
+            }
+            $('[id$=depositAmountPanel]').show();
+            document.getElementById("balanceAmountToPay").innerHTML = applicableAmount - selectedAmount;
+        });
+
+        $('body').on('keyup', '[id$=downPaymentForInstallment]', function () {
+            var selectedAmount = this.value;
+            var applicableAmount = parseInt(getApplicableAmountForPayment()) + parseInt(getApplicableAmountForLiveLectures()) + parseInt(getApplicableAmountForBacklog());
+            $('[id$=depositAmountPanel]').show();
+            document.getElementById("balanceAmountToPay").innerHTML = applicableAmount - selectedAmount;
+        });
+
+        $('body').on('change', '[id$=downPaymentForInstallment]', function () {
+            var selectedAmount = this.value;
+            $('[id$=hdnDepositeAmount]').val(selectedAmount);
+            var registrationFeePaid = '{!AlreadyPaidRegistrationFee}';
+            var minAmountToPay = getDownPaymentAmount(20, 'Instalment');
+            var applicableAmount = parseInt(getApplicableAmountForPayment()) + parseInt(getApplicableAmountForLiveLectures()) + parseInt(getApplicableAmountForBacklog());
+
+            if (selectedAmount < minAmountToPay) {
+                document.getElementById("balanceAmountToPay").innerHTML = '';
+                $('[id$=hdnDepositeAmount]').val('');
+                showMsg('Min Installment to Pay is ' + minAmountToPay);
+                $(this).val('');
+            } else if (parseFloat(applicableAmount) <= parseFloat(selectedAmount)) {
+                document.getElementById("balanceAmountToPay").innerHTML = '';
+                $('[id$=hdnDepositeAmount]').val('');
+                showMsg('Installment should be less than Admission Amount.\nPlease select Admission Radio Button to Pay.');
+                $(this).val('');
+            }
+        });
+
+        $('body').on('click', '.paymentGatewayGrp', function () {
+            $('.page-loader-wrapper').show();
+            let selectedOpt = $(this).data('value');
+            console.log('this.value ==>'+selectedOpt);
+            $('[id$=hdngetWay]').val(selectedOpt);
+            callMakePayment();
+            $('[id$=PaymentGateWayOption]').modal('hide');
+        });
+
+        $('body').on('click', '.EMIOption', function () {
+            var LoanInterestRate = $(this).attr("data-interestRate");
+            var LoanTenure = $(this).val();
+            var LoanEMIType = $(this).attr("data-LoanType");
+            console.log('selected tenure');
+            console.log(LoanEMIType + ' -->' + LoanInterestRate);
+            $('[id$=downPaymentForLoanApplication]').trigger('change');
+            showAndCapturEMIOptionsBasedUponLoanType(LoanEMIType, LoanTenure, LoanInterestRate);
+        });
+
+        $('body').on('click', '[id$=EMIPayment1]', function () {
+            var selectedAmount = this.value;
+            var EMIFeeType = '{!EMIFeeType}';
+            $('[id$=hdnPaymentOption]').val('EMI-' + EMIFeeType);
+            $('[id$=hdnDepositeAmount]').val(selectedAmount);
+        });
+
+        $('body').on('click','.PaymentForLiveLectures', function() {
+            cartMap.delete('livelecture');
+            updateCart();
+            let selectionVal = $(this).data('value');
+            triggerOnClick(selectionVal, $(this));
+        });
+
+        $('body').on('click', '.ChooseSubjects', function () {
+            let selectionVal = $(this).data('value');
+            let selectedOptions = $('[id$=hdnCourseList]').val();
+            let totalSubjects = $('.ChooseSubjects').length;
+            let limitedSubjects = totalSubjects - 1;
+            let selectedOptionArray = selectedOptions != null && selectedOptions != '' ? selectedOptions.split(',') : [];
+            if($(this).hasClass('active') && selectedOptionArray.length > 0) {
+                selectedOptionArray.splice($.inArray(selectionVal.toString(), selectedOptionArray), 1);
+                $(this).removeClass('active');
+            } else if(!$(this).hasClass('active')) {
+                $(this).addClass('active');
+                selectedOptionArray.push(selectionVal.toString());
+            }
+            let uniq = selectedOptionArray.length > 0 ? [...new Set(selectedOptionArray)] : [];
+            console.log(uniq);
+            if(limitedSubjects === uniq.length) {
+                let livelectureElem = $("div.liveLectureBtnGroup").find('.activeBundle');
+                triggerOnClick(livelectureElem.data('value'),livelectureElem);
+            } else {
+                $('[id$=hdnCourseList]').val(uniq.join());
+                let totalAmount = getApplicableAmountForLiveLectures();
+                console.log(totalAmount);
+                addToCart(`Live Lectures - ${uniq.length} Subjects`, totalAmount, 'livelecture');
+                updateCart();
+            }
+        });
+
+        $('body').on('click','.toggle-download', () => {
+            if($('.payment-detail').hasClass('hide') || '{!isRedirect}' == 'true') {
+                if('{!isRedirect}' == 'true') {
+                    window.open(`{!redirectURL}`);
+                } else {
+                    $('.payment-detail').removeClass('hide');
+                    $('.payment-table').addClass('hide');
+                    $('.toggle-download').text('Download Transaction Advise');
+                }
+            } else {
+                $('.payment-detail').addClass('hide');
+                $('.payment-table').removeClass('hide');
+                $('.toggle-download').text('Make Payment');
+            }
+        });
+
+        if('{!isDownPaymentMade}' == 'true' || '{!isRedirect}' == 'true') {
+            $('.payment-table').removeClass('hide');
+        }
+
+        if('{!isRedirect}' == 'true') {
+            $('.payment-detail').addClass('hide');
+        }
+    });
+
+    function showMsg(message) {
+        showNotification('bg-pink', message, 'top', 'center', 'animated fadeInDown', 'animated fadeOutUp');
+    }
+
+    function setBalanceAmount(applicableAmount,selectedAmount,minAmountToPay,loanType,EMI,tenure) {
+        let balanceAmountToPaid = parseFloat(applicableAmount) - selectedAmount;
+        let lstLoanTypes = ['Zest','EduVanz','LiquiLoans','EzCred','GrayQuest'];
+        if (!lstLoanTypes.includes(loanType)) {
+            let additionalAmount = 0;
+            if (EMI != '' && tenure != '3') {
+                additionalAmount = (parseFloat(selectedAmount) - (parseFloat(minAmountToPay) + parseFloat(EMI)));
+
+                balanceAmountToPaid = parseFloat(applicableAmount) - (parseFloat(minAmountToPay) + parseFloat(additionalAmount));
+            } else {
+                additionalAmount = (parseFloat(selectedAmount) - parseFloat(minAmountToPay));
+                balanceAmountToPaid = parseFloat(applicableAmount) - (parseFloat(minAmountToPay) + parseFloat(additionalAmount));
+            }
+        }
+        console.log('minAmountToPay----' + minAmountToPay + '---EMI ---' + EMI + '--loanType--' + loanType);
+        document.getElementById("LoanbalanceAmountToPay").innerHTML = balanceAmountToPaid;
+    }
+
+    function setSelectedSubjects() {
+        // To set the Custom live lecture type selected
+        let livelectureElem = $(`.PaymentForLiveLectures[data-value="Custom"]`);
+        triggerOnClick(livelectureElem.data('value'),livelectureElem);
+
+        // To set the Selected Subjects active
+        let selectedOptions = '{!courseList}';
+        let totalSubjects = $('.ChooseSubjects').length;
+        let selectedOptionArray = selectedOptions != null && selectedOptions != '' ? selectedOptions.split(',') : [];
+        $(".ChooseSubjects").each(function( index,element ) {
+            let courseId = $(this).data('value').toString();
+            console.log(courseId);
+            console.log(selectedOptionArray);
+            if($.inArray(courseId,selectedOptionArray) != -1) {
+                $(this).addClass('active');
+            }
+        });
+        let totalAmount = getApplicableAmountForLiveLectures();
+        addToCart(`Live Lectures - ${selectedOptionArray.length} Subjects`, totalAmount, 'livelecture');
+    }
+
+    function setSelectedBacklogSubjects() {
+        console.log("inside setSelectedBacklogSubjects ---->");
+
+        // To set the Selected Subjects active
+        let selectedOptions = $('[id$=hdnBacklogList]').val();
+        console.log(selectedOptions);
+        let selectedOptionArray = selectedOptions != null && selectedOptions != '' ? selectedOptions.split(',') : [];
+        $(".ChooseBacklogSubjects").each(function (index, element) {
+            let courseId = $(this).data('value').toString();
+            console.log(courseId);
+            console.log(selectedOptionArray);
+            if ($.inArray(courseId, selectedOptionArray) != -1) {
+                $(this).addClass('active');
+            }
+        });
+        console.log(selectedOptionArray);
+        let totalAmount = getApplicableAmountForBacklog();
+        addToCart(`Backlog Live Lectures - ${selectedOptionArray.length} Subjects`, totalAmount, 'backloglecture');
+    }
+
+    function addToCart(label, totalAmount, paymentFor) {
+        let objcart = {
+            'label': label,
+            'amount': parseFloat(totalAmount) 
+        };
+        cartMap.set(paymentFor, objcart);
+    }
+
+    function ordinal(n) {
+        var s = ["th", "st", "nd", "rd"];
+        var v = n%100;
+        return n + (s[(v-20)%10] || s[v] || s[0]);
+    }
+
+    function triggerOnClick(selectionVal,elem) {
+        let totalAmount=0,totalSubjects = $('.ChooseSubjects').length;
+        $('[id$=hdnLiveLecturesOption]').val(selectionVal);
+        if(selectionVal == 'Custom') {
+            let semester = ordinal(parseInt('{!semester}'));
+            let context = `You will be able to select subjects and pay for live lectures only for ${semester} semester. For subsequent semesters payment for live lectures will be applicable at the time of re-registration
+            <br/>Please cross verify your selections, all subjects are selected by default and you can make necessary changes before paying the fees`;
+            // showHtmlMessage(context);
+            $('.SubjectSection').removeClass('hide');
+            $('.SubjectSection').show();
+        } else {
+            $('.SubjectSection').hide();
+            $('.ChooseSubjects').removeClass('active');
+            $('[id$=hdnCourseList]').val('');
+            if(selectionVal != 'No') {
+                let jsonStringOfProductVsSubjects = $('[id$=hdnSubjectsCount]').val();
+                let mapOfProductVsSubjects = JSON.parse(jsonStringOfProductVsSubjects);
+                let sem = parseInt(selectionVal.charAt(0));
+                totalSubjects = mapOfProductVsSubjects[selectionVal];
+                let totalAmount = getApplicableAmountForLiveLectures();
+                console.log(totalAmount);
+                addToCart(`Live Lectures - ${totalSubjects} Subjects`, totalAmount, 'livelecture');
+            } else {
+                cartMap.delete('livelecture');
+            }
+            updateCart();
+        }
+    }
+
+    function updateCart() {
+        let htmtElements = '';
+        let imagUrl = "{!URLFOR($Resource.AdminBSBMaterialDesign, 'AdminBSBMaterialDesign/images/empty-cart.png')}";
+        let totalAmount = 0;
+        console.log('size ==>'+cartMap.size);
+        if(cartMap.size > 0) {
+            for (const [key, value] of cartMap) {
+                htmtElements += '<div class="row"><div class="col-xs-7 col-sm-7 col-md-7 col-lg-7"><span>'+value.label+'</span></div><div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 align-right"><span class="fright">'+value.amount+'</span></div></div>';
+                totalAmount += parseInt(value.amount);
+            }
+            htmtElements += '<hr style="border-top: 1px solid #337ab7"/><div class="row"><div class="col-xs-7 col-sm-7 col-md-7 col-lg-7"><span>Total Fees</span></div><div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 align-right"><span class="fright">INR '+totalAmount+'</span></div></div>';
+        } else {
+            htmtElements = '<center><img src="'+imagUrl+'" class="img-responsive"/></center>';
+        }
+        $('.mycartClass').html(htmtElements);
+    }
+
+    /*---------------------------------------------------------------Interest Calculation -----------------------------------------------*/
+    function showEMIOnPage(downPayment, labelAmount) {
+        let ZestLoanOption = '{!objPaymentFormConfiguration.Show_Zest_Loan_Option__c}';
+        let eduVanzOption = '{!objPaymentFormConfiguration.Show_Eduvaz_Loan_Option__c}';
+        let liquiloansOption = '{!objPaymentFormConfiguration.Show_LiquiLoans_Loan_Option__c}';
+        let propelldOption = '{!objPaymentFormConfiguration.Show_Propelld_Loan_Option__c}';
+        let ezcredOption = '{!objPaymentFormConfiguration.Show_Ezcred_Loan_Option__c}';
+        let grayquestOption = '{!objPaymentFormConfiguration.Show_GrayQuest_Loan_Option__c}';
+        let avanseOption = '{!objPaymentFormConfiguration.Show_Avanse_Loan_Option__c}';
+        let progSpec = '{!programSpecialization}';
+        let applicableAmount = parseInt(getApplicableAmountForPayment()) + parseInt(getApplicableAmountForLiveLectures());
+        let selectedAmount = downPayment;
+        let balanceAmountToPay = applicableAmount - selectedAmount;
+        if (labelAmount > 0) {
+            balanceAmountToPay = labelAmount;
+        }
+        if (ZestLoanOption == 'true') {
+            $(".ZestLoanOption").each(function () {
+                let ZestEMIInterestRate = $(this).attr('data-interestRate');
+                let ZestEMITenure = $(this).val();
+                let ZestLoanId = $(this).attr('data-LoanId');
+                document.getElementById(ZestLoanId).innerHTML = calculateEMI(balanceAmountToPay, ZestEMITenure, ZestEMIInterestRate, 'reducing', 'Zest');
+            });
+        }
+        if (eduVanzOption == 'true') {
+            // for MBA(WX) and M.Sc.
+                $(".EduVanzLoanOption").each(function () {
+                    let eduVanzOptionEMIInterestRate = $(this).attr('data-interestRate');
+                    let eduVanzOptionEMITenure = $(this).val();
+                    let eduVanzOptionLoanId = $(this).attr('data-LoanId');
+                    document.getElementById(eduVanzOptionLoanId).innerHTML = calculateEMI(balanceAmountToPay, eduVanzOptionEMITenure, eduVanzOptionEMIInterestRate, 'flat', 'EduVanz');
+                });
+
+            // if (balanceAmountToPay < 10000) {
+            //     $('.showEduVanzLoan').css('display', 'none');
+            //     if($('input[name=EMIOption]:checked').length >= 0 && $('[id$=hdnLoanType]').val() == 'EduVanz'){
+            //         $('input[name=EMIOption]').prop("checked", false);
+            //     }
+            // } else {
+            //     $('.showEduVanzLoan').css('display', 'block');
+            // }
+        }
+
+        if(propelldOption == 'true' && balanceAmountToPay >= 15000) {
+            $('.showPropelldLoanBtn').show();
+            $(".PropelldLoanOption").each(function () {
+                let propelldOptionFSEMIInterestRate = $(this).attr('data-interestRate');
+                let propelldOptionFSEMITenure = $(this).val();
+                let propelldOptionFSLoanId = $(this).attr('data-LoanId');
+                console.log('propelldOptionFSLoanId-->' + propelldOptionFSEMIInterestRate + ' ' + propelldOptionFSEMITenure + ' ' + propelldOptionFSLoanId);
+                document.getElementById(propelldOptionFSLoanId).innerHTML = calculateEMI(balanceAmountToPay, propelldOptionFSEMITenure, propelldOptionFSEMIInterestRate, 'flat', 'Propelld');
+            });
+            showHidePropelldTenure(progSpec,balanceAmountToPay);
+        } else {
+            $('.showPropelldLoanBtn').hide();
+        }
+
+        if(avanseOption == 'true' && balanceAmountToPay >= 15000) {
+            console.log('avanse');
+            let firstAvanseLoanOption = $(".AvanseLoanOption")[0];
+            console.log('AvanseLoanOption--->' +  $(firstAvanseLoanOption).attr('data-interestRate'));
+            $('.showAvanseLoanBtn').show();
+            $(".AvanseLoanOption").each(function () {
+                let avanseOptionFSEMIInterestRate = $(this).attr('data-interestRate');
+                let avanseOptionFSEMITenure = $(this).val();
+                let avanseOptionFSLoanId = $(this).attr('data-LoanId');
+                console.log('avanseOptionFSEMIInterestRate-->' + avanseOptionFSEMIInterestRate + ' ' + avanseOptionFSEMITenure + ' ' + avanseOptionFSLoanId);
+                document.getElementById(avanseOptionFSLoanId).innerHTML = calculateEMI(balanceAmountToPay, avanseOptionFSEMITenure, avanseOptionFSEMIInterestRate, 'flat', 'Avanse');
+            });
+            showHideAvanseTenure(progSpec,balanceAmountToPay);
+        } else {
+            $('.showAvanseLoanBtn').hide();
+        }
+        
+        if (liquiloansOption == 'true') {
+            console.log('liqueloan');
+            $(".LiquiLoansLoanOption").each(function () {
+                let liquiLoansOptionFSEMIInterestRate = $(this).attr('data-interestRate');
+                let liquiLoansOptionFSEMITenure = $(this).val();
+                let liquiLoansOptionFSLoanId = $(this).attr('data-LoanId');
+                document.getElementById(liquiLoansOptionFSLoanId).innerHTML = calculateEMI(balanceAmountToPay, liquiLoansOptionFSEMITenure, liquiLoansOptionFSEMIInterestRate, 'flat', 'LiquiLoans');
+            });
+
+            // show / hide the liquiloans tenures
+            showHideLiquiloansTenure(progSpec,balanceAmountToPay);
+        }
+        
+        if (ezcredOption == 'true') {
+            $(".EzCredLoanOption").each(function () {
+                let liquiLoansOptionFSEMIInterestRate = $(this).attr('data-interestRate');
+                let liquiLoansOptionFSEMITenure = $(this).val();
+                let liquiLoansOptionFSLoanId = $(this).attr('data-LoanId');
+                document.getElementById(liquiLoansOptionFSLoanId).innerHTML = calculateEMI(balanceAmountToPay, liquiLoansOptionFSEMITenure, liquiLoansOptionFSEMIInterestRate, 'flat', 'EzCred');
+            });
+        }
+
+        if (grayquestOption == 'true') {
+            $(".GrayQuestLoanOption").each(function () {
+                let LoansOptionFSEMIInterestRate = $(this).attr('data-interestRate');
+                let LoansOptionFSEMITenure = $(this).val();
+                let LoansOptionFSLoanId = $(this).attr('data-LoanId');
+                document.getElementById(LoansOptionFSLoanId).innerHTML = calculateEMI(balanceAmountToPay, LoansOptionFSEMITenure, LoansOptionFSEMIInterestRate, 'flat', 'GrayQuest');
+            });
+        }
+        
+    }
+
+    function showHideLiquiloansTenure(ProgramSpec , LoanAmount){
+        let specialization = ['MBA (X)','MBA - X','MBA (WX)','M.Sc.','M.Sc. (AI & ML Ops)','M.Sc. (AI)'];
+        if(specialization.includes(ProgramSpec) && LoanAmount > 99000){
+            $('.showTenure9n12EnableForMaster').css('display', '');
+            $('.showTenure9n12EnableforOtherProg').css('display', 'none');
+        }else{
+            $('.showTenure9n12EnableForMaster').css('display', 'none');
+            $('.showTenure9n12EnableforOtherProg').css('display', '');
+        }
+
+        if( LoanAmount > 99000){
+            $('.showTenure36LiquiLoans').css('display', '');
+        }else{
+            $('.showTenure36LiquiLoans').css('display', 'none');
+        }
+        
+        if(specialization.includes(ProgramSpec) && ProgramSpec!='M.Sc.' && LoanAmount > 99000){
+            $('.showTenure15n18EnableForMaster').css('display', '');
+            $('.showTenure15n18EnableforOtherProg').css('display', 'none');
+        }else{
+            $('.showTenure15n18EnableForMaster').css('display', 'none');
+            $('.showTenure15n18EnableforOtherProg').css('display', '');
+        }
+    }
+
+    function showHidePropelldTenure(ProgramSpec, loanAmount) {
+        $('.showTenurePropelld').show();
+        let paymentFeeType = $('[id$=hdnPaymentOption]').val();
+        let specialization = ['MBA (X)','MBA - X','MBA (WX)','M.Sc.','M.Sc. (AI & ML Ops)','M.Sc. (AI)'];
+        if (loanAmount < 50000) {
+            $('.showTenure15Propelld').hide();
+            $('.showTenure24Propelld').hide();
+            $('.showTenure17Propelld').hide();
+            $('.showTenure23Propelld').hide();
+        }
+    }
+
+    function showHideAvanseTenure(ProgramSpec, loanAmount) {
+        // $('.showTenureAvanse').hide();
+        // let paymentFeeType = $('[id$=hdnPaymentOption]').val();
+        // let specialization = ['MBA (X)','MBA - X','MBA (WX)','M.Sc.','M.Sc. (AI & ML Ops)','M.Sc. (AI)'];
+        // if(specialization.includes(ProgramSpec)) {
+        //     $('.showTenureAvanse').show();
+        // }else {
+        //     $('.showTenure3Avanse').show();
+        //     $('.showTenure6Avanse').show();
+        //     if(paymentFeeType.includes('AnnualFee') || paymentFeeType.includes('MultipleSemFee') || paymentFeeType.includes('3SemFee') ||paymentFeeType.includes('3TermFee') ) {
+        //         $('.showTenure9Avanse').show();
+        //         $('.showTenure12Avanse').show();
+        //     } else if(paymentFeeType.includes('FullFee')) {
+        //         $('.showTenure9Avanse').show();
+        //         $('.showTenure12Avanse').show();
+        //         if(loanAmount >= 50000) {
+        //             $('.showTenure15Avanse').show();
+        //             $('.showTenure24Avanse').show();
+        //         }
+        //     }
+        // }
+        $('.showTenureAvanse').show();
+    }
+
+    function calculateEMI(balancePayment, Tenure, Interest, EMIType, loanType) {
+        let EMI = 0;
+        let progSpec = '{!programSpecialization}';
+        let specialization = ['MBA (X)','MBA - X','MBA (WX)'];
+        let feeType = $('[id$=hdnPaymentOption]').val();
+        let isGrayquest = loanType === 'GrayQuest' && feeType !== 'FullFeeLoan' && feeType !== 'AnnualFeeLoan';
+        if (EMIType == 'flat' && !isGrayquest) {
+            EMI = (balancePayment + Math.round((balancePayment * (Interest / 100) * Tenure))) / Tenure;
+        }else if(EMIType == 'reducing') {
+            balancePayment = ~balancePayment + 1;
+            Interest = specialization.includes(progSpec) && (Tenure==12 || Tenure==15) ? 0.01583 : 0.013;
+            EMI = PMT(Interest,Tenure,balancePayment,0,0);
+        } else {
+            EMI = ((balancePayment * (Interest / 100)) + balancePayment) / Tenure;
+        }
+        // For Propelld-FullFeeLoan 24 months tenure processing fee of 2% will be distributed in 24 EMIs.
+        if(loanType == 'Propelld' && feeType.includes('FullFeeLoan') && Tenure == 24) {
+            let processingFee = (0.02 * balancePayment) / Tenure;
+            EMI = EMI + processingFee;
+        }
+        return Math.round(EMI);
+    }
+
+    // For Zest Calculation
+    function PMT(ir, np, pv, fv, type) {
+        /*
+        * ir   - interest rate per month
+        * np   - number of periods (months)
+        * pv   - present value
+        * fv   - future value
+        * type - when the payments are due:
+        *        0: end of the period, e.g. end of month (default)
+        *        1: beginning of period
+        */
+        var pmt, pvif;
+        fv || (fv = 0);
+        type || (type = 0);
+        if (ir === 0)
+            return -(pv + fv)/np;
+
+        pvif = Math.pow(1 + ir, np);
+        pmt = - ir * (pv * pvif + fv) / (pvif - 1);
+        if (type === 1)
+            pmt /= (1 + ir);
+
+        return pmt;
+    }
+
+    function showAndCapturEMIOptionsBasedUponLoanType(LoanType, Tenure, InterestRate) {
+        $('[id$=hdnLoanType]').val(LoanType);
+        let resultForcheckPrevPayment = CheckForPreviousPayment();
+        let checkforDownPaymentapplicableToZero = resultForcheckPrevPayment.checkForPreviousPayment;
+        let downPaymentPercentage = parseFloat('{!objPaymentFormConfiguration.DownPayment_Percentage__c}');
+        let alreadyEnterdMinAmountToPay = $('[id$=downPaymentForLoanApplication]').val();
+        let minAmountToPay = getDownPaymentAmount(downPaymentPercentage, 'Loan');
+        if (resultForcheckPrevPayment.pendingAmount > 0) {
+            minAmountToPay = resultForcheckPrevPayment.pendingAmount;
+        }
+
+        let registrationFeePaid = '{!AlreadyPaidRegistrationFee}';
+        let applicableAmount = parseInt(getApplicableAmountForPayment()) + parseInt(getApplicableAmountForLiveLectures()) + parseInt(getApplicableAmountForBacklog());
+        let balanceAmountToPay = applicableAmount - minAmountToPay;
+        let checkDown = alreadyEnterdMinAmountToPay > minAmountToPay;
+        if(checkDown){
+            balanceAmountToPay = applicableAmount - alreadyEnterdMinAmountToPay;
+        }
+        // let checkforDownPaymentapplicableToZero = CheckForPreviousPayment();
+
+        let EMI = '';
+        let loanTypeListForFlat = ['EduVanz','LiquiLoans','EzCred','GrayQuest','Propelld','Avanse'];
+        if (loanTypeListForFlat.includes(LoanType)) {
+            EMI = calculateEMI(balanceAmountToPay, Tenure, InterestRate, 'flat', LoanType);
+        } else if(LoanType == 'Zest') {
+            EMI = calculateEMI(balanceAmountToPay, Tenure, InterestRate, 'reducing', LoanType);
+        } else {
+            EMI = calculateEMI(balanceAmountToPay, Tenure, InterestRate, null, LoanType);
+        }
+        console.log('checkforDownPaymentapplicableToZero--' + checkforDownPaymentapplicableToZero);
+        if (LoanType == 'Zest' || LoanType == 'EduVanz' || LoanType == 'LiquiLoans' || LoanType == 'Propelld' || LoanType == 'EzCred' || LoanType == 'GrayQuest' || LoanType == 'Avanse') {
+
+            if (registrationFeePaid == 'false') {
+                minAmountToPay = parseFloat(minAmountToPay);
+            }
+
+            if (checkforDownPaymentapplicableToZero == true) {
+                minAmountToPay = resultForcheckPrevPayment.pendingAmount;
+            }
+
+            // to add the minAmountToPay in the DownPayment
+            if(!alreadyEnterdMinAmountToPay || (alreadyEnterdMinAmountToPay && parseFloat(alreadyEnterdMinAmountToPay) < minAmountToPay)) {
+                $('[id$=downPaymentForLoanApplication]').val(minAmountToPay);
+            }
+
+            balanceAmountToPay = applicableAmount - $('[id$=downPaymentForLoanApplication]').val();
+        } 
+        escapeOriginalEvent = true;
+        $('[id$=downPaymentForLoanApplication]').trigger('change');
+        $('[id$=hdnDepositeAmount]').val($('[id$=downPaymentForLoanApplication]').val());
+        document.getElementById("LoanbalanceAmountToPay").innerHTML = balanceAmountToPay;
+        console.log('minAmountToPay '+minAmountToPay +' alreadyEnterdMinAmountToPay '+alreadyEnterdMinAmountToPay);
+        if(alreadyEnterdMinAmountToPay > minAmountToPay){
+            showEMIOnPage(alreadyEnterdMinAmountToPay, 0);
+        }else{
+            showEMIOnPage(minAmountToPay, 0);
+        }
+        
+        $('[id$=hdnTenure]').val(Tenure);
+        $('[id$=hdnEMI]').val(EMI);
+        $('[id$=hdnInterestrate]').val(InterestRate);
+    }
+
+    function renderLoanDetails(LoanType,FeeTypeValue,renderId) {
+        let progCategory = '{!programCategory}';
+        let specializationOptions = ['MBA (WX)','MBA - X','M.Sc.','M.Sc. (AI)','M.Sc. (AI & ML Ops)','Certificate Term 1','Certificate Term 2','Certificate Term 3','Professional Diploma Term 4','MBA'];
+        let progSpec = (('{!programSpecialization}' != '' && specializationOptions.includes('{!programSpecialization}')) || progCategory == 'Master Programs') ? '{!programSpecialization}' : null;
+        let key = progCategory+'-'+progSpec+'-'+LoanType+'-'+FeeTypeValue;
+        console.log('key ==>'+key);
+        let LoanSchemes = loanSchemeObject[key];
+        console.log(LoanSchemes);
+        let btnClass = '.show'+LoanType+'LoanBtn';
+        // let interestLabel = LoanType === 'GrayQuest' ? 'Interest' : 'Interest (P/M)';
+        if(LoanSchemes === undefined) {
+            $(btnClass).hide();
+        } else {
+            $(btnClass).show();
+        }
+
+        let LoanInformation = $(`#${renderId}`);
+        LoanInformation.html("");
+
+        let table = $("<table>", {
+            "id": "loantable",
+            "class": "table table-bordered"
+        }).appendTo(LoanInformation);
+        
+        // thead section.
+        let thead = $("<thead>").appendTo(table);
+        let tr = $("<tr>").appendTo(thead);
+        $("<th>").prependTo(tr).html("EMI");
+        $("<th>").prependTo(tr).html("Interest (P/M)");
+        $("<th>").prependTo(tr).html("Tenure");
+
+        let tbody = $("<tbody>").appendTo(table);
+
+        let i = 1;
+        for (const property in LoanSchemes) {
+            let element = LoanSchemes[property];
+            let classVal = `showTenure${element.Tenure__c}${element.Loan_Type__c} showTenure${element.Loan_Type__c}`;
+            console.log('classVal--->' + classVal + 'property--->' + property);
+            var fragTrow = $("<tr>", {
+                "class": classVal
+            }).appendTo(tbody);
+            let isIR = element.Interest_Rate__c > 0;
+            let interestRate = isIR ? element.Interest_Rate__c.toFixed(2) : element.Interest_Rate__c.toFixed(1);
+            let monthlyRate = LoanType === 'GrayQuest' && isIR ? (interestRate / parseInt(element.Tenure__c)).toFixed(2) : interestRate;
+            console.log('interestRate--->' + interestRate);
+            let elementId = `${element.Loan_Type__c}EMIOption${i}`;
+            let elementClass = `with-gap EMIOption ${element.Loan_Type__c}LoanOption`;
+            let elementLoanId = `${element.Loan_Type__c}Tenure${element.Tenure__c}M`;
+            let tdVal1 = '<div class="radio">'+
+                '<input type="radio" name="EMIOption" id="'+elementId+'" class="'+elementClass+'" data-mode="1"'+
+                'value="'+element.Tenure__c+'" data-interestRate="'+interestRate+'" data-LoanType="'+element.Loan_Type__c+'" data-LoanId="'+elementLoanId+'" />'+
+                '<label for="'+elementId+'"><span>'+element.Tenure__c+'</span></label></div>';
+            $("<td>").appendTo(fragTrow).html(tdVal1);
+                console.log('tdVal1---->' + tdVal1);
+            
+            let tdval2 = '<span>'+monthlyRate+'%</span>';
+            $("<td>").appendTo(fragTrow).html(tdval2);
+
+            let tdval3 = '<span id="'+elementLoanId+'"></span>';
+            $("<td>").appendTo(fragTrow).html(tdval3);
+            i++;
+        }
+    }
+
+    function getLabelName(label) {
+        let progSpec = '{!programSpecialization}';
+        switch (label) {
+            case 'FullFee':
+                return 'Full Program Fee';
+            case 'AnnualFee':
+                return 'Annual Program Fee';
+            case 'Admission':
+                return progSpec === 'MBA (WX)' ? 'Program Fee' : 'Admission Fee';
+            default:
+                return label;
+        }
+        // return label == 'FullFee' ? 'Full Program Fee' : label;
+    }
+
+    function backToPaymentSection() {
+        $('[id$=paymentOptionSection]').show();
+        $('[id$=InstallmentDownPaymentSection]').hide();
+        $('[id$=LoanPaymentSection]').hide();
+        $('[id$=ShowEMISection]').hide();
+        $('.showBackToHomeButton').hide();
+        $('[id$=hdnTenure]').val('');
+        $('[id$=hdnEMI]').val('');
+        $('[id$=hdnInterestrate]').val('');
+        $('[id$=hdnLoanType]').val('');
+        $('[id$=hdnDepositeAmount]').val('');
+        $('[id$=hdnLiveLecturesOption]').val('');
+        $('[id$=hdnCourseList]').val('');
+        $('[id$=hdnBacklogList]').val('');
+        $('.modeOfPayment').show();
+        checkMode = '';
+        document.getElementById("modOfPaymentMessgaeId").innerHTML = 'Select Mode Of Payment';
+        /*----- Un select Radio Button on back ------*/
+        $("input:radio").attr("checked", false);
+        TuitionPaymentType = '';
+        cartMap.clear();
+        updateCart();
+    }
+
+    function getDownPaymentAmount(downPaymentPercentage, type) {
+        let applicableAmount = type == 'Instalment' ? parseInt(getApplicableAmountForPayment()) : parseInt(getApplicableAmountForPayment()) + parseInt(getApplicableAmountForLiveLectures()) + parseInt(getApplicableAmountForBacklog());
+        let applicableLateFee = '{!applicableLateFee}';
+        let applicableCareerServiceFee = $('[id$=applicableCareerServiceFee]').val();
+        let applicableCourseraFee = $('[id$=applicableCourseraFee]').val();
+        let registrationFeePaid = '{!AlreadyPaidRegistrationFee}';
+        let maxInstalmentAmt = '{!maxInstalmentAmt}';
+        let CareerService = $('[id$=checkCareerServiceOpted]').val();
+        let Coursera = $('[id$=checkCourseraOpted]').val();
+        let paymentMode = $('[id$=hdnPaymentMode]').val();
+        let LoanType = $('[id$=hdnLoanType]').val();
+
+        // Loan down-payment options
+        // to check if the down-Payment should be collected via percentage or by fixed minimum amount
+        let downPaymentViaPercentage = ('{!objPaymentFormConfiguration.Show_Down_Payment_Percentage__c}' === 'true');
+        let downPaymentAmount = parseFloat('{!objPaymentFormConfiguration.DownPayment_Amount__c}');
+
+        console.log('checkCareerServiceOpted2--' + $('[id$=checkCareerServiceOpted]').val());
+        if (registrationFeePaid == 'false') {
+            applicableAmount = applicableAmount - parseFloat('{!registrationFee}');
+        }
+
+        if (applicableCareerServiceFee != '0') {
+            applicableAmount = applicableAmount - parseFloat(applicableCareerServiceFee);
+        }
+
+        if(applicableCourseraFee != '0') {
+            applicableAmount =  applicableAmount - parseFloat(applicableCourseraFee);
+        }
+
+        if (applicableLateFee != '0') {
+            applicableAmount = applicableAmount - parseFloat(applicableLateFee);
+        }
+        // addded by @BK 07/11/1993
+        // To add the already paid installment/initalAmount in the downpayment calculation to get the product downpayment amount.
+        let alreadyPaidAmount = parseFloat('{!totalAmountPaid}');
+        if(alreadyPaidAmount > 0) {
+            applicableAmount = applicableAmount + alreadyPaidAmount;
+        }
+
+        //  To collect Loan down-payment/Installment from Percentage.
+        let result = (downPaymentPercentage * applicableAmount) / 100;
+        
+        // To add live lecture and backlock amount after calculating program fee instalment percentage
+        if (type == 'Instalment') {
+            result = parseFloat(result) + parseInt(getApplicableAmountForLiveLectures()) + parseInt(getApplicableAmountForBacklog())
+        }
+        
+        // To collect Loan down-payment from fixed amount.
+        if(type == 'Loan' && (!downPaymentViaPercentage || parseFloat(result) < parseFloat(downPaymentAmount))) {
+            result = downPaymentAmount;
+        }
+        console.log('result 1-->' + result);
+
+        // To set maximum Installment Amount.
+        if (type == 'Instalment' && parseFloat(maxInstalmentAmt) > 0) {
+            result = parseFloat(maxInstalmentAmt);
+        }
+
+        // To add the registration fee with down-payment if registration fee is not paid.
+        if (registrationFeePaid == 'false') {
+            result = parseFloat(result) + parseFloat('{!registrationFee}');
+            console.log('result ---' + result);
+        }
+
+        // To add the applicable late fee with down-payment.
+        if (parseFloat(applicableLateFee) > 0) {
+            result = parseFloat(result) + parseFloat(applicableLateFee);
+            console.log('result ---' + result);
+        }
+
+        // To add the Career-service fee with down-payment (if opted).
+        if (CareerService == 'true') {
+            result = parseFloat(result) + parseFloat(applicableCareerServiceFee);
+        }
+
+        // To add the Coursera fee with down-payment (if opted).
+        if(Coursera == 'true') {
+            result = parseFloat(result) + parseFloat(applicableCourseraFee);
+        }
+        return result;
+    }
+
+    function CheckForPreviousPayment() {
+        let downPaymentPercentage = parseFloat('{!objPaymentFormConfiguration.DownPayment_Percentage__c}');
+        let applicableDownPayment = getDownPaymentAmount(downPaymentPercentage, 'Loan');
+        let availablePaidAmount = '{!totalAmountPaid}';
+        let result = {
+            checkForPreviousPayment: false,
+            pendingAmount: 0
+        };
+        if (availablePaidAmount >= applicableDownPayment) {
+            result.checkForPreviousPayment = true;
+            result.pendingAmount = 0;
+            return result;
+        } else {
+            availablePaidAmount = parseInt(availablePaidAmount);
+            if (availablePaidAmount > 0) {
+                let applicableLateFee = '{!applicableLateFee}';
+                let applicableCareerServiceFee = $('[id$=applicableCareerServiceFee]').val();
+                let CareerService = $('[id$=checkCareerServiceOpted]').val();
+                let applicableCourseraFee = $('[id$=applicableCourseraFee]').val();
+                let Coursera = $('[id$=checkCourseraOpted]').val(); 
+                let lateFee_CarrerServiceFee_Coursera = 0;
+                if (parseFloat(applicableLateFee) > 0) {
+                    lateFee_CarrerServiceFee_Coursera = parseFloat(applicableLateFee);
+                }
+                if (CareerService == 'true') {
+                    lateFee_CarrerServiceFee_Coursera = parseFloat(lateFee_CarrerServiceFee_Coursera) + parseFloat(applicableCareerServiceFee);
+                }
+                lateFee_CarrerServiceFee_Coursera = Coursera == 'true' ? parseFloat(lateFee_CarrerServiceFee_Coursera) + parseFloat(applicableCourseraFee) : lateFee_CarrerServiceFee_Coursera;
+                let pendingAmountV2 = parseInt(applicableDownPayment) - availablePaidAmount;
+                if (pendingAmountV2 > 0) {
+                    result.checkForPreviousPayment = true;
+                    result.pendingAmount = pendingAmountV2;
+                    if(lateFee_CarrerServiceFee_Coursera > pendingAmountV2) {
+                        result.pendingAmount = lateFee_CarrerServiceFee_Coursera;
+                    }
+                    return result;
+                }
+            }
+            return result;
+        }
+    }
+
+    async function getLoanDetails() {
+        let chooseProgram = '{!programCategory}';
+        let Result = await sforce.apex.execute("GetLoanDetailsService", "getLoanDetails", {chooseProgram: chooseProgram});
+        if(Result.length > 0) {
+            if(Result) {
+                window.loanSchemeObject = JSON.parse(Result);
+                console.dir(window.loanSchemeObject);
+                return true;
+            }else {
+                // showHtmlMessage('Internal error occured. Kindly contact your Authorized Enrolment Partner.');
+                showMsg('Internal error occured. Kindly contact our Support Team');
+                return false;
+            }
+        }else {
+            return false;
+        }
+    }
+
+    function GoToPayment() {
+
+        if ($("input[name='PaymentMode']:checked").val()) {
+            var selectedPaymentOption = $('[id$=hdnPaymentOption]').val();
+            var downpaymentVal = $('[id$=downPaymentForLoanApplication]').val();
+            var loanType = $('[id$=hdnLoanType]').val();
+            if (selectedPaymentOption.includes('DownPayment') && $('input[name=EMIOption]:checked').length <= 0) {
+                showMsg('Kindly select EMI Option');
+                return false;
+            } else if (selectedPaymentOption.includes('EMI') && $('input[name=EMI]:checked').length <= 0) {
+                showMsg('Kindly select EMI Payment Option');
+                return false;
+            } else if (selectedPaymentOption.includes('DownPayment') && downpaymentVal == 0 && loanType != null) {
+                showMsg('Invalid Down payment amount !');
+                return false;
+            }
+            $('[id$=PaymentGateWayOption]').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            console.log('Payment Selected');
+        } else {
+            showMsg('Please select the payment mode');
+        }
+
+        return false;
+    }
+
+    function validateLoanApplicationBtn() {
+        var selectedPaymentOption = $('[id$=hdnPaymentOption]').val();
+        if (selectedPaymentOption.includes('DownPayment') && $('input[name=EMIOption]:checked').length <= 0) {
+            showMsg('Kindly select EMI Option');
+            return false;
+        }
+        return true;
+    }
+</script>
+</apex:component>

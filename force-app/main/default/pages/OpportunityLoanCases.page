@@ -1,0 +1,67 @@
+<apex:page standardController="Case" tabStyle="Case">
+    <script src="/soap/ajax/46.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/46.0/apex.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+        var caseEmail = "{!Case.SuppliedEmail}";
+        var casePhone = "{!Case.SuppliedPhone}";
+        var fname = "{!Case.SuppliedName}";
+         var accountId = "{!Case.AccountId}";
+
+         
+            
+            if(caseEmail) {
+                var soqlquery = "SELECT  Id, Name,Down_Payment_Made__c,Loan_Order_Status__c,Loan_Type__c,Loan_Order_Id__c,Subvention_Value__c,Tenure__c,Loan_Amount__c,Program_Name__c ,nm_RegistrationNumber__c From opportunity where  AccountId = \'" + accountId + "\' and Down_Payment_Made__c = true  order by nm_RegistrationNumber__c Desc";
+                var wexpQuery = sforce.connection.query(soqlquery);
+                var wexpRecord = wexpQuery.getArray("records");
+                if (wexpQuery.size > 0) {
+                    var html = '';
+                    $.each( wexpRecord, function( key, value ) {
+                        if(key > 0) {
+                            html += '<hr/>';
+                        }
+                        html += '<table width="100%"><tr>';
+                        html += '<th width="25%">Down Payment Made</th>';
+                        html += '<td width="25%">'+value.Down_Payment_Made__c+'</td>';
+                        html += '<th width="25%">Loan Type</th>';
+                        html += '<td width="25%">'+value.Loan_Type__c+'</td></tr>';
+                        html += '<tr><th width="25%">Subvention value</th>';
+                        html += '<td width="25%">'+value.Subvention_Value__c+'</td>'
+                        html += '<th width="25%">Loan Order Status</th>';
+                        html += '<td width="25%">'+value.Loan_Order_Status__c+'</td></tr>';
+                        html += '<tr><th width="25%">Tenure</th>';
+                        html += '<td width="25%">'+value.Tenure__c+'</td>';
+                        html += '<th width="25%">Program Name </th>';
+                        html += '<td width="25%" >'+value.Program_Name__c+'</td></tr>';
+                        html += '<tr><th width="25%">Loan Amount</th>';
+                        html += '<td width="25%">'+value.Loan_Amount__c+'</td>';
+                        html += '<tr><th width="25%">Loan Order Id</th>';
+                        html += '<td width="25%">'+value.Loan_Order_Id__c+'</td>';
+                        html += '<th width="25%">Registration Number</th>';
+                        html += '<td width="25%">'+value.nm_RegistrationNumber__c+'</td></tr></table>';
+                    });
+
+                    $('[id$=container]').html(html);
+                }
+            }
+        });
+
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) 
+                month = 0 + month;
+            if (day.length < 2) 
+                day = 0 + day;
+
+            return [year, month, day].join('-');
+        }
+    </script>
+    <apex:outputPanel id="container">
+        <h1>No Record Found for loan cases.</h1>
+    </apex:outputPanel>
+</apex:page>

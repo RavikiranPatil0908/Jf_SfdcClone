@@ -1,0 +1,988 @@
+<apex:page id="nmCounselor_details" showHeader="true" sidebar="false" standardController="Counsellor_Profile__c" standardStylesheets="false" cache="false">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}"/>
+        <!--------------------------------------Sweet Alert ---------------------------------->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.0/sweetalert2.all.min.js"></script>
+        <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+        <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/css/style.css" rel="stylesheet"/>
+        <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/node-waves/waves.css" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css"/>
+        <apex:stylesheet value="{!URLFOR($Resource.easyAutoCompleteCSS)}"/>
+        
+        <apex:stylesheet value="{!URLFOR($Resource.fontawesome_icons,'/font-awesome-4.7.0/css/font-awesome.css')}"/>
+    
+    </head>
+    <!-- Additional CSS -->
+    <apex:define name="custom-style">
+        <style>
+        .navBarStyle{
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+            z-index: 12;
+            margin-bottom: 20px;
+            background-color:#fff;
+            
+        
+        }
+        @media (min-width: 1200px) {
+        .container{
+            max-width: 1350px;
+            }
+        }
+        
+        .btn-custom{
+        border-bottom:5px solid #285e8e;
+        position:relative;
+        margin-right: 5px;
+        }
+
+        .form-group .form-line .form-label {
+                top: -10px;
+            }
+        .cardSectionInfo {
+            margin-top: -10px;
+            margin-bottom: 20px;
+            display: block;
+            font-size: 13px;
+            color: #444;
+        }
+        
+        .btn-custom:hover {
+        top:0.5px;
+        border-bottom-width:2.5px;
+        }
+        .btn-custom:active {
+        top:5px;
+        border-bottom:0;
+        }
+        .border-red a{
+            border: 1px solid red;
+        }
+        </style>
+    </apex:define>
+    <body>
+        <apex:form id="FormWapperPage">
+            <div class="container clearfix">
+                <div class="row navBarStyle">
+                    <div class="col-md-4"><apex:image value="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleclass="img-responsive" style="height:70px;padding-left:0px;"/></div>
+                </div>
+                <div class="card">
+                    <div class="header">
+                        <h2><i class="fa fa-user-circle" aria-hidden="true"></i> &nbsp;COUNSELOR REGISTRATION </h2>
+                        <ul class="nav navbar-right" style="margin-top:-25px;float:right!important;">
+                            <li><a class="collapse-link fa fa-chevron-up" data-toggle="collapse" href="#instructions" aria-expanded="false" aria-controls="instructions"></a></li>
+                        </ul>                    
+                    </div>
+                    <div class="body collapse in" id="instructions" aria-expanded="true">
+                        <div >
+                            <ul>
+                              <li>If already you had fill the form.Kindly update your detail under Counselor Profiles tab.</li>
+                                <li>Every mandatory field is marked <span style="color:red">*</span> .They must be completed accurately for your application to be considered.</li>
+                               <li>Kindly provide your correct detail.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:form>
+
+        <div class="container clearfix">
+
+            <!-- Title Nav Bar  -->
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <ul class="nav nav-pills nav-justified thumbnail setup-panel">
+                        <li class="active" id="personalInformationTab"><a href="#personalInformationPanel">
+                            <h4 class="list-group-item-heading">Personal Information</h4>
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <!-----------------------------------------Personal Information -------------------------------------------->    
+            <div class="setup-content" id="personalInformationPanel">
+                <apex:form id="personalInformation">
+        
+                    <div class="clearfix"></div>
+                    
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="card">
+                                <div class="header">
+                                    <h2>Personal Details</h2>
+                                </div>
+                                <div class="body">
+                                    <h2 class="card-inside-title">Basic Information</h2>
+                                    <div class="cardSectionInfo">Name of Applicant must be the same as it appears in your matriculation / school leaving certificate.</div>
+                                    
+                                    <div class="row">
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Salutation" ><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="fsal" styleClass="form-control notnull" value="{!Counsellor_Profile__c.Salutation__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                        
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="First Name"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="firstName" styleClass="form-control notnull doNotAllowedSpecialCharacter " value="{!Counsellor_Profile__c.First_Name__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Middle Name"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="middleName" styleClass="form-control notnull doNotAllowedSpecialCharacter " value="{!Counsellor_Profile__c.Middle_Name__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                        
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Last Name"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="lastName" styleClass="form-control notnull doNotAllowedSpecialCharacter " value="{!Counsellor_Profile__c.Last_Name__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                        
+                                    </div>
+                                    
+                                    <div class="row clearfix">
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Father Name"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="fatherName" styleClass="form-control notnull doNotAllowedSpecialCharacter " value="{!Counsellor_Profile__c.Father_s_Name__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                        
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Mother Name"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="motherName" styleClass="form-control notnull doNotAllowedSpecialCharacter " value="{!Counsellor_Profile__c.Mother_s_Name__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="Blood Group"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="bloodGroup" styleClass="form-control notnull" value="{!Counsellor_Profile__c.Blood_Group__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="Gender"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="gender" styleClass="form-control notnull" value="{!Counsellor_Profile__c.Gender__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                    
+                                    </div>
+                                    
+                                    <div class="row clearfix">
+                                        <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                            <apex:outputlabel styleClass="form-label" value="Date of Birth"> <apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                <div class="form-group">
+                                                    <div class="input-group date form-line" data-date-format="DD/MM/YYYY" id="datetimepicker2"><span class="dateInput dateOnlyInput">
+                                                        <apex:inputfield value="{!Counsellor_Profile__c.Date_Of_Birth__c}" styleClass="form-control notnull dateOfBirth" showDatePicker="false" id="dateOfBirth" html-placeholder="Date Of Birth" />
+                                                        </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                    </div>
+                                                </div>
+                                        </apex:outputpanel>
+                                        
+                                        <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Age As On"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputText styleClass="form-control disabled" id="ageAsOn"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:inputHidden value="{!Counsellor_Profile__c.AEP_Name__c}" id="AEPName" />
+                                    </div>
+                                    
+                                    <div class="row clearfix">
+                                        
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="Marital Status"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="maritalStatus" styleClass="form-control notnull" value="{!Counsellor_Profile__c.Marital_Status__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12" id="spousePanelId" style="display:none;">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="Spouse Name"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="spouseName" styleClass="form-control doNotAllowedSpecialCharacter" value="{!Counsellor_Profile__c.Spouse_Name__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                        
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Pin Code"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="pinCode" styleClass="form-control notnull numonly" value="{!Counsellor_Profile__c.Pin_Code__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                        
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="City"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="city" styleClass="form-control notnull doNotAllowedSpecialCharacter" value="{!Counsellor_Profile__c.City__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Address"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="address" styleClass="form-control notnull" value="{!Counsellor_Profile__c.Address__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                        
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="Email"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="email" styleClass="form-control notnull emailValidation" value="{!Counsellor_Profile__c.Email__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="Mobile Number"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="mobilephone" styleClass="form-control notnull mobileNoValidation numonly " value="{!Counsellor_Profile__c.MobilePhone__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                    </div>
+
+                                    <h2 class="card-inside-title">10th Grade</h2>
+                                    <div class="row clearfix"> 
+                                    
+                                        <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="10th Course Name"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="sscBoard" styleClass="form-control notnull" value="{!Counsellor_Profile__c.X10th__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <div class="form-line">   
+                                                        <apex:outputlabel styleClass="form-label " value="10th Percentage"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                        <apex:inputField id="sscPercentage" styleClass="form-control notnull floatingNumOnly percentageValidate sscPercentage" value="{!Counsellor_Profile__c.X10th_Percent_Grade__c}"/>
+                                                    </div>
+                                                </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="input-group form-line datetimepicker4 date"><span class="dateInput dateOnlyInput"> 
+                                                    <apex:outputlabel styleClass="form-label" value="Year Of Completion" style="z-index:4"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>                                                                                                        
+                                                    <apex:inputField id="sscYearOfCompletion" styleClass="form-control notnull" value="{!Counsellor_Profile__c.X10th_Year_of_Passing__c}" showDatePicker="false"/>
+                                                    </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                            
+                                        <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="Name Of School"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="sscSchoolName" styleClass="form-control notnull" value="{!Counsellor_Profile__c.X10th_College_School__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="10th University/Board"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="sscSchoolBoard" styleClass="form-control notnull" value="{!Counsellor_Profile__c.X10_th_University_Board__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                        
+                                    </div>
+                                    
+                                    <div id="showHSC_GraduationSection" >
+                                        <h2 class="card-inside-title" id="diploam_HSCPanelId">12th Grade</h2>
+                                            
+                                        <div class="row clearfix">
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                                <div class="form-group">
+                                                        <div class="form-line">
+                                                            <apex:outputlabel styleClass="form-label" value="12th Course Name"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                            <apex:inputField value="{!Counsellor_Profile__c.X12th__c}" styleClass="form-control notnull" id="hscStateBoard"/>
+                                                        </div>
+                                                    </div>
+                                            </apex:outputPanel>
+
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12 hscPercentagePanel">
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <apex:outputlabel styleClass="form-label" value="Percentage"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                        <apex:inputField value="{!Counsellor_Profile__c.X12th_Percent_Grade__c}" styleClass="form-control floatingNumOnly notnull percentageValidate hscPercentage" id="hscPercentage"/>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <div class="input-group form-line datetimepicker4 date"><span class="dateInput dateOnlyInput"> 
+                                                        <apex:outputlabel styleClass="form-label" value="Year of Passing" style="z-index:4"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                        <apex:inputField value="{!Counsellor_Profile__c.X12th_Year_of_Passing__c}" styleClass="form-control notnull" id="hscyrOfCompletion" showDatePicker="false"/>
+                                                        </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                            
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <apex:outputlabel styleClass="form-label" value="Name Of School/College"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                        <apex:inputField value="{!Counsellor_Profile__c.X12th_College_School__c}" styleClass="form-control notnull" id="hscSchoolName"/>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <apex:outputlabel styleClass="form-label" value="12th University/Board"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                        <apex:inputField value="{!Counsellor_Profile__c.X12th_University_Board__c}" styleClass="form-control notnull" id="hscBoardName"/>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                            
+                                        </div>
+                                            
+                                        <h2 class="card-inside-title">Graduation</h2>
+                                        <div class="row clearfix">
+                                        
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                                <div class="form-group">
+                                                        <div class="form-line">
+                                                            <apex:outputlabel styleClass="form-label" value="Course Name"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                            <apex:inputField value="{!Counsellor_Profile__c.Graduation_Course_Name__c}" styleClass="form-control notnull" id="degreeName"/>
+                                                        </div>
+                                                    </div>
+                                            </apex:outputPanel>
+                                            
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12 gradPercentagePanel">
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <apex:outputlabel styleClass="form-label" value="Percentage"><apex:outputText style="color:red;font-style:bold" value=" *" id="graduationGegreePercentageSpan"/></apex:outputLabel>
+                                                        <apex:inputField value="{!Counsellor_Profile__c.Graduation_Percent_Grade__c}" styleClass="form-control notnull floatingNumOnly percentageValidate checkPercent degreePercentage" id="degreePercentage"/>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <apex:outputlabel styleClass="form-label" value="College Name"><apex:outputText style="color:red;font-style:bold" value=" *" id="graduationGegreeClgNameSpan"/></apex:outputLabel>
+                                                        <apex:inputField value="{!Counsellor_Profile__c.Graduation_College_School__c}" styleClass="form-control notnull" id="degreeCollegeName"/>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12 UniversityNamePanel">
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <apex:outputlabel styleClass="form-label" value="University Name"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                        <apex:inputField value="{!Counsellor_Profile__c.Graduation_University_Board__c}" styleClass="form-control notnull UniversityName" />
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                                <div class="form-group">
+                                                    <div class="input-group form-line datetimepicker4 date"><span class="dateInput dateOnlyInput">
+                                                        <apex:outputlabel styleClass="form-label" value="Year of Passing" style="z-index:4"><apex:outputText style="color:red;font-style:bold" value=" *" id="graduationGegreeYrOfCompletionSpan"/></apex:outputLabel>
+                                                        <apex:inputField value="{!Counsellor_Profile__c.Graduation_Year_of_Passing__c}" styleClass="form-control notnull" id="degreeYrOfCompletion" showDatePicker="false"/>
+                                                        </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </div>
+
+                                        <h2 class="card-inside-title">Post Graduation</h2>
+                                        <div class="row clearfix">
+                                        
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <apex:outputlabel styleClass="form-label" value="Course Name"></apex:outputLabel>
+                                                        <apex:inputField value="{!Counsellor_Profile__c.Post_Graduation_Course_Name__c}" styleClass="form-control" id="postdegreeName"/>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                            
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12 gradPercentagePanel">
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <apex:outputlabel styleClass="form-label" value="Percentage"></apex:outputLabel>
+                                                        <apex:inputField value="{!Counsellor_Profile__c.Post_Graduation_Percent_Grade__c}" styleClass="form-control floatingNumOnly percentageValidate checkPercent postdegreePercentage" id="postdegreePercentage"/>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <apex:outputlabel styleClass="form-label" value="College Name"></apex:outputLabel>
+                                                        <apex:inputField value="{!Counsellor_Profile__c.Post_Graduation_College_School__c}" styleClass="form-control " id="postdegreeCollegeName"/>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12 UniversityNamePanel">
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <apex:outputlabel styleClass="form-label" value="University Name"></apex:outputLabel>
+                                                        <apex:inputField value="{!Counsellor_Profile__c.Post_Graduation_Univ_Board__c}" styleClass="form-control " id="postUniversityName" />
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+
+                                            <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                                <div class="form-group">
+                                                    <div class="input-group form-line datetimepicker4 date"><span class="dateInput dateOnlyInput">
+                                                        <apex:outputlabel styleClass="form-label" value="Year of Passing" style="z-index:4"></apex:outputLabel>
+                                                        <apex:inputField value="{!Counsellor_Profile__c.Post_Graduation_Year_of_Passing__c}" styleClass="form-control " id="postdegreeYrOfCompletion" showDatePicker="false"/>
+                                                        </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </div>
+
+                                    <h2 class="card-inside-title">Current Work Experience</h2>
+                                    <div class="row clearfix">
+                                        <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                            <div class="form-group">
+                                                <div class="form-line">
+                                                    <apex:outputlabel styleClass="form-label" value="Designation"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField value="{!Counsellor_Profile__c.Designation__c}" styleClass="form-control notnull" id="currentDesignation"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                        
+                                        <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12 gradPercentagePanel">
+                                            <div class="form-group">
+                                                <div class="form-line">
+                                                    <apex:outputlabel styleClass="form-label" value="Function"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField value="{!Counsellor_Profile__c.Function__c}" styleClass="form-control notnull" id="currentFunction"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+
+                                        <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                            <div class="form-group">
+                                                <div class="form-line">
+                                                    <apex:outputlabel styleClass="form-label" value="No of Years of Relevant experience"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField value="{!Counsellor_Profile__c.No_of_Years_of_Relevant_experience__c}" styleClass="form-control notnull numonly" id="currentExperience"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+
+                                        <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12 UniversityNamePanel">
+                                            <div class="form-group">
+                                                <div class="form-line">
+                                                    <apex:outputlabel styleClass="form-label" value="Salary Band"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField value="{!Counsellor_Profile__c.Salary_Band__c}" styleClass="form-control notnull numonly" id="currentSalaryBand" />
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+
+                                        <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12 exStartDate">
+                                            <apex:outputlabel styleClass="form-label" value="Join Date"> <apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                            <div class="form-group">
+                                                <div class="input-group date form-line datetimepicker3 from" data-date-format="DD/MM/YYYY"><span class="dateInput dateOnlyInput">
+                                                    <apex:inputfield value="{!Counsellor_Profile__c.From_Date__c}" styleClass="form-control notnull StartDate"  showDatePicker="false" html-placeholder="Start Date"/>
+                                                    </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                    </div>
+
+                                    <h2 class="card-inside-title">Previous Work Experience</h2>
+                                    <div class="row clearfix">
+                                        <apex:outputpanel id="Acad1">
+                                            
+                                                <apex:outputpanel styleClass="col-lg-6 col-md-6 col-sm-12 col-xs-12 exStartDate">
+                                                    <apex:outputlabel styleClass="form-label" value="Start Date"> <apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <div class="form-group">
+                                                        <div class="input-group date form-line datetimepicker3 from" data-date-format="DD/MM/YYYY"><span class="dateInput dateOnlyInput">
+                                                            <apex:inputfield value="{!Counsellor_Profile__c.From_Date__c}" styleClass="form-control notnull StartDate Acad1"  showDatePicker="false" html-placeholder="Start Date"/>
+                                                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputpanel>
+
+                                                <apex:outputpanel styleClass="col-lg-6 col-md-6 col-sm-12 col-xs-12 exEndDate">
+                                                    <apex:outputlabel styleClass="form-label" value="End Date"> <apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <div class="form-group">
+                                                        <div class="input-group date form-line datetimepicker3 end" data-date-format="DD/MM/YYYY">
+                                                            <span class="dateInput dateOnlyInput">
+                                                                <apex:inputField value="{!Counsellor_Profile__c.Till_Date__c}" styleClass="form-control notnull EndDate Acad1" showDatePicker="false" html-placeholder="End Date"  />
+                                                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputpanel>
+
+                                                <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            <apex:outputlabel styleClass="form-label" value="Name of Organization"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                            <apex:inputField value="{!Counsellor_Profile__c.Name_of_Organization__c}" styleClass="form-control notnull Acad1" />
+                                                        </div>
+                                                    </div>
+                                                </apex:outputPanel>
+
+                                                <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            <apex:outputlabel styleClass="form-label" value="Designation"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                            <apex:inputField value="{!Counsellor_Profile__c.Previous_Designation__c}" styleClass="form-control notnull Acad1"/>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputPanel>
+                                            
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel id="Acad2" style="display:none;">
+                                            
+                                                <apex:outputpanel styleClass="col-lg-6 col-md-6 col-sm-12 col-xs-12 exStartDate">
+                                                    <apex:outputlabel styleClass="form-label" value="Start Date"> <apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <div class="form-group">
+                                                        <div class="input-group date form-line datetimepicker3 from" data-date-format="DD/MM/YYYY"><span class="dateInput dateOnlyInput">
+                                                            <apex:inputfield value="{!Counsellor_Profile__c.From_Date2__c}" styleClass="form-control  StartDate Acad2"  showDatePicker="false" html-placeholder="Start Date"/>
+                                                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputpanel>
+
+                                                <apex:outputpanel styleClass="col-lg-6 col-md-6 col-sm-12 col-xs-12 exEndDate">
+                                                    <apex:outputlabel styleClass="form-label" value="End Date"> <apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <div class="form-group">
+                                                        <div class="input-group date form-line datetimepicker3 end" data-date-format="DD/MM/YYYY">
+                                                            <span class="dateInput dateOnlyInput">
+                                                                <apex:inputField value="{!Counsellor_Profile__c.Till_Date2__c}" styleClass="form-control  EndDate Acad2" showDatePicker="false" html-placeholder="End Date"  />
+                                                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputpanel>
+
+                                                <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            <apex:outputlabel styleClass="form-label" value="Name of Organization"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                            <apex:inputField value="{!Counsellor_Profile__c.Name_of_Organization2__c}" styleClass="form-control  Acad2" />
+                                                        </div>
+                                                    </div>
+                                                </apex:outputPanel>
+
+                                                <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            <apex:outputlabel styleClass="form-label" value="Designation"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                            <apex:inputField value="{!Counsellor_Profile__c.Designation2__c}" styleClass="form-control Acad2"/>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputPanel>
+                                            
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel id="Acad3" style="display:none;">
+                                            
+                                                <apex:outputpanel styleClass="col-lg-6 col-md-6 col-sm-12 col-xs-12 exStartDate">
+                                                    <apex:outputlabel styleClass="form-label" value="Start Date"> <apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <div class="form-group">
+                                                        <div class="input-group date form-line datetimepicker3 from" data-date-format="DD/MM/YYYY"><span class="dateInput dateOnlyInput">
+                                                            <apex:inputfield value="{!Counsellor_Profile__c.From_Date3__c}" styleClass="form-control  StartDate Acad3"  showDatePicker="false" html-placeholder="Start Date"/>
+                                                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputpanel>
+
+                                                <apex:outputpanel styleClass="col-lg-6 col-md-6 col-sm-12 col-xs-12 exEndDate">
+                                                    <apex:outputlabel styleClass="form-label" value="End Date"> <apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <div class="form-group">
+                                                        <div class="input-group date form-line datetimepicker3 end" data-date-format="DD/MM/YYYY">
+                                                            <span class="dateInput dateOnlyInput">
+                                                                <apex:inputField value="{!Counsellor_Profile__c.Till_Date3__c}" styleClass="form-control  EndDate Acad3" showDatePicker="false" html-placeholder="End Date"  />
+                                                            </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputpanel>
+
+                                                <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            <apex:outputlabel styleClass="form-label" value="Name of Organization"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                            <apex:inputField value="{!Counsellor_Profile__c.Name_of_Organization3__c}" styleClass="form-control  Acad3" />
+                                                        </div>
+                                                    </div>
+                                                </apex:outputPanel>
+
+                                                <apex:outputpanel styleClass="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            <apex:outputlabel styleClass="form-label" value="Designation"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                            <apex:inputField value="{!Counsellor_Profile__c.Designation3__c}" styleClass="form-control Acad3"/>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputPanel>
+                                            
+                                        </apex:outputpanel>
+                                    </div>
+
+                                    <div class="row clearfix"> 
+                                        <div class="col-md-3">   
+                                            <apex:commandButton styleClass="btn btn-primary btn-lg btn-custom" value="Add Work Experience" onclick="Experience(1);return false;"/>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <apex:commandButton styleClass="btn btn-danger btn-lg btn-custom" value="Remove Work Experience" onclick="Experience(0);return false;"/>
+                                        </div>
+                                        <div class="col-md-6"></div>
+                                    </div>
+
+                                    <div class="row clearfix">
+                                        <div class="col-md-9">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <apex:commandButton styleClass="btn btn-primary pgSubmit btn-lg btn-custom waves-effect" onclick="return onSubmit('personalInformation');" value="Submit" action="{!save}"/>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>     
+                </apex:form>
+            </div>
+            <!-------------------------------------------------end ---------------------------------------------------------->
+            
+        </div>
+
+        <!---------------------------------------------------------------Footer Starts here -------------------------------------------->
+        <!-- Custom jQuery -->
+        <apex:includeScript value="{!URLFOR($Resource.JSZIP, 'jQuery.min.js')}"/>
+        
+        <!-- jQuery Js -->
+        <apex:includeScript value="{!URLFOR($Resource.JSZIP, 'admin.js')}"/>
+        
+        <!-- jQuery Js -->
+        <apex:includeScript value="{!URLFOR($Resource.JSZIP, 'bootstrap.js')}"/>
+        
+        <!-- Waves Effect Plugin Js -->
+        <apex:includeScript value="{!URLFOR($Resource.JSZIP, 'waves.js')}"/>
+        
+        <!---------------Date Picker Js -------------------------------------------->
+            <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.jquery_easy_autocompleteJS)}"/>
+        <!-------------------------------------------Custom Js -------------------------------->
+        
+        <script>
+            var totalAcad =  2;
+            $(document).ready(function(){
+                $('.notnull').attr('required','true');
+                $('.disabled').attr('disabled',true);
+                $('.readonly').attr('readonly','readonly');
+
+                var navListItems = $('ul.setup-panel li a'),
+                    allWells = $('.setup-content');
+                    allWells.hide();
+                    
+                navListItems.click(function(e){
+                    e.preventDefault();
+                    var $target = $($(this).attr('href')),
+                        $item = $(this).closest('li');
+                    if (!$item.hasClass('disabled')) {
+                
+                        navListItems.closest('li').removeClass('active');
+                        $item.addClass('active');
+                        allWells.hide();
+                        $target.show();
+                    }
+                });
+                
+                $('ul.setup-panel li.active a').trigger('click');
+
+                /*-------------------- Remove Error message on enter start ------------------------*/
+                $('body').on('change', '.notnull', function(e) {
+                    $(this).closest('div.form-group').children('span.error').remove();
+                });
+
+                $('body').on('keypress', '.notnull', function(e) {
+                    $(this).closest('div.form-group').children('span.error').remove();
+                });
+
+                $('body').on('dp.change', '.date', function() {
+                    $(this).closest('div.form-group').children('span.error').remove();
+                });
+
+
+                $('body').on('keypress','.numonly', function(e){ 
+                    return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) ) ? false : true;
+                });
+
+                $(".doNotAllowedSpecialCharacter").keypress(function (e){
+                    var regex = new RegExp("^[a-z  A-Z]*$");
+                    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+                    if (!regex.test(str) && str !="'") {
+                        $(this).focus();
+                        $(this).val('');
+                        e.preventDefault();
+                        $(this).closest('div.form-group').children('span.error').remove();
+                        $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+                    }else{
+                        $(this).closest('div.form-group').children('span.error').remove();
+                    }
+                });
+
+
+            /*-----------------------------------------------------------Personal Details Validation ---------------------------------*/
+                $('[id$=maritalStatus]').change(function (e){
+                    let maritalStatus = $('[id$=maritalStatus]').val();
+                    if(maritalStatus === 'Married'){
+                        $("[id$=spousePanelId]").show();
+                        $("[id$=spouseName]").addClass('notnull');
+                    }else{
+                        $("[id$=spousePanelId]").hide();
+                        $("[id$=spouseName]").removeClass('notnull').val('');
+                        $("[id$=spouseName]").closest('div.form-group').children('span.error').remove();
+
+                    }
+                });
+
+                if($('[id$=maritalStatus]') .val() !='' && $('[id$=maritalStatus]').val() !=null){
+                    $('[id$=maritalStatus]').trigger('change');
+                }
+
+                $(".emailValidation").change(function(){
+                    var emailAddress = $(this).val();
+                    if(!isValidEmailAddress(emailAddress)){
+                        showHtmlMessage('Invalid Information','Please Enter Email Address.');
+                        $(this).val("");
+                    }
+                });
+
+                $("#datetimepicker2").on("dp.change", function(e) { // Date Of Birth 
+                    var dateString = e.date.format(e.date._f);
+                    var today = new Date();
+                    var datestr = (dateString.split(" ")[0]).split("/");
+                    var birthDate  =  new Date(datestr[2],datestr[1]-1,datestr[0]);
+                    var age = today.getFullYear() - birthDate.getFullYear();
+                    var m = today.getMonth() - birthDate.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
+                    {
+                        age--;
+                    }
+                    $('[id$=ageAsOn]').val(age);
+                });
+
+                $(".mobileNoValidation").change(function(){
+                    var mobileNumberValue = $(this).val();
+                    var pattern = "^(?!(\\d)\\1{8})";
+                    pattern = new RegExp(pattern);
+                    if(!pattern.test(mobileNumberValue)){  
+                        showHtmlMessage('Invalid Information','Please Enter Valid Mobile Number');
+                        $(this).val("");
+                    }else if(mobileNumberValue.length >10 || mobileNumberValue.length<10){
+                        showHtmlMessage('Invalid Information','Please Enter 10 digit Mobile Number');
+                        $(this).val("");
+                    }
+                });
+
+
+                /*-----------------------------------------------------------Academic Details Validation ---------------------------------*/
+                $('body').on('change','.percentageValidate', function(){
+                    var percentage = $(this).val();
+                    if(percentage > 100 || percentage < 0){
+                        showHtmlMessage('Invalid Information','Please Enter Percentage less than 100 and greater than zero.');
+                        $(this).val("");
+                        $(this).closest('div.form-group').children('span.error').remove();
+                        $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+                    }
+                });
+
+                $('body').on('keypress','.floatingNumOnly', function(event){
+                    if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                        event.preventDefault();
+                    }
+                    var input = $(this).val();
+                    if ((input.indexOf('.') != -1) && (input.substring(input.indexOf('.')).length > 2)) {
+                        event.preventDefault();
+                    }
+                });
+
+                $('.datetimepicker4').datetimepicker({
+                    viewMode: 'years',
+                    format: 'YYYY',
+                    minDate: moment().add(-50,'years'),
+                    maxDate: moment(),
+                    useCurrent: false
+                });
+
+
+                /*-----------------------------------------------------------Work Experience Details Validation ---------------------------------*/
+                
+                $('.datetimepicker3').datetimepicker({
+                    format: 'DD/MM/YYYY',
+                    useCurrent: false,
+                    maxDate: moment()
+                });
+
+                $('[id$=AEPName]').val(getUrlParameter('IC'));
+
+            });
+
+            var getUrlParameter = function getUrlParameter(sParam) {
+                var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                    sURLVariables = sPageURL.split('&'),
+                    sParameterName,
+                    i;
+
+                for (i = 0; i < sURLVariables.length; i++) {
+                    sParameterName = sURLVariables[i].split('=');
+
+                    if (sParameterName[0] === sParam) {
+                        return sParameterName[1] === undefined ? true : sParameterName[1];
+                    }
+                }
+            };
+
+
+            /*--------------------show error Popup message -------------------*/
+            function showHtmlMessage(header,message) {
+                swal({
+                    title: header+"!",
+                    text: message,
+                    type: "warning"
+                });
+            }
+
+            function validateForm(id){
+                var flag = 0;
+                $(id).find('.notnull').each(function () {
+                    if($(this).val() !=null){
+                        if ($(this).val().trim().length == 0) {
+                            flag = 1;
+                            console.log('Id Required Value --'+$(this).attr('id'));
+                            $(this).focus();
+                            $(this).closest('div.form-group').children('span.error').remove();
+                            $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+                        }
+                    }else{
+                        flag = 1;
+                        console.log('Id Required Value --'+$(this).attr('id'));
+                        $(this).focus();
+                        $(this).closest('div.form-group').children('span.error').remove();
+                        $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');    
+                    }
+                });
+                return flag;  
+            }
+            
+            function isValidEmailAddress(emailAddress) {
+                var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+                // alert( pattern.test(emailAddress) );
+                return pattern.test(emailAddress);
+            } 
+
+            function Experience(check){
+                if(check==1){
+                    //to add academic qualification
+                    switch (totalAcad) {
+                        case 3:
+                            checkCaseAdd(1);
+                            break;
+                        case 2:
+                            checkCaseAdd(2);
+                            break;
+                        case 1:
+                            checkCaseAdd(3);
+                    }
+                    
+
+                }else if(check==0){
+                    //to remove academic qualification
+
+                    switch (totalAcad) {
+                        case 0:
+                            checkCaseRemove(3);
+                            break;
+                        case 1:
+                            checkCaseRemove(2);
+                            
+                    }
+                }
+            }
+
+            function checkCaseAdd(Id){
+                $('[id$=Acad'+Id+']').show();
+                $('.Acad'+Id).addClass('notnull');
+                totalAcad--;
+            }
+            
+            function checkCaseRemove(Id){
+                $('[id$=Acad'+Id+']').hide();
+                $('.Acad'+Id).removeClass('notnull');
+                $('.Acad'+Id).val('');
+                totalAcad++;
+            }
+
+            function onSubmit(Id){
+                var flag = validateForm('[id$='+Id+']');
+
+                if (flag != 0 ) {
+                    showHtmlMessage('Invalid Details','Please fill all required fields.');
+                    $('ul.setup-panel li a[href="#'+Id+'Panel"]').trigger('click');
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+            
+            
+        </script>
+    </body>
+</apex:page>

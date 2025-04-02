@@ -1,0 +1,97 @@
+<!--
+  @description       : 
+  @author            : @Ravi
+  @group             : 
+  @last modified on  : 10-08-2024
+  @last modified by  : @Ravi
+-->
+<template>
+    <lightning-card>
+        <div class="slds-size_4-of-6" style="margin-left: 100px;">
+            <template if:true={showSpinner}>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </template>
+            <!-- <template if:true={showMessage}>
+                <lightning-badge label={message} class="slds-badge_inverse" icon-name="standard:account"></lightning-badge>
+            </template> -->
+            <lightning-card>
+                <div class="slds-wrap slds-grid">
+                    <div class="slds-col slds-size_1-of-1 ">
+                    <div class="page-section page-main slds-align_absolute-center" >
+                        <h5 slot="title" style=" font-size: 20px; font-weight: bold;">
+                            <lightning-icon icon-name="standard:case" size="medium" style="margin-left:10px ; "></lightning-icon> &nbsp;&nbsp;
+                            Internal Ticket
+                        </h5>
+                    </div>
+                    </div>
+                    <br/>
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-textarea label="Add Comment" data-field={comment} value={comment} 
+                            onchange={handleChangeDescription} variant="label-inline" required>
+                        </lightning-textarea>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-select  label="Change Status" value={status}  data-field={status} 
+                            onchange={handleChangeStatus} variant="label-inline" options={StatusOptions}>
+                        </lightning-select>
+                    </div>
+    
+                    <div class="slds-col slds-size_1-of-1">
+                        <!-- <div class="slds-col slds-size_1-of-2 " style=" padding-top: 10px;">
+                            <h2>Select Date</h2>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-input type="date" name="input1" label="" onchange={handleChangeDate}></lightning-input>
+                        </div>  -->
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_1-of-3 slds-clearfix">
+                                <h2 class="slds-float_left slds-m-top_medium">Change Expected CloseDate</h2>
+                            </div>
+                            <div class="slds-col slds-size_2-of-3">
+                                <lightning-input type="date" name="input1" label="" onchange={handleChangeDate}></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-m-top_medium">
+                        <lightning-input type="checkbox" label="Do you want to attach related files/screenshots." 
+                        name="input1" onclick={handleCheckbox} unchecked> </lightning-input>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1">
+                        <template if:true={showFileAttachment}>
+                            <div class="slds-var-m-top_xx-small slds-m-bottom_xx-small">
+                                <h2 class="slds-p-around_xx-small lgc-bg">
+                                    File size should be less than 3MB(pdf, png, jpg, jpeg, doc,ppt, xls) formats.
+                                </h2>
+                        
+                                <div class="slds-p-around_xx-small lgc-bg">
+                                    <lightning-input type="file" label="Attachments" multiple onchange={handleFileUploaded} accept={acceptedFormats} ></lightning-input>
+                                </div>
+                                <div class="slds-text-color_error">{fileUploadError}</div>
+                                <div class="container">
+                                    <template for:each={filesUploaded} for:item="file">
+                                        <lightning-pill key={file.Title} label={file.Title} data-fid={file.Title}
+                                            onremove={handleRemove} class="slds-text-body_small"></lightning-pill>&nbsp;    
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1 slds-var-m-top_medium slds-align_absolute-center slds-grid slds-grid_vertical-align-center slds-grid_align-center">
+                        <!-- <div class="slds-col slds-size_1-of-4"></div> -->
+                            <div class="slds-grid_align-center slds-var-m-right_large">
+                                <lightning-button variant="neutral" type="button" label="Cancel" onclick={handleCancel}></lightning-button>
+                            </div>
+                            <div class="slds-grid_align-center">
+                                <lightning-button variant="brand" type="submit" label="Save" onclick={handleSubmit}></lightning-button>
+                            </div>
+                            <!-- <div class="slds-col slds-size_1-of-4"></div> -->
+                    </div>
+                </div>
+                    
+            </lightning-card>
+        </div>
+    </lightning-card>
+</template>

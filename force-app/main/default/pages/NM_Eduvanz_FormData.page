@@ -1,0 +1,163 @@
+<!--
+  @Page Name          : NM_Eduvanz_FormData.page
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 09-27-2021
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    6/3/2019, 5:50:12 PM   shubhranshu     Initial Version
+-->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" cache="false">
+
+<style>
+        .Processingview
+        {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;           
+            width:  100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+           
+        }
+        .required
+        {
+            border: 2px solid #c00 !important;
+        }
+        .overlay
+        {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+          background-color: rgba(0,0,0,0.5);
+        }
+        .poup
+        {
+            position: fixed;
+            top: 30%;
+            width: 40%;
+            margin-left: 30%;
+            z-index: 11;
+        }
+        .messageCell
+        {
+            color:White !important;
+        }
+        .LateFee
+        {
+            Color: red;
+            float: right;
+            margin-right: 4%;
+            font-style: italic;
+        }
+     </style>
+     
+     <head>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/bootstrap-datetimepicker.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/chosen.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/styles/scss/style.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/styles/scss/vars.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/style.css.map')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/fonts.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/style.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/vars.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/vars.css.map')}"/>  
+         
+        
+        <script type="text/javascript">
+            history.pushState(null, null, 'NM_Eduvanz_FormData');
+                    window.addEventListener('popstate', function () {
+                    history.pushState(null, null, 'NM_Eduvanz_FormData');
+              });
+       </script>
+    </head>
+    <body class="home">
+        
+     <div class="tab-wrapper">
+        <div class="container">
+          <div class="tab-content">
+            <div class="tab-pane active">
+             <div class="form-wrapper">
+              <div class="tab-content">
+               <div class="tab-pane active">
+               <div class="message-box form-group text-center">Eduvanz Loan Application</div>
+                <div class="form-wrapper">
+                    <h2>Redirecting to EduVanz... Please wait..</h2>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>       
+            </div>
+          </div>
+         </div>
+   
+   <form id="EduVanzLoanForm" method="post" enctype="multipart/form-data" action="{!$Label.EduVanz_API_URL }">
+    <input type="hidden" value="{!$CurrentPage.parameters.metaData}" name="meta_data" />
+    <input type="hidden" value="{!$CurrentPage.parameters.roll_no}" name="roll_no" />
+    <input type="hidden" value="{!$CurrentPage.parameters.userName}" name="userName" />
+    <input type="hidden" value="{!$CurrentPage.parameters.password}" name="password" />
+    <input type="hidden" value="{!$CurrentPage.parameters.redirect_url}" name="redirect_url" />
+    <input type="hidden" value="{!$CurrentPage.parameters.scheme_id}" name="requestParam[scheme_id]" />
+    <input type="hidden" value="{!$CurrentPage.parameters.source_id}" name="requestParam[source_id]" />
+    <input type="hidden" value="{!$CurrentPage.parameters.institutes_id}" name="requestParam[client_institute_id]" />
+    <input type="hidden" value="{!$CurrentPage.parameters.course_id}" name="requestParam[client_course_id]" />
+    <input type="hidden" value="{!$CurrentPage.parameters.insitutes_location_id}" name="requestParam[client_location_id]" />
+    <!-- <input type="hidden" value="{!$CurrentPage.parameters.course_amount}" name="requestParam[course_amount]" /> -->
+    <input type="hidden" value="{!$CurrentPage.parameters.loan_amount}" name="requestParam[loan_amount]" />
+    <input type="hidden" value="{!$CurrentPage.parameters.first_name}" name="requestParam[applicant][first_name]" />
+    <input type="hidden" value="{!$CurrentPage.parameters.last_name}" name="requestParam[applicant][last_name]" />
+    <input type="hidden" value="{!$CurrentPage.parameters.gender_id}" name="requestParam[applicant][gender_id]" />
+    <input type="hidden" value="{!$CurrentPage.parameters.dob}" name="requestParam[applicant][dob]" />
+    <input type="hidden" value="{!$CurrentPage.parameters.mobile_number}" name="requestParam[applicant][mobile_number]" /> 
+    <input type="hidden" value="{!$CurrentPage.parameters.email_id}" name="requestParam[applicant][email_id]" /> 
+    <input type="hidden" value="{!$CurrentPage.parameters.marital_status}" name="requestParam[applicant][marital_status]" />
+    
+   </form>
+
+<script>
+ window.onload=function()
+{
+   document.getElementById('EduVanzLoanForm').submit();
+};
+</script>
+ <!--All java script  -->
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'assets/js/jquery-1.11.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'assets/js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'assets/js/jquery.validate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'assets/js/moment.js')}"/>
+     <apex:includeScript value="{!URLFOR($Resource.NewResource, 'assets/js/bootstrap-datetimepicker.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'assets/js/chosen.jquery.min.js')}"/> 
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'assets/js/main.js')}"/>
+ 
+<!-- Footer -->
+          <footer>
+  <div class="container">
+    
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footerBottom">
+        
+          <div class="copyRight">
+            <p class="text">&copy; 2019 NMIMS. All Rights Reserved.</p>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+        <!--/ Footer --> 
+</body>
+</apex:page>

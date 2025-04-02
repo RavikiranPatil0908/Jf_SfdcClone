@@ -1,0 +1,85 @@
+<!--
+  @description       : 
+  @author            : @MonikaC
+  @group             : 
+  @last modified on  : 28-03-2024
+  @last modified by  : @MonikaC
+-->
+<template>
+    <template if:true={dataLoading}>
+        <div class="exampleHolder">
+            <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+        </div>
+    </template>
+    <template if:false={dataLoading}>
+        <template if:true={hasData}>
+            <article class="slds-card slds-card_boundary slds-var-m-top_small">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__figure">
+                            <lightning-icon class="slds-align_absolute-center" icon-name="standard:file"
+                                alternative-text="Opportunity Line Items" size="small"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">
+                                <a href="javascript:void(0);" class="slds-card__header-link" title="Opportunity Line Items">
+                                    <span>Opportunity Line Items</span>
+                                </a>
+                            </h2>
+                        </div>
+                    </header>
+                </div>
+                <div class="slds-card__body">
+                    <table class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered slds-table_fixed-layout" role="grid">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th scope="col" class="columnColor">
+                                    <div class="slds-truncate" title="Product">Product</div>
+                                </th>
+                                <th scope="col" class="columnColor">
+                                    <div class="slds-truncate" title="Quantity">Quantity</div>
+                                </th>
+                                <th scope="col" class="columnColor">
+                                    <div class="slds-truncate" title="Sales Price">Sales Price</div>
+                                </th>
+                                <th scope="col" class="columnColor">
+                                    <div class="slds-truncate" title="Date">Date</div>
+                                </th>
+                                <th scope="col" class="columnColor">
+                                    <div class="slds-truncate" title="Line Description">Line Description</div>
+                                </th>
+                                <th scope="col" class="columnColor">
+                                    <div class="slds-truncate" title="Actual Sale Price">Actual Sale Price</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={records} for:item="item" key={item.Id}>
+                                <tr key={item.Id}>
+                                    <td>{item.productName}</td>
+                                    <td>{item.Quantity}</td>
+                                    <td>{item.UnitPrice}</td>
+                                    <td>{item.ServiceDate}</td>
+                                    <td>{item.Description}</td>
+                                    <td>{item.ActualSalePrice__c}</td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </template>
+        <template if:false={hasData}>
+            <article class="slds-card slds-card_boundary">
+                <div class="slds-card__body slds-card__body_inner">
+                    <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                        <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt="" />
+                        <div class="slds-text-color_weak">
+                            <h3 class="slds-text-heading_medium">No Data found 🧐🤔</h3>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </template>
+    </template>
+</template>

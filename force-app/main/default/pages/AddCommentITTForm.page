@@ -1,0 +1,29 @@
+<!--
+  @description       : 
+  @author            : @Ravi
+  @group             : 
+  @last modified on  : 10-08-2024
+  @last modified by  : @Ravi
+-->
+<apex:page showHeader="true" sidebar="true">
+    <html>
+    <apex:includeLightning />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <body>
+        <div id="LightningComponentid" />
+        <script>
+            var id = "{!$CurrentPage.parameters.id}";
+            console.log("id ==> " + id);
+            $Lightning.use("c:RaiseinternalTicketcApp", function () {                    //Aura App
+                $Lightning.createComponent("c:ittUpdateDetails",                     //lightning component
+                    {recordId:id },
+                    "LightningComponentid",
+                    function (cmp) {
+                        console.log(' Add Comment LWC Componenet added in VF page');
+                    });
+            });
+        </script>
+    </body>
+    </html>
+</apex:page>

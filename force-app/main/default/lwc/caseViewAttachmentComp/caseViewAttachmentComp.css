@@ -1,0 +1,73 @@
+h2 {		
+    font-size: 15px;
+    color: white;	
+    font-weight: bold;
+}
+
+h1{
+    font-size: 24px;
+    color: #032d60;
+    font-weight: bold;
+}
+h3{
+    font-size: 16px;
+    color: #032d60;
+    font-weight: bold;
+}
+h4{
+    font-size: 18px;
+    color: #032d60;
+}
+h5{
+    font-size: 14px;
+    color: #BA0517;
+}
+h6 {	
+    font-size: 15px;
+    color: #212529;	
+    font-weight: bold;
+}
+p{
+    font-size: 18px;
+    color: black;
+}
+
+.highlight {
+    border-bottom: 3px solid #BA0517;
+}
+
+
+.slds-scope .slds-tabs_default__item.slds-is-active:after {
+background-color: #BA0517;
+}
+
+lightning-card{		
+    --slds-c-card-color-border: white;
+    --slds-c-card-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+    --slds-c-card-spacing-block-end: 1rem;
+    --slds-c-card-spacing-block-start: 1rem;		
+    --slds-c-card-spacing-inline-end: 1rem;
+    --slds-c-card-spacing-inline-start: 1rem;
+}
+
+.icon{
+    position: absolute;
+}
+
+.border {		
+    color: #BA0517;
+border-color: #BA0517;
+    --slds-c-button-spacing-inline-start: 1rem;
+    --slds-c-button-spacing-inline-end: 1rem;
+}
+
+.top-nav{
+    background-color: #BA0517;
+    height: 30px;
+    display: flex;
+align-items: center;
+}
+
+:host {
+--sds-c-textarea-sizing-min-height: 100px;
+}

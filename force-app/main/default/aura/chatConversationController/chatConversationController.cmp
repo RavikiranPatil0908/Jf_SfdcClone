@@ -1,0 +1,11 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 07-12-2023
+  @last modified by  : @BK
+-->
+<aura:component implements="flexipage:availableForAllPageTypes" access="global">   
+    <lightning:conversationToolkitAPI aura:id="conversationKit" />
+    <aura:handler event="lightning:conversationChatEnded" action="{!c.onChatEnded}" />   
+</aura:component>

@@ -1,0 +1,86 @@
+<apex:page Controller="MassCreateAEPController" sidebar="false" readOnly="false">
+
+    <style>
+        .activeTab {
+            background-color: #236FBD;
+            color: white;
+            background-image: none
+        }
+
+        .inactiveTab {
+            background-color: lightgrey;
+            color: black;
+            background-image: none
+        }
+    </style>
+
+    <apex:form >
+        <apex:pageMessages id="error"/>
+        <apex:pageBlock mode="edit">
+                <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                        <apex:outputLabel for="startingstugffgddentno"></apex:outputLabel>
+                        <apex:panelGroup >
+                            <p>Please enter Registration number ","(comma) seperated</p>
+                        </apex:panelGroup>
+                    </apex:pageBlockSectionItem>
+    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel for="startingstudentno"> <b>Registration Numbers:</b></apex:outputLabel>
+                        <apex:panelGroup >
+                            <apex:inputTextarea id="studentNumbers" value="{!listOfStudentNumber}" rows="10" cols="50" /> 
+                            <span class="red">*</span>
+                        </apex:panelGroup>
+                    </apex:pageBlockSectionItem>
+                    
+                   <apex:pageBlockSectionItem >
+                <apex:outputLabel for="startingstudentno"> <b>subject:</b></apex:outputLabel>
+                <apex:panelGroup >
+                    <apex:selectList value="{!typeofSub}" size="1" multiselect="false">
+                    <apex:selectOptions value="{!TypeOptions}"/>
+                </apex:selectList> 
+                    <span class="red">*</span>
+                </apex:panelGroup>
+            </apex:pageBlockSectionItem>
+
+                    
+                    <apex:pageBlockSectionItem >   
+                        <apex:outputLabel for="selectList"><b>Status</b></apex:outputLabel>
+                        <apex:outputPanel id="OuterPanel">
+                        <apex:outputPanel id="InPanel">
+                        <apex:selectList id="selectList" value="{!typeOfStatus}" size="1" multiselect="false">
+                        <apex:selectOptions value="{!StatusLists}"/>
+                        <apex:actionSupport event="onchange" reRender="InPanel"/>
+                        </apex:selectList>
+                        </apex:outputPanel> 
+                        </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel for="startingstudentno"> <b>Description:</b></apex:outputLabel>
+                        <apex:panelGroup >
+                            <apex:inputTextarea id="studentNumbers" value="{!Description}" rows="5" cols="35" /> 
+                            <span class="red">*</span>
+                        </apex:panelGroup>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+    
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton id="onButtonClick"  action="{!CreateAEPReq}" value="Mass AEP Request" />
+                </apex:pageBlockButtons>
+            </apex:pageBlock>
+    </apex:form>
+
+    <script>
+            $(document).ready(function(){
+            $("[id$='studentNumbers']").change(function(){
+            var stringList = $("[id$='studentNumbers']").val();
+            var arrayOfStudentNumbers = new Array();
+            arrayOfStudentNumbers = stringList.split(',');
+            $("[id$='studentNumbers']").val($.unique(arrayOfStudentNumbers));
+
+            });
+
+            });
+    </script>
+</apex:page>

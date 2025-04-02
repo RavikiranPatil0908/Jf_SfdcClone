@@ -1,0 +1,327 @@
+<!-- sldsValidatorIgnore -->
+<!--
+  @File Name          : icTransactionDetails.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 03-11-2023
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    26/5/2020   @BK     Initial Version
+-->
+<template>
+    <!-- Message Toast Starts here-->
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant}
+        auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+    <!-- Message Toast Ends here-->
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon class="slds-align_absolute-center" icon-name="standard:user"
+                        alternative-text={aepDetails.Center_Name__c} size="medium"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <a href="javascript:void(0);" class="slds-card__header-link" title="Accounts">
+                            <span>Hello {aepDetails.Center_Name__c}</span>
+                        </a>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="slds-text-heading_medium slds-p-top_small">AEP Shares</div>
+            <div class="slds-text-body_small slds-p-vertical_x-small">Select the timeline:</div>
+            <template if:true={isAdmin}>
+                <template if:true={alertPrompt}>
+                    <div class="demo-only" style="height:24rem">
+                        <section role="alertdialog" tabindex="0" aria-labelledby="prompt-heading-id"
+                            aria-describedby="prompt-message-wrapper"
+                            class="slds-modal slds-fade-in-open slds-modal_prompt" aria-modal="true">
+                            <div class="slds-modal__container">
+                                <header class="slds-modal__header slds-theme_shade slds-theme_alert-texture">
+                                    <h2 class="slds-text-heading_medium" id="prompt-heading-id">Enter Password</h2>
+                                </header>
+                                <div class="slds-modal__content slds-p-around_medium" id="prompt-message-wrapper">
+                                    <div class="slds-p-horizontal_xx-large lgc-bg">
+                                        <lightning-input type="password" label="Password" name="password"
+                                            value={password} onchange={handleCodeChange} required></lightning-input>
+                                    </div>
+                                </div>
+                                <footer class="slds-modal__footer slds-theme_default">
+                                    <button class="slds-button slds-button_neutral"
+                                        onclick={validatePassCode}>Submit</button>
+                                </footer>
+                            </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                    </div>
+                </template>
+                <template if:false={alertPrompt}>
+                    <div class="slds-grid slds-wrap slds-p-bottom_small">
+                        <div class="slds-col slds-size_1-of-1">
+                            <fieldset class="slds-form-element slds-form-element_compound">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__row slds-wrap">
+                                        <div class="slds-size_1-of-1 slds-large-size_1-of-4 slds-medium-size_1-of-3" if:true={isLC}>
+                                            <lightning-combobox name="aep" label="AEP Partner" options={aepOptions}
+                                                data-name="centerId" value={searchFilter.centerId} onchange={handleChange}
+                                                placeholder="Select AEP Partner" required>
+                                            </lightning-combobox>
+                                        </div>
+                                        <!--<div class="slds-size_1-of-1 slds-large-size_1-of-4 slds-medium-size_1-of-3">
+                                            <lightning-combobox name="folders" label="Month" options={months}
+                                                data-name="month" value={searchFilter.month} onchange={handleChange}
+                                                required>
+                                            </lightning-combobox>
+                                        </div>
+                                        <div class="slds-size_1-of-1 slds-large-size_1-of-4 slds-medium-size_1-of-3">
+                                            <lightning-input type="text" label="Year" name="year" data-name="year"
+                                                value={searchFilter.year} onchange={handleChange}
+                                                placeholder="Enter Year" required>
+                                            </lightning-input>
+                                        </div>-->
+                                         <!-- Date Range Filter -->
+                                        <div class="slds-size_1-of-2 slds-large-size_1-of-4 slds-medium-size_1-of-3">
+                                            <lightning-input
+                                                type="month"
+                                                label="From Date"
+                                                name="from-month-year"
+                                                data-name="fromMonthYear"
+                                                value={searchFilter.fromMonthYear}
+                                                onchange={handleChange}
+                                                required
+                                            ></lightning-input>
+                                        </div>
+                                        <div class="slds-size_1-of-2 slds-large-size_1-of-4 slds-medium-size_1-of-3">
+                                            <lightning-input
+                                                type="month"
+                                                label="To Date"
+                                                name="to-month-year"
+                                                data-name="toMonthYear"
+                                                value={searchFilter.toMonthYear}
+                                                onchange={handleChange}
+                                                required
+                                            ></lightning-input>
+                                        </div>
+                                        <div
+                                            class="slds-size_1-of-1 slds-large-size_1-of-8 slds-medium-size_1-of-7 slds-m-top_x-medium align-center_medium">
+                                            <lightning-button variant="brand" label="Generate Report"
+                                                title="Generate Report" onclick={handleClick}></lightning-button>
+                                        </div>
+                                        <div
+                                            class="slds-size_1-of-1 slds-large-size_1-of-8 slds-medium-size_1-of-7 slds-m-top_x-medium align-center_medium">
+                                            <lightning-button variant="brand" label="Download Report" icon-name="utility:download" if:true={hasData}
+                                                title="Download Report" onclick={generatePdf}></lightning-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <template if:true={isLoading}>
+                        <div class="exampleHolder">
+                            <lightning-spinner alternative-text="Loading" size="medium" variant="brand">
+                            </lightning-spinner>
+                        </div>
+                    </template>
+                    <template if:false={isLoading}>
+                        <template if:false={hasData}>
+                            <article class="slds-card slds-card_boundary ">
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                                        <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt="" />
+                                        <div class="slds-text-color_weak">
+                                            <h3 class="slds-text-heading_medium">No Data</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        </template>
+
+                        <template if:true={hasData}>
+                            <!-- For Desktop view -->
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-show_medium tableData">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Date">Date</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Narration">Narration</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Category">Category</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Student Number">Student Number</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Re Register">Admission Status</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Transaction Type">Transaction Type</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Credit">Credit</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Debit">Debit</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Closing Balance">Closing Balance</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={transactionRecords} for:item="records">
+                                    
+                                        <tr class="slds-hint-parent" key={records.key}>
+                                            <th data-label="Date" scope="row">
+                                                <div class="slds-truncate" title={records.value.Date__c}>
+                                                    <a href="javascript:void(0);" tabindex="-1">{records.date}</a>
+                                                </div>
+                                            </th>
+                                            <td data-label="Narration">
+                                                <div class="slds-truncate" title={records.value.Narration__c}>
+                                                    {records.value.Narration__c}</div>
+                                            </td>
+                                            <td data-label="Category">
+                                                <div class="slds-truncate" title={records.value.Transaction_Category__c}>
+                                                    {records.value.Transaction_Category__c}</div>
+                                            </td>
+                                            <td data-label="Student Number">
+                                                <div class="slds-truncate" title={records.value.Student_No__c}>
+                                                    {records.value.Student_No__c}</div>
+                                            </td>
+                                            <td data-label="Re Register">
+                                                <div class="slds-truncate" title={records.admissionStatus}>
+                                                    {records.admissionStatus}</div>
+                                            </td>
+                                            <td data-label="Transaction Type">
+                                                <div class="slds-truncate" title={records.value.Student_No__c}>
+                                                    {records.value.Transaction_Type__c}</div>
+                                            </td>
+                                            <td data-label="Credit">
+                                                <div class="slds-truncate" title={records.credit}>{records.credit} </div>
+                                               
+                                            </td>
+                                            <td data-label="Debit">
+                                                <div class="slds-truncate" title={records.debit}>{records.debit}</div>
+                                                
+                                            </td>
+                                            <td data-label="Closing Balance">
+                                                <div class="slds-truncate" title={records.balance}>
+                                                    <a href="javascript:void(0);" tabindex="-1">{records.balance}</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    
+                                    <tr>
+                                        <td data-label="Transaction Type" colspan="6" class="slds-text-align_right">Total</td>
+                                        <td data-label="Credit">
+                                            <div class="slds-truncate">
+                                                {totalCredit}
+                                            </div>
+                                        </td>
+                                        <td data-label="Debit">
+                                            <div class="slds-truncate">
+                                                {totalDebit}
+                                            </div>
+                                        </td>
+                                        <td data-label="Closing Balance"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- For mobile View -->
+                            <ul class="slds-has-dividers_around-space slds-hide_medium">
+                                <template for:each={transactionRecords} for:item="records">
+                                    <li class="slds-item" key={records.key}>
+                                        <a href="javascript:void(0);">{records.value.Narration__c}</a>
+                                        <ul>
+                                            <li>
+                                                <div class="slds-list--horizontal">
+                                                    <div class="slds-item--label slds-truncate recordCell"
+                                                        title="Date:">Date:
+                                                    </div>
+                                                    <div class="slds-item--detail slds-truncate recordCell">
+                                                        <span>{records.date}</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="slds-list--horizontal">
+                                                    <div class="slds-item--label slds-truncate recordCell"
+                                                        title="Student Number:">Student Number:</div>
+                                                    <div class="slds-item--detail slds-truncate recordCell">
+                                                        <span>{records.value.Student_No__c}</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="slds-list--horizontal">
+                                                    <div class="slds-item--label slds-truncate recordCell"
+                                                        title="Transaction Type:">Transaction Type:</div>
+                                                    <div class="slds-item--detail slds-truncate recordCell">
+                                                        <span>{records.value.Transaction_Type__c}</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li if:true={records.isCredit}>
+                                                <div class="slds-list--horizontal">
+                                                    <div class="slds-item--label slds-truncate recordCell"
+                                                        title="Credit:">
+                                                        Credit:</div>
+                                                    <div class="slds-item--detail slds-truncate recordCell">
+                                                        <span>{records.credit}</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li if:false={records.isCredit}>
+                                                <div class="slds-list--horizontal">
+                                                    <div class="slds-item--label slds-truncate recordCell"
+                                                        title="Debit:">Debit:
+                                                    </div>
+                                                    <div class="slds-item--detail slds-truncate recordCell">
+                                                        <span>{records.debit}</span>
+                                                    </div>
+                                                   
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="slds-list--horizontal">
+                                                    <div class="slds-item--label slds-truncate recordCell"
+                                                        title="Closing Balance:">Closing Balance:</div>
+                                                    <div class="slds-item--detail slds-truncate recordCell">
+                                                        <span>{records.balance}</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </template>
+                            </ul>
+                        </template>
+                    </template>
+                </template>
+
+            </template>
+            <template if:false={isAdmin}>
+                <article class="slds-card slds-card_boundary ">
+                    <div class="slds-card__body slds-card__body_inner">
+                        <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                            <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt="" />
+                            <div class="slds-text-color_weak">
+                                <h3 class="slds-text-heading_medium">Insufficient Privileges</h3>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </template>
+        </div>
+    </article>
+</template>

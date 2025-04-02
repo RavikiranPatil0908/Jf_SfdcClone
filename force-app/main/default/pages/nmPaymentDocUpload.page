@@ -1,0 +1,17 @@
+<apex:page controller="nmPaymentDocUpload">
+<apex:includeScript value="{!URLFOR($Resource.Scripts,'scripts/jquery-1.8.2.min.js')}"/>
+    
+    <apex:sectionHeader subtitle="Upload Demand Draft Payment Document" title="Payment"/>
+    
+    <a href="/{!paymentID}">Back to Payment</a>
+
+    <!--<div style="margin-bottom:40px;">
+        <a href="/{!accountId}" style="float:left;"><b>Student Name:</b> {!accountName}</a>
+    </div>-->
+    
+
+  <!--  <apex:iframe src="http://admissions-ngasce.nmims.edu:4001/Student/PaymentDocs.aspx?id={!paymentID}"/> -->
+    
+    <apex:iframe src="{!$Label.DOCUMENT_SERVER}uploadPaymentDocumentForm?id={!paymentID}" height="400px"/>
+    
+</apex:page>

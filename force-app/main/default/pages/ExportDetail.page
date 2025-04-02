@@ -1,0 +1,210 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" controller="ExportDetailController" docType="html-5.0" readOnly="true">
+     <style>
+        .Processingview
+        {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;           
+            width:  100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+           
+        }
+        .required
+        {
+            border: 2px solid #c00 !important;
+        }
+        .overlay
+        {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+          background-color: rgba(0,0,0,0.5);
+        }
+        .poup
+        {
+            position: fixed;
+            top: 30%;
+            width: 40%;
+            margin-left: 30%;
+            z-index: 11;
+        }
+        .messageCell
+        {
+            color:White !important;
+        }
+        .LateFee
+        {
+            Color: red;
+            float: right;
+            margin-right: 4%;
+            font-style: italic;
+        }
+        .form-control[disabled]
+        {
+            background-color: #E6E6E6 !important;
+        }
+     </style>
+     <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>NMIMS Distance Education: Login</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/typography.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/font-awesome.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap-theme.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap-datetimepicker.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/flat/grey.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/main.css')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Data,'js/vendor/modernizr-2.6.2-respond-1.1.0.min.js')}"/>    
+        </head>
+ <script>
+     $(document).ready(function(){
+      
+      $(".track").change(function(){
+      var date1 =$('[id$=session1]').val();
+       var date = $('[id$=year1]').val();
+       var date11 = new Date(date1);
+    var newdate = new Date(date11);
+ 
+    newdate.setDate(newdate.getDate() +1);
+    
+    var dd = newdate.getDate();
+    var mm = newdate.getMonth()+1;
+    var yyyy = newdate.getFullYear();
+     var someFormattedDate = yyyy + '-' + mm + '-' + dd;
+      $('[id$=hdnStart]').val(date );
+      $('[id$=hdnend]').val(someFormattedDate );
+      });
+   
+     });
+     </script>
+    <body class="home">
+    
+    <header>
+        
+      <section class="main-header">
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-18 col-sm-6">
+              <a href="http://distance.nmims.edu/" target="_blank"><apex:image url="{!URLFOR($Resource.Data,'images/logo.png')}"/></a>
+            </div> <!-- /col-xs-10 -->
+            <div class="col-xs-18 col-sm-12">
+              <h1 class="text-right">Report Download</h1>
+            </div> <!-- /col-xs-8 -->
+          </div> <!-- /row -->
+        </div> <!-- /container -->
+      </section> <!-- /main-header -->  
+      
+    </header> <!-- /header -->
+    
+    <apex:form id="formid1">
+
+    
+    <div class="col-sm-5">&nbsp;</div>
+    
+    <apex:pagemessages id="error"/>
+    <section class="content-container" style="" id="full">
+        <div class="container" >
+            <div class="row">
+                <div class="col-sm-18">
+                    <div class="registration-box complete">
+                    <div class="clearfix"></div>
+                      <h2>Export Report</h2>
+                     <div class="row">
+                        <div class="col-xs-18 col-sm-9" >  
+                             <div class="form-group" >
+                               <div class="">
+                                   <div >
+                                     <label for="blood-group">Start Date</label>
+                                   </div> <!-- /col-sm-2 -->
+                                    <apex:input type="date" value="{!startDate}" id="year1" styleclass="form-control track"/>
+                                   <div class="col-sm-6">&nbsp;</div> <!-- /col-sm-6 -->
+                                 </div> <!-- /row -->
+                             </div> <!-- /form-group -->
+                              
+                             <div class="form-group" >
+                               <div class="">
+                                   <div >
+                                     <label for="blood-group">End Date</label>
+                                   </div> <!-- /col-sm-2 -->
+                                   <apex:input type="date" value="{!endDate}"  id="session1" styleclass="form-control track"/>
+                                   <div class="col-sm-6">&nbsp;</div> <!-- /col-sm-6 -->
+                                 </div> <!-- /row -->
+                             </div> <!-- /form-group -->
+                          <apex:commandButton id="confirmBtn" value="View Records" action="{!view}" onclick="this.value = 'Processing...'" reRender="infoPanel" oncomplete="btnComplete();"/>
+                          <input type="button" value="Export Report" onclick="return GO1();"/>
+                          </div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <apex:inputHidden id="hdnStart" value="{!startDT}"/>
+        <apex:inputHidden id="hdnend" value="{!enddt}"/>
+    <apex:outputPanel id="infoPanel"  rendered="{!NOT(ISNULL(lstLead))}">    
+      <apex:pageBlock > 
+        Total  No Of Records:<apex:outputLabel value="{!Total}" /> 
+       <apex:pageBlockTable value="{!lstLead}" var="a"
+                                   rendered="{!NOT(ISNULL(lstLead))}">                        
+                  <apex:column value="{!a.FirstName}"/>
+                  <apex:column value="{!a.LastName}"/> 
+                  <apex:column value="{!a.LeadSource}"/>
+                  <apex:column value="{!a.Agency__c }"/>
+                  <apex:column value="{!a.nm_OtherLeadSources__c}"/>
+                  <apex:column value="{!a.nm_Keyword__c}"/>
+                  <apex:column value="{!a.nm_InformationCenter__c}"/>
+                  <apex:column value="{!a.Status}"/>
+                  <apex:column value="{!a.nm_InitialLeadSatus__c}"/>
+                  <apex:column value="{!a.Number_of_days_to_get_convert__c}"/>
+                  
+                  <apex:column value="{!a.Created_Month__c}"/>
+                  <apex:column value="{!a.CreatedDate}"/>
+                  <apex:column value="{!a.nm_CreatedDatetime__c}"/>
+                  <apex:column value="{!a.Owner.name}"/>
+                  <apex:column value="{!a.nm_Timetakentocontact__c}"/>  
+                  <apex:column value="{!a.Description}"/>   
+                  <apex:column value="{!a.LC_Name__c}"/>
+                          
+        </apex:pageBlockTable>
+        </apex:pageBlock> 
+      </apex:outputPanel>   
+       </section>
+       </apex:form>
+        </body> 
+        <script type="text/javascript">
+          function GO1()
+        {
+                var date = $('[id$=year1]').val();
+              var dt= date.split("-").reverse().join("/");
+              var datearray=dt.split("/");
+              var year=datearray[1]+'/'+datearray[0]+'/'+datearray[2];
+              $('[id$=hdnStart]').val(date);
+             var date1 =$('[id$=session1]').val();
+             var dt1 =  date1.split("-").reverse().join("/");
+             var datearray1 =dt1.split("/");
+             var session =datearray1[1]+'/'+datearray1[0]+'/'+datearray1[2];
+             $('[id$=hdnend]').val(date1);
+                  var url  = 'https://ap1.salesforce.com/00O90000008LG5w?pc0=Lead.LeadSource&pn0=eq&pv0=web&pc1=Lead.CreatedDate&pn1=ge&pv1='+year+'&pc2=Lead.CreatedDate&pn2=le&pv2='+session+'&pc3=Lead.Agency__c&pn3=eq&pv3=DGM&isExcel=1&_wSSummary.Range(C4)&_&export=1&xf=cls&enc=UTF-8'; 
+                window.open(url,'_parent');
+                return false;
+        }
+        
+         function btnComplete(){
+            $('input[id*=confirmBtn]').attr('value','View Records');
+            return true;
+        }
+        
+        </script>
+        
+        </apex:page>

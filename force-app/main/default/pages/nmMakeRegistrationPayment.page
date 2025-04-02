@@ -1,0 +1,113 @@
+<apex:page controller="nmMakeRegistrationPayment">
+<apex:includeScript value="{!URLFOR($Resource.Scripts,'/scripts/jquery-1.8.2.min.js')}"/>
+<style>
+        .Processingview
+        {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;           
+            width:  100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+           
+        }
+    </style>
+    <script>
+     function change()
+     {   
+        if($('[id$=mode]').val()=='Challan')
+        {
+        $('[id$=bank]').val('HDFC Bank');
+        
+        }
+        else
+        {
+            $('[id$=bank]').val('');
+        }
+     }
+     
+     $(document).ready(function(){
+         //$("[id$=mode] option[value='Online']").remove();
+     });
+     
+     
+     
+     
+    </script>
+    <apex:form id="idForm">
+        <apex:outputpanel id="pnlDetails" rendered="{!strSectionToShow == 'Information'}">
+        <h2>{!strInforamtion}</h2>
+        <br/><br/>
+        <a href="/{!leadID}" title="Back to Lead" style="{!if(leadId != null, '','display:none')}">Back to Lead</a>
+        <a href="/{!strStudentProgramid}" title="Back to Student Program" style="{!if(strStudentProgramid != null, '','display:none')}">Back to Student Program</a>
+        </apex:outputpanel>
+        <apex:sectionHeader title="{!objLead.name}" subtitle="Make Payment for registration." rendered="{!strSectionToShow == 'Payment'}" />
+        <apex:pageBlock id="pbDetails" title="Student Details" rendered="{!strSectionToShow == 'Payment'}">
+             <apex:pageBlockSection >
+             <apex:pageBlockSectionItem >
+                 <label>Student Name</label><apex:outputText value="{!strName}"/>  
+             </apex:pageBlockSectionItem>
+             <apex:pageBlockSectionItem >
+                 <label>Registration No</label><apex:outputText value="{!strRegNo}"/>  
+             </apex:pageBlockSectionItem>            
+             </apex:pageBlockSection>
+         </apex:pageBlock>
+        <apex:outputPanel id="pnlPayment">    
+            <apex:pageBlock title="Make Payment" id="pbPayment" rendered="{!strSectionToShow == 'Payment'}">
+            <apex:pageBlockSection >       
+                 
+                <apex:inputField value="{!objPayment.nm_ModeOfPayment__c}" id="mode" >
+                    <apex:actionSupport event="onchange" oncomplete="change();" reRender="pnlPayment" status="processing" />
+                </apex:inputField>  
+                        
+                <apex:inputField value="{!objPayment.nm_DemandDraftNumber__c}"  rendered="{!boolShow}" id="DDn"/>    
+                     
+                <apex:inputField value="{!objPayment.nm_NameoftheBank__c}" id="bank" rendered="{!boolShow}"/>
+                                            
+                <apex:inputField value="{!objPayment.nm_DemandDraftDate__c}" rendered="{!boolShow}" id="DD"/>
+                <apex:inputField value="{!objPayment.nm_BankLocation__c}" rendered="{!boolShow}" id="BL"/>
+                <apex:inputField value="{!objPayment.nm_DispatchDate__c}" rendered="{!(objPayment.nm_ModeOfPayment__c == 'Demand Draft')}" />
+                <apex:outputField value="{!objPayment.nm_Amount__c}" rendered="{!boolShow}" id="idAmount"/>
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+            
+            <center>
+                <apex:commandButton action="{!MakePayment}" value="Submit" rendered="{!(strSectionToShow=='Payment')}" oncomplete="return ShowReciept('{!url}','{!returnurl}');" reRender="idForm"/>&nbsp;
+                <script type="text/javascript">                   
+                    function ShowReciept(url,returnurl)
+                    {         
+                             
+                        if(url != '')
+                        {
+                        var open = window.open(url,'_blank','');
+                        }                        
+                        else
+                        {
+                         if($('[id$=mode]').val()=='Demand Draft' || $('[id$=mode]').val()=='Challan')
+                          {
+                            if($('[id$=DDn]').val()=='' || $('[id$=bank]').val()==''|| $('[id$=DD]').val()=='' || $('[id$=BL]').val()=='' || $('[id$=idAmount]').val()==''){
+                            alert('fill all the required fields');
+                            }
+                          }
+                        }
+                        return false;
+                    }
+                </script>
+                <apex:commandButton id="GenChallan" action="{!GenChallan}" immediate="true" value="Generate Challan" rerender="pnlGEnChallan" oncomplete="return ShowChallan('{!strurl}');" rendered="{!(objPayment.nm_ModeOfPayment__c == 'Challan' && strSectionToShow == 'Payment')}"/>
+                    <apex:outputPanel id="pnlGEnChallan">
+                        <script>
+                            function ShowChallan(url)
+                            {
+                                var open = window.open(url,'_blank','');
+                                return false;
+                            }
+                        </script>
+                    </apex:outputPanel>
+            </center>
+        </apex:outputPanel>
+        <apex:actionStatus id="processing" startStyleClass="Processingview"/>    
+    </apex:form>
+</apex:page>

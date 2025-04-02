@@ -1,0 +1,91 @@
+<apex:page standardController="Case" tabStyle="Case">
+    <script src="/soap/ajax/46.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/46.0/apex.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var accountId = "{!Case.AccountId}";
+            
+            if(accountId) {
+                var soqlquery = "SELECT id,Total_amount_to_refund__c,Account__c,Registration_Number__c,Type_of_Refund__c,Status__c,Payment_Refunded_D_T__c,nm_Payment_Status__c, Reason_For_Refund__c , Other_Reason_For_Refund__c,Application_Rejected_Reason__c from nmRefund_Payment__c where Account__c = \'" + accountId + "\' order by Registration_Number__c Desc";
+                var wexpQuery = sforce.connection.query(soqlquery);
+                var wexpRecord = wexpQuery.getArray("records");
+                if (wexpQuery.size > 0) {
+                    var html = '';
+                    $.each( wexpRecord, function( key, value ) {
+                        if(key > 0) {
+                            html += '<hr/>';
+                        }
+                        html += '<table width="100%"><tr>';
+                        html += '<th width="25%">Registration Number</th>';
+                        html += '<td width="25%">'+value.Registration_Number__c+'</td>';
+                        html += '<th width="25%">Type of Refund</th>';
+                        html += '<td width="25%">'+value.Type_of_Refund__c+'</td></tr>';
+                        html += '<tr><th width="25%">Amount</th>';
+                        html += '<td width="25%">'+value.Total_amount_to_refund__c+'</td>'
+                        html += '<th width="25%">Refund Status</th>';
+                        html += '<td width="25%">'+value.Status__c+'</td></tr>';
+                        html += '<th width="25%">Refund Date</th>';
+                        html += '<td width="25%">'+value.Payment_Refunded_D_T__c+'</td></tr>';
+                        html += '<tr><th width="25%">Payment Status</th>';
+                        html += '<td width="25%">'+value.nm_Payment_Status__c+'</td>';
+                        html += '<th width="25%">Reason for refund</th>';
+                        html += '<td width="25%" >'+value.Reason_For_Refund__c+'</td></tr>';
+                        html += '<tr><th width="25%">Other reason for Refund </th>';
+                        html += '<td width="25%">'+value.Other_Reason_For_Refund__c+'</td>';
+                        html += '<th width="25%">Application Rejected Reason</th>';
+                        html += '<td width="25%">'+value.Application_Rejected_Reason__c+'</td></tr></table>';
+                    });
+
+                    $('[id$=container]').html(html);
+                }
+            }
+        });
+        
+            $(document).ready(function(){
+            var accId = "{!Case.AccountId}";
+            
+            if(accId) {
+                var soqlquery = "SELECT id,Name,StageName,nm_RegistrationNumber__c,Session_and_Year__c,ActualPendingAmount__c ,Choose_a_Program__c,Student_Number__c,Student_Status__c ,Sem__c,nm_Semester__c from Opportunity where AccountId = \'" + accId + "\' order by Sem__c Asc";
+                var wexpQuery = sforce.connection.query(soqlquery);
+                var wexpRecord = wexpQuery.getArray("records");
+                if (wexpQuery.size > 0) {
+                    var html = '';
+                    $.each( wexpRecord, function( key, value ) {
+                        if(key > 0) {
+                            html += '<hr/>';
+                        }
+                        html += '<table width="100%"><tr>';
+                        html += '<th width="25%">Registration Number</th>';
+                        html += '<td width="25%">'+value.nm_RegistrationNumber__c+'</td>';
+                        html += '<th width="25%">Session and Year</th>';
+                        html += '<td width="25%">'+value.Session_and_Year__c+'</td></tr>';
+                        html += '<tr><th width="25%">Pending Amount</th>';
+                        html += '<td width="25%">'+value.ActualPendingAmount__c+'</td>'
+                        html += '<th width="25%">Stage</th>';
+                        html += '<td width="25%">'+value.StageName+'</td></tr>';
+                        html += '<tr><th width="25%">Name</th>';
+                        html += '<td width="25%">'+value.Name+'</td>';
+                        html += '<th width="25%">Semester</th>';
+                        html += '<td width="25%" >'+value.nm_Semester__c+'</td></tr>';
+                        html += '<tr><th width="25%">Student Number </th>';
+                        html += '<td width="25%">'+value.Student_Number__c+'</td>';
+                        html += '<th width="25%">Student Status</th>';
+                        html += '<td width="25%">'+value.Student_Status__c+'</td></tr></table>';
+                    });
+
+                    $('[id$=container2]').html(html);
+                }
+            }
+        });
+
+
+    </script>
+    <apex:outputPanel id="container">
+        <h1>No Refund Record Found.</h1>
+    </apex:outputPanel>
+        <apex:outputPanel id="container2">
+        <h1>No Opportunity Record Found.</h1>
+    </apex:outputPanel>
+
+</apex:page>

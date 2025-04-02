@@ -1,0 +1,43 @@
+<template>
+		<div class="slds-align_absolute-center">			
+				
+				<div class="slds-wrap slds-grid">
+						{error}
+						<div class="slds-col slds-size_1-of-1"> 
+								<br/>
+								<lightning-input label="SAP ID" value={studentNo} onchange={handleNoChange} required="true"> </lightning-input>                
+            		<br/> <br/>
+						</div> 
+						
+				
+				<div class="slds-col">
+						<lightning-button class="slds-align_absolute-center" variant="destructive" label="Login"  type="submit" onclick={handleSubmit}> </lightning-button>
+        </div> 
+			</div>
+				<template if:true={showOtp}>
+						<section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open slds-modal_small">
+    						<div class="slds-modal__container">
+        						<lightning-button-icon class="slds-modal__close" title="Close" icon-name="utility:close" icon-class="slds-button_icon-inverse" onclick={handleModalClose}></lightning-button-icon>
+      							<!-- modal header start -->
+        						<div class="slds-modal__header">
+            						<h1 class="slds-modal__title slds-hyphenate">OTP Verification!</h1>            
+        						</div>
+      							<!-- modal body start -->
+      							<div class="slds-modal__content slds-p-around_medium ">
+												{message}
+												<div class="slds-col slds-size_2-of-1">
+														<lightning-input label="Enter OTP" type="text" value={otp} required=true onchange={handleOtpChange}></lightning-input>
+												</div>
+												
+										</div>
+										<footer class="slds-modal__footer">
+												<div class="slds-col slds-size_2-of-1 slds-float_left" style="font-size: 15px;">If you haven't received the OTP in {timeVal}, click resend</div>
+                				<lightning-button class="slds-m-around_small" onclick={handleResendOtp} label="Resend OTP" variant="brand" disabled={resend}></lightning-button>
+                				<lightning-button class="slds-m-around_small" onclick={verification} variant="brand" label="Confirm" ></lightning-button>
+              			</footer>
+								</div>
+						</section>
+						<div class="slds-backdrop slds-backdrop_open"></div>
+				</template>
+		</div>
+</template>

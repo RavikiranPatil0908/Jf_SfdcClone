@@ -1,0 +1,640 @@
+<!--
+  @description       : 
+  @author            : @Ravi
+  @group             : 
+  @last modified on  : 27-11-2024
+  @last modified by  : @BK
+-->
+<apex:component access="global" controller="MyCasesPageController"  allowDML="true">
+    <apex:attribute access="global" name="recordId" type="ID" description="Record Id" assignTo="{!objectId}" />
+    <apex:attribute access="global" name="objType" type="String" description="Object Type" assignTo="{!objectType}" />
+
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/pages/ui/notifications.js"></script>
+    <link href="{!URLFOR($Resource.AdminBSBMaterialDesign, 'AdminBSBMaterialDesign/css/spinner.css')}" rel="stylesheet" />
+
+    <style>
+        /*  all inputs and the button aligned */
+        .form-control, .btn {
+            /* height: 44px; */
+           
+        }
+        .btn-red {
+            background-color:#ba0517;
+            color: white;
+            
+        }
+        .btn-secondary {
+            background-color:#aeaeae;
+            color: white;
+            
+        }
+
+        .casenum{
+            margin-left: 100px; 
+        }
+        .caseSub{
+            margin-left: 20px;
+        }
+
+        .form-group .form-line .form-label {
+            top: -15px;
+        }
+        
+        hr {
+             border: 1px solid #ccc;
+              margin-top: 20px;
+            }
+
+        .cardSize {
+            height: 400px;
+        }
+
+        .commentBox{
+            display: none;
+        }
+    </style>
+    
+    <div id="mainPage" class="container-fluid">
+
+        <h3 class="light-blue">1-Connect - My Tickets</h3>
+        
+        <apex:actionFunction name="openCaseDetails" reRender="caseDetails" oncomplete="showCaseDetail();">
+            <apex:param name="setCaseId" value="{!selectedCaseId}" assignTo="{!selectedCaseId}" />
+        </apex:actionFunction>
+
+        <apex:actionFunction name="ReRenderCaseRecordSection" reRender="caseRecords" oncomplete="openCaseDetailSection();"/>
+
+        <apex:actionFunction name="reRenderCaseSection" reRender="hiddenFieldSection,caseRecords,caseDetails" id="reRenderCaseSection" oncomplete="triggerSubmitResponse();">
+        </apex:actionFunction>
+
+        <apex:actionFunction name="jsActionFunction" action="{!doActionFunction}" reRender="CaseTable">
+            <apex:param name="vfParam" value="" assignTo="{!vfParam}" />
+        </apex:actionFunction>
+
+        <apex:outputPanel styleClass="hiddenFieldSection" id="hiddenFieldSection">
+            <input type="hidden" value="{!errorMsg}" id="errorMsg" class="errorMsg"/>
+            <input type="hidden" value="{!caseWrapper.caseId}" id="insertedCaseId" class="insertedCaseId" />
+        </apex:outputPanel>
+        
+        <apex:outputPanel styleClass="row clearfix" id="caseMainSection" layout="block">
+            <apex:outputPanel styleClass="col-lg-12 col-md-12 col-sm-12 col-xs-12 sections p-l-0 p-r-0" id="caseRecords" layout="block">
+                <div class="card">
+                <!-- div inside card-container -->
+                    <div class="header">
+                        <div class="row clearfix">
+                            <apex:actionFunction action="{!queryRecordData}" name="refreshTableData" reRender="CaseTable" oncomplete="hideLoader()">
+                                <apex:param name="param" value="" assignTo="{!caseFilterType}" />  
+                            </apex:actionFunction>
+                            <!-- Ticket Type Filter Dropdown -->
+                            <div class="col-md-3 col-sm-3">
+                                <apex:selectList value="{!caseFilterType}" styleClass="form-control show-tick caseType" multiselect="false" size="1" id="SearchList">
+                                    <apex:selectOptions value="{!searchList}" />
+                                </apex:selectList>
+                            </div>
+
+                            <!-- Search Box -->
+                            <div class="col-md-3 col-sm-3">
+                                <!-- <input type="text" class="form-control show-tick" placeholder="Search by keyword..." />  -->
+                            </div>
+
+                            <!-- Adjusting space between elements -->
+                            <div class="col-md-4 col-sm-3"></div>
+
+                            <!-- shedule Call Button -->
+                            <!-- <div class="col-sm-2 text-right">
+                                <a href="javascript:void(0);" class="btn btn-red waves-effect btn-block btn-lg" style="display: flex; align-items: center;  width: 100%; background-color: #f52213;" onclick="openCaseCreateSection('call');">
+                                    <i class="material-icons" style="margin-right: 8px; color:white; top: 0px; ">call</i>
+                                    <span style="color:white; font-weight:bold; margin-left: 0px;">Shedule a Callback</span>
+                                </a>
+                            </div> -->
+                            
+                            <!-- Raise a Ticket Button -->
+                            <div class="col-md-2 col-sm-3 text-right">
+                                <a href="javascript:void(0);" class="btn waves-effect btn-block btn-lg" style="display: flex; align-items: center;  width: 100%; background-color:rgb(59, 56, 56);" onclick="openCaseCreateSection('create');">
+                                    <i class="material-icons" style="margin-right: 8px; color:white; top: 0px;">forum</i>
+                                    <span style="color:white; font-weight:bold;">Raise a Ticket</span>
+                                </a>
+                            </div>
+                        </div> 
+                        <!-- End of row clearfix -->
+                    </div> 
+                    <!-- Spinner -->
+                    <div class="loader-overlay hidden">
+                        <div class="loader">
+                            <div class="preloader">
+                                <div class="spinner-layer">
+                                    <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Spinner -->
+                    <!-- End of header -->
+                    <apex:outputPanel styleClass="body row clearfix" id="CaseTable">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                <apex:outputPanel layout="none" rendered="{!IF(caseFilterType='Open',true,false)}">
+                                    <thead>
+                                        <tr>
+                                            <th>Ticket No.</th>
+                                            <th>Subject</th>
+                                            <th>Status</th>
+                                            <th>Open Date</th>
+                                            <th>Expected Close Date</th>
+                                            <th>In Progress Date</th>
+                                            <th>Escalate</th>
+                                            <!-- <th>Schedule Callback</th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <apex:repeat value="{!caseList}" var="ticket">
+                                            <tr>
+                                                <td><a href="javascript:void(0);" class="" onclick="handleClick('{!ticket.caseId}');">{!ticket.caseNumber}</a></td>
+                                                <td>{!ticket.subject}</td>
+                                                <td>{!ticket.status}</td>
+                                                <td><c:FormattedDateTime datetimeValue="{!ticket.createdDate}" datetimeFormat="dd-MM-yyyy" /></td>
+                                                <td><c:FormattedDateTime datetimeValue="{!ticket.expectedCloseDate}" datetimeFormat="dd-MM-yyyy" /></td>
+                                                <td><c:FormattedDateTime datetimeValue="{!ticket.inProgressDate}" datetimeFormat="dd-MM-yyyy" /></td>
+                                                <td>
+                                                    <div>
+                                                     <!-- <button class="btn btn-red btn-sm" onclick="handleClickEscalate('{!ticket.caseId}')">Yes</button> href="javascript:void(0);"-->
+                                                     <button class="btn btn-red btn-sm" style ="display : {!ticket.escalateButtonVisibility}; "  onclick="javascript: doEscalate('{!ticket.caseId}');">Yes</button>
+                                                    </div>
+                                                     <div>
+                                                     <span style ="display : {! IF(ticket.escalateButtonVisibility ='none',IF(ticket.escalationLevel !='null','block','none'),'none')}">Escalated - L{! IF(ticket.escalationLevel ='null','0',ticket.escalationLevel)}</span>
+                                                     <button class="btn btn-secondary btn-sm" style ="display : {! IF(ticket.escalationLevel ='null',IF(ticket.escalateButtonVisibility ='none','block','none'),'none')};" href="javascript:void(0);" disabled="true">yes</button>
+                                                    </div>
+                                                    </td>
+                                                 <!--
+                                                <td>
+                                                    <button class="btn btn-red btn-sm" onclick="scheduleCallback('{!ticket.caseId}')">Call</button>
+                                                </td> -->
+                                            </tr>
+                                        </apex:repeat>
+                                    </tbody>
+                                </apex:outputPanel>
+                                
+                                <apex:outputPanel layout="none" rendered="{!IF(caseFilterType='Close',true,false)}">
+                                    <thead>
+                                        <tr>
+                                            <th>Ticket No.</th>
+                                            <th>Subject</th>
+                                            <th>Status</th>
+                                            <th>Open Date</th>
+                                            <th>Close Date</th>
+                                            <!-- <th>Escalate?</th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <apex:repeat value="{!caseList}" var="ticket">
+                                            <tr>
+                                                <td><a href="javascript:void(0);" class="" onclick="handleClick('{!ticket.caseId}');">{!ticket.caseNumber}</a></td>
+                                                <td>{!ticket.subject}</td>
+                                                <td>{!ticket.status}</td>
+                                                <td><c:FormattedDateTime datetimeValue="{!ticket.createdDate}" datetimeFormat="dd-MM-yyyy" /></td>
+                                                <td><c:FormattedDateTime datetimeValue="{!ticket.ClosedDate}" datetimeFormat="dd-MM-yyyy" /></td>
+                                                <!-- <td>
+                                                    <button class="btn btn-red btn-sm" onclick="escalateTicket('{!ticket.caseId}')">Yes</button>
+                                                </td> -->
+                                            </tr>
+                                        </apex:repeat>
+                                    </tbody>
+                                </apex:outputPanel>
+
+                                <apex:outputPanel layout="none" rendered="{!IF(caseFilterType='Feedback',true,false)}">
+                                    <thead>
+                                        <tr>
+                                            <th>Ticket No.</th>
+                                            <th>Subject</th>
+                                            <th>Open Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <apex:repeat value="{!caseList}" var="ticket">
+                                            <tr>
+                                                <td><a href="javascript:void(0);" class="" onclick="handleClick('{!ticket.caseId}');">{!ticket.caseNumber}</a></td>
+                                                <td>{!ticket.subject}</td>
+                                                <td><c:FormattedDateTime datetimeValue="{!ticket.createdDate}" datetimeFormat="dd-MM-yyyy" /></td>
+                                                <td>{!ticket.status}</td>
+                                            </tr>
+                                        </apex:repeat>
+                                    </tbody>
+                                </apex:outputPanel>
+                            </table>
+                        </div>
+                    </apex:outputPanel>
+                </div> 
+                <!-- End of card -->
+            </apex:outputPanel>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden sections p-l-0 p-r-0" id="createCase">
+                <div class="card">
+                    <div class="header">
+                        <h3>Raise a Ticket</h3>
+                    </div>
+
+                    <div class="body">
+                        <div class="loader-overlay hidden">
+                            <div class="loader">
+                                <div class="preloader">
+                                    <div class="spinner-layer">
+                                        <div class="circle-clipper left">
+                                            <div class="circle"></div>
+                                        </div>
+                                        <div class="circle-clipper right">
+                                            <div class="circle"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <apex:actionRegion >
+                            <div class="row clearfix" id="raiseTicketPage">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden feedBackMsg">
+                                    <p>Please note your feedback will be raised to the concerned team however if you are seeking a reply please raise a ticket as 'Inquiry' instead of feedback.</p>
+                                </div>
+                                <!-- Query Type Dropdown -->
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group form-float">
+                                        <div class="form-line">
+                                            <apex:outputLabel styleClass="form-label" value="Query Type">
+                                                <apex:outputText style="color:red;font-weight:bold" value=" *" />
+                                            </apex:outputLabel>
+                                            <apex:selectList value="{!caseWrapper.queryType}" styleClass="form-control notnull formField Query" multiselect="false" size="1" id="Query">
+                                                <apex:selectOptions value="{!queryTypes}" />
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <!-- Category Dropdown -->
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group form-float">
+                                        <div class="form-line">
+                                            <apex:outputLabel styleClass="form-label" value="Category">
+                                                <apex:outputText style="color:red;font-weight:bold" value=" *" />
+                                            </apex:outputLabel>
+                                            <apex:selectList value="{!caseWrapper.category}" styleClass="form-control Category notnull formField" multiselect="false" size="1" id="Category">
+                                                <apex:selectOptions value="{!Categories}" />
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <!-- Sub Category Dropdown -->
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 showsubCategory">
+                                    <div class="form-group form-float">
+                                        <div class="form-line">
+                                            <apex:outputLabel styleClass="form-label" value="Sub-Category">
+                                                <apex:outputText style="color:red;font-weight:bold" value=" *" />
+                                            </apex:outputLabel>
+                                            <apex:selectList value="{!caseWrapper.subCategory}" styleClass="form-control subCategory formField" multiselect="false" size="1" id="subcategory">
+                                                <apex:selectOptions value="{!subCategories}" />
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 showOtherCategory hidden">
+                                    <div class="form-group form-float">
+                                        <div class="form-line">
+                                            <apex:outputLabel styleClass="form-label" value="Other Category">
+                                                <apex:outputText style="color:red;font-weight:bold" value=" *" />
+                                            </apex:outputLabel>
+                                            <apex:inputText id="otherCategory" value="{!caseWrapper.otherCategory}" styleClass="form-control otherCategory formField" />
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <!-- Subject Field -->
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group form-float">
+                                        <div class="form-line">
+                                            <apex:input id="subject" value="{!caseWrapper.subject}" styleClass="form-control subject notnull formField" />
+                                            <apex:outputLabel styleClass="form-label" value="Subject">
+                                                <apex:outputText style="color:red;font-weight:bold" value=" *" />
+                                            </apex:outputLabel>
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <!-- Description Field -->
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group form-float">
+                                        <div class="form-line">
+                                            <apex:inputTextarea styleClass="form-control notnull formField" value="{!caseWrapper.description}" id="ticketDescription" rows="3" />
+                                            <apex:outputLabel styleClass="form-label" value="Description">
+                                                <apex:outputText style="color:red;font-weight:bold" value=" *" />
+                                            </apex:outputLabel>
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <!-- Checkbox for Attachments -->
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <input type="checkbox" id="attcheckbox" name="checkbox" class="radio-col-blue attcheckbox formField" />
+                                        <label for="attcheckbox">Do you want to attach related files/screenshots?</label>
+                                    </div>
+                                </div>
+        
+                                <!-- Attachment Block (Initially Hidden) -->
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden attachmentblock">
+                                    <div class="dz-message">
+                                        <h5>File size should be less than 3 MB</h5>
+                                    </div>
+                                    <div class="fallback">
+                                        <input type="file" id="fileInput" multiple="true" class="formField"/>
+                                    </div>
+                                </div>
+                            </div>
+            
+                            <!-- Submit and Cancel Buttons -->
+                            <div class="row clearfix text-right">
+                                <div class="col-lg-12">
+                                    <a class="btn btn-default waves-effect btn-lg btn-custom" href="javascript:void(0);" onclick="openCaseListSection();">Cancel</a>
+                                    <apex:commandLink styleClass="btn btn-primary waves-effect btn-lg btn-custom" id="saveCaseDetails"
+                                        onclick="if(validateCaseForm('raiseTicketPage')) return false;" action="{!insertCase}" value="Submit" oncomplete="reRenderCaseSection();" />
+                                </div>
+                            </div>
+                        </apex:actionRegion>
+                    </div>
+                </div>
+            </div>
+
+            <apex:outputPanel layout="block" styleClass="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden sections p-l-0 p-r-0" id="caseDetails">
+                <c:caseDetailPage recordId="{!selectedCaseId}" />
+            </apex:outputPanel>
+        </apex:outputPanel>
+    </div>
+  
+    <script>
+
+        $(document).ready(function() {
+            // Add required attribute to all elements with the class 'notnull'
+            $('.notnull').attr('required', 'true');
+
+            // Initially hide subCategory field
+            $('.showsubCategory').hide();
+            $('.showsubCategory').val('');
+
+            //handle change event for Query
+            $('.Query').change(function() {
+                $('.feedBackMsg').addClass('hidden');
+                if($(this).val() === 'Feedback') {
+                    $('.feedBackMsg').removeClass('hidden');
+                }
+            })
+
+            // Handle change event for Category
+            $('.Category').change(function() {
+                let category = $(this).val();
+                // for Sub Category Field 
+                $('.subCategory').val('');
+                $('.showsubCategory').hide();
+                $('.subCategory').removeClass('notnull').removeAttr('required'); // Remove required class when hidden
+
+                // For Other Category Field
+                resetOtherCategoryField();
+
+                if (category === 'Need More Information') {
+                    $('.showsubCategory').show();
+                    $('.subCategory').addClass('notnull').attr('required', 'true'); 
+                } else if(category === 'Others') {
+                    $('.showOtherCategory').removeClass('hidden');
+                    $('.otherCategory').addClass('notnull').attr('required', 'true'); 
+                }
+                $('.subject').val(category); // Auto-populate subject based on category
+            });
+
+            // Handle change event for subCategory
+            $('.subCategory').change(function() {
+                let subCategory = $(this).val();
+                let category = $('.Category').val();
+
+                // For Other Category Field
+                resetOtherCategoryField();
+
+                if(subCategory === 'Reasons other than the above') {
+                    $('.showOtherCategory').removeClass('hidden');
+                    $('.otherCategory').addClass('notnull').attr('required', 'true'); 
+                }
+                $('.subject').val(`${category} - ${subCategory}`); // Set the subject field
+            });
+
+            $('.otherCategory').change(function() {
+                let otherCategory = $(this).val();
+                let category = $('.Category').val();
+
+                if(category === 'Others' && otherCategory !== '' && otherCategory !== null) {
+                    $('.subject').val(`${category} - ${otherCategory}`); // Set the subject field
+                }
+            });
+
+            $('.attcheckbox').change(function() {
+                if ($(this).is(':checked')) {
+                    $('.attachmentblock').removeClass('hidden'); // Show the attachment block
+                } else {
+                    $('.attachmentblock').addClass('hidden'); // Hide the attachment block
+                }
+            });
+
+            // Remove error message on input or change
+            $('.notnull').on('input change', function() {
+                $(this).closest('div.form-group').children('span.error').remove();
+            });
+
+            $('body').on('change', '.caseType', function () {
+                console.log($(this).val());
+                if($(this).val()) {
+                    showLoader();
+                    refreshTableData($(this).val());
+                }
+            });
+
+            $('#fileInput').change(function() {
+                let files = $('#fileInput').get(0).files;
+                $.each(files, function (index, file) {
+                    // Check file size (limit to 3MB)
+                    if (file.size > 3 * 1024 * 1024) {
+                        window.showNotificationMsg('bg-red', `File ${file.name} is too large. Maximum size is 3MB.`);
+                        $('#fileInput').val('');
+                    }
+                });
+            });
+        });
+
+        function resetOtherCategoryField() {
+            $('.otherCategory').val('');
+            $('.showOtherCategory').addClass('hidden');
+            $('.otherCategory').removeClass('notnull').removeAttr('required');
+        }
+
+        function validateCaseForm(section) {
+            showLoader();
+            if (validateForm(`[id$=${section}]`) === 0) {
+                console.log("Form is valid. Proceeding to the next step.");
+                return false; // Stop actual form submission
+            } else {
+                hideLoader();
+                window.showNotificationMsg('bg-red', 'Kindly Fill the Form');
+                console.log("Form validation failed.");
+                return true; // Prevent form submission if validation fails
+            }
+        }
+
+        function validateForm(id) {
+            let isValid = 0;
+            console.log('Validating form in section: ' + id);
+
+            $(id).find('.notnull').each(function() {
+                if (!$(this).prop('disabled')) {
+                    console.log('Form validation element'+$(this).val());
+                    if ($(this).val() == null || $(this).val().trim().length == 0 || $(this).val() == "None") {
+                        isValid = 1;
+                        console.log('Field is required: ' + $(this).attr('id'));
+                        $(this).focus();
+                        $(this).closest('div.form-group').children('span.error').remove(); // Remove existing error
+                        $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>'); // Add error
+                    } else {
+                        $(this).closest('div.form-group').children('span.error').remove(); // Remove error if value is valid
+                    }
+                }
+            });
+
+            return isValid;
+        }
+
+        function openCaseCreateSection(type) {
+            $('.sections').addClass('hidden');
+            $('#createCase').removeClass('hidden');
+        }
+
+        function openCaseListSection() {
+            $('.sections').addClass('hidden');
+            $('[id$=caseRecords]').removeClass('hidden');
+        }
+
+        function openCaseDetailSection() {
+            $('.sections').addClass('hidden');
+            $('[id$=caseDetails]').removeClass('hidden');
+        }
+
+        function handleClick(caseId) {
+            showLoader();
+            console.log('caseId ==>'+caseId);
+            openCaseDetails(caseId);
+        }
+
+        function handleCaseCreationReload() {
+            let errorResposne = $('.errorMsg').val();
+            let caseId = $('.insertedCaseId').val();
+            if(errorResposne !== '' || caseId === '' || caseId === null) {
+                $('.page-loader-wrapper').fadeOut();
+                hideLoader();
+                showNotificationMsg('bg-red', errorResposne);
+                openCaseCreateSection();
+                return;
+            }
+            $('.formField').val(''); // clear all the fields on the Form
+            showNotificationMsg('bg-green', 'Your ticket has been raised successfully.');
+            handleClick(caseId);
+            hideLoader();
+        }
+
+        function triggerSubmitResponse() {
+            openCaseCreateSection();
+            showLoader();
+            let fileInput = $('#fileInput');
+            if (fileInput.get(0).files.length > 0) {
+                console.log('File selected: ', fileInput.get(0).files[0].name);
+                let files = $('#fileInput').get(0).files;
+                let caseId = $('.insertedCaseId').val();
+                uploadFiles(files,caseId).then(() => {
+                    handleCaseCreationReload();
+                });
+            } else {
+                // No files selected, call handleCaseCreationReload directly
+                handleCaseCreationReload();
+            }
+        }
+        function doEscalate(ticketdata) {
+            console.log('ticketdata',ticketdata);
+            showLoader();
+            jsActionFunction(ticketdata);
+            hideLoader();
+        }
+        function showLoader() {
+            $('.loader-overlay').removeClass('hidden');
+        }
+
+        function hideLoader() {
+            $('.loader-overlay').addClass('hidden');
+        }
+
+        function showCaseDetail() {
+            openCaseDetailSection();
+            hideLoader();
+            $('.page-loader-wrapper').fadeOut();
+        }
+
+        function showNotificationMsg(status, msg) {
+            showNotification(status, msg, 'top', 'center', 'animated fadeInDown', 'animated fadeOutUp');
+        }
+
+        function uploadFiles(files, caseId) {
+            return new Promise((resolve) => {
+                // let files = $('#fileInput').get(0).files;
+                // let caseId = $('.insertedCaseId').val();
+                console.log('caseId ==>' + caseId);
+                
+                if (files.length === 0) {
+                    resolve(); // Resolve the promise immediately if no files
+                    return;
+                }
+
+                let totalFiles = files.length;
+                let uploadedFiles = 0;
+
+                $.each(files, function (index, file) {
+                    let reader = new FileReader();
+                    reader.onload = function (event) {
+                        let fileData = event.target.result.split(',')[1]; // Get base64 data
+                        console.log('File uploaded: ', file.name);
+                        // Call the Apex method using sforce.apex.execute
+                        sforce.apex.execute("FileUploadCaseController", "uploadFile", {
+                            "fileName": file.name,
+                            "fileBody": fileData,
+                            "recordId": caseId
+                        }, function (result, event) {
+                            let response = result[0];
+                            console.log('successfully: ', result);
+                            console.log(response);
+                            if (response !== 'File uploaded successfully!') {
+                                window.showNotificationMsg('bg-red', `Error uploading ${file.name}: ${response}`);
+                            } else {
+                                uploadedFiles++;
+                            }
+
+                            // Check if all files have been processed
+                            if (uploadedFiles === totalFiles) {
+                                window.showNotificationMsg('bg-green', 'All files uploaded successfully.');
+                                resolve(); // Resolve when all files are processed
+                            }
+                        });
+                    };
+
+                    reader.readAsDataURL(file); // Read the file as base64
+                });
+            });
+        }
+        
+    </script>
+
+</apex:component>

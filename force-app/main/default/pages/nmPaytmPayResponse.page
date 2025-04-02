@@ -1,0 +1,16 @@
+<!--
+  @Page Name          : nmPaytmPayResponse.page
+  @Description        : 
+  @Author             : Balakrishnan
+  @Group              : 
+  @Last Modified By   : Balakrishnan
+  @Last Modified On   : 28/3/2019, 2:54:51 PM
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    22/3/2019, 5:27:54 PM   Balakrishnan     Initial Version
+-->
+<apex:page controller="nmPaytmPayResponse" action="{!StorePaymentInSystem}"  showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+      {!results}
+</apex:page>

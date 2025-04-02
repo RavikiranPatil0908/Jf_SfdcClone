@@ -1,0 +1,676 @@
+<!--
+  @Page Name          : DocumnetsCheck.page
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : @Ravi
+  @Last Modified On   : 23--02--2025
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author                 Modification
+  ==============================================================================
+  1.0    7/20/2019, 12:59:48 PM   shubhranshu     Initial Version
+-->
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" controller="DocumentsCheckController">
+<html>
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>NMIMS Distance Education: Documnets Check</title>
+        <link rel="stylesheet" href="{!URLFOR($Resource.ZoomFiles,'css/bootstrap.min.css')}" />
+        <link rel="stylesheet" href="{!URLFOR($Resource.ZoomFiles,'css/jquery.toast.css')}" />
+        <link rel="stylesheet" href="{!URLFOR($Resource.ZoomFiles,'css/jquery-ui.css')}" />
+        <link rel="stylesheet" href="{!URLFOR($Resource.ZoomFiles,'css/jquery.verySimpleImageViewer.css')}" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+        <script src="{!URLFOR($Resource.ZoomFiles,'js/jquery.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.jquery_easy_autocompleteJS)}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.ZoomFiles,'js/bootstrap.min.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.ZoomFiles,'js/jquery.toast.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.ZoomFiles,'js/jquery-ui.js')}" type="text/javascript"></script>
+        <script src="{!URLFOR($Resource.ZoomFiles,'js/jquery.verySimpleImageViewer.js')}" type="text/javascript"></script>
+        
+        <style>
+            p {
+                margin: 0 0 5px;
+            }
+            .panel-body {
+                padding: 10px;
+            }
+            .panel {
+                margin-top: 10px; 
+            }
+            .tabs-left,
+            .tabs-right {
+                border-bottom: none;
+                padding-top: 2px;
+            }
+    
+            .tabs-left {
+                border-right: 1px solid #ddd;
+            }
+    
+            .tabs-right {
+                border-left: 1px solid #ddd;
+            }
+    
+            .tabs-left>li,
+            .tabs-right>li {
+                float: none;
+                margin-bottom: 2px;
+            }
+    
+            .tabs-left>li {
+                margin-right: -1px;
+            }
+    
+            .tabs-right>li {
+                margin-left: -1px;
+            }
+    
+            .tabs-left>li.active>a,
+            .tabs-left>li.active>a:hover,
+            .tabs-left>li.active>a:focus {
+                border-bottom-color: #ddd;
+                border-right-color: transparent;
+            }
+    
+            .tabs-right>li.active>a,
+            .tabs-right>li.active>a:hover,
+            .tabs-right>li.active>a:focus {
+                border-bottom: 1px solid #ddd;
+                border-left-color: transparent;
+            }
+    
+            .tabs-left>li>a {
+                border-radius: 4px 0 0 4px;
+                margin-right: 0;
+                display: block;
+            }
+    
+            .tabs-right>li>a {
+                border-radius: 0 4px 4px 0;
+                margin-right: 0;
+            }
+    
+            .card {
+                position: fixed;
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+                max-width: 300px;
+                margin: auto;
+                text-align: center;
+                font-family: arial;
+            }
+            .sideways {
+                position: fixed;
+            }
+            .contentslide {
+                height: calc(100vh - 100px);
+            }
+            .tabcontentslide {
+                height: 100%;
+                overflow: auto;
+                overflow-x: hidden;
+            }
+            .arrow-toggle .fa-plus,
+            .arrow-toggle.collapsed .fa-minus {
+                display: inline-block;
+            }
+            .arrow-toggle.collapsed .fa-plus,
+            .arrow-toggle .fa-minus {
+                display: none;
+            }
+            .arrow-toggle1 .fa-plus,
+            .arrow-toggle1.collapsed .fa-minus {
+                display: inline-block;
+            }
+            .arrow-toggle1.collapsed .fa-plus,
+            .arrow-toggle1 .fa-minus {
+                display: none;
+            }
+            .arrow-toggle2 .fa-plus,
+            .arrow-toggle2.collapsed .fa-minus {
+                display: inline-block;
+            }
+            .arrow-toggle2.collapsed .fa-plus,
+            .arrow-toggle2 .fa-minus {
+                display: none;
+            }
+            * {box-sizing: border-box;}
+            .zoomer_basic{
+                height: 500px;
+                width: 100%; 
+            }
+            .imageViewer{max-width: 700px; height:700px;}
+        </style>
+       
+    </head>
+
+    <body>
+        <apex:form >
+            <div class="col-sm-12">
+                <nav class="navbar navbar-default navbar-fixed-top">
+                    <div class="container-fluid" style="margin: 10px;">
+                        <div class="navbar-header">
+                            <a class="navbar-brand" href="#">Verify Documents</a>
+                        </div>
+                        <div class="navbar-header pull-right">
+                            <button class="btn btn-md btn-primary" onclick="CloseVerificationProcess()" >LogOut</button>
+                        </div>
+                    </div>
+                </nav>
+                <br /><br />
+                <hr/>
+
+                <div class="col-md-3 left-sidebar">
+                    <apex:variable value="{!0}" var="count"/>
+                    <ul class="nav nav-tabs tabs-left">
+                        <apex:repeat value="{!lstLinkForDocuments}" var="varDoclist">
+                        
+                            <li class="list-group {!IF(count == 0,'active','')}">
+                                <a href="#documentOfList{!count}" data-toggle="tab" aria-expanded="{!IF(count == 0,'true','false')}" style="padding: 5px 15px">
+                                    <apex:outputLabel value="{!varDoclist.nm_DocumentName__c}" style="{!if(varDoclist.nm_URLforDocuments__c =='' &&  varDoclist.nm_Status__c !='Documents incorrect','color: grey','')}"/>
+                                    <div class="correct" style="{!if(varDoclist.nm_Status__c ='Approved' ,'display : inline-block','display : none')}">
+                                        <i class="float-right fa fa-check" aria-hidden="true" style="color:green"></i>
+                                    </div>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <div class="incorrect" style="{!if(varDoclist.nm_Status__c ='Disapproved' || varDoclist.nm_Status__c ='Documents incorrect','display : inline-block','display : none')}">
+                                        <i class="float-right fa fa-times" aria-hidden="true" style="color:red"></i>
+                                    </div>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <div class="notVerify" style="{!if(varDoclist.nm_Status__c !='Approved' &&  varDoclist.nm_Status__c !='Disapproved' && varDoclist.nm_Status__c !='Documents incorrect' && varDoclist.nm_URLforDocuments__c !=null,'display : inline-block','display : none')}">
+                                        <i class="float-right fa fa-exclamation-circle" aria-hidden="true" style="color:orange;"></i> 
+                                    </div>
+                                    <div class="blankurl" style="{!if(varDoclist.nm_URLforDocuments__c =='' &&  varDoclist.nm_Status__c !='Documents incorrect','display : inline-block','display : none')}">
+                                        <i class="float-right fa fa-ban" aria-hidden="true" style="color:grey;"></i> 
+                                    </div>
+                                    
+                                </a> 
+                            </li>
+                          
+                        <apex:variable value="{!count + 1}" var="count"/> 
+                        </apex:repeat>
+                             <li>
+                                <div class="card" style="max-width:200px;margin-top:15px;">
+                                    <img src="{!objAccount.nm_StudentImageUrl__c}" alt="Image" style="width:100%" class="studentImage"/>
+                                </div>
+                            </li>
+                    </ul>
+                </div>
+                <div class="col-md-6 contentslide">
+                    <div class="tab-content tabcontentslide">
+                    <apex:variable value="{!0}" var="count"/>
+                    <apex:repeat value="{!lstLinkForDocuments}" var="varDocument">
+                        <div class="tab-pane fade {!IF(count == 0,'active in','')}" id="documentOfList{!count}">
+                            <apex:inputHidden html-class="checkExt" value="{!varDocument.nm_URLforDocuments__c}"></apex:inputHidden>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="sel1">Status</label>
+                                        <apex:selectList styleClass="form-control statusForDoc docStatus{!count}" value="{!varDocument.nm_Status__c}" size="1" rendered="{!IF(varDocument.nm_DocumentName__c == 'AIU Certificate (For Foreign University)', true,false)}">
+                                            <apex:selectOption itemValue="None" itemLabel="--None--" />
+                                            <apex:selectOption itemValue="Approved" itemLabel="Approved" />
+                                            <apex:selectOption itemValue="Not Applicable" itemLabel="Not Applicable" />
+                                            <apex:selectOption itemValue="Disapproved" itemLabel="Disapproved" />
+                                            <apex:selectOption itemValue="Documents incorrect" itemLabel="Documents incorrect" />
+                                            <apex:selectOption itemValue="Re-Submited" itemLabel="Re-Submited" />
+                                        </apex:selectList>
+                                        
+                                        <apex:selectList styleClass="form-control statusForDoc docStatus{!count}" value="{!varDocument.nm_Status__c}" size="1" rendered="{!IF(varDocument.nm_DocumentName__c == 'Degree Certificate' || varDocument.nm_DocumentName__c == 'Aadhaar Card' || varDocument.nm_DocumentName__c == 'Degree Mark Sheet', true,false)}">
+                                            <apex:selectOption itemValue="None" itemLabel="--None--" />
+                                            <apex:selectOption itemValue="Approved" itemLabel="Approved" />
+                                            <apex:selectOption itemValue="Not Applicable" itemLabel="Not Applicable" />
+                                            <apex:selectOption itemValue="Disapproved" itemLabel="Disapproved" />
+                                            <apex:selectOption itemValue="Documents incorrect" itemLabel="Documents incorrect" />
+                                            <apex:selectOption itemValue="Admission Form & Documents Provisional" itemLabel="Admission Form & Documents Provisional"/>
+                                            <apex:selectOption itemValue="Re-Submited" itemLabel="Re-Submited" />
+                                        </apex:selectList>
+                                        
+                                        <apex:selectList styleClass="form-control statusForDoc docStatus{!count}" value="{!varDocument.nm_Status__c}" size="1" rendered="{!IF(varDocument.nm_DocumentName__c != 'AIU Certificate (For Foreign University)'&& varDocument.nm_DocumentName__c != 'Degree Certificate' && varDocument.nm_DocumentName__c != 'Aadhaar Card' && varDocument.nm_DocumentName__c != 'Degree Mark Sheet', true,false)}">
+                                            <apex:selectOption itemValue="None" itemLabel="--None--" />
+                                            <apex:selectOption itemValue="Approved" itemLabel="Approved" />
+                                            <apex:selectOption itemValue="Not Applicable" itemLabel="Not Applicable" />
+                                            <apex:selectOption itemValue="Disapproved" itemLabel="Disapproved" />
+                                            <apex:selectOption itemValue="Documents incorrect" itemLabel="Documents incorrect" />
+                                            <apex:selectOption itemValue="Re-Submited" itemLabel="Re-Submited" />
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="text">Document Query</label>
+                                        <apex:inputTextarea styleClass="form-control docQuery autocompleteSugg documentQuery{!count}" id="tr1" value="{!varDocument.Document_Query__c}" disabled="{!varDocument.nm_Status__c != 'Documents incorrect'}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">    
+                                        <label for="text">Reason if Disapproved</label>
+                                        <apex:inputTextarea id="txt" value="{!varDocument.nm_ReasonforDisapprove__c}" styleClass="form-control reasonDis autocompleteSugg reasonforDisapproved{!count}" disabled="{!(varDocument.nm_Status__c == 'Approved')}" required="{!(varDocument.nm_Status__c == 'Disapproved' || varDocument.nm_Status__c == 'Admission Form & Documents Provisional')}" />
+                                        <!-- <apex:inputTextarea styleClass="form-control reasonDis reasonforDisapproved{!count}" id="txt" value="{!varDocument.nm_ReasonforDisapprove__c}"  required="{!(varDocument.nm_Status__c == 'Disapproved' || varDocument.nm_Status__c == 'Admission Form & Documents Provisional')}"> 
+                                            <c:AutoComplete autocomplete_textbox="{!$Component.txt}" objectname="nm_LinksForDocuments__c" additionalfield="nm_ReasonforDisapprove__c"/>
+                                        </apex:inputTextarea> -->
+                                      
+                                    </div>
+                                </div>
+                                <div class="col-sm-6"> 
+                                    <div class="docLink" style="padding: 20px;"> </div>
+                                    <apex:outputLabel value="Upload Mode: {!varDocument.Document_Upload_Mode__c}"></apex:outputLabel>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <apex:commandButton title="Update"  styleClass="form-control btn btn-md btn-success" value="Save" onclick="validate('{!varDocument.id}','{!count}'); return false;"/>  
+                                </div>
+                                <apex:outputPanel rendered="{!NOT(ISNULL(varDocument.nm_Old_URL_for_Documents__c))}">
+                                <div class="col-sm-4">
+                                    <a href="{!varDocument.nm_Old_URL_for_Documents__c}" class="btn btn-primary waves-effect waves-light btn-custom" target="_blank">
+                                    <span>View Self-Attested Document</span>
+                                     </a>
+                                </div>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!NOT(ISNULL(varDocument.nm_Old_Status__c))}">
+                                    <div class="col-sm-5">
+                                        <div style="padding: 4px;"> </div>
+                                        <apex:outputLabel value="Old Status : {!varDocument.nm_Old_Status__c}"></apex:outputLabel>
+                                </div>
+                                </apex:outputPanel>
+                                   
+                            </div>
+                            <br/>
+                            <div class="col-sm-12">
+                                <div class="DocumentPanel"></div>
+                            </div>
+                        </div>
+                        <apex:variable value="{!count + 1}" var="count"/> 
+                    </apex:repeat>
+                    </div>
+                </div>
+                <div class="col-md-3 contentslide">
+                    <div class="panel-group tabcontentslide">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                Personal Details
+                                <h4 class="panel-title pull-right">
+                                    <a class="arrow-toggle" data-toggle="collapse" href="#collapse1" id="collapseP">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                        <i class="fa fa-minus" aria-hidden="true"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse1" class="panel-collapse collapse in">
+                                <div class="panel-body">
+                                    <p><b>Registartion No:</b> {!objAccount.nm_RegistrationNumber__c}</p>
+                                    <p><b>First Name:</b> {!objAccount.firstname}</p>
+                                    <p><b>Last Name:</b> {!objAccount.lastname}</p>
+                                    <p><b>Program Name:</b> {!objAccount.nm_Program__r.Name}</p>
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_Program2__c!='' && objAccount.nm_Program2__c!=null,true,false)}">
+                                        <p><b>Program Name2:</b> {!objAccount.nm_Program2__r.Name}</p>
+                                    </apex:outputPanel>
+                                    <p><b>Eligibility Criteria:</b> {!objAccount.Eligibility_Criteria_Ref__c}</p>
+                                    <p><b>Opportuntiy Stage:</b> {!objAccount.nmCaptureOpportuntiyStage__c}</p>
+                                    <p><b>AEP:</b> {!objAccount.IC_Name__c}</p>
+                                    <p><b>DOB:</b> <apex:outputText styleClass="ot" value="{0, date, dd'-'MM'-'yyyy}">
+                                        <apex:param value="{!objAccount.nm_DateOfBirth__c}" /> 
+                                        </apex:outputText>
+                                    </p>
+                                    <p><b>Aadhaar No:</b> {!objAccount.Adhar_Card_Number__c}</p>
+                                    <p><b>Father Name:</b> {!objAccount.Father_First_Name__c}</p>
+                                    <p><b>Mother Name:</b> {!objAccount.Mother_First_Name__c}</p>
+                                    <p><b>Nationality:</b> {!objAccount.nm_Nationality__c}</p>
+                                    <p><b>Domicile:</b> {!objAccount.nm_Domicile__c}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <apex:outputPanel rendered="{!IF(objAccount.nm_10thPercentage__c != null,true,false)}">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    Acadmecis Details
+                                    <h4 class="panel-title pull-right">
+                                        <a class="arrow-toggle1" data-toggle="collapse" href="#collapse2">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                            <i class="fa fa-minus" aria-hidden="true"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapse2" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                    
+                                    <apex:outputPanel rendered="{!IF(objAccount.nm_NameofSchool__c != null,true,false)}">
+                                            
+                                            <b>Class 10<sup>th</sup> Detail</b>
+                                            <p>Year of Completion(10th) : {!objAccount.nm_YearofCompletion__c}</p>
+                                            <p>Name of School(10th): {!objAccount.nm_NameofSchool__c}</p>
+                                            <p>Name of Board(10th) : {!objAccount.nm_NameofBoard__c}</p>
+                                            <p>Percentage: {!objAccount.nm_10thPercentage__c}</p>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(objAccount.nm_NameofSchool12__c != null,true,false)}">
+                                           <hr/>
+                                            <b>Class 12<sup>th</sup>/Diploma Detail</b>
+                                            <p>Year of Completion(12th) : {!objAccount.nm_YearofCompletion12__c}</p>
+                                            <p>Name of School(12th): {!objAccount.nm_NameofSchool12__c}</p>
+                                            <p>Name of Board(12th) : {!objAccount.nm_NameofStateBoard12th__c}</p>
+                                            <p>Stream(12th) : {!objAccount.nm_Stream__c}</p>
+                                            <p>Percentage: {!objAccount.nm_12thPercentage__c}</p>
+                                        </apex:outputPanel>
+                                          <apex:outputPanel rendered="{!IF(objAccount.nm_DiplomaName__c != null,true,false)}">  
+                                          <hr/>                                         
+                                            <b>Diploma Detail</b>
+                                            <p>Year of Completion (Diploma) : {!objAccount.nm_DiplomaYearOfCompletion__c}</p>
+                                            <p>Stream (Diploma): {!objAccount.nm_StreamDiploma__c}</p>
+                                            <p>School/College/University name(Diploma) : {!objAccount.nm_DiplomaSchoolCollegeUniversityname__c}</p>
+                                            <p>Diploma Name : {!objAccount.nm_DiplomaName__c}</p>
+                                            <p>Percentage: {!objAccount.nm_ResultDiploma__c}</p>
+                                        </apex:outputPanel>
+                                        <hr/>
+                                        <apex:outputPanel rendered="{!IF(objAccount.nm_NameOfCollege__c != null,true,false)}"> 
+                                            <b>Bachelors Degree.</b>
+                                            <p>Degree Name: <apex:outputText value="{!IF(objAccount.nm_BachelorsDegreeName__c == 'Others',objAccount.nm_BachelorsDegreeName__c,objAccount.nm_BachelorsDegreeName__c)}" /></p>
+                                            <p>College Name: {!objAccount.nm_NameOfCollege__c}</p>
+                                            <p>University Name: <apex:outputText value="{!IF(objAccount.nm_NameofUniversity__c == 'Other',objAccount.Other_University_Name__c,objAccount.nm_NameofUniversity__c)}" /></p>
+                                            <p>Percentage: {!objAccount.Percentage_Bachlor__c}</p>
+                                            </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(objAccount.Name_of_College1__c != null,true,false)}">
+                                            <hr/>
+                                            <b>Professional Qualification 1</b>
+                                            <p>Program Name: {!objAccount.Name_of_Program1__c}</p>
+                                            <p>College Name: {!objAccount.Name_of_College1__c}</p>
+                                            <p>University Name: {!objAccount.Name_of_University1__c}</p>
+                                            <p>Percentage: {!objAccount.Percentage1__c}</p>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(objAccount.Name_of_College2__c != null,true,false)}">
+                                            <hr/>
+                                            <b>Professional Qualification 2</b>
+                                            <p>Program Name: {!objAccount.Name_of_Program2__c}</p>
+                                            <p>College Name: {!objAccount.Name_of_College2__c}</p>
+                                            <p>University Name: {!objAccount.Name_of_University2__c}</p>
+                                            <p>Percentage: {!objAccount.Percentage2__c}</p>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(objAccount.Name_of_College3__c != null,true,false)}">
+                                            <hr/>
+                                            <b>Professional Qualification 3</b>
+                                            <p>Program Name: {!objAccount.Name_of_Program3__c}</p>
+                                            <p>College Name: {!objAccount.Name_of_College3__c}</p>
+                                            <p>University Name: {!objAccount.Name_of_University3__c}</p>
+                                            <p>Percentage: {!objAccount.Percentage3__c}</p>
+                                        </apex:outputPanel>
+                                    </div>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:variable value="{!lstWorkExperience.size}" var="WEsize"/>
+                        <apex:variable value="{!1}" var="count"/>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                Work Experience
+                                <h4 class="panel-title pull-right">
+                                    <a class="arrow-toggle2" data-toggle="collapse" href="#collapse3">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                        <i class="fa fa-minus" aria-hidden="true"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse3" class="panel-collapse collapse in">
+                                <div class="panel-body">
+                                    <apex:repeat value="{!lstWorkExperience}" var="we">
+                                        <apex:outputPanel rendered="{!we.Currently_Working_Here__c}">
+                                            <p>Currenty Working: {!we.Currently_Working_Here__c}</p>
+                                        </apex:outputPanel>
+                                        <p>Start Date : <apex:outputText styleClass="ot" value="{0, date, dd '/' MM '/' yyyy}">
+                                            <apex:param value="{!we.nm_StartDate__c}" /> 
+                                            </apex:outputText>
+                                        </p>
+                                        <apex:outputPanel rendered="{!!we.Currently_Working_Here__c}">
+                                            <p>End Date : <apex:outputText styleClass="ot" value="{0, date, dd '/' MM '/' yyyy}">
+                                                <apex:param value="{!we.nm_EndDate__c}" /> 
+                                                </apex:outputText>
+                                            </p>
+                                        </apex:outputPanel>
+                                        <p>Industry: {!we.Industry__c}</p>
+                                        <p>Company Name: {!we.nm_CompanyName__c}</p>
+                                        <p>Departmnent: {!we.Department__c}</p>
+                                        <p>Designation: {!we.nm_Designation__c}</p>
+                                        <p>Annual Income: {!we.Annual_Income__c}</p>
+                                        <apex:outputPanel rendered="{!IF(WEsize != count,true,false)}"><hr/></apex:outputPanel>
+                                        <apex:variable value="{!count + 1}" var="count"/>
+                                    </apex:repeat>
+                                    <apex:outputPanel rendered="{!IF(objAccount.Reason__c != '' && objAccount.Reason__c != null,true,false)}">
+                                        <p>Reason For Not working: {!objAccount.Reason__c}</p>
+                                    </apex:outputPanel>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </apex:form>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                extCheck();
+                $('body').on('change','.statusForDoc', function(index){
+                    var valueSelected = $(this).val();
+                    var indexVal = $(".statusForDoc").index(this);
+                    $('.reasonDis').eq(indexVal).prop('disabled', true);
+                    $('.docQuery').eq(indexVal).prop('disabled', true);
+                    if(valueSelected == 'Disapproved' || valueSelected == 'Admission Form & Documents Provisional') {
+                        $('.reasonDis').eq(indexVal).removeAttr("disabled");
+                    }
+
+                    if(valueSelected == 'Documents incorrect') {
+                        $('.docQuery').eq(indexVal).removeAttr("disabled");
+                    }
+                });
+                
+                $('.statusForDoc').trigger('change');
+                
+                
+                // To make student image elastic.
+                $(".card").draggable({
+                    containment: 'document',
+                    helper: 'clone',
+                    zIndex: 10000,
+                    appendTo: "body",
+                    revert: true
+                });
+            
+            var domainURL = window.location.hostname;
+            var urlforJson = 'https://' + domainURL + '{!URLFOR($Resource.ZoomFiles,"json/documentQuery.json")}';
+            var jsonData = [];
+            fetch(urlforJson)
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                for (var i = 0; i < data.length; i++) {
+                    jsonData.push(data[i].name);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
+
+                $('.autocompleteSugg').autocomplete({
+                   source: function(request, response) {
+                    var results = $.ui.autocomplete.filter(jsonData, request.term);
+                    response(results.slice(0, 10));
+                   }
+                });
+                
+                $('.ui-autocomplete').css('max-width','25%');
+            });
+            
+            function CloseVerificationProcess(){
+                window.opener.location.href="/{!$CurrentPage.parameters.id}";
+                window.top.close();
+            }
+            function validate(DocumentId,count) {
+               console.log("valid==> "+count);
+                var docStatus = $('.docStatus'+count).val();
+                var docQuery = $('.documentQuery'+count).val();
+                var reasonForDisapprove = $('.reasonforDisapproved'+count).val();
+                var mapDocumentIdVsDocument = '{!JSENCODE(jsonMap)}';
+                var mapUserIdVsCounselorId = '{!JSENCODE(jsonMapOfUserId)}';
+                if(!docStatus) {
+                    showHtmlMessage('Warning','Please provide status','info');
+                    return;
+                }
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.DocumentsCheckController.save}',
+                    '{!studStatus}',
+                    DocumentId,
+                    docStatus,
+                    docQuery,
+                    reasonForDisapprove,
+                    mapDocumentIdVsDocument,
+                    mapUserIdVsCounselorId,
+                    function(result, event) {
+                        console.log('status --'+event.status);
+                        if (event.status) {
+                            console.log('result ===', result);
+                            if(result.indexOf('success') == -1) {
+                                showHtmlMessage('Warning',result,'error');
+                            }else{
+                                console.log('successfully updated.');
+                                $(".correct").eq(count).css("display" ,"none");
+                                $(".incorrect").eq(count).css("display" ,"none");
+                                $(".notVerify").eq(count).css("display" ,"none");
+                                var res = result.split("_");
+                                var DocumentStatus = res[1];
+                                if(DocumentStatus == 'Approved') {
+                                    $(".correct").eq(count).css("display" ,"inline-block");
+                                } else if(DocumentStatus == 'Disapproved') {
+                                    $(".incorrect").eq(count).css("display" ,"inline-block");
+                                } else if(DocumentStatus == 'Documents incorrect'){
+                                    $(".incorrect").eq(count).css("display" ,"inline-block");
+                                   // var urlForZar = $('.checkExt').eq(count).data("link");
+                                    var urlForZar = 'https://studentzone-ngasce.nmims.edu/StudentProfileDocuments/VK6dvb_documents_Incoorect.png';
+                                    var fileExtension = urlForZar.split('.').pop();
+                                    renderedFiles(fileExtension,urlForZar,count);
+                                }else {
+                                    $(".notVerify").eq(count).css("display" ,"inline-block");
+                                }
+                                //var status = ['Record Updated Successfully',DocumentStatus];
+                                showHtmlMessage('Success','Record Updated Successfully','success');
+                            }
+                        }  else {
+                            showHtmlMessage('Error','Update Failed..','error');
+                        }
+                    }, {
+                        escape: true
+                    }
+                );
+            }
+
+            function extCheck() {
+                console.log('extCheck call..');
+                $('.checkExt').each(function (index) {
+                    var urlForZar = $(this).val();
+                    var fileExtension = urlForZar.split('.').pop();
+                    renderedFiles(fileExtension,urlForZar,index);
+                });
+                
+                var studURL = $('.studentImage').attr('src');
+                if(studURL.indexOf(':4001') !=  -1){
+                    var newStudentPortalUrl = studURL.replace(/(http:|)(^|\/\/)(.*?\/)/g, 'https://studentzone-ngasce.nmims.edu/');
+                    $('.studentImage').attr('src',newStudentPortalUrl);
+                }
+            } 
+
+            function renderedFiles(fileExtension,urlForZar,index){
+                if(urlForZar.indexOf(':4001') !=  -1){
+                    var newStudentPortalUrl = urlForZar.replace(/(http:|)(^|\/\/)(.*?\/)/g, 'https://studentzone-ngasce.nmims.edu/');
+                    console.log(newStudentPortalUrl);
+                    urlForZar = newStudentPortalUrl;
+                }
+
+                if($.inArray(fileExtension, ['gif','png','jpg','jpeg','jfif','JPEG','JPG','PNG','bmp','BMP','JFIF']) != -1) {
+                    var imageTag = '<div id="imageViewerContainer'+index+'" class="imageViewer" style="width: 700px; height:700px;"> </div>';
+                    $('.DocumentPanel').eq(index).html(imageTag);
+                    $("#imageViewerContainer"+index).verySimpleImageViewer({
+                        imageSource: urlForZar,
+                        frame: ['100%', '100%'],
+                        maxZoom: '900%',
+                        zoomFactor: '10%',
+                        mouse: true,
+                        saveZoomPos: false,
+                        setZoomPos: [23 ,  600,  700,  200 ,  0],
+                        keyboard: true,
+                        toolbar: true
+                    });
+                    
+                }
+
+                if($.inArray(fileExtension, ['pdf','PDF']) != -1) {
+                    var pdfTag = '<iframe src="'+urlForZar+'" style="width:100%; height:700px;" frameborder="0" ></iframe>';
+                    $('.DocumentPanel').eq(index).html(pdfTag);
+                }
+                
+                if($.inArray(fileExtension, ['Pdf','PDF']) != -1) {
+                    var pdfTag = '<iframe src="'+urlForZar+'" style="width:100%; height:700px;" frameborder="0" ></iframe>';
+                    $('.DocumentPanel').eq(index).html(pdfTag);
+                }
+
+                if($.inArray(fileExtension, ['rar','tar.gz','zip','doc','docx']) != -1) {
+                    var zipFile = '<img src="https://studentzone-ngasce.nmims.edu/StudentProfileDocuments/Sud9fq_zarFile.png"" alt="test" class="img-responsive img-thumbnail" />' +
+                                '<br/><b><h5>Ohh .. it is rar / zar / zip or docx file . please Click on view document to download.</h5></b>';
+                    $('.DocumentPanel').eq(index).html(zipFile);
+
+                    var docLinkToDownload = ' <a href="'+urlForZar+'" target="_blank" class="btn btn-primary"><i class="fa fa-download"></i> Download</a>';
+                    $('.docLink').eq(index).html(docLinkToDownload);
+                    
+                }
+            
+                if(fileExtension === 'xml') {
+
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.DocumentsCheckController.getAadhaarData}',
+                        urlForZar,
+                        function(result, event) {
+                            console.log('status --'+event.status);
+                            if (event.status) {
+                                console.log('result ===', result);
+                                let xmlTag = `<div class="row">
+                                                    <h3 style="text-align: center;"><b><u>Extracted Details from Aadhaar Card</u></b></h3>
+                                                    <div class="col-md-6">
+                                                        <h3>Name: <b>${result.name}</b></h3>
+                                                        <h3>Date Of Birth: <b>${result.dob}</b></h3>
+                                                        <h3>Aadhaar No: <b>${result.uid}</b></h3>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <img style="display:block;width: 200px;height: 250px;" id="base64image" src="data:image/jpeg;base64, ${result.pht}">
+                                                    </div>
+                                                </div>`;
+                                $('.DocumentPanel').eq(index).html(xmlTag);
+                            }  else {
+                                showHtmlMessage('Error','Update Failed..','error');
+                            }
+                        }, {
+                            escape: true
+                        }
+                    );
+                    
+                    
+                }
+            }
+
+            function showHtmlMessage(header,textMessage,type) {
+                $.toast({
+                    heading: header,
+                    text: textMessage,
+                    position: 'top-center',
+                    showHideTransition: 'fade',
+                    icon: type,
+                    loader: false,
+                });
+            }
+
+            if("{!show}" == "true" && "{!errorMsg}" != "") {
+                showHtmlMessage("Warning","{!errorMsg}");
+            }
+        </script>
+    </body>
+</html>
+</apex:page>

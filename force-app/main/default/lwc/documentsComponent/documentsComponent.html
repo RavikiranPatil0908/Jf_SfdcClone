@@ -1,0 +1,200 @@
+<!--
+  @File Name          : documentsComponent.html
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 5/6/2020, 11:26:04 am
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    13/5/2020   shubhranshu     Initial Version
+-->
+<template>
+	<lightning-card title="Documents" icon-name="standard:document">
+		<div class="slds-card__body_inner">
+			<div class="slds-grid slds-wrap slds-m-bottom_medium">
+				<div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+				</div>
+				<div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+					<fieldset class="slds-form-element slds-form-element_compound">
+						<div class="slds-form-element__control">
+							<div class="slds-form-element__row slds-wrap">
+								<div class="slds-size_1-of-1 slds-large-size_1-of-2 slds-medium-size_1-of-2">
+									<lightning-combobox name="folders" label="Folders" value={optionValue}
+										options={folders} onchange={handleChange} data-name="folders">
+									</lightning-combobox>
+								</div>
+								<div class="slds-size_1-of-1 slds-large-size_1-of-2 slds-medium-size_1-of-2">
+									<lightning-input type="text" label="Search" name="search" value={searchValue}
+										data-name="search" placeholder="Search Document..." onchange={handleChange}>
+									</lightning-input>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+
+			<template if:false={isDataLoaded}>
+				<div class="exampleHolder">
+					<lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+				</div>
+			</template>
+			<!-- Start bear list -->
+			<template if:true={isDataLoaded}>
+				<!-- For Desktop View -->
+				<table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout slds-show_medium">
+					<thead>
+						<tr class="slds-line-height_reset">
+							<th class="" scope="col">
+								<div class="slds-truncate" title="Name">Name</div>
+							</th>
+							<th class="" scope="col">
+								<div class="slds-truncate" title="Description">Description</div>
+							</th>
+							<th class="" scope="col">
+								<div class="slds-truncate" title="Folder">Folder</div>
+							</th>
+							<th class="" scope="col">
+								<div class="slds-truncate" title="File Size">File Size</div>
+							</th>
+							<th class="" scope="col">
+								<div class="slds-truncate" title="Type">Type</div>
+							</th>
+							<th class="" scope="col">
+								<div class="slds-truncate" title="Action">Action</div>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<template for:each={documnetsData} for:item="Item">
+							<tr class="slds-hint-parent" key={Item.key} if:true={Item.show}>
+								<th data-label="Name">
+									<div class="slds-cell-wrap" data-label="Name" role="gridcell">
+										<span class="slds-grid slds-grid_align-spread">
+											<div class="slds-hyphenate" title={Item.value.Name}>
+												<a href="javascript:void(0);" tabindex="-1" data-key={Item.key}>
+													<lightning-formatted-text value={Item.value.Name}>
+													</lightning-formatted-text>
+												</a>
+											</div>
+										</span>
+									</div>
+								</th>
+								<td data-label="Description">
+									<div class="slds-line-clamp" title={Item.value.Description}>
+										{Item.value.Description}
+									</div>
+								</td>
+								<td data-label="Folder">
+									<div class="slds-line-clamp" title={Item.folder}>{Item.folder}
+									</div>
+								</td>
+								<td data-label="File Size">
+									<div class="slds-truncate" title={Item.fileSize}>{Item.fileSize}
+									</div>
+								</td>
+								<td data-label="Type">
+									<div class="slds-truncate" title={Item.value.Type}>{Item.value.Type}
+									</div>
+								</td>
+
+								<td data-label="Action">
+									<div class="slds-truncate" title={Item.value.Name}>
+										<a href={Item.docUrl} target="_blank">
+											<div class="slds-media slds-media_center slds-has-flexi-truncate">
+												<div class="slds-media__figure">
+													<lightning-icon icon-name="utility:preview" title="view"
+														size="x-small"></lightning-icon>
+												</div>
+												<div class="slds-media__body">
+													<h2 class="slds-float_left">
+														<span class="slds-card__header-link slds-truncate">
+															<span>view</span>
+														</span>
+													</h2>
+												</div>
+											</div>
+										</a>
+									</div>
+								</td>
+							</tr>
+						</template>
+					</tbody>
+				</table>
+
+				<!-- For Mobile view -->
+				<ul class="slds-has-dividers_around-space slds-hide_medium">
+					<template for:each={documnetsData} for:item="Item">
+						<li class="slds-item" key={Item.key} if:true={Item.show}>
+							<a href={Item.docUrl} target="_blank">{Item.value.Name}</a>
+							<ul>
+								<li>
+									<div class="slds-list--horizontal">
+										<div class="slds-item--label slds-truncate recordCell" title="Description:">Description:</div>
+										<div class="slds-item--detail slds-truncate recordCell">
+											<span>{Item.value.Description}</span>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="slds-list--horizontal">
+										<div class="slds-item--label slds-truncate recordCell" title="Folder:">Folder:</div>
+										<div class="slds-item--detail recordCell">
+											<span>{Item.folder}</span>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="slds-list--horizontal">
+										<div class="slds-item--label slds-truncate recordCell" title="File Size:">File Size:</div>
+										<div class="slds-item--detail slds-truncate recordCell">
+											<span>{Item.fileSize}</span>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="slds-list--horizontal">
+										<div class="slds-item--label slds-truncate recordCell" title="Type:">Type:</div>
+										<div class="slds-item--detail slds-truncate recordCell">
+											<span>{Item.value.Type}</span>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="slds-list--horizontal">
+										<div class="slds-item--label slds-truncate recordCell" title="Action:">Action:</div>
+										<div class="slds-item--detail slds-truncate recordCell">
+											<a href={Item.docUrl} target="_blank">
+												<div class="slds-media slds-media_center slds-has-flexi-truncate">
+													<div class="slds-media__figure">
+														<lightning-icon icon-name="utility:preview" title="view"
+															size="x-small"></lightning-icon>
+													</div>
+													<div class="slds-media__body">
+														<h2 class="slds-float_left">
+															<span class="slds-card__header-link slds-truncate">
+																<span>view</span>
+															</span>
+														</h2>
+													</div>
+												</div>
+											</a>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</li>
+					</template>
+				</ul>
+			</template>
+			<!-- End bear list -->
+			<!-- Data failed to load -->
+			<template if:true={error}>
+				<div class="slds-text-color_error">
+					An error occurred while loading the bear list
+				</div>
+			</template>
+		</div>
+	</lightning-card>
+</template>

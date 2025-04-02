@@ -1,0 +1,121 @@
+<!--
+  @File Name          : HeaderPage.component
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : priyanka
+  @Last Modified On   : 13-06-2023
+  @Modification Log   : 
+  Ver       Date            Author                  Modification
+  1.0    30/8/2019   @BK     Initial Version
+-->
+<apex:component >
+    <!--<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>-->
+    <!-- Required Attributes -->
+    <apex:attribute name="BannerText" description="This field is to render the Banner value" type="String" />
+    <apex:attribute name="BannerSrc" description="This field is to render the Banner Image." type="String" />
+    <apex:attribute name="ActiveBadge" description="This field is to Show the Active Badge value" type="String" />
+    <apex:attribute name="NoShareIcons" description="This field is to hide the share icons" type="Boolean" />
+    <apex:attribute name="NoBreadCrumb" description="This field is to hide the optional breadCrumb" type="Boolean" />
+
+    <header>
+        <nav class="headerNavigation">
+            <div class="container">
+                <div class="logoImg">
+                    <a href="#">
+                        <apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive" />
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <!--/ Logo & Navigation -->
+        <!-- Breadcrumb & Social Icons -->
+        <div class="topSocialWrapper">
+            <div class="container">
+                <div class="grayWrapper">
+                    <ol class="breadcrumb">
+                        <!-- note: layout "none" helps to stop span tags being generated for ReRendered or Rendered -->
+                        <apex:outputPanel rendered="{!!NoBreadCrumb}" layout="none">
+                            <li>
+                                <h5>Home</h5>
+                            </li>
+                            <li>
+                                <h5>Admission Info</h5>
+                            </li>
+                        </apex:outputPanel>
+                        <li class="active">
+                            <h5>{!ActiveBadge}</h5>
+                        </li>
+                    </ol>
+                </div>
+                <apex:outputPanel rendered="{!!NoShareIcons}" layout="none">
+                    <div class="shareIcons">
+                        <!--<ul>
+                            <li>
+                                        <a href="https://nmi.ms/Youtube" target="_blank">
+                                            <i class="fa fa-youtube-play" style="display: flex;justify-content: center;"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://nmi.ms/nmimsglobal-instagram" target="_blank">
+                                            <i class="fa fa-instagram" style="display: flex;justify-content: center;"></i>
+                                        </a>
+                                    </li>
+									<li>
+                                        <a href="https://nmi.ms/Linkedin" target="_blank">
+                                            <i class="fa fa-linkedin" style="display: flex;justify-content: center;"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://nmi.ms/Twitter" target="_blank">
+                                        	<i class="fa fa-twitter" style="display: flex;justify-content: center;"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://nmi.ms/Facebook" target="_blank">
+                                        	<i class="fa fa-facebook" style="display: flex;justify-content: center;"></i>
+                                        </a>
+                                    </li>                                    
+                        </ul>-->
+                    </div>
+                </apex:outputPanel>
+            </div>
+        </div>
+        <!--/ Bredcrums & Social Icons -->
+
+        <!-- Banner -->
+        <apex:outputPanel rendered="{!IF(BannerText!=null && BannerText!='',true,false)}" layout="none">
+            <div class="bannerContainer" style="background-image:url({!URLFOR($Resource.ImageResource,'images/')}{!IF(BannerSrc!=null && BannerSrc!='',BannerSrc,'banner.jpg')});">
+                <div class="container">
+                    <div class="bannerIns">
+                        <h2>
+                            <apex:outputText value="{!BannerText}" />
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+
+
+        <apex:outputPanel rendered="{!IF((BannerText=='' || BannerText==null) && BannerSrc!=null,true,false)}" layout="none">
+            <div class="header-row" style="overflow:hidden;margin-bottom:3rem;">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <picture>
+                            <source srcset="{!URLFOR($Resource.ImageResource,'images/')}{!BannerSrc}" type="image/jpg" />
+                            <source srcset="{!URLFOR($Resource.ImageResource,'images/')}form_New_Banner.jpg" type="image/jpg" />
+                            <img src="{!URLFOR($Resource.ImageResource,'images/')}form_New_Banner.jpg" alt="Banner Image" style="width: 100%;" class="bannerImage"
+                            />
+                            <!-- <source srcset="{!URLFOR($Resource.ImageResource,'images/')}{!BannerSrc}" type="image/webp" />
+                            <source srcset="{!URLFOR($Resource.ImageResource,'images/')}form_banner.png" type="image/png" />
+                            <img src="{!URLFOR($Resource.ImageResource,'images/')}form_banner.png" alt="Banner Image" style="width: 100%;" class="bannerImage"
+                            /> -->
+                        </picture>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+
+        <!--/ Banner -->
+    </header>
+</apex:component>

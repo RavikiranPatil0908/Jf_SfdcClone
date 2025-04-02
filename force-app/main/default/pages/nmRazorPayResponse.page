@@ -1,0 +1,10 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 09-16-2022
+  @last modified by  : @BK
+-->
+<apex:page controller="nmRazorPayResponse" action="{!StorePaymentInSystem}" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+  {!results}
+</apex:page>

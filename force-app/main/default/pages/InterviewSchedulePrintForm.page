@@ -1,0 +1,140 @@
+<!--
+  @Page Name          : InterviewSchedulePrintForm.page
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @vickysahu
+  @Last Modified On   : 08-07-2024
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author                 Modification
+  ==============================================================================
+  1.0    13/5/2019, 6:10:12 PM   @BK     Initial Version
+-->
+<apex:page controller="InterviewScheduleController" renderAs="pdf">
+    
+    <div style="width:98%; margin:5px auto;font:Normal 12px/30px Helvetica Narrow, sans-serif;">
+        
+        <div style="width:100%; border:3px solid #000000; background:#ffffff;">
+            <!-- Header Start -->
+            <div style="height:16px; margin-top:5px;">
+                <apex:outputText value="Date: {0,date,dd-MM-yyyy}" style="float:right; margin-right:50px;">
+                   <apex:param value="{!TODAY()}" />
+               </apex:outputText>
+            </div>
+            <div>
+                <img src="{!URLFOR($Resource.Images,'images/logo.png')}" width="50%" style="margin-left:23%;"/>
+            </div>
+            <div style="margin:10px 0;font-size:15px;">
+                <center><b>NMIMS CENTRE FOR DISTANCE AND ONLINE EDUCATION</b></center>                 
+            </div>  
+             <apex:image url="{!objAccount.nm_StudentImageUrl__c}" height="95" style="margin-left:550px;"/>   
+                     
+            <div style="margin:10px 0;font-size:13px;">
+
+                <center><b>Interview Schedule Form</b></center>                
+            </div>
+        
+            <div style="padding:15px;">
+            
+                <div style="padding-left:5px;margin:10px 0;font-size:13px;background-color:silver">
+                    <b>STUDENT INFORMATION</b>
+                </div>
+                <table width="100%">
+                    <tr>
+                        <td width="20%" style="vertical-align:top;"><b>Registration No:</b></td>
+                        <td width="30%" style="vertical-align:top;">{!objAccount.nm_RegistrationNumber__c}</td>
+                        <td width="20%" style="vertical-align:top;"><b>Semester:</b></td>
+                        <td style="vertical-align:top;">1</td>
+                    </tr>
+                    <tr>
+                        <td width="20%" style="vertical-align:top;"><b>Student Name:</b></td>
+                        <td width="30%" style="vertical-align:top;">{!objAccount.Name}</td>
+                        <td width="20%" style="vertical-align:top;"><b>Gender:</b></td>
+                        <td style="vertical-align:top;">{!objAccount.nm_Gender__c}</td>
+                    </tr>
+                     <tr>
+                        <td width="20%" style="vertical-align:top;"><b>Date of Birth:</b></td>
+                        <td width="30%" style="vertical-align:top;"><apex:outputText styleClass="ot" value="{0, date, d '/' MMMM '/' yy}">
+                                <apex:param value="{!objAccount.nm_DateOfBirth__c}" /> 
+                            </apex:outputText></td>
+                        <td width="20%" style="vertical-align:top;"><b>Email Address:</b></td>
+                        <td style="vertical-align:top;">{!objAccount.PersonEmail}</td>
+                    </tr>
+                     <tr>
+                        <td width="20%" style="vertical-align:top;"><b>Mobile Number:</b></td>
+                        <td width="30%" style="vertical-align:top;">{!objAccount.PersonMobilePhone}</td>
+                        <td width="20%" style="vertical-align:top;"><b>Address:</b></td>
+                        <td style="vertical-align:top;"> {!objAccount.House_No_Name_Shipping_Account__c} {!objAccount.Shipping_Street__c} {!objAccount.Nearest_LandMark_Shipping__c} {!objAccount.Locality_Name_Shipping__c} {!objAccount.City_Shipping_Account__c} {!objAccount.State_Province_Shipping__c} {!objAccount.Zip_Postal_Code_Shipping__c} {!objAccount.Country_Shipping__c}</td>
+                    </tr>  
+                    <!-- <tr>
+                        <td width="20%" style="vertical-align:top;"><b>Information Center:</b></td>
+                        <td width="30%" style="vertical-align:top;">{!objAccount.IC_Name__c}</td>
+                       
+                    </tr>  -->
+                     <div style="padding-left:5px;margin:10px 0;font-size:13px;background-color:silver">
+                                        <b>PROGRAM PREFERENCES  </b>
+                                    </div>  
+                     <table width="100%">   
+                    <tr>
+                        <td width="20%" style="vertical-align:top;"><b>Program Preference1:</b></td>
+                        <td width="30%" style="vertical-align:top;">{!objAccount.Program_Name__c}</td>
+                    </tr> 
+                    
+                    
+                 </table>
+                  <div style="padding-left:5px;margin:10px 0;font-size:13px;background-color:silver">
+                                        <b>INTERVIEW DETAIL  </b>
+                                    </div>  
+                     <table width="100%">   
+                   <tr>
+                        <td width="20%" style="vertical-align:top;"><b>Interview Time:</b></td>
+                        <td width="30%" style="vertical-align:top;">{!objAccount.Time_Range__c}</td>
+                        <td width="20%" style="vertical-align:top;"><b>Interview Date:</b></td>
+                        <td width="30%" style="vertical-align:top;"><apex:outputText styleClass="ot" value="{0, date, d MMMM yyyy}">
+                                <apex:param value="{!objAccount.Interview_Date__c}" /> 
+                            </apex:outputText></td>
+                    </tr>                    
+                  <!--  <tr>
+                        <td width="20%" style="vertical-align:top;"><b>Interview Time:</b></td>
+                        <td width="30%" style="vertical-align:top;">{!FormattedTime1}</td>
+                        
+                    </tr>  -->
+                     
+                </table>
+                 </table>
+                
+
+                
+              
+            </div>  
+         
+        <!-- <apex:outputPanel rendered="{!(ICChangeRequested || ProgramChangeRequested)}">
+             <div style="page-break-after: always;"></div>
+         </apex:outputPanel> -->
+        <!-- 
+         <p style="margin-left:15px;">
+            I hereby solemnly declare that the information furnished by me in this application 
+            is true to the best of my knowledge and belief. If any information found incorrect at 
+            any stage of my study, the University reserves its right to cancel my admission and no fees shall be refunded to me.
+        </p>
+      
+        <table width="100%" style="margin-left:15px;">
+            <tr>
+                <td width="20%"><b>Date : </b></td>
+                <td width="30%"></td>
+                <td width="20%"><b>Signature : </b></td>      
+                <td ></td>
+            </tr>
+        </table> 
+        
+        <table width="100%" style="margin-left:15px;">
+            <tr>                
+                <td width="20%"><b>Place : </b></td>
+                <td></td>              
+            </tr>
+        </table> 
+-->     
+        </div>      
+    </div>  
+</apex:page>

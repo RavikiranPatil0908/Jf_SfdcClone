@@ -1,0 +1,30 @@
+<apex:page standardController="nm_Payment__c" extensions="LateFee">
+ <apex:sectionHeader title="Payment" subtitle="Home"/>
+  <apex:form >
+    <apex:pageBlock >
+    
+       <apex:pageBlockSection id="pnlPayment">  
+       
+               
+                    <apex:inputField value="{!objPayment.nm_ModeOfPayment__c}" id="mode">
+                        <apex:actionSupport event="onchange" reRender="pnlPayment" status="processing" action="{!CheckPaymentPanel}"/>
+                    </apex:inputField>  
+                    
+                    <apex:inputField value="{!objPayment.nm_DemandDraftNumber__c}"  rendered="{!boolShow}" id="DDn"/>    
+                    <apex:inputField value="{!objPayment.nm_NameoftheBank__c}" rendered="{!boolShow}" id="bank"/>                        
+                    <apex:inputField value="{!objPayment.nm_DemandDraftDate__c}" rendered="{!boolShow}" id="DD"/>
+                    <apex:inputField value="{!objPayment.nm_BankLocation__c}" rendered="{!boolShow}" id="BL"/>
+                    <apex:inputField value="{!objPayment.nm_DispatchDate__c}" rendered="{!boolShow}" />
+                    <apex:outputField value="{!objPayment.nm_Amount__c}" rendered="{!boolShow}" id="idAmount" />      
+                    
+           
+                    
+                    
+                                          
+       </apex:pageBlockSection>    
+       <apex:pageBlockButtons location="bottom">
+                   <apex:commandButton value="Save" action="{!SavePayment}"/>
+                   </apex:pageBlockButtons>         
+    </apex:pageBlock>
+  </apex:form>
+</apex:page>

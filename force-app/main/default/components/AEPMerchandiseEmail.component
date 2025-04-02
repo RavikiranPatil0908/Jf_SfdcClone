@@ -1,0 +1,79 @@
+<apex:component controller="AEPMerchandiseEmailController"  access="global">
+    <style>
+        .table {
+        border: 1px solid black;
+    }
+    </style>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" />
+    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js" html-integrity="sha256-TkEcmf5KSG2zToAaUzkq6G+GWezMQ4lEtaBiyaq6Jb4="
+        html-crossorigin="anonymous" />
+    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"
+        html-integrity="sha256-kIiM3UOTsgRqR7ellGKPpjPN7/z88uz28qIiwk/cVsc=" html-crossorigin="anonymous" />
+  
+    <apex:attribute access="global" name="paymentId" assignTo="{!objPaymentId}" type="Id" description="Payment ID" />
+    <br />
+    The order summary is:
+
+    <table class="table" align="center" border="0" cellpadding="0" cellspacing="0" style="width:700px;" width="700">
+        <thead>
+            <tr>
+                <th style="border: solid 1px #000; padding: 10px;">Name</th>
+                <th style="border: solid 1px #000; padding: 10px;">Size</th>
+                <th style="border: solid 1px #000; padding: 10px;">Number</th>
+                <th style="border: solid 1px #000; padding: 10px;">Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <apex:repeat value="{!mapProductAndPrice}" var="string" id="theRepeat">
+                <tr>
+                    <apex:repeat value="{!string}" var="key" id="hjtheRepeat">
+                    <td style="text-align: center; vertical-align: middle;border: solid 1px #000; padding: 10px;" >
+                            <apex:outputText value="{!key}" id="theVrtyalue" />
+                    </td>
+                    </apex:repeat>
+                    <!-- <apex:repeat value="{!string}" var="key" id="hjtheRepeat">
+                    <td style="text-align: center; vertical-align: middle;border: solid 1px #000; padding: 10px;" >
+                            <apex:outputText value="{!string[key]}" id="theVrtyalue" />
+                    </td>
+                    </apex:repeat> -->
+                </tr>
+                <br/>
+            </apex:repeat>
+        </tbody>
+    </table>
+    <br /> 
+    <!-- <div id="here_table"></div> -->
+    <b>Total Price: {!TotalPriceOfCart}</b>
+    <br />
+    <br />
+     Click <a style="color: rgb(190, 10, 10)" href="{!PaymentReceipt}">here</a> to download the payment receipt. Please keep the receipt handy with you.
+     <br />
+    <!-- <script >
+        console.log( typeof('{!JsonMapProductAndPrice}'));
+        let productJson = '{!JsonMapProductAndPrice}';
+        let product = JSON.parse(productJson)
+        console.log(product)
+        $(document).ready(function () {
+            // console.log('gggggg') border = "0" cellpadding = "0" cellspacing = "0" style = "width:700px;" width = "700"
+            // var table = '<table border = "0" cellpadding = "0" cellspacing = "0" style = "width:700px;" width = "700">'
+            var table = $('<table>').addClass('foo').attr('border', '0').attr('cellpadding', '0').attr('cellspacing', '0').attr('width', '700px').attr('align', 'center');
+            var thead ='<thead><tr><th>Name</th><th>Price</th><th>Number</th><th>Size</th></thead>';
+            table.append(thead);
+            for (i = 0; i < product.length; i++) {
+                var row = '<tbody>' +
+                            '<tr>' +
+                            '<td>' + product[i].Name + '</td>' +
+                            '<td>' + product[i].Price + '</td>' +
+                            '<td>' + product[i].Number + '</td>' +
+                            '<td>' + product[i].Size + '</td>' +
+                            '</tbody>' +
+                            '</tr>' 
+                // var row = $('<tr>').addClass('bar').text('result ' + i);
+                table.append(row);
+            }
+
+            $('#here_table').append(table);
+            // $('#here_table').append('<tr><td>' + 'result' + i + '</td></tr>');
+        });
+    </script> -->
+</apex:component>

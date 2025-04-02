@@ -1,0 +1,718 @@
+<apex:page showHeader="false" standardStylesheets="false" controller="AepPaymentController" >
+	<style>
+		.Processingview {
+			position: fixed;
+			background: url('{!URLFOR($Resource.loading_img)}');
+			background-repeat: no-repeat;
+			background-position: center;
+			width: 100%;
+			height: 100%;
+			z-index: 1004;
+			left: 3%;
+			top: 1%;
+
+		}
+
+		.required {
+			border: 2px solid #c00 !important;
+		}
+
+		.overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 10;
+			background-color: rgba(0, 0, 0, 0.5);
+		}
+
+		.poup {
+			position: fixed;
+			top: 30%;
+			width: 40%;
+			margin-left: 30%;
+			z-index: 11;
+		}
+
+		.messageCell {
+			color: White !important;
+		}
+
+		.LateFee {
+			Color: red;
+			float: right;
+			margin-right: 4%;
+			font-style: italic;
+		}
+	</style>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<title>NMIMS Distance Education: AEP License Fee</title>
+		<meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."
+		/>
+		<meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"
+		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}" />
+		<apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}" />
+		<apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/chosen.min.css')}" />
+		<apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}" />
+		<apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}" />
+		<apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}" />
+		<apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/paymentpage.css')}" />
+		<!--
+         <script type="text/javascript">
+            history.pushState(null, null, 'nmAdditonalCharge');
+                    window.addEventListener('popstate', function () {
+                    history.pushState(null, null, 'nmAdditonalCharge');
+              });
+       </script>
+       -->
+
+	</head>
+	<!------------------Navigation -------->
+	<nav class="headerNavigation">
+		<div class="container">
+			<div class="logoImg">
+				<a href="#">
+					<apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive" />
+				</a>
+			</div>
+			<div class="headerLinks">
+				<!--<a href="#" class="header-phone-link"><span class="icon-phone"></span></a>-->
+				<button class="mobileMenu">
+					<span class="icon-menu"></span>
+				</button>
+				<div class="search">
+					<a href="#" class="icon-search" data-toggle="modal" data-target="#searchModal"></a>
+				</div>
+				<ul class="navLinks">
+					<li class="link">
+						<a href="#">
+							<div class="linkIns">
+								<div class="icon-looking-for linkIcon"></div>
+								I‘m looking for
+								<span class="icon-down-arrow arrow-down"></span>
+							</div>
+						</a>
+						<ul class="linkDropdown">
+							<li>
+								<a href="#">Programs</a>
+							</li>
+							<li>
+								<a href="#">Academic Deliverables</a>
+							</li>
+							<li class="innerDropdown">
+								<a href="#">Resources
+									<span class="">&gt;&gt;</span>
+								</a>
+								<ul class="linkDropdownIns">
+									<li>
+										<a href="#">Programs</a>
+									</li>
+									<li>
+										<a href="#">Examinations</a>
+									</li>
+									<li>
+										<a href="#">Students Zone</a>
+									</li>
+									<li>
+										<a href="#">Alumni</a>
+									</li>
+								</ul>
+							</li>
+							<li>
+								<a href="#">Support</a>
+							</li>
+							<li>
+								<a href="#">Calendar</a>
+							</li>
+							<li>
+								<a href="#">Locations</a>
+							</li>
+							<li>
+								<a href="#">Alumni</a>
+							</li>
+							<li>
+								<a href="#">Students Zone</a>
+							</li>
+						</ul>
+					</li>
+					<li class="link">
+						<a href="#">
+							<div class="linkIns">
+								<div class="icon-admission linkIcon"></div>
+								Admission info
+								<span class="icon-down-arrow arrow-down"></span>
+							</div>
+						</a>
+						<ul class="linkDropdown">
+							<li>
+								<a href="#">Admission Process</a>
+							</li>
+							<li>
+								<a href="#">Fee Structure</a>
+							</li>
+							<li>
+								<a href="#">Request A Visit</a>
+							</li>
+							<li>
+								<a href="#">Apply Now</a>
+							</li>
+							<li>
+								<a href="#">Check Status</a>
+							</li>
+							<li>
+								<a href="#">Re-Register</a>
+							</li>
+						</ul>
+					</li>
+					<li class="link">
+						<a href="#">
+							<div class="linkIns">
+								<div class="icon-university linkIcon"></div>
+								The University
+								<span class="icon-down-arrow arrow-down"></span>
+							</div>
+						</a>
+						<ul class="linkDropdown">
+							<li class="innerDropdown">
+								<a href="#">Why NGASCE
+									<span class="">&gt;&gt;</span>
+								</a>
+								<ul class="linkDropdownIns open-left">
+									<li>
+										<a href="#">Key Differentiators</a>
+									</li>
+									<li>
+										<a href="#">Awards &amp; Recognition</a>
+									</li>
+									<li>
+										<a href="#">Testimonials</a>
+									</li>
+								</ul>
+							</li>
+							<li class="innerDropdown">
+								<a href="#">About Us
+									<span class="">&gt;&gt;</span>
+								</a>
+								<ul class="linkDropdownIns open-left">
+									<li>
+										<a href="#">Our Vision and Mission</a>
+									</li>
+									<li>
+										<a href="#">Vice Chancellor's Note</a>
+									</li>
+									<li>
+										<a href="#">Director's Note</a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<!--/ Logo & Navigation -->
+
+	<!-- Breadcrumb & Social Icons -->
+	<div class="topSocialWrapper">
+		<div class="container">
+			<div class="grayWrapper">
+				<ol class="breadcrumb">
+					<li>
+						<a href="#">
+							<h5>Home</h5>
+						</a>
+					</li>
+					<li>
+						<a href="#">
+							<h5>Admission Info</h5>
+						</a>
+					</li>
+					<li class="active">
+						<h5>Payment</h5>
+					</li>
+				</ol>
+			</div>
+			<div class="shareIcons">
+				<ul>
+					<li>
+						<a href="https://plus.google.com/u/0/116325782206816676798" class="icon-google-plus"></a>
+					</li>
+					<li>
+						<a href="https://twitter.com/NMIMS_SCE" class="icon-twitter"></a>
+					</li>
+					<li>
+						<a href="https://www.facebook.com/NMIMSSCE" class="icon-facebook"></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!--/ Bredcrums & Social Icons -->
+
+	<!-- Banner -->
+	<div class="bannerContainer" style="background-image:url({!URLFOR($Resource.ImageResource,'images/')}banner.jpg);">
+		<div class="container">
+			<div class="bannerIns">
+				<h2>Payment</h2>
+			</div>
+		</div>
+	</div>
+	<!--/ Banner -->
+
+	<!-- Payment : START:-->
+	<apex:form >
+		<div class="transparent-background loaderPanel" style="display:none;">
+			<div class="loader-center">
+				<div class="loader">Loading...</div>
+			</div>
+		</div>
+		<apex:pageMessages />
+		<apex:inputHidden id="hdngetWay" value="{!paymentGateWayName}" />
+		<apex:inputHidden id="hdnPaymentOption" value="{!paymentFor}" />
+
+
+		<apex:actionFunction name="callMakePayment" action="{!MakeOnlinePayment}" />
+		<apex:outputpanel id="successPopUp" rendered="{!strSecToShow !='error'}">
+			<form>
+				<div class="tab-wrapper">
+					<div class="container">
+						<div class="tab-content">
+							<div class="tab-pane active" style="padding:0">
+								<div class="form-wrapper">
+									<div class="form-group">
+										<apex:outputPanel layout="none" rendered="{!!isAEPLicenseFeeMultiplePayment}">
+										<div class="row">
+											<div class="col-md-6">
+												<label for="first_name">{!displayName}</label>
+												<input type="Text" disabled="true" value="{!If(studentInfo!='',studentInfo,studentNo)}" class="form-control" />
+												<br/>
+												<apex:outputPanel >
+													<div class="form-group">
+														<label for="first_name">{!paymentFor} Amount </label>
+														<input type="Text" disabled="true" value="{!mapOfProductAndAmount[paymentFor]}" class="form-control"></input>
+													</div>
+												</apex:outputPanel>
+											</div>
+										</div>
+									</apex:outputPanel>
+										 <!-------------------- START AEP License Fee MUltiple Payment -------------------->
+										 <apex:outputPanel layout="none" rendered="{!isAEPLicenseFeeMultiplePayment}">   
+											<div id="paymentOptionSection">
+											  <div class="message-box text-center form-group">Select a Payment Amount For AEP License Fee</div>
+											  <div class="form-group row">
+												<div class="col-12">
+													<div class="col-sm-12">
+													  <div class="radio">
+														<div class="radio">
+														  <label>
+																<input type="radio" name="AEPLicenseMultiple" id="PaymentForApplicationFee" class="iCheckRadio" value="Application Fee" data-mode="1"/>
+																<span><b>Application Fee</b> - {!mapOfProductAndAmount['Application Fee']} </span>
+														  </label>
+														</div>
+													  </div>
+													</div>
+		  
+													<div class="col-sm-12">
+													  <div class="radio">
+														<div class="radio">
+														  <label>
+															<input type="radio" name="AEPLicenseMultiple" id="PaymentForApplicationFee" class="iCheckRadio" value="{!aepLicenseFeeCombo}" data-mode="1"/>
+																<span><b>{!aepLicenseFeeCombo}</b> - {!mapOfProductAndAmount[aepLicenseFeeCombo]} </span>
+														  </label>
+														</div>
+													  </div>
+													</div>
+												</div>
+											  </div>
+											</div>
+										</apex:outputPanel>
+		  
+										  <!-------------------- END AEP License Fee MUltiple Payment -------------------->
+										<!-------------------------------------------Payment Mode-------------------------------------------------->
+										<div class="message-box text-center form-group">Mode of Payment</div>
+										<div class="form-group">
+											<div class="row">
+
+												<div class="col-md-3">
+													<div class="radio">
+														<strong>Select a mode of payment</strong>
+													</div>
+												</div>
+												<div class="col-sm-4 col-md-3">
+													<div class="radio">
+														<label>
+															<input type="radio" name="PaymentMode" id="PaymentMode1" class="iCheckRadio" value="Online" data-mode="1" required="required"
+															/>
+															<span>Online</span>
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="clearfix"></div>
+										<!--------------------------------------------------------------end -------------------------------------------------------------------------->
+										<div class="clearfix"></div>
+										<apex:outputPanel rendered="{!!paymentWindowClosed}">
+											<div class="row">
+												<div class="col-sm-3">
+													<apex:commandButton value="Make Payment" styleClass="btn pgSubmit" id="PayBtn" onclick="return GoToPayment();" />
+												</div>
+											</div>
+										</apex:outputPanel>
+
+										<!--------------------------Window Closed Message -------------------------------------->
+										<apex:outputPanel rendered="{!paymentWindowClosed}">
+											<apex:outputText value="{!paymentClouserMessage}" style="float:left;"></apex:outputText>
+										</apex:outputPanel>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</apex:outputpanel>
+		<!----------------------------------------------Payment GetWay Options -------------------------------------------->
+		<div style="display:none;" id="PaymentGateWayOption">
+			<div class="modal popup-wrapper">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title">Important Message</h4>
+						</div>
+						<div class="modal-body">
+							<p> Select Payment GateWay </p>
+							<div class="cc-selector-2 row padding10">
+								<!-- <apex:outputPanel rendered="{!!objPaymentFormConfiguration.Use_different_payment_credentials__c}" layout="none"> -->
+									<apex:outputPanel layout="block" styleclass="col-sm-3 text-center">
+										<input id="billDeskgateway" type="radio" name="paymentGatewayGrp" value="BillDesk GateWay" />
+										<label class="drinkcard-cc billDeskgateWay" for="billDeskgateway" />
+									</apex:outputPanel>
+
+									<!-- <apex:outputPanel layout="block" styleclass="col-sm-3 text-center">
+										<input id="razorpaygateway" type="radio" name="paymentGatewayGrp" value="Razorpay GateWay" />
+										<label class="drinkcard-cc razorpaygateWay" for="razorpaygateway" />
+									</apex:outputPanel>
+								</apex:outputPanel> -->
+
+								<!-- <apex:outputPanel layout="block" styleclass="col-sm-3 text-center">
+									<input id="hdfcgateway" type="radio" name="paymentGatewayGrp" value="HDFC GateWay" />
+									<label class="drinkcard-cc hdfcgateWay" for="hdfcgateway" />
+								</apex:outputPanel> -->
+
+								<apex:outputPanel layout="block" styleclass="col-sm-3 text-center">
+									<input id="paytmgateway" type="radio" name="paymentGatewayGrp" value="Paytm GateWay" />
+									<label class="drinkcard-cc paytmgateWay" for="paytmgateway" />
+								</apex:outputPanel>
+
+								<apex:outputPanel layout="block" styleclass="col-sm-3 text-center" >
+									<input id="icicigateway" type="radio" name="paymentGatewayGrp" value="ICICI GateWay" />
+									<label class="drinkcard-cc icicigateway" for="icicigateway" />
+								</apex:outputPanel>
+
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="row">
+
+								<div class="col-sm-4" style="float:right;">
+									<apex:commandButton styleclass="btn btn-default" value="Cancel" id="btnCancel" onclick="hideme();" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="overlay"></div>
+		</div>
+		<!------------------------------------------------end -------------------------------------------------------------->
+
+		<!----------------------------------------------Error Popup-------------------------------------------->
+		<apex:outputpanel id="ErrorPopUp" rendered="{!strSecToShow =='error'}">
+			<div class="modal popup-wrapper">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title">Important Message</h4>
+						</div>
+						<div class="modal-body">
+							<p>{!errMessages}</p>
+						</div>
+						<div class="modal-footer">
+							<div class="row">
+								<div class="col-sm-6 text-left">
+									<apex:commandButton styleclass="btn btn-default" value="I Agree" id="btnErr" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="overlay"></div>
+		</apex:outputpanel>
+		<!------------------------------------------------end -------------------------------------------------------------->
+
+	</apex:form>
+	<!-----Payment : END : -->
+
+	<!-- Footer -->
+	<footer>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-2 col-sm-4">
+					<p class="small">I‘m looking for</p>
+					<ul class="footerLinks">
+						<li>
+							<a href="programs.html">Programs</a>
+						</li>
+						<li>
+							<a href="examination-process.html">Examinations</a>
+						</li>
+						<li>
+							<a href="#">Students Zone</a>
+						</li>
+						<li>
+							<a href="#">Academic Deliverables</a>
+						</li>
+						<li>
+							<a href="#">Resources</a>
+						</li>
+						<li>
+							<a href="#">Support</a>
+						</li>
+						<li>
+							<a href="#">Calendar</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-md-3 col-sm-4">
+					<p class="small">Admission Info</p>
+					<ul class="footerLinks">
+						<li>
+							<a href="admission-process.html">Admission Process</a>
+						</li>
+						<li>
+							<a href="#">Fee Structure</a>
+						</li>
+						<li>
+							<a href="#">Lateral Admissions Or Upgradation</a>
+						</li>
+						<li>
+							<a href="#">Request A Visit</a>
+						</li>
+						<li>
+							<a href="#">Apply Now</a>
+						</li>
+						<li>
+							<a href="#">Check Status</a>
+						</li>
+						<li>
+							<a href="#">Re-Register</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-md-2 col-sm-4">
+					<p class="small">The University</p>
+					<ul class="footerLinks">
+						<li>
+							<a href="about.html">About us</a>
+						</li>
+						<li>
+							<a href="#">Vice Chancellor&apos;s Note</a>
+						</li>
+						<li>
+							<a href="#">Director&apos;s Note</a>
+						</li>
+						<li>
+							<a href="#">Key Differentiators</a>
+						</li>
+						<li>
+							<a href="#">Awards And Recognition</a>
+						</li>
+						<li>
+							<a href="#">Testimonials</a>
+						</li>
+						<li>
+							<a href="locations.html">Locations</a>
+						</li>
+					</ul>
+				</div>
+				<div class="clearfix visible-sm"></div>
+				<div class="col-md-5">
+					<div class="connectWrapper">
+						<form class="form-inline">
+							<input type="email" class="form-control" id="exampleInputEmail2" placeholder="Sign Up for latest Updates" />
+							<button type="submit" class="btn btn-default custom-btn">SIGN UP</button>
+						</form>
+						<div class="footerSocialIcons">
+							<p class="small">Follow Us :</p>
+							<p class="text">Connect with us via Social Media and get all our latest news and upcoming events.</p>
+							<ul>
+								<li>
+									<a href="#" class="icon-twitter"></a>
+								</li>
+								<li>
+									<a href="#" class="icon-facebook"></a>
+								</li>
+								<li>
+									<a href="#" class="icon-google-plus"></a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<div class="row">
+				<div class="col-md-12">
+					<div class="footerBottom">
+						<div class="pageLinks">
+							<ul>
+								<li>
+									<a href="#">NMIMS UNIVERSITY </a>
+								</li>
+								<li>
+									<a href="news.html"> NEWS AND EVENTS </a>
+								</li>
+								<li>
+									<a href="#">BLOG </a>
+								</li>
+								<li>
+									<a href="#">CORPORATE CONNECT </a>
+								</li>
+								<li>
+									<a href="our-faculty.html">FACULTY </a>
+								</li>
+								<li>
+									<a href="#">FAQ&apos;S </a>
+								</li>
+								<li>
+									<a href="#"> CONTACT US</a>
+								</li>
+							</ul>
+						</div>
+						<div class="copyRight">
+							<p class="text">&copy; 2016 NMIMS. All Rights Reserved.</p>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+	<!--/ Footer -->
+
+	<!-- Search Popup -->
+	<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					<form class="form-inline" id="">
+						<input type="text" class="form-control" id="searchInput" placeholder="" />
+						<button type="" class="icon-search"></button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--All java script  -->
+	<apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min_.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}" />
+
+	<!--------------------------------------------------------------------Script ------------------------------------------>
+	<script>
+		function GoToPayment() {
+			let isPayButton = $("input:radio[name='PaymentMode']").is(":checked");
+			if (isPayButton) {
+				$('[id$=PaymentGateWayOption]').css("display", "block");
+			} else {
+				alert('Kindly select payment method first')
+			}
+			return false;
+		}
+
+		function hideme() {
+			$('[id$=PaymentGateWayOption]').css("display", "none");
+		}
+
+		$('[id$=btnErr]').click(function () {
+			$('[id$=ErrorPopUp]').hide();
+			return false;
+		});
+
+		$(document).ready(function () {
+			$('[id$=DDNote]').hide();
+			$('[id$=PayBtndd]').hide();
+			$('[id$=PayBtndfs]').hide();
+
+			$('body').on('change', '[name$=PaymentFor]', function () {
+				var selectedOpt = this.value;
+				if (selectedOpt != undefined) {
+					$('[id$=hdnPaymentOption]').val(selectedOpt);
+				}
+			});
+                /*------------------------------------------Payment Options-----------------------------*/
+				$('input[name$=PaymentMode]').change(function () {
+					let isAEPLicenseFeeMultiplePayment = "{!isAEPLicenseFeeMultiplePayment}";
+					let isAEPRadioButtonClicked = $("input:radio[name='AEPLicenseMultiple']") != null && $("input:radio[name='AEPLicenseMultiple']").is(":checked") ? true : false;
+					if(isAEPLicenseFeeMultiplePayment == 'true' && !isAEPRadioButtonClicked) {
+						alert('Kindly select Payment Amount For AEP License Fee For');
+						$(this).prop('checked', false);
+					} else {
+						var selectedOpt = this.value;
+						if (selectedOpt != undefined) {
+							$('[id$=hdnPaymentMode]').val(selectedOpt);
+							if (selectedOpt == 'Demand Draft') {
+								$('[id$=DDNote]').show();
+								$('[id$=PayBtn]').hide();
+								$('[id$=PayBtndd]').show();
+								$('[id$=PayBtndfs]').hide();
+							} else if (selectedOpt == 'Online') {
+								$('[id$=DDNote]').hide();
+								$('[id$=PayBtn]').show();
+								$('[id$=PayBtndd]').hide();
+								$('[id$=PayBtndfs]').hide();
+							}
+						}
+					}
+				});
+			$('input[type=radio][name=PaymentModeFee]').change(function () {
+				console.log(this.value)
+				console.log('Inside defautl ----')
+				$('[id$=hdnPaymentOption]').val(this.value);
+			});
+			$('input[type=radio][name=AEPLicenseMultiple]').change(function () {
+				console.log(this.value)
+				console.log('Inside defautl ----')
+				$('[id$=hdnPaymentOption]').val(this.value);
+			});
+               
+                /*--------------------------------------------------------Payment Gate Way Options----------------------------------------*/
+				$('input[type=radio][name=paymentGatewayGrp]').change(function () {
+					var selectedOpt = this.value;
+					$('[id$=hdngetWay]').val(selectedOpt);
+					callMakePayment();
+					$('.loaderPanel').show();
+					$('[id$=PaymentGateWayOption]').css("display", "none");
+				});
+
+		});
+
+
+	</script>
+</apex:page>

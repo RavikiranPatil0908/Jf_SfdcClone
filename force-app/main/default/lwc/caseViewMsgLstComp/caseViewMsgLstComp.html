@@ -1,0 +1,66 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 04-12-2024
+  @last modified by  : @vickysahu
+-->
+<template>
+    <template if:true={isMsgAvialable}>
+        <lightning-card>
+            <template for:each={msgList} for:item="em">
+                <div key={em.Id}>
+                    <div style="width: 50%; display: table;">
+                        <div style="display: table-row">
+                            <div style="width:60px; display: table-cell;">
+                                <lightning-icon
+                                    class="icon slds-icon_container_circle slds-icon_container"
+                                    icon-name="action:user"> </lightning-icon>
+                            </div>
+                            <div style="display: table-cell;">
+                                <template if:true={em.CreatedBy.Name}>
+
+                                </template>
+                                <p>{em.CreatedBy}</p>
+                                <p><lightning-formatted-date-time value={em.CreatedDate}
+                                        year="numeric" month="long" day="numeric"
+                                        hour="2-digit"
+                                        minute="2-digit"></lightning-formatted-date-time>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <p style="margin-left:60px;">
+                        <template if:true={em.hasTags}>
+                            <lightning-formatted-rich-text value={em.CommentBody}>
+                            </lightning-formatted-rich-text>
+                        </template>
+                        <template if:false={em.hasTags}>
+                            <lightning-formatted-text value={em.CommentBody}>
+                            </lightning-formatted-text>
+                        </template>
+                    </p>
+                    <hr />
+                </div>
+            </template>
+        </lightning-card>
+    </template>
+    <template if:false={isMsgAvialable}>
+        <article class="slds-card">
+            <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-illustration slds-illustration_small" aria-hidden="true"></div>
+                    <c-illustration-image image-name="misc:no_content"></c-illustration-image>
+                    <div class="slds-text-color_weak">
+                        <h3 class="slds-text-color_weak slds-text-heading_medium">No Comments Found</h3>
+                    </div>
+            </div>
+        </article>
+    </template>	
+
+    <template if:true={showSpinner}>
+		<div>
+			<lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+		</div>
+	</template>
+</template>

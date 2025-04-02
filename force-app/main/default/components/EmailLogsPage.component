@@ -1,0 +1,260 @@
+<!--
+  @description       : This component displays communication history on the Admission Lead Dashboard, fetching data from the portal for Leads, Accounts, and Cases before student confirmation.
+  @author            : @Ravi
+  @group             : 
+  @last modified on  : 10--03--2025
+  @last modified by  : @Ravi
+-->
+<apex:component controller="EmailLogsPageController" access="global" allowDML="true">
+    <apex:attribute access="global" name="recId" type="ID" description="Record Id" assignTo="{!recordId}" />
+    <apex:attribute access="global" name="objType" type="String" description="Object Type" assignTo="{!objectType}" />
+    <link href="{!URLFOR($Resource.AdminBSBMaterialDesign, 'AdminBSBMaterialDesign/css/spinner.css')}" rel="stylesheet" />
+    
+    <apex:outputPanel id="scriptData">
+        <script>
+            var mapdata = JSON.parse('{!JSENCODE(mapdata)}'); 
+        </script>
+    </apex:outputPanel>
+    <apex:outputPanel id="scriptPanel">
+        <script>
+           var mapdata = JSON.parse('{!JSENCODE(mapdata)}');
+            let email={};
+
+            function fetchEmailDetails(emailKey) {
+               email = mapdata[emailKey];
+            //    console.log('Fetching email', JSON.stringify(email));
+              handle();
+              if (email) {
+                  let formattedBody = email.body.replace(/\n/g, '<br/>');
+                  updateEmailDetails(email, formattedBody);
+              }
+          }
+  
+          function updateEmailDetails(email, formattedBody) {
+              $('[id$=emailBody]').html(formattedBody);
+              $('[id$=messageDate]').html('<strong>Message Date :</strong> ' + email.createdDate);
+              $('[id$=createdDate]').html('<strong>Created Date :</strong> ' + email.createdDate);
+              $('[id$=fromAddress]').html('<strong>From Address :</strong> ' + email.fromEmailId);
+              $('[id$=toAddress]').html('<strong>To Address :</strong> ' + email.mailId);
+              $('[id$=subject]').html('<strong> Subject :</strong> ' + email.subject);
+          }
+  
+          function handle(){
+              $('[id$=EmailRecords]').addClass("hidden");
+              $('[id$=EmailDetailsPanel]').removeClass("hidden");
+              $('[id$=backbutton]').removeClass("hidden");
+          }
+  
+          function backBtn(){
+              $('[id$=EmailRecords]').removeClass("hidden");
+              $('[id$=EmailDetailsPanel]').addClass("hidden"); 
+              $('[id$=backbutton]').addClass("hidden");   
+          }
+  
+          function showLoader() {
+              $('.loader-overlay').removeClass('hidden');
+          }
+  
+          function hideLoader() {
+              $('.loader-overlay').addClass('hidden');
+          }
+  
+          
+      </script> 
+    </apex:outputPanel>
+
+    <div id="mainPage" class="container-fluid">
+    <apex:variable var="counter" value="{!0}" />
+    <div class="row clearfix">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <h3> History </h3>
+        </div>
+    </div>
+        <apex:outputPanel styleClass="col-lg-12 col-md-12 col-sm-12 col-xs-12 sections p-l-0 p-r-0 " id="EmailRecords" layout="block" >
+          
+            <apex:outputPanel styleClass="body row clearfix" id="EmailTable">
+                    <!-- Spinner -->
+                    <div class="loader-overlay hidden">
+                        <div class="loader">
+                            <div class="preloader">
+                                <div class="spinner-layer">
+                                    <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Spinner -->  
+                <apex:outputPanel layout="none" rendered="{!paginatedEmails.size == 0}">
+                    <div class="card">
+                        <div class="align-center p-t-10">
+                            <img src="/img/chatter/OpenRoad.svg" class="img-responsive illustration" />
+                            <h4>Records Not Found</h4>
+                        </div> 
+                   </div>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!paginatedEmails.size != 0}">
+                    <div class="card">
+                        <div class="table-responsive">
+                        
+                            <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                <thead>
+                                    <tr> 
+                                        <th>Sr.No</th>
+                                        <th>Subject</th>
+                                        <th>From Address</th>
+                                        <th>To Address</th>
+                                        <th>Message Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!paginatedEmails}" var="mail">
+                                        <apex:variable var="counter" value="{!counter + 1}" />
+                                        <tr>
+                                            <td>{!mail.serialNumber}</td>
+                                            <td><a href="javascript:void(0);" onclick="fetchEmailDetails({!mail.serialNumber})">{!mail.subject}</a></td>
+                                            <td>{!mail.fromEmailId}</td>
+                                            <td>{!mail.mailId}</td>
+                                            <td>{!mail.createdDate}</td>
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table> 
+                            <div class="row clearfix">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="body">
+                                        <nav>
+                                            <ul class="pager">
+                                                <li>
+                                                    <apex:commandButton styleClass="btn btn-primary waves-effect custom-btn" 
+                                                                        value="Previous" 
+                                                                        action="{!previousPage}" 
+                                                                        rerender="EmailRecords,scriptData,EmailDetailsPanel" 
+                                                                        disabled="{!IF(currentPage == 1, true, false)}" />
+                                                </li> 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                <li>
+                                                    <apex:commandButton styleClass="btn btn-primary waves-effect custom-btn" 
+                                                                        value="Next" 
+                                                                        action="{!nextPage}" 
+                                                                        rerender="EmailRecords,scriptData,EmailDetailsPanel" 
+                                                                        disabled="{!IF(currentPage * pageSize >= totalRecords, true, false)}" />
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>         
+                            </div>
+                        </div>
+                    </div> 
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+        </apex:outputPanel>
+        <apex:outputPanel styleClass="hidden" id="EmailDetailsPanel" >
+        <div class="card">
+            <div class="body row clearfix">
+                <!-- Spinner -->
+                <div class="loader-overlay hidden">
+                    <div class="loader">
+                        <div class="preloader">
+                            <div class="spinner-layer">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               <!-- Spinner -->         
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 sections p-l-0 p-r-0 ">
+                    <a href="javascript:void(0);" onclick="backBtn();" title="back">
+                        <i class="material-icons" style="font-size:35px; padding-top:10px;">keyboard_backspace</i>
+                    </a>
+                    <div class="panel-group full-body" id="accordion_19" role="tablist" aria-multiselectable="true">
+                        <div class="panel ">
+                            <div class="panel-heading panel-primary" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="color: white; text-decoration: none;">
+                                        <i class="material-icons">date_range</i> Message Details
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" >
+                                    <div class="panel-body">
+                                        <div class="panel-body">
+                                            <div class="row d-flex flex-column flex-md-row align-items-center text-center text-md-left">
+                                                <div class="col-12 col-md-6">
+                                                    <p id="messageDate"></p>
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <p id="createdDate"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="panel ">
+                            <div class="panel-heading panel-primary" role="tab" id="headingTwo">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="color: white; text-decoration: none;">
+                                        <i class="material-icons">contact_mail</i> Address Details
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel">
+                                <div class="panel-body">
+                                    <div class="panel-body">
+                                        <div class="row d-flex flex-column flex-md-row align-items-center text-center text-md-left">
+                                            <div class="col-12 col-md-6">
+                                                <p id="fromAddress"></p>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <p id="toAddress"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="panel">
+                            <div class="panel-heading panel-primary" role="tab" id="headingThree">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="color: white; text-decoration: none;">
+                                        <i class="material-icons">mail_outline</i> Message Content
+                                    </a>
+                                </h4>
+                            </div>
+                            <apex:outputPanel layout="block">
+                            <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" >
+                                <div class="table-responsive">
+                                <div class="panel-body">
+                                    <p id="subject"></p>
+                                    <p><strong>Body:</strong></p>
+                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+                                    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                                        <apex:outputText id="emailBody"/>
+                                        <!-- <apex:outputText value="{!emailDetails.body}" escape="true"/> -->
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </apex:outputPanel>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+        </div>
+      </apex:outputPanel>
+    </div>
+
+</apex:component>

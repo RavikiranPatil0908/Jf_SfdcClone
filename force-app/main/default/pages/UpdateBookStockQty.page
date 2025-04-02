@@ -1,0 +1,82 @@
+<apex:page standardController="Book_Stock__c" recordSetvar="order" extensions="UpdateBookStockQtyController">
+
+    <apex:includeScript value="{!$Resource.restexplorer_scripts}" />
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/modernizr-2.8.3-respond-1.4.2.min.js')}" />
+    <apex:form id="wizard">
+
+        <apex:sectionHeader title="Mass Book Stock Update Wizard" subtitle="Step {!step} of 2" />
+
+        <apex:pageBlock id="step1" title="Step 1. Confirm records to be Updated" mode="edit" rendered="{!step='1'}">
+            <apex:pagemessages escape="false"></apex:pagemessages>
+            <apex:pageBlockSection >
+                <apex:pageBlockTable var="a" value="{!selected}">
+                    <apex:column value="{!a.Name}" />
+                    <apex:column value="{!a.Book_Code__c}" />
+                    <apex:column value="{!a.ISBN__c}" />
+                    <apex:column value="{!a.Session__c}" />
+                    <apex:column value="{!a.Year__c}" />
+                    <apex:column value="{!a.Stock__c}" />
+                    <apex:column value="{!a.Book_Stock__c}" />
+                    <apex:column value="{!a.Stock__r.Quantity__c}" />
+                    <apex:column value="{!a.Order__c}" />
+                    <apex:column value="{!a.Additional__c}" />
+                    <apex:column value="{!a.Final_Order__c}" />
+                    <apex:column value="{!a.Amount__c }" />
+
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:panelGrid columns="2">
+            </apex:panelGrid>
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!cancel}" value="Previous" id="CancelbtnId" />
+                <apex:commandButton action="{!updateBookStock}" value="Next" id="NextbtnId" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+
+        <apex:pageBlock id="step2" title="Step 2. Records Updated" mode="edit" rendered="{!step='2'}">
+            <apex:pagemessages escape="false"></apex:pagemessages>
+            <apex:pageBlockSection >
+                <apex:pageBlockTable var="a" value="{!lstOfSelectedRecords}">
+                    <apex:column value="{!a.Name}" />
+                    <apex:column value="{!a.Book_Code__c}" />
+                    <apex:column value="{!a.ISBN__c}" />
+                    <apex:column value="{!a.Session__c}" />
+                    <apex:column value="{!a.Year__c}" />
+                    <apex:column value="{!a.Stock__c}" />
+                    <apex:column value="{!a.Book_Stock__c}" />
+                    <apex:column value="{!a.Stock__r.Quantity__c}" />
+                    <apex:column value="{!a.Order__c}" />
+                    <apex:column value="{!a.Additional__c}" />
+                    <apex:column value="{!a.Final_Order__c}" />
+                    <apex:column value="{!a.Amount__c }" />
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!cancel}" value="Finish" id="FinishbtnId" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min_.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}" />
+    </apex:form>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+        });
+
+        function openInNewTab(url) {
+            var win = window.open(url, '_blank');
+            win.focus();
+        }
+
+
+    </script>
+</apex:page>

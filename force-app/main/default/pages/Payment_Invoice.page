@@ -1,0 +1,34 @@
+<apex:page controller="Payment_Invoice_Controller" renderAs="pdf">
+    <div style="width:98%; margin:5px auto;font:Normal 16px/30px Helvetica Narrow, sans-serif;">
+        <div style="width:100%; border:3px solid #000000; background:#ffffff; float:left; margin-bottom:15px;">
+            <!-- Header Start -->
+            <div style="height:16px; margin-top:5px;">
+                <apex:outputText value="Date: {0,date,dd-MM-yyyy}" style="float:right; margin-right:50px;">
+                   <apex:param value="{!TODAY()}" />
+               </apex:outputText>
+            </div>
+            <div>
+                <img src="{!URLFOR($Resource.Images,'images/logo.png')}" width="50%" style="margin-left:23%;"/>
+            </div>
+            <div style="margin:10px 0;font-size:15px;">
+                <center><b>INVOICE</b></center>
+            </div>
+            <!-- Header End -->
+            <div id= "Contents" style="margin-left:5%; margin-right:5%; margin-top:5%;font-weight: normal">
+                <div style="margin-bottom:2%"><b>CAPITAL FLOAT</b><br/>Gokaldas Chambers, 3<sup>rd</sup> Floor,<br/>5<sup>th</sup> Main, Bellary Road,<br/>Sadashivnagar<br/>Bangalore – 560080<br/>Karnataka, India</div>
+                <div style="margin-bottom:2%">Invoice No.: {!UPPER(InvoiceNumber)}</div>
+                <div style="margin-bottom:2%">Below Invoice is raised in reference to Loan Application no. {!studentNo}</div>
+                <div style="margin-bottom:2%">TOTAL TUTION FEES :- Rs.{!Text(productAmount) } /-</div>
+                <div style="margin-bottom:2%">Tenure :- {!Tenure}</div>
+                <div style="margin-bottom:2%">EMI :- Rs.{!Text(EMIAmount)} /-</div>
+                <br/>
+                <div style="margin-bottom:2%">NGA-SCE</div>
+                <br/>
+                
+                <div style="margin-bottom:2%"><b>Payment Mode</b></div>
+                <div style="margin-bottom:2%">Cash/Credit Card (received from ({!studentName})) - &nbsp;&nbsp;&nbsp;Rs.{!Text(downPaymentAmount)} /-</div>
+                <div style="margin-bottom:2%">CAPITAL FLOAT (Loan Amount) - &nbsp;&nbsp;&nbsp;Rs.{!Text(loanAmount)} /-</div>
+            </div>
+         </div>
+    </div>        
+</apex:page>

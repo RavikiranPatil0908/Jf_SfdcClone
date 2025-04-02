@@ -1,0 +1,90 @@
+<!-- sldsValidatorIgnore -->
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 12-13-2021
+  @last modified by  : @BK
+-->
+<template>
+    <!-- Message Toast Starts here-->
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant}
+        auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+    <!-- Message Toast Ends here-->
+    <div class="test-listViewManager slds-card slds-card_boundary slds-grid slds-grid_vertical forceListViewManager">
+        <div
+            class="slds-page-header_object-home slds-page-header_joined slds-page-header slds-shrink-none test-headerRegion forceListViewManagerHeader bottom-border">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate firstHeaderRow">
+                    <div class="slds-media slds-no-space slds-grow">
+                        <div class="slds-media__figure">
+                            <lightning-icon class="slds-align_absolute-center" icon-name="standard:article"
+                                alternative-text="Assessment" size="medium"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <h1 class="slds-truncate slds-page-header__title slds-text-color_default">
+                                <a href="javascript:void(0);" class="slds-card__header-link" title="Assessments">
+                                    <span>Assessments</span>
+                                </a>
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="slds-col slds-no-flex slds-grid slds-align-top slds-p-bottom--xx-small test-lvmForceActionsContainer">
+                    <lightning-button-group>
+                        <lightning-button variant="brand" label="New" value="new" onclick={handleBtnGrp}>
+                        </lightning-button>
+                    </lightning-button-group>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-align-bottom">
+                    <!-- <ul class="slds-list_horizontal slds-has-dividers_left">
+                <template for:each={dividers} for:item="item">
+                    <li class="slds-item" key={item}>{item}</li>
+                </template>
+            </ul> -->
+                </div>
+                <div class="slds-col slds-no-flex slds-grid slds-align-bottom slds-shrink">
+                    <div class="search-in-list slds-var-m-left_large slds-is-relative">
+                        <lightning-input type="search" data-key="search" placeholder="Search the list..."
+                            value={keyword} onchange={handleKeyWordChange} onfocus={loadPopUp} onblur={hidePopUp}
+                            autocomplete="off"></lightning-input>
+                        <div role="tooltip" id="listviewSearchTooltip-186" style="width: 15rem;" class={popoverClass}>
+                            <div class="slds-popover__body">Name, Function, Activity and Program are the searchable
+                                fields. Use filters or sort on other fields instead.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-no-flex slds-grid slds-align-bottom">
+                    <div class="slds-var-m-left_xx-small">
+                        <lightning-button-group>
+                            <lightning-button-icon icon-name="utility:loop" alternative-text="Refersh" title="Refersh"
+                                data-key="refersh" onclick={handleClick}></lightning-button-icon>
+                        </lightning-button-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="height: 300px;">
+        <lightning-datatable class="datatable" key-field="id" data={data} columns={columns} onsort={handleSort}
+            sorted-by={sortedField} sorted-direction={sortDirection} onrowaction={handleRowAction}
+            hide-checkbox-column="true">
+        </lightning-datatable>
+    </div>
+    <!-- upsert Assessment Modal begins here -->
+    <template if:true={isCreateModalOpen}>
+        <c-upsert-assessment-modal onmodalresponse={handleResponse} record={record} is-create={isCreate}>
+        </c-upsert-assessment-modal>
+    </template>
+    <!-- upsert Assessment Modal ends here -->
+
+    <!-- Question Bank Managment Modal begins here -->
+    <template if:true={isQBModalOpen}>
+        <c-manage-question-bank row={record} onmodalresponse={handleQBResponse}></c-manage-question-bank>
+    </template>
+    <!-- Question Bank Managment Modal ends here -->
+
+</template>

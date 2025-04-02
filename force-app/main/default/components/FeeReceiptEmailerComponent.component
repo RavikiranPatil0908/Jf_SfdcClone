@@ -1,0 +1,59 @@
+<!--
+  @File Name          : FeeReceiptEmailerComponent.component
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 24-08-2024
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    7/3/2020   shubhranshu     Initial Version
+-->
+<apex:component controller="EmailTemplateController" access="global" >
+    <apex:attribute access="global" name="oppId" assignTo="{!OpportunityId}" type="ID" description="Opportunity ID"/>    
+    <apex:attribute access="global" name="sessionValue" assignTo="{!session}" type="String" description="session"/>    
+    <apex:attribute access="global" name="yearValue" assignTo="{!year}" type="Integer" description="year"/>    
+    <apex:attribute access="global" name="chooseProgramValue" assignTo="{!chooseProgram}" type="String" description="chooseProgram"/>    
+    <apex:attribute access="global" name="programTypeValue" assignTo="{!programType}" type="String" description="programType"/>    
+     
+    <table align="center" border="1" cellpadding="0" cellspacing="0" style="width:700px;" width="700">
+        <tbody>
+            <tr>
+                <td style="width: 160px; height: 48px; color: rgb(255, 255, 255); background-color: rgb(153, 51, 51); text-align: center; vertical-align: middle;"  colspan="2" pardot-region="" rowspan="1"><strong>Cancellation Application Received</strong></td>
+                <td style="width: 179px; height: 48px;color: rgb(255, 255, 255); background-color: rgb(153, 51, 51); text-align: center; vertical-align: middle;"><strong>Deductions applicable (from Program fee paid)</strong></td>    
+            </tr>
+            <tr>
+                <td style="width: 160px; height: 33px; text-align: center; vertical-align: middle;">From</td>
+                <td style="width: 179px; height: 33px; text-align: center; vertical-align: middle;">To</td>
+                <td style="width: 179px; height: 33px; text-align: center; vertical-align: middle;"></td>
+            </tr>
+            <apex:repeat value="{!lstDates}" var="entry">
+                <tr>
+                    <td style="width: 160px; height: 32px; text-align: center; vertical-align: middle;">
+                        <c:FormattedDateTime datetimeValue="{!entry.From_Date__c}" datetimeFormat="dd-MM-yyyy" />
+                    </td>
+                    <td style="width: 179px; height: 32px; text-align: center; vertical-align: middle;">
+                        <c:FormattedDateTime datetimeValue="{!entry.To_Date__c}" datetimeFormat="dd-MM-yyyy" />
+                    </td>
+
+                    <apex:outputPanel rendered="{!IF(entry.Amount__c!=null && entry.Amount__c > 0, true, false)}" layout="none">
+                        <td style="width: 179px; height: 33px; text-align: center; vertical-align: middle;">Rs. {!entry.Amount__c}/-</td>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(entry.Percentage__c!=null && entry.Percentage__c > 0, true, false)}" layout="none">
+                        <td style="width: 179px; height: 33px; text-align: center; vertical-align: middle;">{!entry.Percentage__c}{!entry.Percentage_Note__c}</td>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!entry.Admission_Fee__c}" layout="none">
+                        <td style="width: 179px; height: 33px; text-align: center; vertical-align: middle;">Semester Fee</td>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(AND(!entry.Admission_Fee__c,!AND(entry.Percentage__c!=null,entry.Percentage__c > 0),!AND(entry.Amount__c!=null,entry.Amount__c > 0)),true,false)}" layout="none">
+                        <td style="width: 179px; height: 33px; text-align: center; vertical-align: middle;">No Deductions</td>
+                    </apex:outputPanel>
+                </tr>
+            </apex:repeat>
+                <tr>
+                    <td colspan="3" style="width: 179px; height: 33px; text-align: center; vertical-align: middle;" >* Admission Processing Fee / Registration fee - Non Refundable</td>
+                </tr>
+        </tbody>
+    </table>
+                                                                   
+</apex:component>

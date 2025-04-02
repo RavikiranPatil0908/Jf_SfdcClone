@@ -1,0 +1,91 @@
+<!--
+  @description       : 
+  @author            : shubhranshu
+  @group             : 
+  @last modified on  : 28-10-2023
+  @last modified by  : @BK
+-->
+<template>
+    <template if:true={DataLoading}>
+        <div class="exampleHolder">
+            <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+        </div>
+    </template>
+    <template if:false={DataLoading}>
+        <template if:true={hasData}>
+            <article class="slds-card slds-card_boundary">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__figure">
+                            <lightning-icon class="slds-align_absolute-center" icon-name="standard:file"
+                                alternative-text="Link For Documents" size="small"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">
+                                <a href="javascript:void(0);" class="slds-card__header-link" title="Link For Documents">
+                                    <span>Archived Link For Documents</span>
+                                </a>
+                            </h2>
+                        </div>
+                        <!-- <div class="slds-no-flex">
+                        </div> -->
+                    </header>
+                </div>
+                <div class="slds-card__body">
+                    <table
+                        class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered slds-table_fixed-layout"
+                        role="grid">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Document Name">Document Name</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Document Link">Document Link</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Document Link">Document Status</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={records} for:item="rec">
+                                <tr class="slds-hint-parent" key={rec.key}>
+                                    <!-- <th data-label="Id" scope="row">
+                                        <div class="slds-truncate" title={rec.value.Registration_No__c}>
+                                        </div>
+                                    </th> -->
+                                    <td data-label="Document Name">
+                                        <div class="slds-truncate" title={rec.value.DocumentName}>{rec.value.DocumentName}
+                                        </div>
+                                    </td>
+                                    <td data-label="Document link">
+                                        <div class="slds-truncate" title={rec.value.DocumentLink} if:true={rec.hasLink} style="color: #0d6efd;"><a href={rec.value.DocumentLink} target="_blank" class="slds-text-link_faux">Click Here</a>
+                                        </div>
+                                    </td>
+                                    <td data-label="Document Status">
+                                        <div class="slds-truncate" title={rec.value.DocumentStatus}>{rec.value.DocumentStatus}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>   
+            </article>
+        </template>
+        <template if:false={hasData}>
+            <!-- <div class="slds-text-heading_small slds-text-color_error slds-text-align_center">No Data Found.🤔</div> -->
+            <article class="slds-card slds-card_boundary ">
+                <div class="slds-card__body slds-card__body_inner">
+                    <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                        <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt="" />
+                        <div class="slds-text-color_weak">
+                            <h3 class="slds-text-heading_medium">No Data found 🧐🤔</h3>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </template>
+    </template>
+</template>

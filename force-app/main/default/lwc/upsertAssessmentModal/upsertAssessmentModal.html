@@ -1,0 +1,100 @@
+<!-- sldsValidatorIgnore -->
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 12-10-2021
+  @last modified by  : @BK
+-->
+<template>
+    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+        <div class="slds-modal__container">
+            <header class="slds-modal__header">
+                <lightning-button-icon icon-name="utility:close" size="large" alternative-text="Close" class="slds-modal__close" variant="bare-inverse" title="Close" onclick={hideModal}></lightning-button-icon>
+                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate"><span if:true={isCreate}>New</span><span if:false={isCreate}>Update</span> Assessment</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <fieldset class="slds-form-element slds-form-element_compound">
+                    <h3 class="test-id__section-header-container slds-section__title slds-theme--shade slds-m-bottom_xx-small">
+                        <span class="test-id__section-header-title section-header-title slds-p-horizontal--small slds-truncate">Information</span>
+                    </h3>
+                    <div class="slds-form-element__control slds-p-horizontal_small">
+                        <div class="slds-form-element__row">
+                            <div class="slds-size_1-of-2">
+                                <lightning-input label="Assessment Name" variant="label-inline" data-field="Name" onchange={handleValueChange} value={currentRecord.Name} required></lightning-input>
+                            </div>
+                            <div class="slds-size_1-of-2">
+                                <lightning-input label="Timer" type="number" variant="label-inline" data-field="Timer__c" placeholder="Enter time in minutes." onchange={handleValueChange} value={currentRecord.Timer__c} required></lightning-input>
+                            </div>
+                        </div>
+                        <div class="slds-form-element__row">
+                            <div class="slds-size_1-of-2">
+                                <c-multi-select-pick-list 
+                                    if:true={picklistValuesOfFuntion} 
+                                    options={picklistValuesOfFuntion}
+                                    onvaluechange={handleValueChange} 
+                                    label="Function"
+                                    variant="label-inline"
+                                    field="Function__c"
+                                    required="true">
+                                </c-multi-select-pick-list>
+                            </div>
+                            <div class="slds-size_1-of-2">
+                                <c-multi-select-pick-list 
+                                    if:true={picklistValuesOfActivtiy} 
+                                    options={picklistValuesOfActivtiy}
+                                    onvaluechange={handleValueChange} 
+                                    label="Activity"
+                                    variant="label-inline"
+                                    field="Activity__c"
+                                    required="true">
+                                </c-multi-select-pick-list>
+                            </div>
+                        </div>
+                        <div class="slds-form-element__row">
+                            <div class="slds-size_1-of-2">
+                                <c-multi-select-pick-list 
+                                    if:true={picklistValuesOfProgramType} 
+                                    options={picklistValuesOfProgramType}
+                                    onvaluechange={handleValueChange} 
+                                    label="Program Type"
+                                    variant="label-inline"
+                                    field="Program_Type__c"
+                                    required="true">
+                                </c-multi-select-pick-list>
+                            </div>
+                            <div class="slds-size_1-of-2">
+                                <lightning-textarea variant="label-inline" label="Submit Response" placeholder="type here..." data-field="Submit_Response__c" onchange={handleValueChange} value={currentRecord.Submit_Response__c} required></lightning-textarea>
+                            </div>
+                        </div>
+                        <div class="slds-form-element__row">
+                            <div class="slds-size_1-of-2">
+                                <lightning-input type="toggle" label="isActive" variant="label-inline" onchange={handleValueChange} data-field="IsActive__c" value={currentRecord.IsActive__c} checked={isActive}></lightning-input>
+                            </div>
+                            <div class="slds-size_1-of-2">
+                                <lightning-input type="toggle" label="Show Result" variant="label-inline" onchange={handleValueChange} data-field="Show_Result__c" value={currentRecord.Show_Result__c} checked={showResult}></lightning-input>
+                            </div>
+                        </div>
+                        <div class="slds-form-element__row">
+                            <div class="slds-size_1-of-1">
+                                <lightning-input-rich-text
+                                    label="Survey Header"
+                                    label-visible="true"
+                                    onchange={handleValueChange}
+                                    data-field="Survey_Header__c"
+                                    value={currentRecord.Survey_Header__c}
+                                    placeholder="type here...">
+                                </lightning-input-rich-text>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <footer class="slds-modal__footer slds-text-align_center">
+                <button class="slds-button slds-button_neutral" onclick={hideModal}>Cancel</button>
+                <button class="slds-button slds-button_brand" onclick={saveAssessment}>Save</button>
+            </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+</template>

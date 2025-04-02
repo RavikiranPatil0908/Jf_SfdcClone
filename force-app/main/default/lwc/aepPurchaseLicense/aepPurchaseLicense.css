@@ -1,0 +1,11 @@
+.cp-tile {
+    border: var(--lwc-borderWidthThin) solid #d2955d;
+    border-radius: .25rem;
+    display: block;
+}
+.cp-silhouette {
+    height: 100px;
+}
+.img-height {
+    height: 100% !important;
+}

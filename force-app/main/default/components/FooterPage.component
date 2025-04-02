@@ -1,0 +1,277 @@
+<!--
+  @File Name          : FooterPage.component
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 09-02-2024
+  @Modification Log   : 
+  Ver       Date            Author                  Modification
+  1.0    30/8/2019   @BK     Initial Version
+-->
+<apex:component >
+    <apex:attribute name="NoShareIcons" description="This field is to hide the share icons" type="Boolean" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+     <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 col-sm-4"></div>
+                <div class="col-md-3 col-sm-4"></div>
+                <div class="col-md-2 col-sm-4"></div>
+                <div class="clearfix visible-sm"></div>
+                <!-- <div class="col-md-5">
+                    <apex:outputPanel rendered="{!!NoShareIcons}">
+                        <div class="connectWrapper">
+                            <div class="footerSocialIcons">
+                                <p class="small">Follow Us :</p>
+                                <p class="text">Connect with us via Social Media and get all our latest news and upcoming events.</p>
+                                <ul>
+                                    <li>
+                                        <a href="https://nmi.ms/Youtube" target="_blank">
+                                            <i class="fa fa-youtube-play" style="display: flex;justify-content: center;"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://nmi.ms/nmimsglobal-instagram" target="_blank">
+                                            <i class="fa fa-instagram" style="display: flex;justify-content: center;"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://nmi.ms/Linkedin" target="_blank">
+                                            <i class="fa fa-linkedin" style="display: flex;justify-content: center;"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://nmi.ms/Twitter" target="_blank">
+                                            <i class="fa fa-twitter" style="display: flex;justify-content: center;"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://nmi.ms/Facebook" target="_blank">
+                                            <i class="fa fa-facebook" style="display: flex;justify-content: center;"></i>
+                                        </a>
+                                    </li>    
+                                </ul>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </div> -->
+                <div class="col-md-5">
+                    <div class="connectWrapper">
+                        <div class="footerSocialIcons">
+                            <p class="small">System Requirment :</p>
+                            <p class="text" id="ramText"><i id="ram" class="fa-solid fa-xmark" style="color:red"></i> Ram Speed - 4GB or above</p>
+                            <p class="text"><i id="internet" class="fa-solid fa-xmark" style="color:red"></i> Internet Bandwidth - 10mbps or above</p>
+                            <p class="text"><i id="system" class="fa-solid fa-xmark" style="color:red"></i> Browser version - <span id="browser">Chrome 121</span></p>
+                            <p class="text"><i id="cookie" class="fa-solid fa-xmark" style="color:red"></i> Cookies/Local Storage - Active</p>
+                            <p class="text"><i id="javascript" class="fa-solid fa-xmark" style="color:red"></i> JavaScript - Active</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="footerBottom">
+                        <div class="copyRight">
+                            <p class="text">&copy; {!year(today())} NMIMS. All Rights Reserved.</p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            // let ram = request.headers['device-memory'];
+            let ram = navigator.deviceMemory;
+            console.log('ram memory ==>'+ram);
+            if (ram == undefined) {
+                document.getElementById('ramText').style.display = 'none';
+            }
+            else if (ram >= 4) {
+                document.getElementById("ram").className = "fa fa-check";
+                document.getElementById("ram").style.color = "green";
+            }
+            
+
+            //get Internet speed
+            InitiateSpeedDetection();
+
+            //check Cookie
+            checkCookie();
+
+            // check javascript
+            checkJavascript();
+            
+            //Browser
+            checkBrowserNameVersion();
+
+            function InitiateSpeedDetection() {
+                window.setTimeout(MeasureConnectionSpeed, 1);
+            };    
+
+            function MeasureConnectionSpeed() {
+                let imageAddr = "https://aws-ia-file-bucket.s3-ap-south-1.amazonaws.com/editorfiles/PROD_1706965117.jpg"; 
+                let startTime, endTime;
+                let download = new Image();
+                download.onload = function () {
+                    endTime = (new Date()).getTime();
+                    showResults();
+                }
+                
+                download.onerror = function (err, msg) {
+                    console.log('internet check failed');
+                }
+                
+                startTime = (new Date()).getTime();
+                let cacheBuster = "?nnn=" + startTime;
+                download.src = imageAddr + cacheBuster;
+                
+                function showResults() {
+                    let downloadSize = 7300000; //bytes
+                    let duration = (endTime - startTime) / 1000;
+                    let bitsLoaded = downloadSize * 8;
+                    let speedBps = (bitsLoaded / duration).toFixed(2);
+                    let speedKbps = (speedBps / 1024).toFixed(2);
+                    let speedMbps = (speedKbps / 1024).toFixed(2);
+                    if(speedMbps >= 10) {
+                        document.getElementById("internet").className = "fa fa-check";
+                        document.getElementById("internet").style.color = "green";
+                    }
+                }
+            }
+
+            function checkCookie(){
+                if (navigator.cookieEnabled) {
+                    document.getElementById("cookie").className = "fa fa-check";
+                    document.getElementById("cookie").style.color = "green";
+                }
+            }
+
+            function checkJavascript() {
+                document.getElementById("javascript").className = "fa fa-check";
+                document.getElementById("javascript").style.color = "green";
+            }
+            
+            
+            function checkBrowserNameVersion() {
+                let browserAgent = navigator.userAgent;
+                let browserName = navigator.appName;
+                let browserVersion = parseFloat(navigator.appVersion);
+                let browserMajorVersion = parseInt(navigator.appVersion, 10);
+                let OffsetVersion, ix;
+
+                // For Microsoft Edge
+                if ((OffsetVersion = browserAgent.indexOf("Edg")) !== -1) {
+                    browserName = "Microsoft Edge";
+                    browserVersion = browserAgent.substring(OffsetVersion + 4);
+                }
+                // For Opera
+                else if ((OffsetVersion = browserAgent.indexOf("OPR")) !== -1) {
+                    browserName = "Opera";
+                    browserVersion = browserAgent.substring(OffsetVersion + 4);
+                } else if ((OffsetVersion = browserAgent.indexOf("Opera")) !== -1) {
+                    browserName = "Opera";
+                    browserVersion = browserAgent.substring(OffsetVersion + 6);
+                }
+
+                // For Chrome  
+                else if ((OffsetVersion = browserAgent.indexOf("Chrome")) !== -1) {
+                    browserName = "Chrome";
+                    browserVersion = browserAgent.substring(OffsetVersion + 7);
+                }
+
+                // For Firefox 
+                else if ((OffsetVersion = browserAgent.indexOf("Firefox")) !== -1) {
+                    browserName = "Firefox";
+                    browserVersion = browserAgent.substring(OffsetVersion + 8);
+                }
+                // For Safari 
+                else if ((OffsetVersion = browserAgent.indexOf("Safari")) !== -1) {
+                    browserName = "Safari";
+                    browserVersion = browserAgent.substring(OffsetVersion + 7);
+                    if ((OffsetVersion = browserAgent.indexOf("Version")) !== -1)
+                        browserVersion = browserAgent.substring(OffsetVersion + 8);
+                }
+
+                // For other browser "name/version" is at the end of userAgent  
+                else if ((Offset = browserAgent.lastIndexOf(' ') + 1) < 
+                    (OffsetVersion = browserAgent.lastIndexOf('/'))) { 
+                    browserName = browserAgent.substring(Offset, OffsetVersion); 
+                    browserVersion = browserAgent.substring(OffsetVersion + 1); 
+                    if (browserName.toLowerCase() == browserName.toUpperCase()) { 
+                        browserName = navigator.appName; 
+                    } 
+                }
+
+                // Trimming the browserVersion string at semicolon/space if present  
+                if ((ix = browserVersion.indexOf(";")) !== -1)
+                    browserVersion = browserVersion.substring(0, ix);
+                if ((ix = browserVersion.indexOf(" ")) !== -1)
+                    browserVersion = browserVersion.substring(0, ix);
+
+                browserMajorVersion = parseInt(browserVersion, 10);
+                if (isNaN(browserMajorVersion)) {
+                    browserVersion = parseFloat(navigator.appVersion);
+                    browserMajorVersion = parseInt(navigator.appVersion, 10);
+                }
+
+                // Verifying browser version
+                let matches = false;
+                let chromeLatestVersion = 121;
+                let edgeLatestVersion = 121;
+                let safariLatestVersion = 17;
+                let firefoxLatestVersion = 122;
+                let operaLatestVersion = 106;
+                if (browserName === "Chrome" && browserMajorVersion >= chromeLatestVersion ||
+                    browserName === "Microsoft Edge" && browserMajorVersion >= edgeLatestVersion ||
+                    browserName === "Safari" && browserMajorVersion >= safariLatestVersion ||
+                    browserName === "Firefox" && browserMajorVersion >= firefoxLatestVersion ||
+                    browserName === "Opera" && browserMajorVersion >= operaLatestVersion) {
+                    matches = true;   
+                    let version = browserMajorVersion;
+                    latestVersion(version);
+                }
+                else if(browserName != "Chrome" && browserName != "Microsoft Edge" && browserName != "Firefox" && browserName != "Safari" && browserName != "Opera"){
+                    matches = true;                    
+                    let version = browserMajorVersion;
+                    latestVersion(version);
+                }
+
+                if(matches) {
+                    document.getElementById("system").className = "fa fa-check";
+                    document.getElementById("system").style.color = "green";   
+                }
+                
+                if (browserName === "Chrome" && browserMajorVersion < chromeLatestVersion ) {
+                    latestVersion(chromeLatestVersion );
+                }
+                else if(browserName === "Microsoft Edge" && browserMajorVersion < edgeLatestVersion ) {
+                    latestVersion(edgeLatestVersion);
+                }
+                else if(browserName === "Safari" && browserMajorVersion < safariLatestVersion) {
+                    latestVersion(safariLatestVersion);
+                }
+                else if(browserName === "Firefox" && browserMajorVersion < firefoxLatestVersion) {
+                    latestVersion(firefoxLatestVersion);
+                }
+                else if(browserName === "Opera" && browserMajorVersion < operaLatestVersion) {
+                    latestVersion(operaLatestVersion);
+                }
+
+                function latestVersion(version){
+                    const systemElement = document.getElementById('browser');
+                    systemElement.innerHTML = browserName + ' '+ version;
+                }
+
+                console.log(
+                    'Name of Browser --> ' + browserName +
+                    ' Full version --> ' + browserVersion +
+                    ' Major version --> ' + browserMajorVersion +
+                    ' navigator.userAgent --> ' + navigator.userAgent
+                );
+            }
+            
+        </script>
+    </footer>
+</apex:component>

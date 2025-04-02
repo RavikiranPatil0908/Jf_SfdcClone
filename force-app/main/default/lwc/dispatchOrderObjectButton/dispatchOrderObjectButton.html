@@ -1,0 +1,35 @@
+<!--
+  @File Name          : dispatchOrderObjectButton.html
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 30/5/2020, 7:06:09 pm
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    16/5/2020   shubhranshu     Initial Version
+-->
+<template>
+     <!-- Message Toast Starts here-->
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant} auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+    <!-- Message Toast Ends here-->
+    <!-- <template if:true={dispatchOrderRender}>
+      <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_6-of-12">
+          <button class="slds-button slds-button_text-destructive" data-value="CreateFedEx" onclick={handleChange}>Create FedEx Shipment</button>
+        </div>
+        <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_6-of-12">
+          <button class="slds-button slds-button_text-destructive" data-value="receivedBystud" onclick={handleChange}>Received By Student</button>
+        </div>
+      </div>
+      <br />
+    </template>   -->
+    <template if:true={dispatchOrderRender}>
+      <div class="slds-m-top_medium slds-m-bottom_x-large slds-align_absolute-center">
+          <lightning-button-group>
+              <lightning-button data-value="CreateFedEx" onclick={handleChange} label="Create FedEx Shipment" icon-name="standard:shipment"></lightning-button>
+              <lightning-button data-value="receivedBystud" onclick={handleChange} label="Received By Student" icon-name="utility:like"></lightning-button>
+          </lightning-button-group>
+      </div>
+    </template>  
+</template>

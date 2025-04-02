@@ -1,0 +1,251 @@
+@charset "utf-8";
+
+@font-face {
+  font-family: 'Calibri-Regular';
+  src: url('../fonts/Calibri-Regular/Calibri_gdi.eot?orgId=00D90000000s6BL');
+  src: url('../fonts/Calibri-Regular/Calibri_gdi.eot?orgId=00D90000000s6BL#iefix') format('embedded-opentype'), url('../fonts/Calibri-Regular/Calibri_gdi.woff?orgId=00D90000000s6BL') format('woff'), url('../fonts/Calibri-Regular/Calibri_gdi.ttf?orgId=00D90000000s6BL') format('truetype'), url('../../fonts/Calibri-Regular/Calibri_gdi.svg?orgId=00D90000000s6BL#Calibri-Regular') format('svg');
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  unicode-range: u+000d-25ca;
+}
+
+@font-face {
+  font-family: 'Calibri-Bold';
+  src: url('../fonts/Calibri-Bold/Calibri-Bold_gdi.eot?orgId=00D90000000s6BL');
+  src: url('../fonts/Calibri-Bold/Calibri-Bold_gdi.eot?orgId=00D90000000s6BL#iefix') format('embedded-opentype'), url('../fonts/Calibri-Bold/Calibri-Bold_gdi.woff?orgId=00D90000000s6BL') format('woff'), url('..//Calibri-Bold/Calibri-Bold_gdi.ttf?orgId=00D90000000s6BL') format('truetype'), url('../fonts/Calibri-Bold/Calibri-Bold_gdi.svg?orgId=00D90000000s6BL#Calibri-Bold') format('svg');
+  font-weight: 700;
+  font-style: normal;
+  font-stretch: normal;
+  unicode-range: u+000d-25ca;
+}
+
+@font-face {
+  font-family: 'Calibri-Light';
+  src: url('../fonts/Calibri-Light/Calibri-Light_gdi.eot?orgId=00D90000000s6BL');
+  src: url('../fonts/Calibri-Light/Calibri-Light_gdi.eot?orgId=00D90000000s6BL#iefix') format('embedded-opentype'), url('../fonts/Calibri-Light/Calibri-Light_gdi.woff?orgId=00D90000000s6BL') format('woff'), url('../fonts/Calibri-Light/Calibri-Light_gdi.ttf?orgId=00D90000000s6BL') format('truetype'), url('../fonts/Calibri-Light/Calibri-Light_gdi.svg?orgId=00D90000000s6BL#Calibri-Light') format('svg');
+  font-weight: 300;
+  font-style: normal;
+  font-stretch: normal;
+  unicode-range: u+000d-25ca;
+}
+
+@font-face {
+  font-family: 'Aller-Bold';
+  src: url('../fonts/Aller-Bold/Aller-Bold.eot?orgId=00D90000000s6BL');
+  src: url('../fonts/Aller-Bold/Aller-Bold.eot?orgId=00D90000000s6BL#iefix') format('embedded-opentype'), url('../fonts/Aller-Bold/Aller-Bold.woff?orgId=00D90000000s6BL') format('woff'), url('../fonts/Aller-Bold/Aller-Bold.ttf?orgId=00D90000000s6BL') format('truetype'), url('../fonts/Aller-Bold/Aller-Bold.svg?orgId=00D90000000s6BL#Aller-Bold') format('svg');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Aller';
+  src: url('Aller.eot?orgId=00D90000000s6BL');
+  src: url('../fonts/Aller-Regular/Aller.eot?orgId=00D90000000s6BL#iefix') format('embedded-opentype'), url('../fonts/Aller-Regular/Aller.woff?orgId=00D90000000s6BL') format('woff'), url('../fonts/Aller-Regular/Aller.ttf?orgId=00D90000000s6BL') format('truetype'), url('../fonts/Aller-Regular/Aller.svg?orgId=00D90000000s6BL#Aller') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NGA-SCE';
+  src: url('../fonts/NGA-SCE/NGA-SCE.eot?orgId=00D90000000s6BL&5vac8z');
+  src: url('../fonts/NGA-SCE/NGA-SCE.eot?orgId=00D90000000s6BL&5vac8z#iefix') format('embedded-opentype'), url('../fonts/NGA-SCE/NGA-SCE.ttf?orgId=00D90000000s6BL&5vac8z') format('truetype'), url('../fonts/NGA-SCE/NGA-SCE.woff?orgId=00D90000000s6BL&5vac8z') format('woff'), url('../fonts/NGA-SCE/NGA-SCE.svg?orgId=00D90000000s6BL&5vac8z#NGA-SCE') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^=icon-], [class*=icon-] {
+  font-family: 'NGA-SCE' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-phone:before {
+  content: "\e92c";
+}
+
+.icon-menu:before {
+  content: "\e92d";
+}
+
+.icon-calendar-new:before {
+  content: "\e92b";
+}
+
+.icon-graduate-cap:before {
+  content: "\e929";
+}
+
+.icon-cap-man:before {
+  content: "\e92a";
+}
+
+.icon-mouse:before {
+  content: "\e927";
+}
+
+.icon-whats-new:before {
+  content: "\e928";
+}
+
+.icon-awards:before {
+  content: "\e924";
+}
+
+.icon-admission:before {
+  content: "\e900";
+}
+
+.icon-announcements:before {
+  content: "\e901";
+}
+
+.icon-ask:before {
+  content: "\e902";
+}
+
+.icon-banking:before {
+  content: "\e903";
+}
+
+.icon-bd:before {
+  content: "\e904";
+}
+
+.icon-bm:before {
+  content: "\e905";
+}
+
+.icon-calendar:before {
+  content: "\e906";
+}
+
+.icon-cap:before {
+  content: "\e907";
+}
+
+.icon-chat:before {
+  content: "\e908";
+}
+
+.icon-connect:before {
+  content: "\e909";
+}
+
+.icon-next-arrow:before {
+  content: "\e925";
+}
+
+.icon-prev-arrow:before {
+  content: "\e926";
+}
+
+.icon-down-arrow:before {
+  content: "\e90a";
+}
+
+.icon-financial:before {
+  content: "\e90b";
+}
+
+.icon-get-in-touch:before {
+  content: "\e90c";
+}
+
+.icon-get-in-touch-2:before {
+  content: "\e90d";
+}
+
+.icon-globe:before {
+  content: "\e90e";
+}
+
+.icon-graduate:before {
+  content: "\e90f";
+}
+
+.icon-hr:before {
+  content: "\e910";
+}
+
+.icon-hs:before {
+  content: "\e911";
+}
+
+.icon-live-chat-2:before {
+  content: "\e912";
+}
+
+.icon-login:before {
+  content: "\e913";
+}
+
+.icon-login-2:before {
+  content: "\e914";
+}
+
+.icon-looking-for:before {
+  content: "\e915";
+}
+
+.icon-marketing:before {
+  content: "\e916";
+}
+
+.icon-partner:before {
+  content: "\e917";
+}
+
+.icon-quote:before {
+  content: "\e918";
+}
+
+.icon-search:before {
+  content: "\e919";
+}
+
+.icon-secondary:before {
+  content: "\e91a";
+}
+
+.icon-share:before {
+  content: "\e91b";
+}
+
+.icon-trade:before {
+  content: "\e91c";
+}
+
+.icon-trophy:before {
+  content: "\e91d";
+}
+
+.icon-university:before {
+  content: "\e91e";
+}
+
+.icon-video:before {
+  content: "\e91f";
+}
+
+.icon-why-2:before {
+  content: "\e920";
+}
+
+.icon-google-plus:before {
+  content: "\e921";
+}
+
+.icon-facebook:before {
+  content: "\e922";
+}
+
+.icon-twitter:before {
+  content: "\e923";
+}

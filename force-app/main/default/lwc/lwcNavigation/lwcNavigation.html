@@ -1,0 +1,57 @@
+<!--
+  @File Name          : lwcNavigation.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 12-13-2021
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    1/6/2020   @BK     Initial Version
+-->
+<template>
+    <template if:true={checkAEPLiscencePage}>
+        <c-aep-purchase-license></c-aep-purchase-license>
+    </template>
+
+    <template if:true={checkAEPDeletedLeadPage}>
+        <c-aep-deleted-lead></c-aep-deleted-lead>
+    </template>
+
+    <template if:true={checkAEPSalesCadencePage}>
+        <c-sales-cadence experience="classic"></c-sales-cadence>
+    </template>
+
+    <template if:true={checkAEPPaymentPage}>
+        <c-ic-transaction-details experience="classic"></c-ic-transaction-details>
+    </template>
+
+    <template if:true={checkemailListPage}>
+        <c-email-list record-id={recordId} experience="classic"></c-email-list>
+    </template>
+    
+    <template if:true={checklinkForDocumentsPage}>
+        <c-link-for-documents record-id={recordId} experience="classic"></c-link-for-documents>
+    </template>
+    
+    <template if:true={checkbachelorPage}>
+        <c-bachelor-leads experience="classic"></c-bachelor-leads>
+    </template>
+
+    <template if:true={checkAssessmentPage}>
+        <c-create-assessment experience="classic"></c-create-assessment>
+    </template>
+    
+    <template if:true={ExamModelPage}>
+        <c-exam-model record-id={recordId} experience="classic"></c-exam-model>
+    </template>
+
+    <template if:true={checkQuestionBankPage}>
+        <c-survay-form experience="classic"></c-survay-form>
+    </template>
+
+    <template if:true={checkOpportunityLineItemDataTablePage}>
+        <c-opportunity-line-item-data-table experience="classic" record-id={recordId}></c-opportunity-line-item-data-table>
+    </template>
+
+</template>

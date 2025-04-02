@@ -1,0 +1,10 @@
+<apex:page controller="StudentZoneFeeReceiptController" sidebar="false" showHeader="false" applyBodyTag="false" standardStylesheets="false">
+   <apex:outputText rendered="{!IF(mapOfStudentSem[strStudentNo+'-'+strStudentSem] !='N',true,false)}">
+    <div style="width:100%;">
+    <apex:iframe src="/apex/nmFeeReceipt?id={!mapOfStudentSem[strStudentNo+'-'+strStudentSem]}" scrolling="true"  width="100%"/> 
+    </div>
+    </apex:outputText> 
+    <apex:outputPanel rendered="{!IF(mapOfStudentSem[strStudentNo+'-'+strStudentSem] =='N',true,false)}">
+        <h3>Payment Not Found</h3>     
+    </apex:outputPanel>
+</apex:page>

@@ -1,0 +1,160 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 20-08-2024
+  @last modified by  : @BK
+-->
+<apex:page title="Welcome Letter" standardController="Account" renderAs="pdf">
+
+    <script src="/soap/ajax/11.1/connection.js"></script>
+    <script>
+        function init() {
+            sforce.connection.sessionID = '{!$Api.Session_ID}';
+        }
+    </script>
+
+    <apex:form >
+
+        <body onload="init()">
+
+            <p>Dear
+                <b>
+                    <apex:outputField value="{!account.name}" />
+                </b>,</p>
+
+            <p align="justify">
+                On behalf of SVKM’s NMIMS Deemed-to-be-University and the entire faculty and staff at
+                <b>NMIMS Centre for Distance and Online Education</b>, I am thrilled to welcome you to
+                <b>NMIMS Online</b>. I wish you the very best as you embark on your upskilling journey with our
+                <b>
+                    <apex:outputField value="{!Account.nmStudent_Program__c}" />
+                </b>. You are now part of the
+                <b>NMIMS legacy</b>, one fostered over decades of honing excellence in higher education.
+            </p>
+            <p align="justify">
+                <b>SVKM’s NMIMS Deemed-to-be-University</b> is a multidisciplinary institution encompassing
+                <b>diverse fields</b> and this rich amalgamation of academic offerings ensures a
+                <b>well-rounded learning environment</b>. What
+                <b>sets NMIMS apart</b> is its unwavering commitment to
+                <b>academic rigor</b> and the university's
+                <b>faculty</b> comprised of renowned scholars and industry experts who bring immense
+                <b>real-world experience</b> into the classroom to ensure students are equipped with the skills and expertise
+                necessary to
+                <b>thrive</b> in their chosen fields.
+            </p>
+            <p align="justify">
+                <b>The NMIMS School of Business Management</b> has consistently ranked among
+                <b>India's top B-schools</b> for several years due to its industry focused programs, quality of education, faculty
+                expertise, and overall student experience.
+            </p>
+            <p align="justify">
+                <b>NMIMS Centre for Distance and Online Education</b> carries the same ethos forward to its online and distance
+                programs to ensure that students studying via these mediums are imparted with an undiluted learning experience.
+                A degree from NMIMS CDOE will definitely bring forth
+                <b>positive career outcomes</b> for you.
+            </p>
+            <p align="justify">
+                The
+                <b>
+                    <apex:outputField value="{!Account.nmStudent_Program__c}" /> at NMIMS Online
+                </b> is designed for ambitious individuals like yourselves who are seeking to elevate their careers while
+                balancing the demands of work and personal life. We are committed to providing you with the resources and
+                guidance you need to excel in your studies and achieve your professional goals with:
+            </p>
+
+            <ul>
+                <li>
+                    <b>An Industry Focused Curriculum:</b>
+                    <p align="justify">
+                        Our
+                        <b>innovative curriculum</b>, developed by renowned business faculty, equips you with the critical thinking,
+                        analytical, and leadership skills essential for success in today's dynamic business environment.
+                    </p>
+                </li>
+                <li>
+                    <b>Programs Designed for the Digital Learner:</b>
+                    <p align="justify">
+                        The
+                        <b>online format</b> of the program offers flexibility and convenience, allowing you to participate
+                        in engaging learning activities and collaborate with classmates
+                        <b>anytime anywhere</b>.
+                    </p>
+                </li>
+                <li>
+                    <b>A Comprehensive Student Zone and Mobile App:</b>
+                    <p align="justify">
+                        We utilise a
+                        <b>state-of-the-art online learning platform</b> that fosters interactive discussions, real-world case
+                        studies, and collaborative projects. We encourage you to explore the
+                        <b>Student Zone and mobile app</b> and familiarise yourself with its features and functions.
+                    </p>
+                </li>
+                <li>
+                    <b>Dedicated Student Support and Service:</b>
+                    <p align="justify">
+                        Throughout your program, you will be supported by a
+                        <b>responsive and solution-focused</b> team:
+                        <b>student mentors</b> who are vested in your
+                        <b>academic</b> success and
+                        <b>counsellors</b> who shall assist you with service queries.
+                    </p>
+                </li>
+            </ul>
+
+            <h3>Important Information:</h3>
+            <ul>
+                <li>
+                    <b>75% engagement online:</b>
+                    <p align="justify">
+                        The UGC (University Grants Commission of India) requires every online learner to have minimum 75% engagement on the student
+                        zone/mobile app per term. Students are not allowed to appear for Term End Examinations if this criteria
+                        isn’t fulfilled. To understand how you can ensure 75% engagement please visit
+                        <b>Student Portal > Quick Links > Learner Engagement.</b>
+                    </p>
+                </li>
+                <li>
+                    <b>Student Resource Book (SRB):</b>
+                    <p align="justify">
+                        Success in your studies starts with knowing the ground rules! University policies outline your rights and responsibilities.
+                        We recommend familiarising yourself with them as the counselling process may or may not have covered
+                        all the rules and processes. They're easily accessible through the StudentResource Book (SRB) on
+                        the student zone or app
+                        <b>Student Portal > Student Support > Know Your Policy</b>. Consider it your guidebook to a smooth academic
+                        journey. If you have any queries therein, our support team is here to help you.
+                    </p>
+                </li>
+                <li>
+                    <b>1 Connect : Student Support Tool by NMIMS Online</b>
+                    <p align="justify">
+                        The Student Zone and Mobile App host a dedicated student support tool, titled,
+                        <b>“1 Connect”</b>. The tool allows you to seamlessly share your concerns with the support team. Raising
+                        your concern via the tool shall ensure a faster solution as compared to emails or calls and is designed
+                        for effective timely resolution.</p>
+                </li>
+                <li>
+                    <b>Sync Notifications and Alerts:</b>
+                    <p align="justify">
+                        We also encourage you to keep notifications on the Student Zone and Mobile App active and remain alert so that you do not
+                        miss out on any important dates or events related to the program. The Mobile App also allows you
+                        to sync notifications with your calendar seamlessly.</p>
+                </li>
+            </ul>
+
+            <p>A great learning experience awaits you.</p>
+            <p>Welcome to
+                <b>NMIMS Online</b>. We are excited to be a part of your academic journey!
+            </p>
+
+            <p> Sincerely,
+                <br /> Dr. Priya Mathew
+                <br /> Director
+                <br/>
+                <b>NMIMS Centre for Distance and Online Education</b>
+            </p>
+            <P>
+                <b>Upskill. Upgrade. Uninterrupted.</b>
+            </P>
+        </body>
+    </apex:form>
+</apex:page>

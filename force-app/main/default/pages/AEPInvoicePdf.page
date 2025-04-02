@@ -1,0 +1,119 @@
+<!--
+  @description       : 
+  @author            : shubhranshu
+  @group             : 
+  @last modified on  : 06-14-2021
+  @last modified by  : shubhranshu
+  Modifications Log 
+  Ver   Date         Author        Modification
+  1.0   06-10-2021   shubhranshu   Initial Version
+-->
+<apex:page standardController="AEPInvoice__c" renderAs="PDF">
+    
+    <div  style="text-align: center;"> 
+        <h2>Invoice for {!AEPInvoice__c.Pay_Month__c}
+          <apex:outputText value="{0, number, 0000}">
+            <apex:param value="{!AEPInvoice__c.Payment_Year__c}" /></apex:outputText></h2>
+    </div>
+    <hr />
+    <br />
+    <table style="width: 100%;">
+        <tbody>
+        <tr>
+            <td style="width: 265px;">
+                Invoice Number: <apex:outputField value="{!AEPInvoice__c.Invoice_Number__c}"></apex:outputField>
+            </td>
+            <td style="text-align: right; width: 467px;">
+                Invoice Date: 
+                <apex:outputText value="{0,date, dd'/'MM'/'yyyy}">
+                    <apex:param value="{!AEPInvoice__c.Invoice_Date__c}" /> 
+                </apex:outputText>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <br />
+    <br />
+    <div  style="text-align: left;"> 
+        <p>TO,</p>
+        <p>SVKM’S NMIMS NGA-SCE</p>
+        <p>Address V. L. Mehta Road, Vile Parle (W)</p>
+        <p>Mumbai - 400 056. Maharashtra, India</p>
+        <p>GST NO. 27AABTS8228H1Z8</p>
+    </div>
+    
+    <br />
+
+    <table border="1" cellpadding="6" width="100%">
+        <tr>
+          <th>Particular</th>
+          <th>Amount in INR</th>
+        </tr>
+        <tr>
+          <td>
+            Commission for the month of {!AEPInvoice__c.Pay_Month__c}
+            <apex:outputText value="{0, number, 0000}">
+              <apex:param value="{!AEPInvoice__c.Payment_Year__c}" /></apex:outputText>
+              <apex:outputPanel rendered="{!(AEPInvoice__c.Program_Type__c == 'Taxable Program')}">
+                (Taxable Programs)
+              </apex:outputPanel>  
+              <apex:outputPanel rendered="{!(AEPInvoice__c.Program_Type__c != 'Taxable Program')}">
+                (Non-taxable Programs)
+              </apex:outputPanel>
+              <br /><br />
+              Base Amount <br /> <br />
+              <apex:outputPanel rendered="{!(AEPInvoice__c.AEP__r.GST_Registration_Type__c == 'IGST')}">
+                GST: as applicable - IGST(18%)
+              </apex:outputPanel>  
+              <apex:outputPanel rendered="{!(AEPInvoice__c.AEP__r.GST_Registration_Type__c == 'CGST+SGST')}">
+                GST: as applicable - CGST(9%) <br /><br />
+                GST: as applicable - SGST(9%)
+              </apex:outputPanel>
+          </td>
+          
+          <td>
+            <br /><br /> Rs. {!AEPInvoice__c.Base_Amount__c} /-<br /><br />
+            <apex:outputPanel rendered="{!(AEPInvoice__c.AEP__r.GST_Registration_Type__c == 'IGST')}">
+              Rs. {!AEPInvoice__c.IGST__c} /-
+            </apex:outputPanel>  
+            <apex:outputPanel rendered="{!(AEPInvoice__c.AEP__r.GST_Registration_Type__c == 'CGST+SGST')}">
+              Rs. {!AEPInvoice__c.CGST__c} /-<br /> <br />
+              Rs. {!AEPInvoice__c.SGST__c} /-
+            </apex:outputPanel>
+          </td>
+        </tr>
+        <tr>
+          <td><b>Invoice Amount</b></td>
+          <td>Rs. {!AEPInvoice__c.Invoice_Amount__c} /-</td>
+        </tr>
+    </table>
+    
+    <div  style="text-align: left;"> 
+        <p><b>SAC Code :</b> 998599</p>
+    </div>
+    <br />
+    <div  style="text-align: left;"> 
+       <!-- <img src="{!AEPInvoice__c.Invoice_Link__c}" width="50%" style="margin-left:3%;"/> -->
+        <br />
+        <br />
+        <p>Signature &amp; Stamp </p>
+    </div>
+    <br />
+    <div style="text-align: left;">
+        <p><b>AEP NAME:</b> {!AEPInvoice__c.AEP__r.IC_Company_Name__c}</p>
+        <apex:outputPanel rendered="{!(AEPInvoice__c.AEP__r.GST_AEP_Address__c!= null)}">
+          <p><b>Address:</b> {!AEPInvoice__c.AEP__r.GST_AEP_Address__c}</p>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!(AEPInvoice__c.AEP__r.GST_AEP_Address__c == null)}">
+          <p><b>Address:</b> {!AEPInvoice__c.AEP__r.Address__c}</p>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!(AEPInvoice__c.AEP__r.GST_number__c!= null)}">
+          <p><b>GST No.:</b> {!AEPInvoice__c.AEP__r.GST_number__c}</p>
+        </apex:outputPanel>
+        
+    </div>
+    <br />
+
+   
+  
+</apex:page>

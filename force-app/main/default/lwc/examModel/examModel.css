@@ -1,0 +1,48 @@
+a.nostyle:link {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: auto;
+}
+
+a.nostyle:visited {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: auto;
+}
+
+.fullHeight {
+    height: 80vh;
+}
+
+.halfHeight {
+    height: 40vh;
+}
+
+.slds-button_marked {
+    background-color: #b57edc;
+    color: #fff;
+    border-color: #b57edc;
+}
+
+.slds-bold {
+    font-weight: 500;
+}
+
+.profileImgSize {
+    height: 6rem;
+    width: 6rem;
+}
+
+.dockedBtn {
+    position: absolute;
+    bottom: 15px;
+}
+
+.headerLogo {
+    background-image: url('/resource/ImageResource/images/logo.png');
+    height: 4rem;
+}
+
+.headerItem {
+    margin-bottom: 0.5rem;
+}

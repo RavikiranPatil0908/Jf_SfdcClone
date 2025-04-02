@@ -1,0 +1,118 @@
+<!--
+  @File Name          : timelineItem.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 14/5/2020, 1:13:02 pm
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    12/5/2020   @BK     Initial Version
+-->
+<template>
+    <li>
+        <div class={itemStyle}>
+            <span class="slds-assistive-text">{task.TaskSubtype}</span>
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <lightning-button-icon if:false={expanded} size="x-small" icon-name="utility:chevronright"
+                        onclick={toggleDetailSection}>
+                    </lightning-button-icon>
+                    <lightning-button-icon if:true={expanded} size="x-small" icon-name="utility:switch"
+                        onclick={toggleDetailSection}>
+                    </lightning-button-icon>
+                    <div class="slds-icon_container slds-icon-standard-task slds-timeline__icon" title={task.TaskSubtype}>
+                        <lightning-icon class="slds-align_absolute-center" icon-name={iconName}
+                            alternative-text={task.TaskSubtype} size="small"></lightning-icon>
+                    </div>
+                </div>
+                <div class="slds-media__body">
+                    <div class="slds-grid slds-grid_align-spread slds-timeline__trigger">
+                        <div class="slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space">
+                            <h3 class="slds-truncate"
+                                title={task.Subject}>
+                                <a href="javascript:void(0);">
+                                    <strong>{task.Subject}</strong>
+                                </a>
+                            </h3>
+                            <template if:true={task.IsRecurrence}>
+                                <div class="slds-no-flex">
+                                    <span class="slds-icon_container slds-icon-utility-rotate" title="Recurring Task">
+                                        <lightning-icon class="slds-align_absolute-center slds-m-left_x-small" icon-name="utility:rotate"
+                                            alternative-text="Recurring Task" size="xx-small"></lightning-icon>
+                                    </span>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="slds-timeline__actions slds-timeline__actions_inline">
+                            <p class="slds-timeline__date">{dateValue}</p>
+                            <lightning-button-icon title="More Options for this item" size="x-small" icon-name="utility:down">
+                            </lightning-button-icon>
+                        </div>
+                    </div>
+                    <p if:true={isTask} class="slds-m-horizontal_xx-small">
+                        <a href="javascript:void(0);">{task.Owner.Name}</a> 
+                        <template if:false={isFutureTask}>
+                            <span> created a task with&nbsp;</span>
+                        </template>
+                        <template if:true={isFutureTask}>
+                            <span> have a upoming task with&nbsp;</span>
+                        </template>
+                        <a href="javascript:void(0);">{task.Who.Name}</a>
+                    </p>
+                    <p if:true={isCall} class="slds-m-horizontal_xx-small">
+                        <a href="javascript:void(0);">{task.Owner.Name}</a>
+                        <span > logged a call with &nbsp;</span>
+                        <a href="javascript:void(0);">{task.Who.Name}</a>
+                    </p>
+                    <p if:true={isEmail} class="slds-m-horizontal_xx-small">
+                        <a href="javascript:void(0);">{assignedToName}</a> 
+                        <span if:false={hasWhoTo}> sent an email</span>
+                        <span if:true={hasWhoTo}> sent an email to </span>
+                        <a if:true={hasWhoTo} href="javascript:void(0);">{whoToName}</a>
+                    </p>
+                    <article
+                        class="slds-box slds-timeline__item_details slds-theme_shade slds-m-top_x-small slds-m-horizontal_xx-small slds-p-around_medium"
+                        id="task-item-expanded" aria-hidden="false">
+                        <ul class="slds-list_horizontal slds-wrap">
+                            <li if:false={isEmail} class="slds-grid slds-grid_vertical slds-size_1-of-2 slds-p-bottom_small">
+                                <span class="slds-text-title slds-p-bottom_x-small">Name</span>
+                                <span class="slds-text-body_medium slds-truncate" title={task.Who.Name}>
+                                    <a href="javascript:void(0);">{task.Who.Name}</a>
+                                </span>
+                            </li>
+                            <li if:true={isTask} class="slds-grid slds-grid_vertical slds-size_1-of-2 slds-p-bottom_small">
+                                <span class="slds-text-title slds-p-bottom_x-small">Due Date</span>
+                                <span class="slds-text-body_medium slds-truncate" title={activityDate}>
+                                    <a href="javascript:void(0);">{activityDate}</a>
+                                </span>
+                            </li>
+                            <li if:true={isEmail} class="slds-grid slds-grid_vertical slds-size_1-of-2 slds-p-bottom_small">
+                                <span class="slds-text-title slds-p-bottom_x-small">To Address</span>
+                                <span class="slds-text-body_medium slds-truncate"
+                                    title={task.Who.Name}>
+                                    <a href="javascript:void(0);">{task.Who.Name}</a>
+                                </span>
+                            </li>
+                        </ul>
+                        <div>
+                            <template if:false={isEmail}>
+                                <span class="slds-text-title">Description</span>
+                                <p class="slds-p-top_x-small">
+                                    {task.Description}
+                                </p>
+                            </template>
+                            <template if:true={isEmail}>
+                                <span class="slds-text-title">Text Body</span>
+                                <p class="slds-p-top_x-small">
+                                    {description}
+                                </p>
+                            </template>
+                            
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </li>
+</template>

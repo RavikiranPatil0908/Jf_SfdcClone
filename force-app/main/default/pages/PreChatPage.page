@@ -1,0 +1,196 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 16-01-2024
+  @last modified by  : @BK
+  Modifications Log 
+  Ver   Date         Author   Modification
+  1.0   09-24-2020   @BK   Initial Version
+-->
+<apex:page showHeader="false" standardStylesheets="false">
+<style>
+#loading {
+    position: absolute; width: 100%; height: 100%; background: url('https://loading.io/assets/img/default-loader.gif') no-repeat center center;
+}
+</style>
+    <!-- This script takes the endpoint URL parameter passed from the deployment
+page and makes it the action for the form -->
+<script type="text/javascript">
+
+function validateDetails()  
+    {  
+
+      var phoneEntered = document.getElementById("mobile").value;
+
+      var pattern = /^\d{10}$/;  
+      if((pattern.test(phoneEntered)))  
+        {  
+          return true;  
+        }  
+      else  
+        {  
+            alert("Please enter valid 10 digit Mobile number");  
+            return false;  
+        }  
+    }  
+
+
+    (function() {
+        function handlePageLoad() {
+            var endpointMatcher = new RegExp("[\\?\\&]endpoint=([^&#]*)");
+            document.getElementById('prechatForm').setAttribute('action',
+            decodeURIComponent(endpointMatcher.exec(document.location.search)[1]));
+        } 
+        if (window.addEventListener) {
+            window.addEventListener('load', handlePageLoad, false);
+        } 
+        else { 
+            window.attachEvent('onload', handlePageLoad, false);
+        }
+    })();
+    
+    
+</script>
+<h4 id="header1" style="text-align:center;font-family: 'Open Sans', sans-serif;color:#333;">We are connecting you to Student Support Services.</h4>
+<h4 id="header2" style="text-align:center;font-family: 'Open Sans', sans-serif;color:#333;display:none;">Welcome to NMIMS Center For Distance And Online Education. Please fill in your details so we can assist you better.</h4>
+<div id="loading"></div>
+<form id="prechatForm" method="post" style="width:100%;font-family: 'Open Sans', sans-serif;display:none;" onSubmit="return validateDetails()" >
+    Full Name:
+    <input id="customField1" name="liveagent.prechat:FullNameDetail" placeholder="Name" type="text" required="required" style="clear:both;display:block;width:100%;height:38px;background-color:#e5e5e5;color:#333;border:none;padding:10px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;font-size:1em;"/>
+    <br />
+
+    Mobile:
+    <input id="mobile" name="liveagent.prechat:MobilePhone"  placeholder="Mobile" type="text"  required="required" style="clear:both;display:block;width:100%;height:38px;background-color:#e5e5e5;color:#333;border:none;padding:10px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;font-size:1em;"/>
+    <br />
+ 
+    Email:
+    <input id="customField3" name="liveagent.prechat:Email"   placeholder="Email" type="email"  required="required" style="clear:both;display:block;width:100%;height:38px;background-color:#e5e5e5;color:#333;border:none;padding:10px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;font-size:1em;"/>
+    <br />
+    
+    City:
+    <input id="customField4" name="liveagent.prechat:City"   placeholder="City" type="text"  required="required" style="clear:both;display:block;width:100%;height:38px;background-color:#e5e5e5;color:#333;border:none;padding:10px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;font-size:1em;"/>
+    <br />
+    <input id="customField5" name="liveagent.prechat:SkillName" type="hidden"/>
+
+    <!-- Map liveagent.prechat:FullNameDetail andother custom detail to Lead's fields -->
+    <input type="hidden" name="liveagent.prechat.findorcreate.map:Lead" value="MobilePhone,MobilePhone;Email,Email" />
+
+    <!-- Specify to query for a matching Lead records MobilePhone field based on the value of Mobile -->
+    <input type="hidden" name="liveagent.prechat.findorcreate.map.doFind:Lead"  value="MobilePhone,true;Email,true" />
+    <!-- Return results only if there is an exact match of FirstName -->
+    <input type="hidden" name="liveagent.prechat.findorcreate.map.isExactMatch:Lead"    value="MobilePhone,true;Email,true" />
+    <!-- If no match in search, create a new Contact record with the mapped value of firstname and last name 
+    <input type="hidden" name="liveagent.prechat.findorcreate.map.doCreate:Lead"    value="MobilePhone,true;Email,true" /> -->
+    <!-- If a new Contact record has been created, open it as a subtab 
+    <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Lead"    value="true" /> -->
+    <!-- Save the Lead id to transcript's field LeadId -->
+    <input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Lead"    value="LeadId" />
+    
+    <!-- Map liveagent fileds to Accounts fields -->
+    <input type="hidden" name="liveagent.prechat.findorcreate.map:Account" value="PersonMobilePhone,MobilePhone;PersonEmail,Email" />
+    <!-- Specify to query for a matching Account records Mobile field based on the value of mobile -->
+    <input type="hidden" name="liveagent.prechat.findorcreate.map.doFind:Account"  value="PersonMobilePhone,true;PersonEmail,true" />
+    <!-- Return results only if there is an exact match of FirstName -->
+    <input type="hidden" name="liveagent.prechat.findorcreate.map.isExactMatch:Account"    value="MobilePhone,true;PersonEmail,true" />
+    <!-- Save the Account id to transcript's field AccountId -->
+    <input type="hidden" name="liveagent.prechat.findorcreate.saveToTranscript:Account"    value="AccountId" />
+    
+
+    <!-- FullNameDetail fields -->
+    <input type="hidden" name="liveagent.prechat.save:FullNameDetail" value="Full_Name__c" />
+    <!-- MobilePhone fields -->
+    <input type="hidden" name="liveagent.prechat.save:MobilePhone" value="Mobile__c" />
+    <!-- Email fields -->
+    <input type="hidden" name="liveagent.prechat.save:Email" value="Email__c" />
+    <!-- City fields -->
+    <input type="hidden" name="liveagent.prechat.save:City" value="City__c" />
+    <!-- SkillName fields -->
+    <input type="hidden" name="liveagent.prechat.save:SkillName" value="Skill_Name__c" />
+    
+    
+    
+    <!-- Pulls the Customer Name input from Pre-Chat form to chat window -->
+      <input type="hidden" name="liveagent.prechat.name" id='windowName' /> 
+      
+    <input id="prechat_submit" type="submit" value="Request Chat" onclick = "setName();"
+    style="background:#dd5928;color:#fff;padding:10px;border:none;font-family: 'Open Sans', sans-serif;"/>
+    <style type="text/css">
+    p {font-weight: bolder }
+    </style>
+</form>
+<script type='text/javascript' src='https://c.la2-c2-ukb.salesforceliveagent.com/content/g/js/42.0/prechat.js'></script>
+<script>
+var detailCallback = function (details){
+    let addSkill = true;
+    for (var i = 0; i < details.customDetails.length; i++) {
+        
+        if(details.customDetails[i].label=='fullName'){
+            document.getElementById("customField1").value = details.customDetails[i].value;
+        }else if(details.customDetails[i].label=='mobile'){
+            document.getElementById("mobile").value = details.customDetails[i].value;
+        }else if(details.customDetails[i].label=='email'){
+            document.getElementById("customField3").value = details.customDetails[i].value;
+        }else if(details.customDetails[i].label=='city'){
+            document.getElementById("customField4").value = details.customDetails[i].value;
+        }else if(details.customDetails[i].label=='skillName'){
+            addSkill = false;
+            document.getElementById("customField5").value = details.customDetails[i].value;
+        }
+    }
+
+    if(addSkill) {
+        document.getElementById("customField5").value = 'Admission';
+    }
+};
+liveagent.details.preChatInit('https://d.la2-c2-ukb.salesforceliveagent.com/chat','detailCallback');
+
+function validateForm()
+{
+    var a=document.getElementById("customField1").value;
+    var b=document.getElementById("mobile").value;
+    var c=document.getElementById("customField3").value;
+    var d=document.getElementById("customField4").value;
+    console.log(a+b+c+d);
+    if (a==null || a=="",b==null || b=="",c==null || c=="",d==null || d=="")
+    {
+        console.log("Fail 1");
+        return false;
+        
+    }else{
+        
+        return true;
+    }
+}
+
+function setName(){
+                document.getElementById("windowName").value =
+                document.getElementById("customField1").value;
+         return true;
+         }
+ 
+window.setTimeout(function(){
+     
+    if(validateForm())
+    {   
+        
+        document.getElementById("loading").style.display = "none";
+        var btnSubmit = document.getElementById('prechat_submit');
+        btnSubmit.click();
+        
+       
+
+    }else{
+
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("header1").style.display = "none";
+        document.getElementById("header2").style.display = "block";
+        document.getElementById("prechatForm").style.display = "block";
+    }
+}, 1500);
+
+
+</script>
+
+
+</apex:page>

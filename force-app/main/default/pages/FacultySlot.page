@@ -1,0 +1,68 @@
+<apex:page id="pageId" standardController="Interview_Slot__c" showHeader="false" sidebar="false" standardStylesheets="false" renderAs="pdf" cache="false">
+<apex:param name="slotID" value="{!Interview_Slot__c.id}"/>
+
+            <head>
+                <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+                <style type="text/css">
+                    @page {
+                        size: A4 portrait;
+                        border: 2px solid black;
+                    }
+                </style>
+            </head>
+                
+            
+                <div style="width:98%; margin:5px auto;font:Normal 16px/30px Helvetica Narrow, sans-serif;">
+                    <!-- <div style="width:100%; border:3px solid #000000; background:#ffffff; float:left; margin-bottom:15px;"> -->
+                        <div>
+                        <!-- Header Start -->
+                        <div style="height:16px; margin-top:5px;">
+                            <apex:outputText value="Date: {0,date,dd-MM-yyyy}" style="float:right; margin-right:50px;">
+                               <apex:param value="{!TODAY()}" />
+                           </apex:outputText>
+                        </div>
+                        <div>
+                            <img src="{!URLFOR($Resource.Images,'images/logo.png')}" width="50%" style="margin-left:23%;"/>
+                        </div>
+                        <div style="margin:10px 0;font-size:15px;">
+                           
+                            <!-- <center><b>NMIMS Global Access – School for Continuing Education</b></center> -->
+                            <center><b>NMIMS Center For Distance And Online Education</b></center>
+                            <center><b>Selection Interviews</b></center>
+                        </div>
+                        </div>
+                </div>
+                   
+
+              <td>  
+                    <apex:outputText value="Date: {0,date,dd-MM-yyyy}" style="margin-right:50px;">
+                    
+                        <apex:param value="{!Interview_Slot__c.Interview_Date__c}" />
+                    
+                    </apex:outputText> 
+<apex:outputText >Time : </apex:outputText>
+                    <apex:outputField value="{!Interview_Slot__c.Start_time__c}"/>
+    <apex:outputText > To  : </apex:outputText>
+
+                    <apex:outputField value="{!Interview_Slot__c.End_time__c}" /> 
+                 
+                 </td> 
+                <table style="border:1px solid black;border-collapse:collapse; align:center; text-align:center; width:600px;">
+                    <tr>
+                        <th style="border:1px solid black;">Sr. No.</th>
+                        <th style="border:1px solid black;">Name of Faculty</th>
+                        <th style="border:1px solid black;">Signature</th>
+                        
+
+                    </tr>
+                        <tr>
+                         <td style="border: solid 1px #000; padding: 10px;">1.</td>    
+                           
+                            <td style="border: solid 1px #000; padding: 10px;">{!Interview_Slot__c.Faculty_name_1__c}</td>
+                            <td style="border: solid 1px #000; padding: 10px;"></td>                
+                        </tr>
+
+
+                </table>
+
+        </apex:page>

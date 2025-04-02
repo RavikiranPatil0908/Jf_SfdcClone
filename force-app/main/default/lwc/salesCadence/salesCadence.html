@@ -1,0 +1,34 @@
+<!--
+  @File Name          : salesCadence.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 07-09-2020
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    16/4/2020   shubhranshu     Initial Version
+-->
+<template>
+    <div class="slds-grid slds-gutters_xx-small">
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_2-of-12">
+            <c-work-queue lst-leads={leads} onselected={handleRecordLoadLeads}></c-work-queue>
+        </div>
+        <template if:true={ldIdfound}>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_10-of-12">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                        <c-lead-details lead-list={updateLead} experience={experience}></c-lead-details>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12">
+                        <c-lead-activity record-id={updateLead}></c-lead-activity>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                        <c-lead-score-and-more-info record-id={updateLead}></c-lead-score-and-more-info>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+    <c-sales-cadence-footer record-id={updateLead}></c-sales-cadence-footer>
+</template>

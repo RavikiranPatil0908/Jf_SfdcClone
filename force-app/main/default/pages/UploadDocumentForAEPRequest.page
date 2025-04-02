@@ -1,0 +1,42 @@
+<apex:page lightningStylesheets="true" standardStylesheets="false" showHeader="true" sidebar="true" applyBodyTag="false">
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+<apex:includeLightning />
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Upload Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+
+<body>
+    <div id="lightning" />
+    <script>
+        function getQueryParameters() {
+            let params = {};
+            let search = location.search.substring(1);
+            if (search) {
+                params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', (key, value) => {
+                    return key === "" ? value : decodeURIComponent(value)
+                });
+            }
+            console.log(search);
+            console.log(params);
+            return params;
+        }
+
+        var params = getQueryParameters();
+        console.log('params ' + JSON.stringify(params));
+
+        $Lightning.use("c:aepPurchaseLicesneApp", function () {
+            $Lightning.createComponent("c:uploadDocumentForAEPRequest", { "parameters": params },
+                "lightning",
+                function (cmp) {
+                    console.log('component created successfully ...');
+                });
+        });
+    </script>
+</body>
+
+</html>
+</apex:page>

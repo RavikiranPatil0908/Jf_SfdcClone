@@ -1,0 +1,1931 @@
+<!--
+  @description       : 
+  @author            : 
+  @group             : 
+  @last modified on  : 03-09-2024
+  @last modified by  : @vickysahu
+-->
+<apex:page id="pageId" showHeader="false" sidebar="false" standardStylesheets="false" cache="false">
+    
+    <script>
+    window['moment-range'].extendMoment(moment);
+    //global variable for number of degree and datetime objects
+    var totalAcad =  3;
+    var objDate = {};
+    var responseData = null;
+    var formSubmitted = false;
+    var checkPercent = {
+            'SSC': 0,
+            'HSC': 0,
+            'Diploma': 0,
+            'Graduation': 0,
+            'PostGraduation': 0
+        };
+
+    $(document).ready(function(){
+
+        AdmissionFormController.getUniversityList(
+            function(result, event) {
+                if (event.status) {
+                    // Successful response, result contains the list of universities
+                    responseData = result;
+                    console.log(responseData.length);
+
+                    let value1 = $('[id$=hiddendegreeUniversity]').val();
+                    let value2 = $('[id$=programUniversity]').val();
+                    console.log('value1 '+value1);
+                    console.log('value2 '+value2);
+
+                    let triggerUniversityFlag = false;
+
+                    // Iterate through the list of universities
+                    $.each(responseData, function(index, university) {
+
+                        // Append data to select element
+                        $('.getuniversitylist').append('<option value="' + university.University_Name__c + '">' + university.University_Name__c + '</option>');
+
+                        // Check if the university Name matches value1 or value2
+                        if (university.University_Name__c === value1) {
+                            console.log('entered eq1');
+                            $('.autoCompleteUniversity').eq(0).val(university.University_Name__c);
+                            triggerUniversityFlag = true;
+                        }
+                        if (university.University_Name__c === value2) {
+                            console.log('entered eq2');
+                            $('.autoCompleteUniversity').eq(1).val(university.University_Name__c);
+                            $('.universtityNameText').val(university.University_Name__c);
+                            triggerUniversityFlag = true;
+                        }
+                    });
+
+                    // Trigger 'change' event if necessary
+                    if (triggerUniversityFlag) {
+                        $('.autoCompleteUniversity').trigger('change');
+                        console.log('triggerUniversityFlag==>' + triggerUniversityFlag);
+                    }
+                } else {
+                    // Handle error
+                    console.error('Error calling Apex method: ' + event.message);
+                }
+            },
+            {escape: true}
+        );
+
+    
+        // let triggerUniversityFlag = false;
+        // if($('[id$=hiddendegreeUniversity]').val() || $('[id$=programUniversity]').val()){
+        //     let value1 = $('[id$=hiddendegreeUniversity]').val();
+        //     let value2 = $('[id$=programUniversity]').val();
+        //     console.log('value1 '+value1);
+        //     console.log('value2 '+value2);
+        //     $.getJSON(url, function (data) {
+        //         $.each(data, function (index, value) {
+        //             if(value.name === value1){
+        //                 console.log('entered eq1');
+        //                 $('.autoCompleteUniversity').eq(0).val(value.name);
+        //                 triggerUniversityFlag = true;
+        //             }
+        //             if(value.name === value2) {
+        //                 console.log('entered eq2');
+        //                 $('.autoCompleteUniversity').eq(1).val(value.name);
+        //                 $('.universtityNameText').val(value.name);
+        //                 triggerUniversityFlag = true;
+        //             }
+        //         });
+        //         if(triggerUniversityFlag) {
+        //             $('.autoCompleteUniversity').trigger('change');
+        //             console.log('triggerUniversityFlag==>'+triggerUniversityFlag);
+        //         }
+        //     });
+        //     console.log('degreeUniversityName '+$('[id$=degreeUniversityName]').val());
+        // }
+
+        $('.ModifyFirstOptionForProgramList> option:first-child').text('---None--');
+        /*-------------------------------------------------------Common validation class Names -------------------------------------*/
+        $('.notnull').attr('required','true');
+        $('.disabled').attr('disabled',true);
+        $('.readonly').attr('readonly','readonly');
+        $('#changePhotoId').hide();
+
+        $('.ModifyFirstOptionForDiffAbled> option:first-child').text('Are you differently abled');
+        $('.ModifyFirstOptionForDisability> option:first-child').text('Natue of Disability');
+        
+        var navListItems = $('ul.setup-panel li a'),
+        allWells = $('.setup-content');
+        allWells.hide();
+        
+        navListItems.click(function(e){
+            e.preventDefault();
+            var $target = $($(this).attr('href')),
+                $item = $(this).closest('li');
+            if (!$item.hasClass('disabled')) {
+           
+                navListItems.closest('li').removeClass('active');
+                $item.addClass('active');
+                allWells.hide();
+                $target.show();
+            }
+        });
+        
+        
+
+        /*-------------------- Remove Error message on enter start ------------------------*/
+        $('body').on('change', '.notnull', function(e) {
+            $(this).closest('div.form-group').children('span.error').remove();
+        });
+
+        $('body').on('keypress', '.notnull', function(e) {
+            $(this).closest('div.form-group').children('span.error').remove();
+        });
+
+        $('body').on('dp.change', '.date', function() {
+            $(this).closest('div.form-group').children('span.error').remove();
+        });
+        /*-------------------- Remove Error message on enter end ------------------------*/
+   
+        $('ul.setup-panel li.active a').trigger('click'); 
+     
+        // show the alert
+        setTimeout(function() {
+            $(".alert").alert('close');
+        }, 10000);
+
+        $('body').on('keypress','.numonly', function(e){ 
+            return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) ) ? false : true;
+        });
+        
+        $('body').on('keypress','.floatingNumOnly', function(event){
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+            var input = $(this).val();
+            if ((input.indexOf('.') != -1) && (input.substring(input.indexOf('.')).length > 2)) {
+                event.preventDefault();
+            }
+        });
+
+        $('body').on('keypress','.CGPANumOnly', function(event){
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+            var input = $(this).val();
+            if ((input.indexOf('.') != -1) && (input.substring(input.indexOf('.')).length > 1)) {
+                event.preventDefault();
+            }
+        });
+
+        $("textarea").each(function(textarea) {
+            // $(this).height( $(this)[0].scrollHeight );
+        });
+       
+        
+        /*----- allow letters and whitespaces only.-------*/
+        $('body').on('keypress','.onlyAlphabets', function(event) {
+            var inputValue = event.which;
+            if(!((inputValue >= 65 && inputValue <= 122 && inputValue != 92 && inputValue != 94 && inputValue != 93 && inputValue != 91) || inputValue == 46 ) && (inputValue != 32 && inputValue != 0 )) { 
+                event.preventDefault(); 
+            }
+        });
+        
+        /*-----------------limit chart in text field ----------------*/
+        $('body').on('keypress','.limitedChar', function(event) {
+            var inputValue = $(this).val().length;
+            if(inputValue >=40) { 
+                event.preventDefault(); 
+            }
+        });
+        
+        $('body').on('change','.percentageValidate', function(){
+            let percentage = parseFloat($(this).val());
+            let type = $(this).data('type');
+            if(isNaN(percentage) || percentage > 100 || percentage < 1){
+                console.log('enterd 1');
+                showHtmlMessage('Invalid Information','Please Enter Percentage less than 100 and greater than zero.');
+                $(this).val("");
+                $(this).closest('div.form-group').children('span.error').remove();
+                $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+            }else if($(this).hasClass('checkPercent') && percentage < checkPercent[type]){
+                console.log('enterd 2');
+                showHtmlMessage('Important Information', type+' percentage: minimum '+checkPercent[type]+' percent required');
+                $(this).val("");
+                $(this).closest('div.form-group').children('span.error').remove();
+                $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Minimum '+checkPercent[type]+' percent required.</span>');                
+            }
+        });
+        /*--------------------------------------------------------------end ----------------------------------------------------------------*/
+        
+        /*-----------------------------------------------------------fill Ids with Data onload ------------------------------------*/
+        if($('[id$=dateOfBirth]').val() !='' && $('[id$=dateOfBirth]').val() !=null){
+            var dateString = $('[id$=dateOfBirth]').val();
+            var today = new Date();
+            var datestr=(dateString.split(" ")[0]).split("/");
+            var birthDate  =  new Date(datestr[2],datestr[1]-1,datestr[0]);
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
+            {
+                age--;
+            }
+            $('[id$=ageAsOn]').val(age);
+        }
+        
+        /*--------------------------------------------------------------------end----------------------------------------------------------*/
+        
+        /*-----------------------------------------------------------Personal Details Validation ---------------------------------*/
+        $(".emailValidation").change(function(){
+            var emailAddress = $(this).val();
+            if(!isValidEmailAddress(emailAddress)){
+                showHtmlMessage('Invalid Information','Please enter a valid email address.');
+                $(this).val("");
+            }
+        });
+        
+        $(".mobileNoValidation").change(function(){
+            var mobileNumberValue = $(this).val();
+            var lastdigits = mobileNumberValue.slice(-4);
+            console.log(lastdigits);
+            var pattern = "^(?!(\\d)\\1{8})";
+            pattern = new RegExp(pattern);
+            if(!pattern.test(mobileNumberValue)){  
+                showHtmlMessage('Invalid Information','Please Enter Valid Mobile Number');
+                $(this).val("");
+            }else if( (mobileNumberValue.length >10 && lastdigits != '0000') || mobileNumberValue.length < 10){
+                showHtmlMessage('Invalid Information','Please enter a valid 10 digit mobile number.');
+                $(this).val("");
+            }
+        });
+        
+        $(".pincodeValidate").change(function(){
+           var pincodeValue = $(this).val();
+            if(pincodeValue.length >6 || pincodeValue.length<6){
+                showHtmlMessage('Invalid Information','Please Enter 6 digit Pincode');
+                $(this).val("");
+            } 
+        });
+        
+        $('[id$=aadharCard]').change(function(){
+            var aadharCardValue = $(this).val();
+            if(aadharCardValue.length >12 || aadharCardValue.length< 12){
+                showHtmlMessage('Invalid Information','Please Enter 12 digit Aadhaar Card Number');
+                $(this).val('');
+            } 
+        });
+        
+
+        // Nationality Check for making aadhar card mandatory
+        $('[id$=nationality]').change(function(){
+            var nationality = $(this).val();
+            if(nationality =='Indian'){
+                $('.IndianNationalityPanelId').show();
+                //for passport not mandatory 
+                $('[id$=passport]').removeClass('notnull');
+                $('[id$=passportLabel]').text('Passport No');
+
+            }else{
+                $('.IndianNationalityPanelId').hide(); 
+                $('[id$=aadharCard]').removeClass('notnull');       
+                //for passport mandatory 
+                $('[id$=passport]').addClass('notnull');
+                $('[id$=passportLabel]').html('Passport No <span style="color:red;font-style:bold">*</span>');
+
+            }
+        });
+
+        if($('[id$=nationality]') .val() !='' && $('[id$=nationality]').val() !=null){
+            $('[id$=nationality]').trigger('change');
+        }
+
+        $('[id$=motherTongue]').change(function() {
+            $('.otherMotherTonguePanelId').hide();
+            if($(this).val() == 'Other') {
+                $('.otherMotherTonguePanelId').show();
+                $('[id$=otherMotherTongue]').addClass('notnull');
+            }else{
+                $('[id$=otherMotherTongue]').removeClass('notnull');
+                $('[id$=otherMotherTongue]').val('');
+            }
+        });
+
+        if($('[id$=motherTongue]').val() != null && $('[id$=motherTongue]').val() != ''){
+            $('[id$=motherTongue]').trigger('change');
+        }
+
+        // LinkedIn Validation
+        $(".linkedURLValidation").change(function(){
+           console.log('validation for linked url');
+           var linkedinURL = $(this).val();
+        //    var pattern = '/(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/';
+        //     pattern = new RegExp(pattern);
+            if(!(/(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/).test(linkedinURL)){  
+                showHtmlMessage('Invalid Information','Please Enter valid Linkedin URL');
+                $(this).val('');
+                $(this).addClass('');
+            }
+        });
+        
+        if($(".linkedURLValidation").val() !='' && $(".linkedURLValidation").val() !=null){
+            $(".linkedURLValidation").trigger('change');
+        }
+
+        //Pan Card Validation
+        $('[id$=PanCardno]').change(function (event) {     
+            var regExp = /[a-zA-z]{5}\d{4}[a-zA-Z]{1}/; 
+            var txtpan = $(this).val(); 
+            if (txtpan.length == 10 ) { 
+                if( !txtpan.match(regExp) ){ 
+                    $(this).val('');
+                    showHtmlMessage('Invalid Information','Pan Card Number Invalid.');
+                }
+            } 
+            else { 
+                $(this).val(''); 
+                showHtmlMessage('Invalid Information','Pan Card Number Invalid.');
+            } 
+
+        });
+
+        if($('[id$=PanCardno]').val() !='' && $('[id$=PanCardno]').val() !=null){
+            $('[id$=PanCardno]').trigger('change');
+        }
+
+        //Passport Validation
+        $('[id$=passport]').change(function (event) {  
+            if($('[id$=nationality]').val() == 'Indian') {
+                var regExp = /[a-zA-Z]{1}\d{7}/; 
+                var txtpan = $(this).val(); 
+                if (txtpan.length == 8 ) { 
+                    if( !txtpan.match(regExp) ){ 
+                        $(this).val('');
+                        showHtmlMessage('Invalid Information','Passport Number Invalid.');
+                    }
+                } 
+                else { 
+                    $(this).val(''); 
+                    showHtmlMessage('Invalid Information','Passport Number Invalid.');
+                } 
+            }   
+        });
+
+        if($('[id$=passport]').val() !='' && $('[id$=passport]').val() !=null){
+            $('[id$=passport]').trigger('change');
+        }
+
+        $('[id$=diffAbled]').change(function () {
+            var differentlyAbled = $(this).val();
+            if (differentlyAbled == 'Yes') {
+                $('[id$=disability]').addClass('notnull');
+                $('[id$=disabilityPanel]').css('display', 'block');
+            } else {
+                $('[id$=disability]').removeClass('notnull');
+                $('[id$=disabilityPanel]').css('display', 'none');
+                if ($('[id$=disability]').val()) {
+                    $('[id$=disability]').val('');
+                }
+            }
+        });
+
+        if ($('[id$=diffAbled]').val() != '' && $('[id$=diffAbled]').val() != null) {
+            $('[id$=diffAbled]').trigger('change');
+        }
+
+        $("#datetimepicker2").on("dp.change", function(e) { // Date Of Birth 
+            var dateString = e.date.format(e.date._f);
+            var today = new Date();
+            var datestr = (dateString.split(" ")[0]).split("/");
+            var birthDate  =  new Date(datestr[2],datestr[1]-1,datestr[0]);
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
+            {
+                age--;
+            }
+            $('[id$=ageAsOn]').val(age);
+            if(age < 17){
+                showHtmlMessage('Invalid Details','Date of Birth cannot be less than 17 years.');
+                $('[id$=dateOfBirth]').val('');
+            }
+        });
+        
+        $("#datetimepicker1").on("dp.change", function(e) { // Date Of Birth 
+            var dateString = e.date.format(e.date._f);
+            var today = new Date();
+            var datestr = (dateString.split(" ")[0]).split("/");
+            var birthDate  =  new Date(datestr[2],datestr[1]-1,datestr[0]);
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
+            {
+                age--;
+            }
+            $('[id$=ageAsOn]').val(age);
+            if(age < 17){
+                showHtmlMessage('Invalid Details','Date of Birth cannot be less than 17 years.');
+                $('[id$=dateOfBirthRegistn]').val('');
+            }
+        });
+       
+        $(".doNotAllowedSpecialCharacter").keypress(function (e){
+            var regex = new RegExp("^[a-z  A-Z]*$");
+            var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (!regex.test(str) && str !="'") {
+                $(this).focus();
+                $(this).val('');
+                e.preventDefault();
+                $(this).closest('div.form-group').children('span.error').remove();
+                $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+            }else{
+                $(this).closest('div.form-group').children('span.error').remove();
+            }
+        });
+
+        $('[id$=maritalStatus]').change(function (e){
+            let maritalStatus = $('[id$=maritalStatus]').val();
+            if(maritalStatus === 'Married'){
+                $("[id$=spousePanelId]").show();
+                $("[id$=spouseName]").addClass('notnull');
+            }else{
+                $("[id$=spousePanelId]").hide();
+                $("[id$=spouseName]").removeClass('notnull').val('');
+                $("[id$=spouseName]").closest('div.form-group').children('span.error').remove();
+
+            }
+        });
+
+        if($('[id$=maritalStatus]') .val() !='' && $('[id$=maritalStatus]').val() !=null){
+            $('[id$=maritalStatus]').trigger('change');
+        }
+
+        /*--------------------------------------------------------------end---------------------------------------------------------*/
+        
+        /*---------------------------------------------------------Program Details Validation ----------------------------------------*/
+            $('[id$=defencePerson]').change(function(){
+                var defencePerson = $(this).val();
+                if(defencePerson =='Yes'){
+                    $('[id$=serviceNumber]').addClass('notnull');
+                    $('[id$=relationShip]').addClass('notnull');
+                    $('[id$=dateOfComission]').addClass('notnull');
+                    $('[id$=armedService]').addClass('notnull');
+                    $('[id$=rank]').addClass('notnull');
+                }else{
+                    $('[id$=serviceNumber]').removeClass('notnull');
+                    $('[id$=relationShip]').removeClass('notnull');
+                    $('[id$=dateOfComission]').removeClass('notnull');
+                    $('[id$=armedService]').removeClass('notnull');
+                    $('[id$=rank]').removeClass('notnull');
+                }
+            });
+        
+            $('input[name$=existingStudent]').change(function(){
+                var selectedOpt = this.value;
+                if(selectedOpt != undefined){
+                    $('[id$=hdnexistingStudentId]').val(selectedOpt);
+                    if(selectedOpt == 'Yes'){
+                        $('[id$=courseName]').addClass('notnull');
+                        $('[id$=yearOfPassing]').addClass('notnull');
+                        $('[id$=monthOfPassing]').addClass('notnull');
+                    }else{
+                        $('[id$=courseName]').removeClass('notnull');
+                        $('[id$=yearOfPassing]').removeClass('notnull');
+                        $('[id$=monthOfPassing]').removeClass('notnull');
+                    }
+                }
+            });
+            
+            $('[id$=optForLateral]').change(function(){
+                var selectedOpt = this.value;
+                if(selectedOpt != undefined){
+                    $('[id$=hdnIsLateral]').val(selectedOpt);
+                    if(selectedOpt =='Yes'){
+                        $('[id$=studentNumberForLateral]').addClass('notnull');
+                    }else{
+                        $('[id$=studentNumberForLateral]').removeClass('notnull');
+                    }
+                }               
+            });
+            
+            $('input[name$=programRadio]').change(function() {
+                 let selectedOption = this.value;
+                 if(selectedOption!=undefined) {
+                    $('[id$=hdnChooseProgram]').val(selectedOption);
+                     ChooseProgramChange();
+                 }
+             });
+            
+            //trigger choose a program 
+            $('input[name$=programRadio]').trigger('click');
+             
+        /*--------------------------------------------------------------end------------------------------------------------------------*/
+        
+        /*------------------------------------------------------------------------Address Information ----------------------------------*/
+            if($('[id$=shippingHouseNo]').val() !='' && $('[id$=shippingHouseNo]').val() !=null){
+                showShippingAddressPreview();
+            }
+            
+            $('.addressPreview').change(function(){
+                showShippingAddressPreview();
+            });
+            
+            $('input[name$=permanentAddressChoice]').change(function(){
+                let selectedOption = this.value;
+                if(selectedOption!=undefined) {
+                    $('[id$=hdnPermenentAddressChoice]').val(selectedOption);
+                    if(selectedOption =='NewAddress'){
+                        $('#newPermanentAddress').show();
+                        $('.permenentAddress').addClass('notnull');
+                        $('[id$=permanentLocality]').removeClass('notnull');
+                        
+                    }else{
+                        $('#newPermanentAddress').hide();
+                        $('.permenentAddress').removeClass('notnull');
+                    }
+                }
+            });
+            
+            $('[id$=shippingPinCode]').change(function(){
+                var pincode = $(this).val();
+                $('[id$=hdnpostalCode]').val(pincode);
+                $('[id$=hdnAddressChoice]').val('Shipping Address');
+                getShipingCountryStateCityFromPostalAPI();
+            });
+            
+            $('[id$=permenentPinCode]').change(function(){
+                var pincode = $(this).val();
+                $('[id$=hdnpostalCode]').val(pincode);
+                $('[id$=hdnAddressChoice]').val('Permanent Address');
+                getPermanentCountryStateCityFromPostalAPI();
+            });
+
+            //To set the radio button for permanentAddressChoice 
+            if( $('[id$=hdnPermenentAddressChoice]').val() != '' && $('[id$=hdnPermenentAddressChoice]').val() != null){
+                var permanentAddressChoice = $('[id$=hdnPermenentAddressChoice]').val();
+                $('input[name$=permanentAddressChoice]').filter('[value="'+permanentAddressChoice+'"]').prop('checked', true).trigger('change');
+            }else{
+                $('input[name$=permanentAddressChoice]').filter('[value="SameAsShipping"]').prop('checked', true).trigger('change');
+            }
+
+            //To set the radio button for Study Kit Material.
+            // $('input[name$=studyKitDeliveryChoice]').change(function(){ 
+            //     let selectedOption = this.value;
+            //     let el = $(this);
+            //     if(selectedOption!=undefined) { 
+            //         $('[id$=selfLearningMaterial]').val(selectedOption);
+            //         if(selectedOption == 'Send to my Information Centre. I will pick up.') {
+            //             let centerName = $('[id$=selfLearningMaterial]').data('center');
+            //             let centerAddress = $('[id$=selfLearningMaterial]').data('address');
+            //             let htmlContent = `<span>Please note that you have selected <b>${centerName}</b> as your Center.<br/><br/>Address:${centerAddress}</span>`;
+            //             swal({
+            //                 title: 'Important Message',
+            //                 html: htmlContent,
+            //                 type: 'warning',
+            //                 showCancelButton: true,
+            //                 confirmButtonColor: '#3085d6',
+            //                 cancelButtonColor: '#d33',
+            //                 confirmButtonText: 'I Agree',
+            //                 cancelButtonText: 'I Disagree'
+            //             }).then((result) => {
+            //                 if (result.dismiss == 'cancel') {
+            //                     console.log(result.dismiss);    
+            //                     console.log(el);
+            //                     el.prop('checked',false);
+            //                 }
+            //             });
+            //         }
+            //     }
+            // });
+
+            //To set the radio button for Study Kit Material.
+            // if( $('[id$=selfLearningMaterial]').val() != '' && $('[id$=selfLearningMaterial]').val() != null){
+            //     let selfLearningMaterial = $('[id$=selfLearningMaterial]').val();
+            //     $('input[name$=studyKitDeliveryChoice]').filter('[value="'+selfLearningMaterial+'"]').prop('checked', true);
+            // }
+
+        /*----------------------------------------------------------------end -----------------------------------------------------------*/
+        
+        /*-------------------------------------------------------------------------Program Details ------------------------------------------*/
+            //to disable the after preference if current is empty
+            $('.pref').change(function(e) {
+                
+                let prefVal = $(this).val();
+                let currIndex =  $('.pref').index(this);
+                let checkProg = $('.pref').length;
+                if(!prefVal){
+                    let index = parseInt(currIndex) + 1;
+                    for(var i=index;i<checkProg;i++){
+                        $('.pref').eq(i).prop('disabled',true).val('');
+                    }
+                }
+            });
+
+            //to enable prefence on load.
+            $('.pref').each(function (index,elem){
+                if($(elem).val() != '' && $(elem).val() != null){
+                    $(elem).prop('disabled',false);
+                    $('.pref').eq(index+1).prop('disabled',false);
+                }
+            });
+
+            //to trigger preference value1
+            $('[id$=Programs_ProgramDetails]').change(function(){
+                let currentVal = $("option:selected",this).text();
+                    $('[id$=hdnProgramPreference1]').val(currentVal);
+            });
+
+            if($('[id$=Programs_ProgramDetails]').val() != null && $('[id$=Programs_ProgramDetails]').val() != '') {
+                $('[id$=Programs_ProgramDetails]').trigger('change');
+            }
+            
+
+            $('input[name$=programRadio_ProgramDetails]').change(function() {
+                let selectedOption = this.value;
+                if(selectedOption!=undefined) {
+                    $('[id$=hdnChooseProgram]').val(selectedOption);
+                    if(selectedOption == 'Master Programs') {
+                        $('[id$=specialisationTypePanelId]').show();
+                        $('.specialisationType').addClass('notnull');
+                    }else{
+                        $('[id$=specialisationTypePanelId]').hide();
+                        $('.specialisationType').removeClass('notnull');
+                    }
+                    ChooseProgramChangeProgramDetails();
+                }
+            });
+
+           $('[id$=chooseProgramPanel_ProgramSpecalization]').change(function () {
+                $('input[name$=programRadio_ProgramDetails]').trigger('change');
+                $('[id$=specialisationType]').val('');
+
+                // if ($(this).val() == 'MBA (WX)') {
+                //     $('[id$=photoUploadContainer]').show();
+                // } else {
+                //     $('[id$=photoUploadContainer]').hide();
+                // }
+            });
+
+            $('[id$=specialisationType]').change(function(){
+                let selectedOption = $(this).val();
+                if(selectedOption == 'Dual Specialisation') {
+                    $('.programPreferenceClass2Panel').show();
+                    $('.programPreferenceClass2').addClass('notnull');
+                }else {
+                    $('.programPreferenceClass2Panel').hide();
+                    $('.programPreferenceClass2').removeClass('notnull').val('');
+                }
+            });
+
+
+            if($('[id$=specialisationType]').val() != null && $('[id$=specialisationType]').val() != ''){
+                $('[id$=specialisationType]').trigger('change');
+            }
+            
+            $('input[name$=alumniStudent]').change(function() {
+                let selectedOption = this.value;
+                var chooseProgram = $('[id$=hdnChooseProgram]').val();
+                if(selectedOption!=undefined) {
+                    if(selectedOption =='Yes'){
+                        $('#showAlumniSection').show();
+                        $('[id$=courseName]').addClass('notnull');
+                        $('[id$=yrOfPassing]').addClass('notnull');
+                        $('[id$=monthOfPassing]').addClass('notnull');
+                        $('[id$=studentNumber]').addClass('notnull');
+                    }else{
+                        $('#showAlumniSection').hide();
+                        $('[id$=courseName]').removeClass('notnull');
+                        $('[id$=yrOfPassing]').removeClass('notnull');
+                        $('[id$=monthOfPassing]').removeClass('notnull');
+                        $('[id$=studentNumber]').removeClass('notnull');
+                    }
+                }
+            });
+             
+            $('body').on('change','.validateLateralStudentNo', function() {
+                let studentNumber = $(this).val();
+                if(studentNumber != undefined){
+                    if(!studentNumber.startsWith('77') && !studentNumber.startsWith('79')){
+                        showHtmlMessage('Important Information','Please enter Valid Student Number');
+                        $(this).val('');
+                    }else if(studentNumber.length != 11){
+                        showHtmlMessage('Important Information','Please enter 11 digit Student Number');
+                        $(this).val('');
+                    }else{
+                        getLateralStudentDetailsAPI();
+                    }
+                }
+            });
+
+            if($('[id$=studentNumber]').val() != '' && $('[id$=studentNumber]').val() != null){
+                $('input[name$=alumniStudent]').filter('[value="Yes"]').prop('checked', true).trigger('change');
+            }else{
+                $('input[name$=alumniStudent]').filter('[value="No"]').prop('checked', true).trigger('change');
+            }
+
+        /*----------------------------------------------------------------------------end-----------------------------------------------------*/
+        
+        /*--------------------------------------------------------------------Academic Details -----------------------------------------*/
+            
+            
+            $('[id$=sscBoard]').change(function(){
+                var selectedOpt = $(this).val();
+                if(selectedOpt != undefined){
+                    if(selectedOpt == 'State Boards/Others'){
+                        $('[id$=sscOtherBoardPanelId]').show();
+                        $('[id$=sscOtherStateBoard]').addClass('notnull');
+                    }else{
+                        $('[id$=sscOtherBoardPanelId]').hide();
+                        $('[id$=sscOtherStateBoard]').removeClass('notnull');
+                    }
+                }
+            });
+
+            if($('[id$=sscBoard]').val() !='' && $('[id$=sscBoard]').val() !=null){
+                $('[id$=sscBoard]').trigger('change');
+            }
+            
+            $('[id$=hscStateBoard]').change(function(){
+                var selectedOpt = $(this).val();
+                if(selectedOpt != undefined){
+                    if(selectedOpt =='State Boards/Others'){
+                        $('[id$=hscOtherStateBoardPanelId]').show();
+                        $('[id$=hscOtherStateBoard]').addClass('notnull');
+                    }else{
+                        $('[id$=hscOtherStateBoardPanelId]').hide();
+                        $('[id$=hscOtherStateBoard]').removeClass('notnull');
+                    }
+                }
+            });
+
+            if($('[id$=hscStateBoard]').val() !='' && $('[id$=hscStateBoard]').val() !=null){
+                $('[id$=hscStateBoard]').trigger('change');
+            }
+            
+            $('[id$=hscOrDiploma]').change(function(){
+                let selectedOption = $(this).val();
+                document.getElementById("diploam_HSCPanelId").innerHTML = selectedOption;
+                $('[id$=DiplomaSectionPanelId]').hide();
+                $('[id$=HSCSectionPanelId]').hide();
+                
+                if(selectedOption == 'XII/HSC' || selectedOption == '12th Grade'){
+                    $('[id$=HSCSectionPanelId]').show();
+                    $('.hscDetails').addClass('notnull');
+                    $('.diplomaDetails').removeClass('notnull');
+                }else if(selectedOption == 'Diploma'){
+                    $('[id$=DiplomaSectionPanelId]').show();
+                    $('.hscDetails').removeClass('notnull');
+                    $('.diplomaDetails').addClass('notnull');
+                }
+            });
+
+            //if diploma duration value is selected.
+            if($('[id$=hdnDiplomayrOfCompletion]').val() != '' && $('[id$=hdnDiplomayrOfCompletion]').val() != null) {
+                let textYear = $('[id$=hdnDiplomayrOfCompletion]').val();
+                year = parseFloat(textYear.replace(/,/g, ''));
+                $('#diplomayrOfCompletion').val(year);
+                $('#diplomayrOfCompletion').trigger('change');
+            }
+
+            $('#diplomayrOfCompletion').change(function () {
+                if($(this).val() != null && $(this).val() != ''){
+                    $('[id$=hdnDiplomayrOfCompletion]').val($(this).val());
+                }
+            })
+
+
+            //to show others option for graduation degree
+            $('[id$=degreeName]').change(function() {
+                let degreeName = $(this).val();
+                if(degreeName == 'Others'){
+                    $('[id$=otherDegreeName]').addClass('notnull');
+                    $('[id$=OtherDegreeNamePanelId]').show();
+                }else{
+                    $('[id$=otherDegreeName]').val('').removeClass('notnull');
+                    $('[id$=OtherDegreeNamePanelId]').hide();
+                }
+            });
+
+            if($('[id$=degreeName]').val() != null && $('[id$=degreeName]').val() != ''){
+                $('[id$=degreeName]').trigger('change');
+            }
+
+            $('body').on('change','.masterProgramNamePicklist', function(event){
+                let degreeName = $(this).val();
+                if(degreeName == 'Other'){
+                    $('[id$=otherProgramName]').addClass('notnull');
+                    $('[id$=OtherProgramNamePanelId]').show();
+                }else{
+                    $('[id$=otherProgramName]').val('').removeClass('notnull');
+                    $('[id$=OtherProgramNamePanelId]').hide();
+                }
+            });
+
+            if($('.masterProgramNamePicklist').val() != null && $('.masterProgramNamePicklist').val() != ''){
+                $('.masterProgramNamePicklist').trigger('change');
+            }
+
+            // Remove Master options
+            var degreeNameOptions = [];
+            $('[id$=degreeName] > option').each(function() {
+                let degreeNameVal = $(this).val();
+                if(degreeNameVal && degreeNameVal.match("^Master")) {
+                    degreeNameOptions.push(degreeNameVal);
+                }
+            });
+
+            $('[id$=degreeName] > option').filter(function () {
+                return $.inArray(this.value, degreeNameOptions) !== -1
+            }).remove();
+
+            //to show other option degree mode is any other
+            $('.degreeMode').change(function () {
+                let indexVal = $('.degreeMode').index(this);
+                if($(this).val() == 'Any Other'){
+                    $('.otherDegreeModePanel').eq(indexVal).show();
+                    $('.otherDegreeMode').eq(indexVal).addClass('notnull');
+                }else{
+                    $('.otherDegreeModePanel').eq(indexVal).hide();
+                    $('.otherDegreeMode').eq(indexVal).val('');
+                    $('.otherDegreeMode').eq(indexVal).removeClass('notnull');
+                }
+            });
+
+            $('.degreeMode').each(function(){
+                $(this).trigger('change');
+            });
+
+            $('.datetimepicker4').datetimepicker({
+                viewMode: 'years',
+                format: 'YYYY',
+                minDate: moment().add(-50,'years'),
+                maxDate: moment(),
+                useCurrent: false
+            });
+
+            //to covert duration of program from months to year.
+            $('.DurationInMonth').change(function() {
+                let IndexVal = $('.DurationInMonth').index(this);
+                if($(this).val() > 0) {
+                    let Year = parseInt($(this).val()/12);
+                    let mod = $(this).val()%12;
+                    let total = 0;
+                    if(mod > 0){
+                        total = Year+'.'+mod;
+                    }else{
+                        total = Year;
+                    }
+                    $('.DurationInYear').eq(IndexVal).val(total);
+                }else{
+                    $(this).val('');
+                    $('.DurationInYear').eq(IndexVal).val('');
+                }
+                
+            });
+
+            $('.DurationInMonth').trigger('change');
+
+            //for select2 university list.
+            $('.autoCompleteUniversity').select2({
+                "language": {
+                    "noResults": function(){
+                        return "No Results Found. <a href='javascript:void(0);' class='btn btn-primary selectOther' onclick='selectOther(this);'>Other</a>";
+                    }
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                }
+            }); 
+
+            $('.autoCompleteUniversity').siblings('span').find('span.select2-selection--single').css({"border-style":"none","outline":"none","height":"32px"});
+            
+            $('body').on('change','.autoCompleteUniversity', function(){
+                let option = $(this).val();
+                let indexVal = $(".autoCompleteUniversity").index(this);
+                console.log('option -->'+option);
+
+                if($(this).hasClass('degreeDetails')) {
+                    $('[id$=hiddendegreeUniversity]').val(option);
+                }
+
+                if($(this).hasClass('Acad1')) {
+                    $('[id$=programUniversity]').val(option);
+                }
+                
+                if(option == 'Other'){ 
+                    $('.otherUniversityNamePanel').eq(indexVal).show();
+                    $('.otherUniversityName').eq(indexVal).addClass('notnull');
+                }else{
+                    $('.otherUniversityNamePanel').eq(indexVal).hide();
+                    $('.otherUniversityName').eq(indexVal).removeClass('notnull');
+                    $('.otherUniversityName').eq(indexVal).val('');
+                    $('.otherUniversityName').prop('required',false);
+                }
+
+                $.each(responseData, function(i, item) {
+                    if(item.University_Name__c == option && !$(this).hasClass('Acad1')){
+                        $('.hdnUniversityType').eq(indexVal).val(item.University_Type__c);
+                    }
+                });
+                
+            });
+
+            // $('.autoCompleteUniversity').each(function(){
+            //     if(!responseData){
+            //         $.getJSON("{!URLFOR($Resource.UniversityNameJS)}", function( json ) {
+            //             responseData = json;
+            //         }).done(function(){
+            //             $(this).trigger('change');
+            //             console.log('triggerd');
+            //         });
+            //     }else{
+            //         $(this).trigger('change');
+            //         console.log('triggerd');
+            //     } 
+            // });
+
+            $('.universtityNameText').change(function () {
+                if($(this).val()) {
+                    console.log('universtityNameText '+$(this).val());
+                    $('[id$=programUniversity]').val($(this).val());
+                }
+            });
+
+        /*---------------------------------------------------------------------end------------------------------------------------------*/
+        
+        /*--------------------------------------------------------Work Experience --------------------------------------------------------*/
+
+        $('body').on('change','.totalWPEXP',function() {
+            if($(this).val()) {
+                $('.nonWorkExpPanel').hide();
+                $('.workExpPanel').show();
+                $('.WKEXPDetails').addClass('notnull');
+                $('[id$=ReasonForNotWorking]').removeClass('notnull');
+                $('[id$=ReasonForNotWorking]').val('');
+                $('[id$=ReasonForNotWorking]').removeAttr('required');
+                $('[id$=ReasonForNotWorking]').trigger('change');
+
+                $('.StartDate').each(function (index,elem) {
+                    var _currentlyWorking = $('.hdnCurrentlyWorking').eq(index).val();
+                    if(_currentlyWorking == 'true') {
+                        $('.EndDate').eq(index).removeClass('notnull');
+                    }
+                });
+            }else{
+                $('.nonWorkExpPanel').show();
+                $('.workExpPanel').hide();
+                $('.WKEXPDetails').removeClass('notnull');
+                $('.WKEXPDetails').val('');
+                $('[id$=ReasonForNotWorking]').addClass('notnull');
+                $('[id$=ReasonForNotWorking]').trigger('change');
+            }
+        });
+
+        $('[id$=ReasonForNotWorking]').change(function () {
+            $('.nonWorkExpInnerPanel').hide();
+            if($(this).val() == 'Other') {
+                $('.nonWorkExpInnerPanel').show();
+                $('[id$=OtherReasonForNotWorkingInner]').addClass('notnull');
+            }else{
+                $('[id$=OtherReasonForNotWorkingInner]').removeClass('notnull');
+                $('[id$=OtherReasonForNotWorkingInner]').val('');
+            }
+        });
+
+        if($('[id$=ReasonForNotWorking]').val() != null && $('[id$=ReasonForNotWorking]').val() != '') {
+            $('[id$=ReasonForNotWorking]').trigger('change');
+        }
+
+        if($('[id$=totalWPEXP]').val()) {
+            $('[id$=totalWPEXP]').trigger('change');
+        }
+
+        // to disable Work Expereince in Years field
+        $('body').on('focus','.expereinceInYears', function(){
+            $(this).attr('readonly','true');
+        });
+
+        //to load objDate.
+        loadObjDate();
+        
+        $('body').on('dp.change', '.datetimepicker3', function(e) {
+            if($(this).find('input').hasClass('StartDate')){
+                StartDateFunction($(this));
+            }else if($(this).find('input').hasClass('EndDate')){
+                EndDateFunction($(this));
+            }
+        });
+
+        //to show other option Field in Work Experience is any other
+        $('.otherOption').each(function(index, elem) {
+            let indexVal = $(this).data('count');
+            let field = $(this).data('id');
+            enableOtherField(indexVal,this,field);
+        });
+
+        $('body').on('custom-event','.otherOption', function(){
+            let indexVal = $(this).data('count');
+            let field = $(this).data('id');
+            enableOtherField(indexVal,this,field);
+        });
+
+        //to load autocomplete on comapny field.
+        $('.autoCompleteCompany').keyup(function(){
+            var options = {
+                url :'{!JSENCODE($Resource.CompanyNames)}',
+                getValue: "name",
+                list: {
+                    match: {
+                        enabled: true
+                    }
+                }
+            };  
+            $(this).easyAutocomplete(options);
+        });
+    
+        $('body').on('change','.autoCompleteCompany', function(){
+            let option = $(this).val();
+            let indexVal = $(".autoCompleteCompany").index(this);
+            $('.hdnCompanyName').eq(indexVal).val(option);
+            if(option =='Other'){
+                $('.otherCompanyNamePanel').eq(indexVal).show();
+                $('.otherCompanyName').eq(indexVal).addClass('notnull');
+            }else{
+                $('.otherCompanyNamePanel').eq(indexVal).hide();
+                $('.otherCompanyName').eq(indexVal).removeClass('notnull');
+            }
+        });
+
+        $('.hdnCompanyName').each(function(index,elem) {
+            if($(this).val() != null && $(this).val() != ''){
+                $('.autoCompleteCompany').eq(index).val($(this).val());
+                $('.autoCompleteCompany').eq(index).trigger('change');
+            }
+        });
+
+        $('body').on('custom-event','.hdnCompanyName', function(){
+            let indexVal = $('.hdnCompanyName').index(this);
+            if($(this).val() != null && $(this).val() != ''){
+                $('.autoCompleteCompany').eq(indexVal).val($(this).val());
+                $('.autoCompleteCompany').eq(indexVal).trigger('change');
+            }
+        });
+        
+        /* -- For Current Work Experience -- */
+        $('body').on('change','.currentlyWorking', function() {
+            $('input[name="' + this.name + '"]').not(this).prop('checked', false);
+            $('.hdnCurrentlyWorking').val('false');
+            $('.EndDate').addClass('notnull');
+            $('.EndDate').attr('disabled',false);
+            let indexVal = $(this).data('id');
+            if($(this).prop('checked') == true) {
+                $('.end').eq(indexVal).data("DateTimePicker").clear();
+                $('.hdnCurrentlyWorking').eq(indexVal).val('true');
+                $('.EndDate').eq(indexVal).attr('disabled',true);
+                $('.EndDate').eq(indexVal).removeClass('notnull');
+                $('.expereinceInYears').eq(indexVal).val('');
+                objDate[indexVal].enddate = moment().format('DD/MM/YYYY');
+
+            }else if($('.StartDate').eq(indexVal).val()) {
+                $('.EndDate').eq(indexVal).attr('disabled',false);
+                $('.EndDate').eq(indexVal).addClass('notnull');
+                objDate[indexVal].enddate = '';
+            }
+                let date1 = $('.StartDate').eq(indexVal).val();
+                let date2 = $('.EndDate').eq(indexVal).val();
+                let date = calculateDateDiff(date1, date2, indexVal);
+                if (date.indexOf('NaN') == -1) {
+                    $('.expereinceInYears').eq(indexVal).val(date);
+                    // to store the end date in the object if start date exist
+                    // objDate[indexVal].enddate = enddate;
+                } else {
+                    $('.expereinceInYears').eq(indexVal).val('');
+                }
+        });
+
+        /*------------------------------------------------------------end-----------------------------------------------------------------*/
+        /*---------------------------------------------- custom js---------------------------------------------------*/
+        
+
+        for(var i= 1; i <= totalAcad; i++){
+            if($('.Acad'+i).val() != '' && $('.Acad'+i).val() != null){
+                checkCaseAdd(i);
+            }
+        }
+
+        // To stop page reload.
+        window.onbeforeunload = function (e) {
+        // let otpModal = checkVisible($('.otpPopUp'));
+        // system.debug('otpModal vis --> ' + otpModal);
+        let isOTPPopUpVisible = $(".otpPopUp").is(":visible");
+        let isAlertOtpPopup = $("[id$=AlertPopUpForOTPMode]").is(":visible");
+            if (!formSubmitted && !isOTPPopUpVisible && !isAlertOtpPopup) {
+                var message = "You have not saved your changes.", e = e || window.event;
+                if (e) {
+                    e.returnValue = message;
+                }
+                return message;
+            }
+        }
+
+        
+    });
+
+    function setBComProgram(panelId, picklistId) {
+        console.log('method called');
+        $(`[id$=${panelId}]`).hide();
+
+        $(`[id$=${picklistId}] option`).filter(function() {
+            return this.text == 'Bachelor of Commerce'; 
+        }).attr('selected', true);
+    }
+
+    function checkVisible(elm) {
+        var rect = elm.getBoundingClientRect();
+        var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+        return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
+    }
+    
+    function validateForm(id) {
+        var flag = 0;
+        $(id).find('.notnull').each(function () {
+            if(!$(this).prop('disabled')) {
+                if($(this).val() !=null){
+                    if ($(this).val().trim().length == 0) {
+                        flag = 1;
+                        console.log('Id Required Value --'+$(this).attr('id'));
+                        $(this).focus();
+                        $(this).closest('div.form-group').children('span.error').remove();
+                        $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+                    }else if($(this).attr('type') == 'radio') {
+                        let attrName = $(this).attr('name');
+                        console.log('radio btn checked'+$("input[name='"+attrName+"']:checked").val());
+                        if(!$("input[name='"+attrName+"']:checked").val()) {
+                            flag = 1;
+                            console.log('Id Required Value --'+$(this).attr('id'));
+                            $(this).focus();
+                            $(this).siblings('span.error').remove();
+                            $(this).siblings('label').after('<br/> <span class="error" style="color:red;font-size: 13px;">Please enter value.</span>');
+                        }
+                    }
+                }else{
+                    flag = 1;
+                    console.log('Id Required Value --'+$(this).attr('id'));
+                    $(this).focus();
+                    $(this).closest('div.form-group').children('span.error').remove();
+                    $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');    
+                }
+            }
+        });
+        return flag;  
+    }
+    
+    function isValidEmailAddress(emailAddress) {
+        // var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+        var pattern = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g);
+        // alert( pattern.test(emailAddress) );
+        return pattern.test(emailAddress);
+    } 
+     /*--------------------show error Popup message -------------------*/
+        function showHtmlMessage(header,message) {
+            swal({
+                title: header+"!",
+                text: message,
+                type: "warning"
+            });
+        }
+     /*--------------------------------Page Navigation Start -----------------------------------------------------------------*/
+        function onClickNextToPersonalInformationTab(){
+            var flag = validateForm('[id$=generateRegistrationNo]');
+            if (flag != 0 ) {
+                showHtmlMessage('Invalid Details','Please fill in all the required fields.');
+                $('ul.setup-panel li a[href="#generateRegistrationNoPanel"]').trigger('click');
+            }else{
+                $('[id$=generateRegistrationNoTab]').addClass('disabled');
+                $('[id$=personalInformationTab]').removeClass('disabled');
+                $('ul.setup-panel li a[href="#personalInformationPanel"]').trigger('click');
+            }
+        }
+        
+        function onClickNextToAddressInformationTab(){
+            var flag = validateForm('[id$=personalInformation]');
+            if (flag != 0 ) {
+                showHtmlMessage('Invalid Details','Please fill in all the required fields.');
+                $('ul.setup-panel li a[href="#personalInformationPanel"]').trigger('click');
+            }else{
+                $('[id$=personalInformationTab]').removeClass('disabled');
+                $('[id$=addressInformationTab]').removeClass('disabled');
+                $('ul.setup-panel li a[href="#addressInformationPanel"]').trigger('click');
+            }
+        }
+        
+        function onClickNextToProgramDetailsTab(){
+            var flag = validateForm('[id$=addressInformation]');
+            var strSecToShow = $('[id$=strSecToShow]').val();
+            var message = $('[id$=message]').val();
+
+            if(strSecToShow == 'PopUpError') {
+                showHtmlMessage('Important Message!',message);
+                $('[id$=strSecToShow]').val('');
+                $('[id$=message]').val('');
+            }else if (flag != 0 ) {
+                showHtmlMessage('Invalid Details','Please fill in all the required fields.');
+                $('ul.setup-panel li a[href="#addressInformationPanel"]').trigger('click');
+            }else{
+                $('[id$=programDetailsTab]').removeClass('disabled');
+                $('ul.setup-panel li a[href="#programDetailsPanel"]').trigger('click');
+            }
+        }
+        
+        function onClickNextToAcademicInformationTab(){
+            var flag = validateForm('[id$=programDetails]');
+            var strSecToShow = $('[id$=strSecToShow]').val();
+            var message = $('[id$=message]').val();
+
+            if(strSecToShow == 'PopUpError') {
+                showHtmlMessage('Important Message!',message);
+                $('[id$=strSecToShow]').val('');
+                $('[id$=message]').val('');
+            }else if (flag != 0 ) {
+                showHtmlMessage('Invalid Details','Please fill in all the required fields.');
+                $('ul.setup-panel li a[href="#programDetailsPanel"]').trigger('click');
+            }else{
+                $('[id$=academicInformationTab]').removeClass('disabled');
+                $('ul.setup-panel li a[href="#academicInformationPanel"]').trigger('click');
+            }
+        }
+        
+        function onClickNextToWorkExperienceTab(){
+            var flag = validateForm('[id$=academicInformation]');
+            var strSecToShow = $('[id$=strSecToShow]').val();
+            var message = $('[id$=message]').val();
+
+            if(strSecToShow == 'PopUpError') {
+                showHtmlMessage('Important Message!',message);
+                $('[id$=strSecToShow]').val('');
+                $('[id$=message]').val('');
+            }else if (flag != 0 ) {
+                showHtmlMessage('Invalid Details','Please fill in all the required fields.');
+                $('ul.setup-panel li a[href="#academicInformationPanel"]').trigger('click');
+            }else{
+                $('[id$=workExperienceTab]').removeClass('disabled');
+                $('ul.setup-panel li a[href="#workExperiencePanel"]').trigger('click');
+
+            }
+        }
+
+        function onSubmit(Id){
+            var flag = validateForm('[id$='+Id+']');
+
+            if (flag != 0 ) {
+                showHtmlMessage('Invalid Details','Please fill in all the required fields.');
+                $('ul.setup-panel li a[href="#'+Id+'Panel"]').trigger('click');
+                return false;
+            }else{
+                if(checkWorkExperience() && validateStudentImage() && checkLinkedInField()){
+                    formSubmitted = true;
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        }
+
+        function isPreviousPageToPersonalInformationTab(){
+            $('ul.setup-panel li a[href="#personalInformationPanel"]').trigger('click');
+        }
+        
+        function isPreviousPageToAddressInformationTab(){
+            $('ul.setup-panel li a[href="#addressInformationPanel"]').trigger('click');
+        }
+        
+        function isPreviousPageToProgramDetailsTab(){
+            $('ul.setup-panel li a[href="#programDetailsPanel"]').trigger('click');
+        }
+        
+        function isPreviousPageToAcademicInformationTab(){
+            $('ul.setup-panel li a[href="#academicInformationPanel"]').trigger('click');
+        }  
+
+        function isPreviousPageToWorkExperienceTab() {
+            $('ul.setup-panel li a[href="#workExperiencePanel"]').trigger('click');
+        }
+        
+        function gotoNextPage(){
+            var flag = validateForm('[id$=generateRegistrationNo]');
+            var ageAsOn = $('[id$=ageAsOn]').val();
+            if(ageAsOn < 17){
+                showHtmlMessage('Invalid Details','Date of Birth cannot be less than 17 years.');
+                $('[id$=dateOfBirthRegistn]').val('');
+                return false;
+            }else if (flag != 0 ) {
+                showHtmlMessage('Invalid Details','Please fill in all the required fields.');
+                return false;
+            }else{
+                formSubmitted = true;
+                return true;
+            }
+        } 
+        
+        function gotoAddressInformation(){
+            let ageAsOn = $('[id$=ageAsOn]').val();
+            if(ageAsOn < 17){
+                showHtmlMessage('Invalid Details','Date of Birth cannot be less than 17 years.');
+                $('[id$=dateOfBirth]').val('');
+                return false;
+            }else {
+                formSubmitted = validateStudentImage();
+                return formSubmitted;
+            }
+        }
+        
+        function gotoConfirmationPage(){
+            var flag = validateForm('[id$=workExperience]');
+            
+            if (flag != 0 ) {
+                showHtmlMessage('Invalid Details','Please fill in all the required fields.');
+                return false;
+            }else{
+                if(checkWorkExperience() && validateStudentImage() && checkLinkedInField()){
+                    formSubmitted = true;
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        }
+        
+        function showShippingAddressPreview(){
+            let addressPart = ' , ';
+             if($('[id$=shippingStreetName]').val()){
+                addressPart += $('[id$=shippingStreetName]').val()  + " , ";
+            }
+
+            if( $('[id$=shippinglocality]').val()){
+                addressPart += $('[id$=shippinglocality]').val() + " , ";
+            }
+           
+            $("#addressPreview").text('Shipping Address: ' +$('[id$=shippingHouseNo]').val() + addressPart + $('[id$=shippingCity]').val() + ' , '+$('[id$=shippingState]').val() + ' , '+$('[id$=shippingCountry]').val() +' - '+ $('[id$=shippingPinCode]').val() );
+            $('.pincodeCheck').parent().siblings('span').remove();
+        }
+
+        //To check PostalCode Request Success or Fail
+        function postalCodeStatus(val){
+            if($('[id$=postalCodeMessage]').val() == 'Error'){
+                $('.'+val).val('');
+                showHtmlMessage('Invalid Information','Please enter valid India Pin Code');
+            }
+        }
+        
+        function findLoginBrowserAndDisabled() { 
+             $('[id$=browserDisabledErrorId]').show();
+            //  if((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1 ) 
+            // {
+            //     $('.disabledButtonsAfterRegistrationWindowClosed').hide();
+            // }
+            // else 
+            if(navigator.userAgent.indexOf("Chrome") != -1 )
+            {
+                $('[id$=browserDisabledErrorId]').hide();
+            }
+            // else if(navigator.userAgent.indexOf("Safari") != -1)
+            // {
+            //     $('.disabledButtonsAfterRegistrationWindowClosed').hide();
+            // }
+            // else if(navigator.userAgent.indexOf("Firefox") != -1 ) 
+            // {
+            //      $('.disabledButtonsAfterRegistrationWindowClosed').hide();
+            // }
+            // else if((navigator.userAgent.indexOf("MSIE") != -1 ) || (!!document.documentMode == true )) //IF IE > 10
+            // {
+            //   $('.disabledButtonsAfterRegistrationWindowClosed').hide();
+            // }  
+            // else 
+            // {
+            //    $('.disabledButtonsAfterRegistrationWindowClosed').hide();
+            // }
+        }  
+
+        /*---------------------------------------------------------- For Program Details---------------------------------------------*/ 
+
+        //function to enabled next pref after selected prev pref and validate Academic BackGround
+
+        function enabledPref(cls,id){
+            var x ='.'+cls+'';
+            var selectedValue = [id.value];
+            $(x).removeAttr('disabled');
+            avoidDuplicate(id); 
+            
+        }
+        
+        function avoidDuplicate(id){
+            let checker = {};
+            $(".pref").each(function() {
+                let selection = $(this).val();
+                if($(this).data('id') == 1){
+                    selection = $("option:selected",this).val();
+                }
+                if(selection !='') {
+                    if ( checker[selection] ) {
+                        showHtmlMessage('Invalid Details','Duplicate Program Preference found!');
+                        id.value ="";
+                        return false;
+                    }else {
+                        checker[selection] = true;
+                    }
+                }    
+            });
+        }
+
+        function AlumniStatus(){
+            if($('[id$=AlumniMessage]').val() != '' && $('[id$=AlumniMessage]').val() != null){
+                $('[id$=studentNumber]').val('');
+                showHtmlMessage('Invalid Information',$('[id$=AlumniMessage]').val());
+            }
+        }
+        
+
+        /*---------------------------------------------------------- For Additional Qualification ---------------------------------------------*/       
+        function Qualification(check) {
+            if(check==1) {
+                //to add academic qualification
+                console.log('totalAcad-->'+totalAcad);
+                switch (totalAcad) {
+                    case 3:
+                        checkCaseAdd(1);
+                        break;
+                    case 2:
+                        checkCaseAdd(2);
+                        break;
+                    case 1:
+                        checkCaseAdd(3);
+                }
+            }else if(check==0) {
+                //to remove academic qualification
+                switch (totalAcad) {
+                    case 0:
+                        checkCaseRemove(3);
+                        break;
+                    case 1:
+                        checkCaseRemove(2);
+                        break;
+                    case 2:
+                        checkCaseRemove(1);
+                }
+            }
+        }
+
+        function checkCaseAdd(Id){
+            $('[id$=Acad'+Id+']').show();
+            $('.Acad'+Id).addClass('notnull');
+            totalAcad--;
+            hideRemoveBtn();
+        }
+        
+        function checkCaseRemove(Id){
+            $('[id$=Acad'+Id+']').hide();
+            $('.Acad'+Id).removeClass('notnull');
+            $('.rank'+Id).removeClass('notnull');
+            $('.rank'+Id).val('');
+            $('.Acad'+Id).val('');
+            totalAcad++;
+            hideRemoveBtn();
+        }
+
+        function hideRemoveBtn() {
+            let jsonMapOfAcademicRequired = $('[id$=jsonMapOfEligibility]').val();
+            let selectedOption = $('[id$=eligibilityCriteria]').val();
+            let restrictedFieldMap = JSON.parse(jsonMapOfAcademicRequired);
+            // selectedOption+'-Graduation'
+
+            if(restrictedFieldMap[selectedOption+'-Professional']) {
+                if(totalAcad == 2){
+                    $('[id$=removeQualififcation]').hide();
+                }else{
+                    $('[id$=removeQualififcation]').show();
+                }
+            }else{
+                if(totalAcad == 3){
+                    $('[id$=removeQualififcation]').hide();
+                }else{
+                    $('[id$=removeQualififcation]').show();
+                }
+            }
+            
+
+            
+        }
+
+        /*---------------------------------------------------------- For Workexperience ---------------------------------------------*/
+        
+        //for other Fields enable in work Experience Dynamically.
+        function enableOtherField(count,e,field){
+            let panel = '.other'+field+'Panel';
+            let elem = '.other'+field;
+            let label = '.other'+field+'Label';
+            if(e.value == 'Others'){
+                $(panel).eq(count).show();
+                $(elem).eq(count).addClass('notnull');
+                $(elem).eq(count).closest('div.form-group').children('span.error').remove();
+                $(label).eq(count).html('Actual Designation <span style="color:red;font-style:bold">*</span>');
+            }else{
+                $(panel).eq(count).hide();
+                $(elem).eq(count).val('');
+                $(elem).eq(count).removeClass('notnull');
+                $(elem).eq(count).closest('div.form-group').children('span.error').remove();
+                $(label).eq(count).html('Actual Designation');
+            }
+        }
+
+        //to trigger event on dynamic fields.
+        function loadTriggerField(){
+            //To load trigger methods
+            $('.otherOption').trigger('custom-event');
+            $('.hdnCompanyName').trigger('custom-event');
+
+            //To bind easyAutoComplete 
+            $('.autoCompleteCompany').keyup(function(){
+                var options = {
+                    url :'{!JSENCODE($Resource.CompanyNameJS)}',
+                    getValue: "name",
+                    list: {
+                        match: {
+                            enabled: true
+                        }
+                    }
+                };  
+                $(this).easyAutocomplete(options);
+            });
+
+            //to trigger date obj
+            loadObjDate();
+        }
+
+        //to get the date in words
+        function calculateDateDiff(date1, date2, IndexVal) {
+            let currentlyWorking = $('.hdnCurrentlyWorking').eq(IndexVal).val();
+            if (currentlyWorking == 'true') {
+                var today = new Date();
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                var yyyy = today.getFullYear();
+                date2 = dd + '/' + mm  + '/' + yyyy;
+            }
+            let b = moment(date1, 'DD/MM/YYYY'),
+                a = moment(date2, 'DD/MM/YYYY'),
+                intervals = ['years', 'months', 'days'],
+                out = [];
+            
+            for(var i=0; i<intervals.length; i++){
+                let diff = a.diff(b, intervals[i]);
+                b.add(diff, intervals[i]);
+                out.push(diff + ' ' + intervals[i]);
+            }
+            return out.join(' ');
+        }
+
+        function checkWorkExperience(){
+            var jsonMapOfEligibilityVsWorkExp = $('[id$=jsonMapOfEligibilityVsWorkExp]').val();
+            let yearsEligibility = 0;
+            if(jsonMapOfEligibilityVsWorkExp) {
+                jsonMapOfEligibilityVsWorkExp = JSON.parse(jsonMapOfEligibilityVsWorkExp);
+                var selectedEligibilityId = $('[id$=eligibilityCriteria]').val();
+                if(jsonMapOfEligibilityVsWorkExp[selectedEligibilityId]){
+                    yearsEligibility = jsonMapOfEligibilityVsWorkExp[selectedEligibilityId];
+                }
+            }
+            let months = 0;
+
+            for (let key in objDate) {
+                // check if the property/key is defined in the object itself, not in parent
+                var currentlyWorkingBoolean = $('.hdnCurrentlyWorking').eq(key).val();
+                if (objDate[key].startdate.length > 0 && (objDate[key].enddate.length > 0 || currentlyWorkingBoolean == 'true')) {
+                    let startdate = moment(objDate[key].startdate,'DD/MM/YYYY');
+                    let enddate = (currentlyWorkingBoolean == 'true') ?  moment() : moment(objDate[key].enddate,'DD/MM/YYYY'); 
+                    months += enddate.diff(startdate, 'days');
+                }
+            }
+            console.log('months-->'+months);
+            if(months/360 < yearsEligibility){
+                showHtmlMessage('Important Information!','As selected Eligiblity Criteria please enter atleast '+ yearsEligibility + ' years of Work Experiance.');
+                return false;
+            }
+            return true;
+        }
+
+        function checkLinkedInField() {
+            let programType = $('[id$=programType]').val();
+            if(!$('.linkedURLValidation').val() && !programType.includes('M.Sc.')) {
+                showHtmlMessage('Important Information!','Please Enter Linkedin URL.');
+                return false;
+            } else{
+                return true;
+            }
+        }
+    
+        //updated code
+
+        function loadObjDate() {
+            $('.datetimepicker3').datetimepicker({
+                format: 'DD/MM/YYYY',
+                useCurrent: false,
+                maxDate: moment()
+            });
+
+            if($('.totalWPEXP').val()) {
+                $('.WKEXPDetails').addClass('notnull');
+            }
+            
+            $('.StartDate').each(function (index,elem) {
+                let startdate = elem.value;
+                let currentlyWorking = $('.hdnCurrentlyWorking').eq(index).val();
+                let enddate = $('.EndDate').eq(index).val();
+                if(currentlyWorking == 'true') {
+                    enddate = moment().format('DD/MM/YYYY');
+                    $('.currentlyWorking').eq(index).prop('checked', true);
+                    console.log('check removed second');
+                    $('.EndDate').eq(index).removeClass('notnull');
+                    $('.EndDate').eq(index).attr('disabled',true);
+                }
+                
+                objDate[index] = {
+                    'startdate': startdate,
+                    'enddate': enddate
+                };
+                
+                if(startdate && currentlyWorking == 'false'){
+                    $('.EndDate').eq(index).attr('disabled',false);
+                }
+            });
+
+            //to remove objects after row deleted.
+            let removedIndex = $('.EndDate').length;
+            if (objDate.hasOwnProperty(removedIndex)) {
+                delete objDate[removedIndex];
+            }
+
+            //to hide remove button
+            if($('.StartDate').length == 1) {
+                $('.removeExperience').hide();
+            }else{
+                $('.removeExperience').show();
+            }
+        }
+
+        function StartDateFunction(e) {
+
+            // to get all the required values.
+            let startdate = $(e).data("date");
+            let IndexVal = $(e).data("id");
+            let enddate = $('.EndDate').eq(IndexVal).val();
+
+            if(startdate){
+                let startdate1 = moment(startdate,'DD/MM/YYYY');
+                //to check if endate does not exceed start date.
+                if(enddate){
+                    var enddate1 = moment(enddate,'DD/MM/YYYY');
+                    console.log('enddate1'+enddate1);
+                    if(startdate1.isAfter(enddate1)){
+                        showHtmlMessage('Invalid Date','Start Date cannot exceed End Date.');
+                        $(e).data("DateTimePicker").clear();
+                        objDate[IndexVal].startdate = '';
+                        $('.expereinceInYears').eq(IndexVal).val('');
+                        return;
+                    }
+                }
+
+                //to check if start date does not go beyond previous end date.
+                for (let key in objDate) {
+                    if((objDate.hasOwnProperty(key) && key != IndexVal) && (objDate[key].enddate.length > 0 && objDate[key].startdate.length > 0)){
+                        let SD_Date = moment(objDate[key].startdate, 'DD/MM/YYYY');
+                        let ED_Date = moment(objDate[key].enddate, 'DD/MM/YYYY');
+                        let range = moment.range(SD_Date, ED_Date);
+                        if( range.contains(startdate1) || (typeof enddate1 !== 'undefined' && (startdate1.isBefore(SD_Date) && enddate1.isAfter(ED_Date))) ){
+                            showHtmlMessage('Invalid Date','Your Start Date Conflicts with the already Entered Work Experience Dates.');
+                            $(e).data("DateTimePicker").clear();
+                            objDate[IndexVal].startdate = '';
+                            $('.expereinceInYears').eq(IndexVal).val('');
+                            return;
+                        }
+                    }
+                }
+
+                // to store the start date in the object.
+                objDate[IndexVal].startdate = startdate;
+
+                let date = calculateDateDiff(startdate, enddate, IndexVal);
+                if (date.indexOf('NaN') == -1) {
+                    $('.expereinceInYears').eq(IndexVal).val(date);
+                }
+                let currentlyWorking = $('.hdnCurrentlyWorking').eq(IndexVal).val();
+                console.log('currentlyWorking-->'+currentlyWorking);
+                if(currentlyWorking == 'false'){
+                    $('.EndDate').eq(IndexVal).removeAttr('disabled');
+                }
+            }   
+        }
+
+        function EndDateFunction(e){
+
+            // to get all the required values.
+            let IndexVal = $(e).data("id");
+            let nextIndex = parseInt(IndexVal) + 1;
+
+            let startdate = $('.StartDate').eq(IndexVal).val();
+            let enddate = $(e).data("date");
+
+            if(startdate && enddate){
+                let startdate1 = moment(startdate,'DD/MM/YYYY');
+                let enddate1 = moment(enddate,'DD/MM/YYYY');
+
+                if(startdate1.isAfter(enddate1) || startdate.length <= 0) {
+                    showHtmlMessage('Invalid Date','End Date should not be less than Start Date');
+                    $(e).data("DateTimePicker").clear();
+                    objDate[IndexVal].enddate = '';
+                    $('.expereinceInYears').eq(IndexVal).val('');
+                    return;
+                }
+
+                for (let key in objDate) {
+                    if((objDate.hasOwnProperty(key) && key != IndexVal) && (objDate[key].enddate.length > 0 && objDate[key].startdate.length > 0)) {
+                        let SD_Date = moment(objDate[key].startdate, 'DD/MM/YYYY');
+                        let ED_Date = moment(objDate[key].enddate, 'DD/MM/YYYY');
+                        let range = moment.range(SD_Date, ED_Date);
+                        if(range.contains(enddate1) || (startdate1.isBefore(SD_Date) && enddate1.isAfter(ED_Date))) {
+                            showHtmlMessage('Invalid Date','Your End Date Conflicts with the already Entered Work Experience Dates.');
+                            $(e).data("DateTimePicker").clear();
+                            objDate[IndexVal].startdate = '';
+                            $('.expereinceInYears').eq(IndexVal).val('');
+                            $('.currentlyWorking').eq(IndexVal).prop('checked',false);
+                            return;
+                        }
+                    }
+                }
+
+                let date = calculateDateDiff(startdate, enddate, IndexVal);
+                if (date.indexOf('NaN') == -1) {
+                    $('.expereinceInYears').eq(IndexVal).val(date);
+                    // to store the end date in the object if start date exist
+                    objDate[IndexVal].enddate = enddate;
+                }
+                
+            } 
+        }
+
+        function selectOther(elem){
+            let spans = document.querySelectorAll('.selectOther');
+            let indexVal = Array.from(spans).indexOf(elem);
+            $('.autoCompleteUniversity').eq(indexVal).val('Other').trigger('change');
+            $('.autoCompleteUniversity').eq(indexVal).select2("close");
+        }
+
+        function isBlank(str) { 
+            if(str != "" || str.length > 0) { 
+                return false; 
+            }else{ 
+                return true; 
+            } 
+        }
+
+        /* ---------------------------------------------------- Profile Image Upload ---------------------------------------------*/
+        
+        var attachment;
+        var attachmentName;
+        var fileSize;
+        var positionIndex;
+        var doneUploading;
+
+        function previewFile(file) {
+            $('[id$=studPhoto]').attr('src','{!URLFOR($Resource.No_Profile_Image)}');
+            var validFileExtensions = [".jpg", ".jpeg", ".png"];
+            var FileSize = file.files[0].size / 512 / 512; // in KB
+            var sFileName = file.value;
+            if (sFileName.length > 0) {
+                var blnValid = false;
+                for (var j = 0; j < validFileExtensions.length; j++) {
+                    var sCurExtension = validFileExtensions[j];
+                    if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                        blnValid = true;
+                        console.log('blnValid in loop-->'+blnValid);
+                        break;
+                    }
+                }
+                console.log('blnValid-->'+blnValid);
+                if(!blnValid) {
+                    showHtmlMessage('Invalid File Format',sFileName + ' is invalid, allowed extension are: '+ validFileExtensions.join(", "));
+                    $(file).val('');
+                    return false;
+                }else if (FileSize > 1) {
+                    showHtmlMessage('Invalid File','File size exceeds 512 KB');
+                    $(file).val('');
+                    return false;
+                }
+
+                //To set the object URLs of the file in the image.
+                $('[id$=studPhoto]').attr('src', window.URL.createObjectURL(file.files[0]));
+                return true;
+            }
+
+            return false;
+        }
+
+        // To encode the image base64 string.
+        function uploadFile(profileimage) {
+            var maxFileSize = 4350000;      
+            var maxStringSize = 6000000;
+
+            var file = profileimage.files[0];
+            if(file != undefined && previewFile(profileimage)) {
+                if(file.size <= maxFileSize) {
+                    attachmentName = file.name;
+                    var fileReader = new FileReader();
+                    fileReader.onloadend = function(e) {
+                        attachment = window.btoa(this.result);  //Base 64 encode the file before sending it
+                        positionIndex=0;
+                        fileSize = attachment.length;
+                        console.log("Total Attachment Length: " + fileSize);
+                        doneUploading = false;
+                    }
+                    fileReader.onerror = function(e) {
+                        showHtmlMessage('Invalid File','There was an error reading the file.  Please try again.');
+                    }
+                    fileReader.onabort = function(e) {
+                        showHtmlMessage('Invalid File','There was an error reading the file.  Please try again.');
+                    }
+                    fileReader.readAsBinaryString(file);  //Read the body of the file
+                } else {
+                    showHtmlMessage('Invalid File','File size exceeds 4 MB');
+                }
+            } else {
+                attachment = '';
+            }
+            
+        }   
+
+        //Method to send a file to be attached to the Account bound to the page by the standardController
+        //Sends parameters: Account Id, Attachment (body), Attachment Name, and the Id of the Attachment if it exists to the controller   
+        function uploadAttachment() {
+            if(attachment) {
+                var attachmentBody = "";
+                var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000 characters
+                if(fileSize <= positionIndex + chunkSize) {
+                    attachmentBody = attachment.substring(positionIndex);
+                    doneUploading = true;
+                } else {
+                    attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+                }
+                console.log("Uploading " + attachmentBody.length + " chars of " + fileSize);
+                attachmentName = generateFileName(attachmentName);
+                console.log("attachmentName "+ attachmentName);
+                var Result = sforce.apex.execute("UploadStudentProfileDocument", "uploadFile", {attachmentBody:attachmentBody, file_name:attachmentName });
+
+                if(Result.length > 0) {
+                    let objResult = Result[0];
+                    console.log('objResult -->'+ objResult);
+                    if(objResult) {
+                        $('.studentImage').val(encodeURI(objResult));
+                        return true;
+                    }else {
+                        showHtmlMessage('Invalid Details','Internal error occured. Kindly contact your Authorized Enrolment Partner.');
+                        return false;
+                    }
+                }else {
+                    return false;
+                }
+            } else{
+                return false;
+            }
+            
+        }
+
+        function validateStudentImage() {
+            var programName = $('[id$=ddlPrograms] :selected').text();
+            // let programTypeList = ['MBA (WX)', 'MBA (X)', 'M.Sc. (AI & ML Ops)']
+            // if (programTypeList.includes($('[id$=programType]').val())) {
+            if ($('#attachmentFile').length > 0 && $('#attachmentFile').get(0).files.length != 0) {
+            return uploadAttachment();
+            } else if (!$('.studentImage').val()) {
+            showHtmlMessage('Invalid Details', 'Please Upload Photo.');
+            return false;
+            }
+            // }
+            return true;
+        }
+
+        function generateFileName(filename) {
+            if(filename) {
+                var fileExtension = '.' + filename.split('.').pop();
+                var result = '';
+                var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                var charactersLength = characters.length;
+                for ( var i = 0; i < 18; i++ ) {
+                    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                }
+                return result + fileExtension;
+            } else{
+                return null;
+            }
+        }
+
+        function openPopUp() {
+            showHtmlMessage('Important message','Photo uploaded successfully');
+        }
+
+
+    </script>
+</apex:page>

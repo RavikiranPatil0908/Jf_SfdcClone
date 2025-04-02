@@ -1,0 +1,107 @@
+<template>
+    <template if:true={DataLoading}>
+        <div class="exampleHolder">
+            <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+        </div>
+    </template>
+    <template if:false={DataLoading}>
+        <article class="slds-card slds-card_boundary">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <lightning-icon class="slds-align_absolute-center" icon-name="standard:email"
+                            alternative-text="Emails" size="small"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Emails">
+                                <span>Archived Emails ({count})</span>
+                            </a>
+                        </h2>
+                    </div>
+                    <div class="slds-no-flex">
+                    </div>
+                </header>
+            </div>
+            <template if:true={hasData}>
+                <div class="slds-card__body">
+                    <table
+                        class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered slds-table_fixed-layout"
+                        role="grid">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Subject">Subject</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="From Address">From Address</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="To Address">To Address</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Message Date">Message Date</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={records} for:item="rec">
+                                <tr class="slds-hint-parent" key={rec.key}>
+                                    <th data-label="Subject" scope="row">
+                                        <div class="slds-truncate" title={rec.value.subject}>
+                                            <a href="javascript:void(0);" tabindex="-1" onclick={handleClick}
+                                                data-key={rec.key}>{rec.value.subject}</a>
+                                        </div>
+                                    </th>
+                                    <td data-label="From Address">
+                                        <div class="slds-truncate" title={rec.value.fromAddress}>{rec.value.fromEmailId}
+                                        </div>
+                                    </td>
+                                    <td data-label="To Address">
+                                        <div class="slds-truncate" title={rec.value.toAddress}>{rec.value.mailId}
+                                        </div>
+                                    </td>
+                                    <td data-label="Message Date">
+                                        <div class="slds-truncate" title={rec.date}>{rec.value.createdDate}</div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                <template if:true={viewMail}>
+                    <!-- for classic view -->
+                    <template if:true={isClassic}>
+                        <c-email-message-detail email-message={emailMessage} active-sections={activeSections}>
+                        </c-email-message-detail>
+                    </template>
+                    
+                    <!-- for Lightning view -->
+                    <template if:false={isClassic}>
+                        <div if:true={showModal}>
+                            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large"
+                            aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" >
+                                <div class="slds-modal__container">
+                                    <header class="slds-modal__header">
+                                        <lightning-button-icon class="slds-modal__close slds-button_icon-inverse" icon-name="utility:close"
+                                            variant="border-filled" size="medium" alternative-text="Close" title="Close" aria-hidden="true"
+                                            onclick={closeModal}></lightning-button-icon>
+                                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{emailMessage.rec.subject}</h2>
+                                    </header>
+                                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                                        <c-email-message-detail email-message={emailMessage} active-sections={activeSections}>
+                                        </c-email-message-detail>
+                                    </div>
+                                    <footer class="slds-modal__footer">
+                                        <button class="slds-button slds-button_neutral" onclick={closeModal}>Close</button>
+                                    </footer>
+                                </div>
+                            </section>
+                            <div class="slds-backdrop slds-backdrop_open"></div>
+                        </div>
+                    </template>
+                </template>
+            </template>
+        </article>
+    </template>
+</template>

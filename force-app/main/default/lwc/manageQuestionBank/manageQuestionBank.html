@@ -1,0 +1,123 @@
+<!-- sldsValidatorIgnore -->
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 11-03-2021
+  @last modified by  : @BK
+-->
+<template>
+    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+        <div class="slds-modal__container">
+            <header class="slds-modal__header">
+                <lightning-button-icon icon-name="utility:close" size="large" alternative-text="Close" class="slds-modal__close" variant="bare-inverse" title="Close" onclick={hideModal}></lightning-button-icon>
+                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Manage Question Bank For {row.Name}</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <div style="height: 300px;">
+                    <lightning-datatable
+                        key-field="Id"
+                        data={data}
+                        columns={columns}
+                        selected-rows={preSelectedRows}
+                        onrowaction={handleRowAction}
+                        onrowselection={selectedRowHandler}>
+                    </lightning-datatable>
+                </div>
+            </div>
+            <footer class="slds-modal__footer slds-grid">
+                <div class="slds-col slds-size_2-of-12">{footerNote}</div>
+                <div class="slds-col">
+                    <button class="slds-button slds-button_neutral" onclick={hideModal}>Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={addQuestions}>Add</button>
+                </div>
+                
+            </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+
+    <template if:true={isViewModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning-button-icon icon-name="utility:close" size="large" alternative-text="Close" class="slds-modal__close" variant="bare-inverse" title="Close" onclick={hideViewModal}></lightning-button-icon>
+                    <h2 id="modal-heading-02" class="slds-modal__title slds-hyphenate">Name: {record.Name}</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                    <div class="slds-form" role="list">
+                        <div class="slds-form__row">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                    <span class="slds-form-element__label">Question</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">{record.Question__c}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__row">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                    <span class="slds-form-element__label">Type</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">{record.Type__c}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                    <span class="slds-form-element__label">Program Type</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">{record.Program_Type__c}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__row">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                    <span class="slds-form-element__label">Function</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">{record.Function__c}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                    <span class="slds-form-element__label">Activity</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">{record.Activity__c}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__row">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                    <span class="slds-form-element__label">Choices</span>
+                                    <div class="slds-form-element__control">
+                                        <pre>{record.Choices__c}</pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                    <span class="slds-form-element__label">Answer</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">{record.Answer__c}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_brand" onclick={hideViewModal}>Close</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

@@ -1,0 +1,78 @@
+<!--
+  @File Name          : DuplicateAccount.page
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 11/19/2019, 5:09:41 PM
+  @Modification Log   : 
+  Ver       Date            Author                  Modification
+  1.0    11/19/2019   shubhranshu     Initial Version
+-->
+<apex:page standardController="Account" tabStyle="Account">
+    <script src="/soap/ajax/46.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/46.0/apex.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var accountId = "{!Account.Id}";
+            var fname = "{!Account.FirstName}";
+            var lname =  "{!Account.LastName}";
+            var dob = "{!Account.nm_DateOfBirth__c}";
+            var dateOfBirth = new Date(dob);
+            console.log('DOB '+ formatDate(dateOfBirth));
+            
+            if(accountId) {
+                var soqlquery = "SELECT FirstName,nm_StudentStatus__c,LastName,nm_RegistrationNumber__c,nm_DateOfBirth__c,nm_ChooseaProgram__c ,Address__c ,nm_BloodGroup__c,Father_Name__c ,Mother_Name__c from Account where FirstName = \'" + fname + "\' and LastName = \'" + lname + "\' and Id != \'" + accountId + "\' and nm_DateOfBirth__c ="+ formatDate(dateOfBirth) +" order by nm_RegistrationNumber__c Desc";
+                var wexpQuery = sforce.connection.query(soqlquery);
+                var wexpRecord = wexpQuery.getArray("records");
+                if (wexpQuery.size > 0) {
+                    var html = '';
+                    $.each( wexpRecord, function( key, value ) {
+                        if(key > 0) {
+                            html += '<hr/>';
+                        }
+                        html += '<table width="100%"><tr>';
+                        html += '<th width="25%">First Name</th>';
+                        html += '<td width="25%">'+value.FirstName+'</td>';
+                        html += '<th width="25%">Last Name</th>';
+                        html += '<td width="25%">'+value.LastName+'</td></tr>';
+                        html += '<tr><th width="25%">DOB</th>';
+                        html += '<td width="25%">'+formatDate(value.nm_DateOfBirth__c)+'</td>'
+                        html += '<th width="25%">Choose Program</th>';
+                        html += '<td width="25%">'+value.nm_ChooseaProgram__c+'</td></tr>';
+                        html += '<tr><th width="25%">Address</th>';
+                        html += '<td width="25%">'+value.Address__c+'</td>';
+                        html += '<th width="25%">Father Name </th>';
+                        html += '<td width="25%" >'+value.Father_Name__c+'</td></tr>';
+                        html += '<tr><th width="25%">Mother Name</th>';
+                        html += '<td width="25%">'+value.Mother_Name__c+'</td>';
+                        html += '<tr><th width="25%">Student Status</th>';
+                        html += '<td width="25%">'+value.nm_StudentStatus__c+'</td>';
+                        html += '<th width="25%">Registration Number</th>';
+                        html += '<td width="25%">'+value.nm_RegistrationNumber__c+'</td></tr></table>';
+                    });
+
+                    $('[id$=container]').html(html);
+                }
+            }
+        });
+
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) 
+                month = 0 + month;
+            if (day.length < 2) 
+                day = 0 + day;
+
+            return [year, month, day].join('-');
+        }
+    </script>
+    <apex:outputPanel id="container">
+        <h1>No Record Found.</h1>
+    </apex:outputPanel>
+</apex:page>

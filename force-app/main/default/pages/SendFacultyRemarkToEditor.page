@@ -1,0 +1,52 @@
+<apex:page controller="SendFacultyRemarkToEditorController" showHeader="false" sidebar="false" standardStylesheets="false" >
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+        <title>Faculty Remark</title>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.min.css"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/css/registration-form-style.css')}"/>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>  
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"> </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+        <style>
+            .form-group .control-label:after { 
+            content:"*";
+            color:red;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="transparent-background loaderPanel" style="display:none;">
+                <div class="loader-center">
+                    <div class="loader">Loading...</div>
+                </div>
+            </div>
+            <div class="text-center">
+                <img class="d-block mx-auto mb-4" src="{!URLFOR($Resource.Images,'images/logo.png')}" alt="" width="200" height="72" />
+                <h3>Faculty Remark</h3>
+            </div>
+            <h4>Subject: {!asyncObject.Subject__c}</h4>
+            <h5>Record Page Link: <a href="{!$Label.SalesforceBaseUrl}{!asyncObject.id}" target="_blank">{!asyncObject.Name}</a></h5>
+            <!--<apex:iframe scrolling="true" src="{!generatedEmbeddedLink}" html-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" height="500px"/> -->
+            <apex:form >
+                <apex:pageBlock >
+                    <apex:pageBlockSection >
+                        <apex:outputField value="{!asyncObject.Chapter_Name__c}" rendered="{!asyncObject.Chapter_Name__c != null}"/><br/>
+                        <apex:outputField value="{!asyncObject.Faculty_Name__c}" rendered="{!asyncObject.Faculty_Name__c != null}"/><br/>
+                        <apex:outputField value="{!asyncObject.Shoot_Date__c}" rendered="{!asyncObject.Shoot_Date__c != null}"/><br/>
+                        <apex:outputField value="{!asyncObject.Video_Link_Version_1__c}" rendered="{!asyncObject.Video_Link_Version_1__c != null}"/><br/>
+                        <apex:outputField value="{!asyncObject.Video_Link_Version_2__c}" rendered="{!asyncObject.Video_Link_Version_2__c != null}"/><br/>
+                        <apex:outputField value="{!asyncObject.Video_Link_Version_3__c}" rendered="{!asyncObject.Video_Link_Version_3__c != null}"/><br/>
+                        <apex:outputField value="{!asyncObject.Faculty_Remarks_for_Edit_Version_1__c}"/><br/><br/><br/><br/>
+                        <apex:outputField value="{!asyncObject.Faculty_Remarks_for_Edit_Version_2__c}" rendered="{!asyncObject.Faculty_Remarks_for_Edit_Version_2__c != null}"/>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+                
+            </apex:form>
+            
+        </div>
+    </body>
+</apex:page>

@@ -1,0 +1,14 @@
+<apex:page controller="Student_Course_Enrollment_in_BB" readOnly="true"
+       contentType="application/octet-stream#Student_Course_Enrollment_in_BB.csv"
+       sidebar="false"
+       standardStylesheets="false"
+       showHeader="false"
+       cache="true"
+       expires="0">
+<!--"-->                
+    <apex:outputText value="Course Id,Account Name,Role,Course Avaliability,System Avaliability"/> 
+        <apex:repeat value="{!lstWrapper}" var="wrap">
+            <apex:outputText value="{!newLine}"/>
+            <apex:outputText value="{!wrap.CourseID},{!wrap.AccountID},S,Y,Y"/>
+        </apex:repeat>  
+</apex:page>

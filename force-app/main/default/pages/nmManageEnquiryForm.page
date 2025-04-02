@@ -1,0 +1,362 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 03-04-2024
+  @last modified by  : @BK
+-->
+<apex:page tabStyle="lead" showHeader="false">
+    <style type="text/css">
+        body
+        {
+            background:#f2f2f2;
+        }
+        .selectList
+        {
+            width:250px;
+            font-weight:bold;
+            border-size:2px;
+            padding:3px;
+        }
+        
+        .fieldscontainer
+        {
+            margin:15px Auto;
+            width:90%;
+            height:100px;
+            
+        }
+        .fieldscontainer .onecolumnrow
+        {
+            float:left;
+            width:100%;
+            margin-bottom:15px;
+        }
+        .fieldscontainer .onecolumnrow .labelcol
+        {
+            float:left;
+            width:10%;
+            padding-top:3px;
+            font-weight:bold;
+            color:#4d4d4d;
+        }
+        .fieldscontainer .onecolumnrow .valcol
+        {
+            float:left;
+            width:84%;
+        }
+        .fieldscontainer .onecolumnrow .valcol input
+        {
+            width:99%;
+            border:1px solid #888888;
+            height:19px;
+            padding-left: 2px;
+        }
+        
+        .fieldscontainer .twocolumnrow
+        {
+            float:left;
+            width:50%;
+            margin-bottom:15px;
+        }
+        .fieldscontainer .twocolumnrow .labelcol
+        {
+            float:left;
+            width:20%;
+            padding-top:3px;
+            font-weight:bold;
+            color:#4d4d4d;
+        }
+        .fieldscontainer .twocolumnrow .valcol
+        {
+            float:left;
+            width:67%;
+        }
+        .fieldscontainer .twocolumnrow .valcol input
+        {
+            width:99%;
+            border:1px solid #888888;
+            height:19px;
+            padding-left: 2px;
+        }
+        
+        .fieldscontainer
+        {
+            margin:15px Auto;
+            width:90%;
+            height:100px;
+            
+        }
+        .fieldscontainer .threecolumnrow
+        {
+            float:left;
+            width:33%;
+            margin-bottom:15px;
+        }
+        .fieldscontainer .threecolumnrow .labelcol
+        {
+            float:left;
+            width:30%;
+            padding-top:3px;
+            font-weight:bold;
+            color:#4d4d4d;
+        }
+        .fieldscontainer .threecolumnrow .valcol
+        {
+            float:left;
+            width:53%;
+        }
+        .fieldscontainer .threecolumnrow .valcol input
+        {
+            width:99%;
+            border:1px solid #888888;
+            height:19px;
+            padding-left: 2px;
+        }
+        
+        .fieldscontainer
+        {
+            margin:15px Auto;
+            width:90%;
+            height:100px;
+            
+        }
+        .fieldscontainer .fourcolumnrow
+        {
+            float:left;
+            width:25%;
+            margin-bottom:15px;
+        }
+        .fieldscontainer .fourcolumnrow .labelcol
+        {
+            float:left;
+            width:40%;
+            padding-top:3px;
+            font-weight:bold;
+            color:#4d4d4d;
+        }
+        .fieldscontainer .fourcolumnrow .valcol
+        {
+            float:left;
+            width:34%;
+        }
+        .fieldscontainer .fourcolumnrow .valcol input
+        {
+            width:99%;
+            border:1px solid #888888;
+            height:19px;
+            padding-left: 2px;
+        }
+        
+        .valcol
+        {
+            border:1px solid #888888;
+            height: 22px;
+            background:#f2f2f2;
+        }        
+        .field-remove 
+        {
+            background-image: url(/img/ple/wrenchRemove.png);
+            background-repeat: no-repeat;
+            background-position: 2px -14px;
+            margin-top: 3px;
+            cursor: pointer;
+            margin-right: 5px;
+        }          
+        .field-setting
+        {
+            background-image: url(/img/ple/wrenchRemove.png);
+            background-repeat: no-repeat;
+            background-position: 2px 2px;
+            margin-top: 3px;
+            cursor: pointer;
+        }      
+        
+    </style>
+    <apex:form >
+        <!--<apex:sectionHeader subtitle="Manage enquiry form campaign wise" title="Web to lead fields"/>-->
+        
+    <div style="width:70%; margin:5px auto;">
+        <div style="width:100%; border:3px solid #000000; background:#ffffff; float:left; margin-bottom:15px;">
+            <!-- Header Start -->
+            <div style="height:16px; margin-top:5px;">
+                <apex:outputText value="Date: {0,date,dd-MM-yyyy}" style="float:right; margin-right:50px;">
+                   <apex:param value="{!TODAY()}" />
+               </apex:outputText>
+            </div>
+            <div>
+                <center><img src="{!URLFOR($Resource.Images,'images/logo.png')}" width="40%"/></center>
+            </div>
+            <div style="margin:10px 0;">
+                <center><h1 style="font-size:15px;">NMIMS CENTRE FOR DISTANCE AND ONLINE EDUCATION</h1></center>
+            </div>
+            <div style="margin:10px 0;">
+                <center><span style="font-size:15px;">ENQUIRY PROCESSING SHEET</span></center>
+            </div>
+            <!-- Header End -->
+            
+            <div class="fieldscontainer">
+                <div class="onecolumnrow">
+                    <div class="labelcol">Name:</div>
+                    <div class="valcol">
+                        <div class="field-setting" id="ext-gen87" style="float:right; width:20px;">&nbsp;</div>
+                        <div class="field-remove" id="ext-gen87" style="float:right; width:20px;">&nbsp;</div>
+                    </div>
+                </div>
+                
+                <div class="onecolumnrow">
+                    <div class="labelcol">Address:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="onecolumnrow">
+                    <div class="labelcol"></div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="twocolumnrow">
+                    <div class="labelcol">Mobile no:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="twocolumnrow">
+                    <div class="labelcol">Date of birth:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="onecolumnrow"><b>Educational Background:</b></div>
+                
+                <div class="threecolumnrow">
+                    <div class="labelcol">Post Graduate:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="threecolumnrow">
+                    <div class="labelcol">Stream:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="threecolumnrow">
+                    <div class="labelcol">%age:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="threecolumnrow">
+                    <div class="labelcol">Graduate:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="threecolumnrow">
+                    <div class="labelcol">Stream:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="threecolumnrow">
+                    <div class="labelcol">%age:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="threecolumnrow">
+                    <div class="labelcol">10+2:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="threecolumnrow">
+                    <div class="labelcol">Stream:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="threecolumnrow">
+                    <div class="labelcol">%age:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="onecolumnrow"><b>Work Experience:</b></div>
+                
+                <div class="twocolumnrow">
+                    <div class="labelcol">Companie's name:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="twocolumnrow">
+                    <div class="labelcol">Location:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="twocolumnrow">
+                    <div class="labelcol">Designation:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="twocolumnrow">
+                    <div class="labelcol">Total work experience:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="onecolumnrow"><b>From where you come to know about our program?</b></div>
+                
+                <div class="fourcolumnrow">
+                    <div class="labelcol">Study Center:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="fourcolumnrow">
+                    <div class="labelcol">Website:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="fourcolumnrow">
+                    <div class="labelcol">Newspaper:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="fourcolumnrow">
+                    <div class="labelcol">Alumni:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="fourcolumnrow">
+                    <div class="labelcol">Mailers:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="fourcolumnrow">
+                    <div class="labelcol">Friends and Relatives:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="fourcolumnrow">
+                    <div class="labelcol">Online ads:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="fourcolumnrow">
+                    <div class="labelcol">Banner:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="fourcolumnrow">
+                    <div class="labelcol">Hording:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="onecolumnrow">
+                    <div class="labelcol">Others please specify:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+                
+                <div class="onecolumnrow">
+                    <div class="labelcol">Counselor's Remark:</div>
+                    <div class="valcol"><apex:inputText /></div>
+                </div>
+            </div>
+            
+            <div style="width:100%; float:left; margin-bottom:15px;">
+                <center>
+                    <apex:commandButton value="Submit" style="width:100px; font-size:16px; color:#4d4d4d;"/>
+                </center>
+            </div>
+        </div>
+    </div>  
+    </apex:form>
+</apex:page>

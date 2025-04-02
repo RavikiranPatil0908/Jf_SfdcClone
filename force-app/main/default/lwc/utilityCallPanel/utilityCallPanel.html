@@ -1,0 +1,95 @@
+<!--
+  @File Name          : utilityCallPanel.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 07-08-2020
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    28/6/2020   @BK     Initial Version
+-->
+<template>
+    <section class={utilityPanelClass} role="dialog" aria-labelledby="dialog-heading-id-1"
+        aria-describedby="dialog-content-id-1">
+        <header class="slds-docked-composer__header slds-grid slds-shrink-none" aria-live="assertive">
+            <div class="slds-media slds-media_center slds-no-space">
+                <div class="slds-media__figure slds-m-right_x-small">
+                    <lightning-icon icon-name="utility:call" alternative-text="call" size="x-small">
+                    </lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-truncate" id="dialog-heading-id-1" title={panelTitle}>{panelTitle}</h2>
+                </div>
+            </div>
+            <div class="slds-col_bump-left slds-shrink-none">
+                <lightning-button-icon icon-name="utility:minimize_window" variant="bare" onclick={handleEventClick}
+                data-key="hide" alternative-text="Minimize Composer Panel" title="Minimize window">
+                </lightning-button-icon>
+                <lightning-button-icon icon-name="utility:expand_alt" variant="bare" onclick={handleEventClick}
+                data-key="open" alternative-text="Expand Composer Panel" title="Expand Composer"></lightning-button-icon>
+                <lightning-button-icon icon-name="utility:close" variant="bare" onclick={handleEventClick}
+                data-key="close" alternative-text="Close Composer Panel" title="Close"></lightning-button-icon>
+            </div>
+        </header>
+        <div class="slds-docked-composer__body" id="dialog-content-id-1">
+            <div class="slds-docked-composer__lead">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <span class="slds-avatar slds-avatar_medium">
+                            <img alt="" src="https://lightningdesignsystem.com/assets/images/avatar1.jpg"
+                                title={lead.Name} />
+                        </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <p class="slds-text-heading_medium">{lead.Name}</p>
+                        <ul class="slds-text-body_small">
+                            <li>{primaryNumber}</li>
+                            <li if:true={checkSecondaryNo}>{secondaryNumber}</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="slds-col_bump-left slds-text-heading_large">{timer}</p>
+            </div>
+            <div class="slds-docked-composer__toolbar">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-small"
+                    title="Mute Yourself" aria-pressed="false">
+                    <lightning-icon icon-name="utility:unmuted" size="xx-small" alternative-text="Mute Yourself"
+                        title="Mute"></lightning-icon>
+                </button>
+            </div>
+            <template if:true={connectCall}>
+                <label class="slds-assistive-text" for="composer-text-input-1">Take notes</label>
+                <textarea id="composer-text-input-1" data-field="comment"
+                    class="slds-docked-composer__input slds-input_bare slds-text-longform slds-grow"
+                    placeholder="Enter Description here..." onchange={handleChange}>{comment}</textarea>
+            </template>
+            
+            <template if:false={connectCall}>
+                <div class="slds-text-align_center slds-align-middle slds-p-top_small">
+                    <span class="slds-avatar slds-avatar_large">
+                        <img alt="" src="https://www.lightningdesignsystem.com/assets/images/avatar2.jpg" title="Lei Chan avatar" />
+                    </span>
+                    <p class="slds-text-heading_medium">Counselor Profile</p>
+                </div>
+                <div class="slds-form">
+                    <lightning-combobox
+                        class="slds-form-element_stacked slds-p-horizontal_medium"
+                        name="counselor" data-field="counselor"
+                        value={agentNumber}
+                        placeholder="Select Counselor Profile"
+                        options={options}
+                        onchange={handleChange}>
+                    </lightning-combobox>
+                    <div class="slds-p-top_small slds-text-align_center slds-align-middle">
+                        <button class="slds-button slds-button_success slds-size_5-of-6"
+                        onclick={handleEventClick} data-key="call" disabled={isDisabled}>Call</button>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <footer class="slds-docked-composer__footer slds-shrink-none">
+            <button class="slds-button slds-button_destructive slds-col_bump-left" onclick={endCall}>End Call</button>
+        </footer>
+    </section>
+</template>

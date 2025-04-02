@@ -1,0 +1,54 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 03-04-2024
+  @last modified by  : @BK
+-->
+<apex:page showHeader="false" controller="nmRegistrationThankYou">
+    <head>
+    
+       <script type="text/javascript">
+            history.pushState(null, null, 'nmRegistrationThankYou');
+                    window.addEventListener('popstate', function () {
+                    history.pushState(null, null, 'nmRegistrationThankYou');
+              });
+       </script>
+       
+  </head>
+    <div class="fieldscontainer ">
+        <div class="onecolumnrow">
+            <div >
+                <center>
+                <apex:outputPanel rendered="{!!isPaymentOfAEPMerchandise}">
+                    <img src="{!URLFOR($Resource.Images,'images/logo.png')}"/>
+                    <div style="font-size:16px;padding-top:16px;">
+                        <center><h1>NMIMS CENTRE FOR DISTANCE AND ONLINE EDUCATION</h1></center>
+                    </div>
+                    <div>
+                        <center><h1 style="font-size:30px;">Thank-You For Payment</h1></center>
+                    </div>
+                    <div >
+                        <center><h1 style="font-size:16px;">Please save your Receipt</h1></center>
+                    </div> 
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!isPaymentOfAEPMerchandise}">
+                    <img src="{!URLFOR($Resource.NGASCELOGO)}" style="max-width 100%; height: auto;"/>
+                    <br />
+                    <div>
+                        <center>
+                            <h1 style="font-size:16px;">Payment Receipt</h1>
+                        </center>
+                    </div>
+                </apex:outputPanel>
+                <!-- <img src="{!URLFOR($Resource.NGASCELOGO)}" width="200px"   /> -->
+                </center>
+            </div>
+        </div>
+    </div> 
+    <div>
+        <center>
+         <apex:iframe height="600px" scrolling="true" id="idIFramePDF" width="800px" src="{!$Label.Site_Url}nmRegistrationReceipt?id={!strStudentId}" />
+        </center>
+    </div>
+</apex:page>

@@ -1,0 +1,42 @@
+h1 {
+	font-size: 24px;
+	color: #212529;
+	font-weight: bold;
+}
+
+h2 {
+	font-size: 15px;
+	color: white;
+	font-weight: bold;
+}
+
+h3 {
+	font-size: 15px;
+	color: #212529;
+	font-weight: bold;
+}
+
+lightning-card {
+	--slds-c-card-color-border: white;
+	--slds-c-card-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+	--slds-c-card-spacing-block-end: 1rem;
+	--slds-c-card-spacing-block-start: 1rem;
+	--slds-c-card-spacing-inline-end: 1rem;
+	--slds-c-card-spacing-inline-start: 1rem;
+}
+
+.slds-file-selector__dropzone .slds-file-selector__button:after {
+	color: #BA0517 !important;
+}
+
+.container {
+	width: 300px;
+	overflow: auto;
+}
+
+.top-nav {
+	background-color: #BA0517;
+	height: 30px;
+	display: flex;
+	align-items: center;
+}

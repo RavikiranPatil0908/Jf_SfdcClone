@@ -1,0 +1,191 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 05-03-2024
+  @last modified by  : @BK
+-->
+<apex:page showHeader="false" standardStylesheets="false" controller="DispatchTrackingOrder" action="{!updateStudentResponse}" >
+
+    <style>
+        .Processingview {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;
+            width: 100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+
+        }
+
+        .container {
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .content-container {
+            background-color: #e5e5e5;
+            -webkit-border-radius: 0.6em;
+            -moz-border-radius: 0.6em;
+            border-radius: 0.6em;
+            padding: 5%;
+            position: relative;
+            margin-bottom: 5%;
+            margin-top: 5%;
+        }
+
+        .content-container p {
+            line-height: 1.8em;
+        }
+
+        .section-title {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: inline-block;
+            padding: 1.3% 10% 1.3% 3%;
+            color: #ffffff;
+            text-transform: uppercase;
+            font-size: 1em;
+            background: #282425;
+            background: -webkit-gradient(linear, 0 0, 0 bottom, from(#8b8b8b), to(#282425));
+            background: -webkit-linear-gradient(#8b8b8b, #282425);
+            background: -moz-linear-gradient(#8b8b8b, #282425);
+            background: -ms-linear-gradient(#8b8b8b, #282425);
+            background: -o-linear-gradient(#8b8b8b, #282425);
+            background: linear-gradient(#8b8b8b, #282425);
+            -webkit-border-radius: 0.6em 0 0.6em 0;
+            -moz-border-radius: 0.6em 0 0.6em 0;
+            border-radius: 0.6em 0 0.6em 0;
+        }
+
+        .col-sm-2 {}
+
+        .col-sm-4 {
+            width: 28%;
+        }
+
+        .form-group {
+            width: 100%;
+        }
+
+        .form-control {
+            border-radius: 4px;
+        }
+
+        .preview-container {
+            margin-top: 5%;
+            background-color: #c4c4c4;
+            padding: 5%;
+        }
+    </style>
+
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <title>NMIMS Distance Education: Tracking Form</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."
+        />
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/typography.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/font-awesome.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap-theme.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap-datetimepicker.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/flat/grey.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/main.css')}" />
+
+        <apex:includeScript value="{!URLFOR($Resource.Data,'js/vendor/modernizr-2.6.2-respond-1.1.0.min.js')}" />
+    </head>
+
+    <body class="home">
+
+        <header>
+
+            <section class="main-header">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-18 col-sm-6">
+                            <a href="http://online.nmims.edu/" target="_blank">
+                                <apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" />
+                            </a>
+                        </div>
+                        <!-- /col-xs-10 -->
+                        <div class="col-xs-18 col-sm-12">
+                            <!-- <h1 class="text-right">Admission Form</h1> -->
+                        </div>
+                        <!-- /col-xs-8 -->
+                    </div>
+                    <!-- /row -->
+                </div>
+                <!-- /container -->
+            </section>
+            <!-- /main-header -->
+
+        </header>
+        <!-- /header -->
+        <apex:form id="formid1">
+        
+            <!-- <apex:actionFunction name="Yes" action="{!SelectedYes}" reRender="ThankYou,pnlDeclaration1" />
+            <apex:actionFunction name="No" action="{!SelectedNo}" reRender="ThankYou,pnlDeclaration1" /> -->
+            <!-- <apex:outputpanel id="pnlDeclaration1" >
+                <apex:outputPanel rendered="{!!IsResponseSend}">
+                    <div class="container">
+            
+                        <div class="content-container">
+                            <h4>Tracking No : <b>{!objDispatch.Tracking_Number__c}</b></h4>
+                            <h4>Courier Services: <b>{!objDispatch.Name_Of_Other_Courier_Service__c}</b></h4>
+                            <h1>Is Your Student Kit Delivered ?</h1>
+                            <div style="text-align: center;">
+                                <input style="margin-right:20px" onclick="onNo();return false;" type="button" class="btn  btn-danger btn-lg"  value="No" />
+                                <input style="margin-left:20px" onclick="onYes();return false;" type="button" class="btn  btn-success btn-lg"  value="Yes" />
+                            </div>
+    
+                        </div>
+                    </div>
+                </apex:outputpanel>
+            </apex:outputPanel> -->
+            <apex:outputPanel id="ThankYou">
+                <apex:outputPanel rendered="{!IsResponseSend}">
+                    <div class="container">
+                        <div class="content-container">
+                            <h1>Thank you For Your Response</h1>
+                        </div>
+                    </div>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!!IsResponseSend}">
+                    <div class="container">
+                        <div class="content-container">
+                            <h1>No Record Found or wrong url</h1>
+                        </div>
+                    </div>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </apex:form>
+
+        <!-- Footer Component -->
+        <c:FooterPage />
+        <!--/ Footer Component -->
+        
+    </body>
+    <script>
+        // function onNo() {
+        //     console.log('NO')
+        //     No();
+        // }
+        // function onYes() {
+        //     console.log('YES')
+        //     Yes();
+        // }
+    </script>
+
+</apex:page>

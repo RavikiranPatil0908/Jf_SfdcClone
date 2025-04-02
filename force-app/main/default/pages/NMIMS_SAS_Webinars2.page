@@ -1,0 +1,234 @@
+<apex:page showHeader="false" standardStylesheets="false" controller="BasicInfoOfStudent" cache="false">
+<head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0 , user-scalable=no"></meta>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>NMIMS-SAS Online Webinar</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+        
+
+        
+            <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+    <script src="https://www.cssscript.com/demo/flipping-countdown-clock-javascript-css-countdown-js/countDown.js"></script>
+    
+      <style>
+        
+        body {
+            padding-top: 15px;
+        }
+        
+        .countDown_cont{font-family:Lato,Arial,Gadget,sans-serif;font-size:13px;display:-webkit-box;display:-ms-flexbox;display:flex;color:#333}.countDown_interval_cont{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-pack:distribute;justify-content:space-around;width:auto}.countDown_interval_cont:nth-child(n+1):not(:last-child){margin-right:1em}.countDown_interval_basic_cont{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}.countDown_interval_basic_cont_description{display:-webkit-box;display:-ms-flexbox;display:flex;margin-left:.3em;margin-top:.3em;font-size:1.2em;font-weight:700;color:#fff;text-shadow:.1em .1em .1em #000}.countDown_digit_cont{-webkit-perspective:3.2em;perspective:3.2em;box-shadow:.1em .1em .1em rgba(0,0,0,.2);width:1em;height:1.6em;position:relative;line-height:1.6em;font-size:5em;font-weight:700;border-radius:.08em}.countDown_digit_cont:nth-child(n+1):not(:last-child){margin-right:.05em}.countDown_digit_last_placeholder,.countDown_digit_new_placeholder{position:absolute;left:0;width:100%;height:50%;text-align:center;overflow:hidden}.countDown_digit_last_placeholder{bottom:0;background:#fff;border-radius:0 0 .08em .08em}.countDown_digit_last_placeholder_inner{width:100%;height:100%;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;bottom:50%;position:absolute}.countDown_digit_new_placeholder{top:0;background:#f7f7f7;border-radius:.08em .08em 0 0}.countDown_digit_last_rotate,.countDown_digit_new_rotate{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:100%;height:50%;font-weight:700;position:absolute;top:0;overflow:hidden;-webkit-animation-duration:.4s;animation-duration:.4s;-webkit-animation-timing-function:linear;animation-timing-function:linear;border-radius:.08em .08em 0 0;-webkit-animation-fill-mode:forwards;animation-fill-mode:forwards;-webkit-transform-origin:100% 100%;transform-origin:100% 100%}.countDown_digit_last_rotate:after,.countDown_digit_new_rotate:after{content:"";position:absolute;z-index:-1;left:0;bottom:0;width:100%;height:100%;border-bottom:.01em solid rgba(0,0,0,.1)}.countDown_digit_last_rotate{-webkit-animation-name:countDown_flip_1;animation-name:countDown_flip_1;background:#f7f7f7}.countDown_digit_new_rotate{-webkit-animation-name:countDown_flip_2;animation-name:countDown_flip_2;background:#fff}.countDown_digit_new_rotated{-webkit-transform:rotateX(180deg);transform:rotateX(180deg);width:100%;height:100%}.countDown_digit_new_rotated_inner{width:100%;height:100%;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;bottom:50%;position:absolute}@-webkit-keyframes countDown_flip_1{0%{-webkit-transform:rotateX(0deg);transform:rotateX(0deg);z-index:1}100%{-webkit-transform:rotateX(-180deg);transform:rotateX(-180deg);z-index:0}}@keyframes countDown_flip_1{0%{-webkit-transform:rotateX(0deg);transform:rotateX(0deg);z-index:1}100%{-webkit-transform:rotateX(-180deg);transform:rotateX(-180deg);z-index:0}}@-webkit-keyframes countDown_flip_2{0%{-webkit-transform:rotateX(0deg);transform:rotateX(0deg);z-index:0}100%{-webkit-transform:rotateX(-180deg);transform:rotateX(-180deg);z-index:1}}@keyframes countDown_flip_2{0%{-webkit-transform:rotateX(0deg);transform:rotateX(0deg);z-index:0}100%{-webkit-transform:rotateX(-180deg);transform:rotateX(-180deg);z-index:1}}
+        </style>
+     </head>
+     
+
+        <!-- Top Header : START -->
+        
+        <nav class="navbar navbar-light bg-faded">
+          <a class="navbar-brand" href="#">
+            <apex:image url="{!URLFOR($Resource.SasLogo)}" styleClass="img-responsive"/>
+          </a>
+        </nav>
+        <div class="clearfix"/>
+        <div style="width:100%;height:10px;background-color:#d2232a;margin-top:30px;"/>
+        
+        <!-- Top Header : END -->
+        
+        
+        <div class="clearfix"/>
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" style="background-color:#1e73be;margin-top:10px;color:#ffffff;text-align:center">
+        <h3>How IIFL uses SAS Data Analytics tools to boost their company’s performance</h3>
+        <h3>17<sup>th</sup> March 2018 | Time: 4:00 – 5:00 PM</h3>
+        <div class="counter"></div>
+        </div>
+        <div class="clearfix"/>
+        
+        <!-- Form: START -->
+        
+        <br/>
+        <div class="container">
+        
+            <div class="row">
+                
+            
+                
+                
+                <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                    
+                    <div style="background-color:#1e73be;margin-top:10px;color:#ffffff;padding:10px;text-align:center">Register Below</div>
+                    <div class="clearfix"/>
+                    <apex:form styleclass="form" style="margin-top:10px">
+                        <div class="form-group"> 
+                            <apex:inputField value="{!objReferral.Name__c}" html-placeholder="Full Name" styleClass="form-control notnull" id="fName"/>
+                        </div>
+                        <div class="form-group">
+                            <apex:inputField value="{!objReferral.Email__c}" html-placeholder="Email Id" styleClass="form-control notnull emailValidation"/>
+                        </div>
+                        <div class="form-group">
+                            <apex:inputField value="{!objReferral.Mobile_Number__c}" id="txtMobno" html-placeholder="Mobile Number" styleClass="form-control mobileValidation notnull numonly limitedChar"/>
+                        </div>
+                        <div class="form-group">
+                            <apex:inputField value="{!objReferral.City__c}"  styleClass="form-control notnull ModifyFirstOptionForcity"/>
+                        </div>
+                        <div class="form-group">
+                            <input type ="Checkbox" id="iagree"  value="I agree" style="form-control notnull"><font style="font-size:15px;"> By Clicking on Register button below, I authorize NMIMS and its representative to contact me via phone/email/SMS. This will override registry on DND/NDNC.</font></input>
+                        </div>                    
+                        <center> <apex:commandButton value="Reserve My Seat" styleClass="btn btn-primary btn-block btnStatus" id="next" action="{!Save}"/></center>
+                    </apex:form>
+                </div>
+                
+                <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12" style="text-align:justify;font-size:16px;">
+                    <div>
+                    <apex:image url="{!URLFOR($Resource.Subrata)}" styleClass="img-responsive img-circle pull-left" style="margin-right:10px;width:150px;height:180px;"/>
+                    <h2><b>Mr. Subrata Das</b></h2>
+                   
+                   <!-- <p>Head Analytics-IIFL NBFC &amp;  Channels – SAS India.</p> -->
+                  
+                    </div>
+                    <p>Mr. Subrata Das, Head Analytics-IIFL NBFC will be sharing his personal journey in the field of Analytics and share his insights on:</p>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <p>During the webinar, he will be covering:
+                        <ul>
+                            <li>Factors that influenced IIFL’s decision to implement SAS.</li>
+                            <li>How Predictive and Visual Analytics model helped in boosting overall performance.</li>
+                            <li>Availability of resources in the field of analytics.</li>
+                            <li>Career direction for beginners in analytics.</li>
+                            
+                        </ul>
+                    </p>
+                    <p>Fill-in your details and Register for this once-in-a-lifetime opportunity. Hurry! Seats are limited and available on first come first serve basis.</p>
+                    
+                    <p>For any clarifications, call toll free 18001025136 (Monday – Saturday 10:00 AM – 6:00 PM)</p>
+                </div>
+            
+            </div>
+        </div>
+        
+        <!-- Form: END -->
+        
+        <div class="clearfix"/>
+        <div style="width:100%;height:10px;background-color:#d2232a;margin-top:30px;"/>
+        
+        
+        <!--All java script  -->
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}"/>
+
+        
+        <script>
+        $(document).ready(function(){
+        
+        $('.ModifyFirstOptionForcity> option:first-child').text('City');
+        $('.btnStatus').attr('disabled',true);
+        $('.notnull').attr('required','true');
+        $('.numonly').keypress(function(e){ 
+            return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) ) ? false : true;
+        });
+        
+        $('[id$=fName]').keypress(function (e) {
+            var regex = new RegExp("^[a-z  A-Z]*$");
+            var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (!regex.test(str)) {
+                $(this).focus();
+                e.preventDefault();
+                $(this).parent().children('span').remove();
+                $(this).parent().append('<span class="error" style="color:red;font-style:bold">Name does not contain number and special character .</span>');
+            }else{
+                $(this).parent().children('span').remove();
+            }    
+        });
+        
+      $('.limitedChar').keypress(function(event) {
+           var inputValue = $(this).val().length;
+            if(inputValue >=10) { 
+                event.preventDefault(); 
+            }
+        });
+        $('.limitedChar').change(function(){
+           var inputValue = $(".limitedChar").val()
+            if(!inputValue.startsWith('7') && !inputValue.startsWith('8') && !inputValue.startsWith('9')) 
+            { 
+                alert("Please enter Valid Mobile Number");
+                $('.limitedChar').val(""); 
+            }
+        });
+            
+     $("#iagree").on('change', function() {
+              if ($(this).is(':checked')) {
+                $(this).attr('value', 'true');
+                 $('.btnStatus').attr('disabled',false);
+              } else {
+                $(this).attr('value', 'false');
+                  $('.btnStatus').attr('disabled',true);
+              }
+          });
+          
+          $(".emailValidation").change(function(){
+            var emailAddress = $(this).val();
+            if(!isValidEmailAddress(emailAddress)){
+                $(this).parent().children('span').remove();
+                $(this).parent().append('<span class="error" style="color:red;font-style:bold">Please enter correct email Address.</span>');
+                $(this).val("");
+            }else{
+                $(this).parent().children('span').remove();
+            }
+        });
+        
+        $(".mobileValidation").change(function(){
+            var mobileNumberValue = $(".mobileValidation").val();
+            if(mobileNumberValue.length >10 || mobileNumberValue.length<10)
+            {
+                $(this).parent().children('span').remove();
+                    $(this).parent().append('<span class="error" style="color:red;font-style:bold">Please enter correct mobile number.</span>');
+                    $(this).val("");
+               
+            }else{
+                $(this).parent().children('span').remove();
+            }
+        
+    });
+        
+      });
+      
+      function isValidEmailAddress(emailAddress) {
+        var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+        // alert( pattern.test(emailAddress) );
+        return pattern.test(emailAddress);
+    }; 
+    
+    </script>
+    <script>
+    var cd = new Countdown({
+        cont: document.querySelector('.counter'),
+        endDate: 0528160000,
+        outputTranslation: {
+            day: 'Days',
+            hour: 'Hours',
+            minute: 'Minutes',
+            second: 'Seconds',
+        },
+        endCallback: null,
+        outputFormat: 'day|hour|minute|second',
+    });
+    cd.start();
+</script>
+    <!-- Facebook Pixel Code -->
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '146694735869022');
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=146694735869022&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Facebook Pixel Code -->
+</apex:page>

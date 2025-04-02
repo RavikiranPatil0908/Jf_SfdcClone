@@ -1,0 +1,33 @@
+<template>
+    <lightning-card title="Counsellor Assessment">
+        <lightning-button label="New Assesment" onclick={openModal} variant="brand"></lightning-button>
+        
+        <template if:true={isModalOpen}>
+            <section role="dialog" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 class="slds-text-heading_medium">Counsellor Assessment</h2>
+                        <lightning-button-icon icon-name="utility:close" variant="bare-inverse" onclick={closeModal} class="slds-modal__close"></lightning-button-icon>
+                    </header>
+ 
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <lightning-combobox
+                            name="assessment"
+                            label="Counsellor Assessment"
+                            value={selectedAssessment}
+                            options={assessmentOptions}
+                            onchange={handleChange}>
+                        </lightning-combobox>
+                    </div>
+ 
+                    <footer class="slds-modal__footer">
+                        <lightning-button label="Cancel" onclick={closeModal} variant="neutral"></lightning-button>
+                        <lightning-button label="Submit" onclick={handleSubmit} variant="brand"></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </lightning-card>
+    
+</template>

@@ -1,0 +1,10 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 08-04-2022
+  @last modified by  : @BK
+-->
+<apex:page controller="nmICICIPayResponse" action="{!StorePaymentInSystem}" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+  {!results}
+</apex:page>

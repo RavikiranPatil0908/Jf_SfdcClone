@@ -1,0 +1,306 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 16-07-2024
+  @last modified by  : @BK
+-->
+<template>
+    <!-- Message Toast Starts here -->
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant}
+        auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+    <!-- Message Toast Ends here -->
+
+    <div class={stlyeClass}>
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </template>
+        <lightning-card  title="Faculty Video Review" variant="Narrow" icon-name="standard:account" icon-size="medium">
+            <template if:true={showBackBtn}>
+                <lightning-button label="Back" title="Non-primary action" onclick={handleClick} class="slds-var-m-left_x-small" slot="actions"></lightning-button>
+            </template>
+            <template if:true={showAsyncTable}>
+                <div class="slds-form slds-var-p-horizontal_x-large" role="list">
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <lightning-select
+                                name="programName"
+                                label="Select Program"
+                                options={programOptions}
+                                onchange={filterSearch}
+                                data-element="program" 
+                                required >
+                            </lightning-select>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <lightning-select
+                                name="SubjectName"
+                                label="Select Subject"
+                                options={subjectOptions}
+                                onchange={filterSearch}
+                                data-element="subject"
+                                required >
+                            </lightning-select>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <label class="slds-form-element__label" for="horizontal-input-id-01">Search</label>
+                                <div class="slds-form-element__control">
+                                  <input type="text" id="horizontal-input-id-01" placeholder="Search Program/Subject" class="slds-input" 
+                                  data-element="search" onchange={filterSearch}/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_stacked slds-var-m-top_large slds-text-align_center">
+                                <lightning-button variant="brand" label="Unmapped Records" title="Get UnMapped Records" icon-name="utility:search" class="slds-var-m-left_x-small" onclick={fetchUnMappedAsync}></lightning-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            
+            <p class="slds-var-p-horizontal_small">
+                <template lwc:if={showTOCTable}>
+                    <div class="slds-grid slds-wrap slds-grid_vertical-align-center slds-var-m-horizontal_medium slds-var-m-bottom_small">
+                        <template if:false={showTOCOnly}>
+                            <div class="slds-col slds-size_1-of-1">
+                                <div class="slds-page-header slds-page-header_record-home" style="border: 1px solid #c9c9c9;">
+                                    <div class="slds-page-header__row">
+                                        <div class="slds-page-header__col-title">
+                                            <div class="slds-media">
+                                                <div class="slds-media__figure">
+                                                    <lightning-icon icon-name="standard:opportunity" alternative-text="Async Video" title="Async Video Record"></lightning-icon>
+                                                </div>
+                                                <div class="slds-media__body">
+                                                    <div class="slds-page-header__name">
+                                                        <div class="slds-page-header__name-title">
+                                                            <h1>
+                                                                <span>Async Record</span>
+                                                                <span class="slds-page-header__title slds-truncate" title="Acme - 1,200 Widgets">{asyncRecord.Name}</span>
+                                                            </h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="slds-page-header__col-actions">
+                                            <div class="slds-page-header__controls">
+                                                <div class="slds-page-header__control">
+                                                    <ul class="slds-button-group-list">
+                                                        <li>
+                                                            <button class="slds-button slds-button_neutral" onclick={handleEdit}>Edit</button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-page-header__row slds-page-header__row_gutters">
+                                        <div class="slds-page-header__col-details">
+                                            <ul class="slds-page-header__detail-row">
+                                                <li class="slds-page-header__detail-block">
+                                                    <div class="slds-text-title slds-truncate" title="Subject">Subject</div>
+                                                    <div class="slds-truncate" title={asyncRecord.Subject__c}>{asyncRecord.Subject__c}</div>
+                                                </li>
+                                                <li class="slds-page-header__detail-block">
+                                                    <div class="slds-text-title slds-truncate" title="Old Chapter Name">Old Chapter Name</div>
+                                                    <div class="slds-truncate" title={asyncRecord.Chapter_Name__c}>{asyncRecord.Chapter_Name__c}</div>
+                                                </li>
+                                                <li class="slds-page-header__detail-block">
+                                                    <div class="slds-text-title slds-truncate" title="Shoot Date">Shoot Date</div>
+                                                    <div class="slds-truncate" title={asyncRecord.Shoot_Date__c}>{asyncRecord.Shoot_Date__c}</div>
+                                                </li>
+                                                <li class="slds-page-header__detail-block" if:true={isVideoAvialable}>
+                                                    <div class="slds-text-title slds-truncate" title="Video Link">Video Link</div>
+                                                    <div class="slds-truncate" title="Click here">
+                                                        <a href="javascript:void(0);" data-link={asyncRecord.Current_Download_Link__c} onclick={handlePlay}>Click here</a>
+                                                    </div>
+                                                </li>
+                                                <li class="slds-page-header__detail-block" if:true={isVTTAvialble}>
+                                                    <div class="slds-text-title slds-truncate" title="Download vtt">Download vtt</div>
+                                                    <div class="slds-truncate" title="Click here">
+                                                        <a href={vttLink} target="_blank" download="download">Click here</a>
+                                                    </div>
+                                                </li>
+                                                <li class="slds-page-header__detail-block">
+                                                    <div class="slds-text-title slds-truncate" title="Video Title">Video Title</div>
+                                                    <div class="slds-truncate" title={asyncRecord.Topics_Covered__c}>{asyncRecord.Topics_Covered__c}</div>
+                                                </li>
+                                                <li class="slds-page-header__detail-block">
+                                                    <div class="slds-text-title slds-truncate" title="Video Coverage">Video Coverage</div>
+                                                    <div class="slds-truncate" title={asyncRecord.SubTopics__c}>{asyncRecord.SubTopics__c}</div>
+                                                </li>
+                                                
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        
+                        
+                        <div class="slds-col slds-size_1-of-1 slds-grid slds-wrap slds-var-p-vertical_medium">
+                            <div class="slds-col slds-size_1-of-4 slds-var-p-horizontal_small">
+                                <lightning-select
+                                    name="blockName"
+                                    label="Select Block Name"
+                                    options={blockFieldOptions}
+                                    onchange={handleBlockFieldChange}
+                                    required >
+                                </lightning-select>
+                            </div>
+                            
+                            <div class="slds-col slds-size_1-of-4 slds-var-p-horizontal_small">
+                                <lightning-select
+                                    name="unitName"
+                                    label="Select Unit Name"
+                                    options={unitFieldOptions}
+                                    onchange={handleUnitFieldChange}
+                                    required >
+                                </lightning-select>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-4 slds-var-p-horizontal_small">
+                                <lightning-select
+                                    name="topicName"
+                                    label="Select Topic Name"
+                                    options={topicFieldOptions}
+                                    onchange={handleTopicFieldChange}
+                                    required >
+                                </lightning-select>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-4 slds-var-p-horizontal_small">
+                                <lightning-select
+                                    name="subTopicName"
+                                    label="Select Sub Topic Name"
+                                    options={subTopicFieldOptions}
+                                    onchange={handleSubTopicFieldChange}
+                                    required >
+                                </lightning-select>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-col slds-size_1-of-1">
+                            <lightning-datatable  class="slds-table_header-fixed_container slds-scrollable_y slds-border_top"
+                                data={filteredTOCRecords} columns={tocColumns} rowactions={rowActions} key-field="Id" 
+                                onrowaction={handleTOCRowAction} hide-checkbox-column>
+                            </lightning-datatable>
+                        </div>
+                    </div>
+                </template>
+                
+                <template if:true={showAsyncTable}>
+                    <lightning-datatable  class="slds-table_header-fixed_container slds-scrollable_y slds-border_top"
+                        data={data} columns={recordColumns} rowactions={rowActions} key-field="Id" 
+                        onrowaction={handleRowAction} hide-checkbox-column>
+                    </lightning-datatable>
+                </template>
+            </p>
+        </lightning-card>
+    </div>
+
+    <template if:true={isEdit}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+            class="slds-modal slds-fade-in-open slds-modal_medium">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate" tabindex="-1">Edit Record ({asyncRecord.Name})</h1>
+                </div>
+                <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-form" role="list">
+                        <div class="slds-form__row">
+                            <div class="slds-form__item" role="listitem">
+                                <lightning-select
+                                    name="mappingStatus"
+                                    label="Select Mapping Status"
+                                    options={mappingStatusOptions}
+                                    onchange={handleFormChange}
+                                    value={asyncRecord.Mapping_Status__c}
+                                    variant="label-inline"
+                                    data-field="Mapping_Status__c">
+                                </lightning-select>
+                            </div>
+                            <div class="slds-form__item" role="listitem">
+                            </div>
+                        </div>
+                        <div class="slds-form__row">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                                    <label class="slds-form-element__label" for="single-form-element-id-02"> <abbr class="slds-required" title="required">* </abbr>Video Title</label>
+                                    <div class="slds-form-element__control">
+                                        <textarea id="single-form-element-id-02" data-field="Topics_Covered__c" placeholder="Topic" 
+                                            class="slds-textarea" onchange={handleFormChange}>{asyncRecord.Topics_Covered__c}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                                    <label class="slds-form-element__label" for="single-form-element-id-03"> <abbr class="slds-required" title="required">* </abbr>Video Coverage</label>
+                                    <div class="slds-form-element__control">
+                                        <textarea id="single-form-element-id-03" data-field="SubTopics__c" placeholder="Topic" 
+                                            class="slds-textarea" onchange={handleFormChange}>{asyncRecord.SubTopics__c}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__row">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_horizontal slds-is-editing slds-form-element_1-col">
+                                    <label class="slds-form-element__label" for="single-form-element-id-04"> <abbr class="slds-required" title="required">* </abbr>Learning Objectives</label>
+                                    <div class="slds-form-element__control">
+                                       <lightning-input-rich-text id="single-form-element-id-04"
+                                            value={asyncRecord.Learning_Objectives__c}
+                                            onchange={handleObjectiveChange}>
+                                        </lightning-input-rich-text>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-form__row">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_horizontal slds-is-editing slds-form-element_1-col">
+                                    <label class="slds-form-element__label" for="single-form-element-id-04"> <abbr class="slds-required" title="required">* </abbr>Learning Outcomes</label>
+                                    <div class="slds-form-element__control">
+                                        <lightning-input-rich-text id="single-form-element-id-05"
+                                            value={asyncRecord.Learning_Outcomes__c}
+                                            onchange={handleOutcomesChange}>
+                                        </lightning-input-rich-text>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" aria-label="Cancel and close" onclick={handleEdit}>Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={handlSubmit}>Save</button>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+    
+    <template if:true={isPlaying}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-02"
+            class="slds-modal slds-fade-in-open slds-modal_medium">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-02" class="slds-modal__title slds-hyphenate" tabindex="-1">Final Video Link ({asyncRecord.Name})</h1>
+                </div>
+                <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-2">
+                    <c-basic-you-tube-player
+                        you-tube-id={youTubeId}
+                    ></c-basic-you-tube-player>
+                </div>
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" aria-label="Cancel and close" onclick={handlePlay}>Close</button>
+                </div>
+            </div>
+        </section>
+    </template>
+
+</template>

@@ -1,0 +1,110 @@
+<!--
+  @File Name          : workQueue.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 07-16-2020
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    24/4/2020   @BK     Initial Version
+-->
+<template>
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon class="slds-align_absolute-center" icon-name="standard:sales_cadence"
+                        alternative-text="sales cadence" size="small"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Work Queue">
+                            <span>Work Queue</span>
+                        </a>
+                    </h2>
+                </div>
+                <div class="slds-media__figure" style="margin-right: -0.7rem;">
+                    <lightning-button-icon icon-name="utility:automate" variant="border-filled" alternative-text="Settings" title="Settings" onclick={toggleFilter}>
+                    </lightning-button-icon>
+                    <section aria-describedby="dialog-body-id-18" aria-label="Filter" if:true={enableFilter}
+                        class="slds-popover slds-nubbin_top-left slds-dynamic-menu filterPanel" role="dialog">
+                        <div class="slds-popover__body slds-p-horizontal_none" id="dialog-body-id-18">
+                            <div id="listbox-unique-id" role="listbox">
+                                <ul class="slds-listbox slds-listbox_vertical slds-dropdown_length-10" role="group"
+                                    aria-label="Filter">
+                                    <li role="presentation" class="slds-listbox__item">
+                                        <div class="slds-media slds-listbox__option slds-listbox__option_plain"
+                                            role="presentation">
+                                            <h3 class="slds-listbox__option-header" role="presentation">Filter</h3>
+                                        </div>
+                                    </li>
+                                    <li role="presentation" class="slds-listbox__item">
+                                        <div id="listbox-option-id-54"
+                                            class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                            role="option" tabindex="0">
+                                            <span class="slds-media__body">
+                                                <lightning-combobox class="slds-p-horizontal_xx-small" data-id="status" value={chooseLeadStatus}
+                                                    placeholder="Select Status" options={statusFilterOptions} onchange={handleChange} label="Status">
+                                                </lightning-combobox>
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li role="presentation" class="slds-listbox__item">
+                                        <div id="listbox-option-id-55"
+                                            class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                            role="option">
+                                            <span class="slds-media__body">
+                                                <lightning-combobox class="slds-p-horizontal_xx-small slds-p-bottom_xx-small" label="Choose Program"
+                                                    data-id="chooseProgram" value={chooseProgramList} placeholder="Select Choose Program"
+                                                    options={chooseProrgramFilterOptions} onchange={handleChange}>
+                                                </lightning-combobox>
+                                            </span> 
+                                            
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <footer class="slds-popover__footer">
+                            <ul>
+                                <li>
+                                    <button onclick={getRefreshLeads}
+                                        class="slds-button slds-button_reset slds-p-vertical_xx-small slds-size_1-of-1">
+                                        <lightning-icon icon-name="utility:refresh" class="slds-button__icon_left" size="xx-small"></lightning-icon>
+                                        Refersh
+                                    </button>
+                                </li>
+                            </ul>
+                        </footer>
+                    </section>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner card-break">
+            <div class="slds-nav-vertical__section">
+                <fieldset class="slds-nav-vertical slds-nav-vertical_compact slds-scrollable_y scroll-heigth">
+                    <template for:each={leads} for:item="ld">
+                        <span class="slds-nav-vertical__item list-block-top" key={ld.Id}>
+                            <div class="slds-grid slds-gutters">
+                                <!-- <div class="slds-col slds-size_3-of-4 slds-col_bump-right"> -->
+                                <div class="slds-col">
+                                    <a href="javascript:void(0);" class="slds-nav-vertical__action" data-id={ld.Id}
+                                        onclick={handleClick}>
+                                        <span class="slds-nav-vertical_radio-faux">{ld.FirstName} {ld.LastName}</span>
+                                    </a>
+                                </div>
+                                <!-- <div class="slds-col slds-size_1-of-4 slds-p-top_xx-small align-logo">
+                                    <a href="javascript:void(0);" onclick={clickToCall}>
+                                        <lightning-icon class="slds-align_absolute-center" icon-name="utility:call"
+                                        alternative-text="call" size="x-small"></lightning-icon>
+                                    </a>
+                                </div> -->
+                            </div>
+                        </span>
+                    </template>
+                </fieldset>
+            </div>
+        </div>
+    </article>
+</template>

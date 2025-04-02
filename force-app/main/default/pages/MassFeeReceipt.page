@@ -1,0 +1,86 @@
+<apex:page Controller="MassFeeReceiptController"  sidebar="false">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"/>
+</head>
+<style>
+.activeTab {background-color: #236FBD; color:white;background-image:none}
+.inactiveTab { background-color: lightgrey; color:black;background-image:none}
+</style>
+
+<apex:form >
+  <apex:pageMessages id="error" />
+
+<apex:pageBlock mode="edit"  >
+ 
+       <!---  <apex:pageBlockSection columns="1" >
+                          
+            <apex:pageBlockSectionItem >
+               <apex:outputLabel for="startingstudentno"  >Starting Receipt No:</apex:outputLabel>
+               
+               <apex:panelGroup >
+              
+                  <apex:inputText id="startingstudentno" value="{!startingNumber}"  /> <span class="red">*</span> <br />
+                   
+               </apex:panelGroup>
+            </apex:pageBlockSectionItem>
+            <br/>
+            <apex:pageBlockSectionItem >
+               <apex:outputLabel for="endingstudentno">Ending Receipt No:</apex:outputLabel>
+               <apex:panelGroup >
+               <apex:inputText id="endingstudentno" value="{!endingNumber}"  /><span class="red">*</span> <br />                 
+               </apex:panelGroup>
+            </apex:pageBlockSectionItem>
+             <br />
+            <apex:pageBlockSectionItem >
+                 <apex:commandButton action="{!View}"   value="View"/>
+                 
+                 <apex:commandButton action="{!search}" onclick="return confirm('Do you want to Download?')" value="Download Mass Fee Receipt"  />
+             </apex:pageBlockSectionItem> 
+           
+            
+            
+        </apex:pageBlockSection>
+         <apex:actionStatus id="status" startText="requesting..."/>
+
+           <apex:pageBlockTable value="{!lstpayment}" var="a"
+                               rendered="{!NOT(ISNULL(lstpayment))}">                   
+              <apex:column value="{!a.Name}"/>   
+              <apex:column value="{!a.nm_PaymentType__c}"/>
+              <apex:column value="{!a.nm_PaymentStatus__c}"/>
+              <apex:column value="{!a.Receipt_Number__c}"/>
+                     
+</apex:pageBlockTable>  ----> 
+</apex:pageBlock>
+<apex:pageBlock mode="edit">
+    <apex:pageblockSection columns="1">
+         <apex:pageBlockSectionItem >
+               <apex:outputLabel for="startingstudentno"  > Receipt No's:</apex:outputLabel>
+               
+               <apex:panelGroup >
+              
+                  <apex:inputTextarea id="startingstudentno" value="{!ListReceiptNumber}"  rows="10"  cols="50"/> <span class="red">*</span> <br />
+                   
+               </apex:panelGroup>
+            </apex:pageBlockSectionItem>
+            <br />
+             <apex:pageBlockSectionItem >
+                 <apex:commandButton action="{!View}"   value="View List Of Records"/>
+                 
+             <apex:commandButton action="{!search}" onclick="return confirm('Do you want to Download?')" value="Download Mass Fee Receipt" />
+             </apex:pageBlockSectionItem>
+           
+    </apex:pageblockSection>
+          <apex:actionStatus id="status" startText="requesting..."/>
+
+           <apex:pageBlockTable value="{!lstpayment}" var="a"
+                               rendered="{!NOT(ISNULL(lstpayment))}">                   
+              <apex:column value="{!a.Name}"/>   
+              <apex:column value="{!a.nm_PaymentType__c}"/>
+              <apex:column value="{!a.nm_PaymentStatus__c}"/>
+              <apex:column value="{!a.Receipt_Number__c}"/>
+                     
+</apex:pageBlockTable> 
+</apex:pageBlock>
+</apex:form>
+
+</apex:page>

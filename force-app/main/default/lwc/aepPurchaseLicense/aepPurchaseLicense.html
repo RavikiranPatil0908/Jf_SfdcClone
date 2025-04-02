@@ -1,0 +1,256 @@
+<!--
+  @File Name          : aepPurchaseLicense.html
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 21-08-2024
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    19/3/2020   shubhranshu     Initial Version
+-->
+<template>
+    <!-- Message Toast Starts here-->
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant}
+        auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+    <!-- Message Toast Ends here-->
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon class="slds-align_absolute-center" icon-name="standard:user"
+                        alternative-text={aepDetails.Center_Name__c} size="medium"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <a href="javascript:void(0);" class="slds-card__header-link" title="Accounts">
+                            <span>Hello {aepDetails.Center_Name__c}</span>
+                        </a>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="slds-text-heading_medium slds-var-p-top_small">License purchase Form</div>
+            <div class="slds-text-body_small slds-var-p-vertical_x-small">Select the AEP Counselors to add to the
+                purchase
+                list.
+            </div>
+            <div class="slds-grid slds-wrap">
+                <template for:each={cpRecords} for:item="cp">
+                    <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-var-p-around_x-small"
+                        key={cp.key}>
+                        <a href="javascript:void(0);" title={cp.value.First_Name__c} data-value={cp.key}
+                            onclick={handleClick}>
+                            <article class="slds-card slds-card_boundary">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__figure">
+                                            <span class="slds-avatar">
+                                                <img alt={cp.value.First_Name__c} src={cp.value.Employee_Image_URL__c}
+                                                    title={cp.value.First_Name__c} class="img-height" />
+                                            </span>
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <h2 class="slds-card__header-title">
+                                                <span class="slds-card__header-link slds-truncate">
+                                                    <span>{cp.value.Salutation__c} {cp.value.First_Name__c}
+                                                        {cp.value.Last_Name__c}</span>
+                                                    <!-- <span>{cp.value.nm_ChooseaProgram__c}</span> -->
+                                                </span>
+                                            </h2>
+                                        </div>
+                                        <!-- <div class="slds-card__body slds-card__body_inner">{cp.value.nm_ChooseaProgram__c}</div> -->
+                                        <template if:true={cp.selected}>
+                                            <div class="slds-no-flex">
+                                                <lightning-icon icon-name="standard:task2" alternative-text="task2"
+                                                    size="x-small"></lightning-icon>
+                                            </div>
+                                        </template>
+                                    </header>
+                                </div>
+                                 <footer class="slds-card__footer slds-text-align_center">
+                                    <span class="slds-text-title">{cp.value.nm_ChooseaProgram__c}</span>
+                                </footer>
+                            </article>
+                        </a>
+                    </div>
+                </template>
+            </div>
+            <template if:true={calculation.show}>
+                <div class="slds-show_medium">
+                    <div class="slds-text-heading_medium slds-var-p-top_small">Total Amount</div>
+                    <table
+                        class="slds-table slds-table_cell-buffer slds-table_bordered slds-no-row-hover slds-table_col-bordered slds-var-m-top_x-small"
+                        style="border: 1px solid rgb(217, 219, 221);">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col" colspan="2">
+                                    <div class="slds-truncate" title="AEP Profiles">AEP Profiles</div>
+                                </th>
+                                <th class="" scope="col" colspan="2">
+                                    <div class="slds-truncate" title="Amount/Month">Role</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={cpRecords} for:item="cp">
+                                <template key={cp.key} if:true={cp.selected}>
+                                    <tr class="slds-hint-parent" key={cp.key}>
+                                        <td data-label={cp.value.Salutation__c} colspan="2">
+                                            <div class="slds-truncate" title={cp.value.Salutation__c}>
+                                                {cp.value.Salutation__c} {cp.value.First_Name__c}
+                                                {cp.value.Last_Name__c}
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell-edit" role="gridcell" colspan="2">
+                                            <div class="slds-checkbox">
+                                                <lightning-combobox name="role" value={cp.role}
+                                                    placeholder="Select User Role" options={options}
+                                                    onchange={handleChange} data-key={cp.key}></lightning-combobox>
+                                            </div>
+                                        </td>
+                                        <!-- <td data-label="Close Date" colspan="2">
+                                            <div class="slds-truncate" title={cp.role}>{cp.role}</div>
+                                        </td> -->
+                                    </tr>
+                                </template>
+                            </template>
+
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="No Of AEP Profiles">No Of AEP Profiles</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Amount/Month">Amount/Month</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="No Of Months">No Of Months</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Total Amount">Total Amount</div>
+                                </th>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td data-label="Account Name">
+                                    <div class="slds-truncate" title={calculation.noOfProfiles}>
+                                        {calculation.noOfProfiles}
+                                    </div>
+                                </td>
+                                <td data-label="Close Date">
+                                    <div class="slds-truncate" title={calculation.perMonth}>{calculation.perMonth}</div>
+                                </td>
+                                <td data-label="Prospecting">
+                                    <div class="slds-truncate" title={calculation.monthsBetween}>
+                                        {calculation.monthsBetween}
+                                    </div>
+                                </td>
+                                <td data-label="Confidence">
+                                    <div class="slds-truncate" title={calculation.amount}>{calculation.amount}</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="slds-hide_medium">
+                    <div class="slds-text-heading_medium slds-var-p-top_small">AEP Profiles</div>
+                    <ul class="slds-has-dividers_around-space slds-var-m-top_x-small">
+                        <template for:each={cpRecords} for:item="cp">
+                            <li class="slds-item" key={cp.key} if:true={cp.selected}>
+                                <a href="javascript:void(0);">
+                                    {cp.value.Salutation__c} {cp.value.First_Name__c} {cp.value.Last_Name__c}
+                                </a>
+                                <ul>
+                                    <li>
+                                        <div class="slds-list_horizontal">
+                                            <div class="slds-item_label slds-truncate recordCell slds-var-p-top_medium"
+                                                title="Role:">Role:</div>
+                                            <div class="slds-item_detail">
+                                                <lightning-combobox name="role" value={cp.role}
+                                                    placeholder="Select User Role" options={options}
+                                                    onchange={handleChange} data-key={cp.key}></lightning-combobox>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </template>
+                        <li class="slds-item">
+                            <a href="javascript:void(0);">
+                                Total Amount:
+                            </a>
+                            <ul class="slds-is-nested slds-var-p-top_small slds-list_dotted">
+                                <li>
+                                    <div class="slds-list_horizontal">
+                                        <div class="slds-item_label recordCell" style="width: 50%;"
+                                            title="No Of AEP Profiles:">No Of AEP Profiles:</div>
+                                        <div class="slds-item_detail slds-truncate recordCell">
+                                            <span>{calculation.noOfProfiles}</span>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="slds-list_horizontal">
+                                        <div class="slds-item_label slds-truncate recordCell" style="width: 50%;"
+                                            title="Amount/Month:">Amount/Month:</div>
+                                        <div class="slds-item_detail slds-truncate recordCell">
+                                            <span>{calculation.perMonth}</span>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="slds-list_horizontal">
+                                        <div class="slds-item_label slds-truncate recordCell" style="width: 50%;"
+                                            title="No Of Months:">No Of Months:</div>
+                                        <div class="slds-item_detail slds-truncate recordCell">
+                                            <span>{calculation.monthsBetween}</span>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="slds-list_horizontal">
+                                        <div class="slds-item_label slds-truncate recordCell" style="width: 50%;"
+                                            title="Total Amount:">Total Amount:</div>
+                                        <div class="slds-item_detail slds-truncate recordCell">
+                                            <span>{calculation.amount}</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="slds-grid slds-wrap slds-form-element slds-var-m-vertical_medium">
+                    <div class="slds-var-p-vertical_medium">
+                        <lightning-input type="checkbox" required="required" name="undertakingForLicense"
+                            onchange={handleChange} checked={allowProceed}>
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_11-of-12">
+                        <p class="slds-var-p-vertical_small">
+                            We would like to order {calculation.noOfProfiles} no. of Partner
+                            Community Licenses from SVKM's NMIMS. We accept and agree to pay fee of
+                            Rs.{calculation.perMonth}/-
+                            per month per
+                            license and allow SVKM’s NMIMS to recover this amount from our Center Share.
+                            The said license/s will be utilized only for managing the leads and admission process of
+                            SVKM’s
+                            NMIMS.
+                        </p>
+                    </div>
+                </div>
+                <template if:true={allowProceed}>
+                    <div class="slds-grid slds-wrap slds-form-element">
+                        <div
+                            class="slds-col slds-large-size_1-of-1 slds-medium-size_1-of-1 slds-size_1-of-1 slds-var-p-horizontal_x-small">
+                            <!-- <button class="slds-button slds-button_brand slds-var-p-around_xx-small"
+                                onclick={saveLicenseDetails}>Pay via IC Share</button>&nbsp;&nbsp;&nbsp; -->
+                            <button class="slds-button slds-button_brand slds-var-p-around_xx-small" name="online"
+                                onclick={saveCenterDetailsOnlineMethod}>Make Online Payment</button>
+                        </div>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </article>
+</template>

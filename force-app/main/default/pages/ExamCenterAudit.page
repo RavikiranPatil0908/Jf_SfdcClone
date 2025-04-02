@@ -1,0 +1,207 @@
+<apex:page showHeader="false" sidebar="false" id="centerEvaluation" standardController="ExamCentreInspectionEvaluation__c" standardStylesheets="false" cache="false">
+    <apex:include pageName="Bootstrapheader"/>
+     <style>
+        .mytable>tbody>tr>td, .mytable>tbody>tr>th, .mytable>tfoot>tr>td, .mytable>tfoot>tr>th, .mytable>thead>tr>td, .mytable>thead>tr>th {
+            padding: 8px;
+        }
+   </style>  
+    <apex:form >
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <img src="{!URLFOR($Resource.NMIMS_Banner_v2,'')}" width="100%"/>
+                </div>
+                <div class="col-sm-8"></div>
+            </div><br/>
+            <table class="table mytable table-bordered">
+                <tbody>
+                    <tr>
+                        <td><b>Exam Location/Centre</b></td>
+                        <td><apex:outputField id="center" styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.Exam_Location_Centre__c}" /></td>
+                        <td></td>
+                        <td><b>Date</b></td>
+                        <td colspan="2"><u>&nbsp;{!DAY(TODAY())}-{!MONTH(TODAY())}-{!YEAR(TODAY())}&nbsp;</u></td>
+                    </tr>
+                    <tr>
+                        <td colspan="6"></td>
+                    </tr>
+                    <tr>
+                        <td><b>Parameters</b></td>
+                        <td><b>Requirements</b></td>
+                        <td><b>Weightage</b></td>
+                        <td><b>Rating (1 to 5)</b></td>
+                        <td><b>Score</b></td>
+                        <td><b>Remarks</b></td>
+                    </tr>
+                    <tr>
+                        <td>Location</td>
+                        <td>Student reachability</td>
+                        <td>10%</td>
+                        <td><apex:outputField styleClass="form-control rating" html-data-weightage="0.10" value="{!ExamCentreInspectionEvaluation__c.Location_Rating__c}" /></td>
+                        <td>{!ExamCentreInspectionEvaluation__c.Location_Score__c}</td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.Location__c}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Accesibility</td>
+                        <td>Ease of Public Transport availability and connectivity</td>
+                        <td>10%</td>
+                        <td><apex:outputField styleClass="form-control rating" html-data-weightage="0.10" value="{!ExamCentreInspectionEvaluation__c.Accesibility_Rating__c}" /></td>
+                        <td>{!ExamCentreInspectionEvaluation__c.Accesibility_Score__c}</td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.Accesibility__c}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Building Infra</td>
+                        <td>Cleanliness/ Staircase/Lift/Ventilation/Lighting</td>
+                        <td>10%</td>
+                        <td><apex:outputField styleClass="form-control rating" html-data-weightage="0.10" value="{!ExamCentreInspectionEvaluation__c.Building_Infra_Rating__c}" /></td>
+                         <td>{!ExamCentreInspectionEvaluation__c.Building_Infra_Score__c}</td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.Building_Infra__c}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Washrooms</td>
+                        <td>Gents-2 for 100; Ladies-2 for 50; Water-Ventilation</td>
+                        <td>10%</td>
+                        <td><apex:outputField styleClass="form-control rating" html-data-weightage="0.10" value="{!ExamCentreInspectionEvaluation__c.Washrooms_Rating__c}" /></td>
+                        <td>{!ExamCentreInspectionEvaluation__c.Washrooms_Score__c}</td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.Washrooms__c}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Fire safety</td>
+                        <td>Smoke detectors/ fire cylinder/ Fire exit</td>
+                        <td>5%</td>
+                        <td><apex:outputField styleClass="form-control rating" html-data-weightage="0.5" value="{!ExamCentreInspectionEvaluation__c.Fire_safety_Rating__c}" /></td>
+                         <td>{!ExamCentreInspectionEvaluation__c.Fire_safety_Score__c}</td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.Fire_safety__c}" /></td>
+                    </tr>
+                    <tr colspan="6"></tr>
+                    <tr>
+                        <td>Air conditioning</td>
+                        <td>for 20 people--1.5 ton</td>
+                        <td>10%</td>
+                        <td><apex:outputField styleClass="form-control rating" html-data-weightage="0.10" value="{!ExamCentreInspectionEvaluation__c.Air_conditioning_Rating__c}" /></td>
+                         <td>{!ExamCentreInspectionEvaluation__c.Air_conditioning_Score__c}</td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.Air_conditioning__c}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Registration Desk</td>
+                        <td>Registration Desk - counter for every 25 student</td>
+                        <td>10%</td>
+                        <td><apex:outputField styleClass="form-control rating" html-data-weightage="0.10" value="{!ExamCentreInspectionEvaluation__c.Registration_Desk_Rating__c    }" /></td>
+                        <td>{!ExamCentreInspectionEvaluation__c.Registration_Desk_Score__c}</td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.Registration_Desk__c}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Exam Hall- INFRA</td>
+                        <td>Requisite Chairs tables-quality </td>
+                        <td>5%</td>
+                        <td><apex:outputField styleClass="form-control rating" html-data-weightage="0.5" value="{!ExamCentreInspectionEvaluation__c.Exam_Hall_INFRA_Rating__c}" /></td>
+                        <td>{!ExamCentreInspectionEvaluation__c.Exam_Hall_INFRA_Score__c}</td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.Exam_Hall_INFRA__c}" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>-- Computers/mouse/keyboard - Count &#38; As per specification</td>
+                        <td>5%</td>
+                        <td><apex:outputField styleClass="form-control rating" html-data-weightage="0.5" value="{!ExamCentreInspectionEvaluation__c.ComputersMouseKeyboard_Rating__c}" /></td>
+                        <td>{!ExamCentreInspectionEvaluation__c.CMK_Score__c}</td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.Computers_mouse_keyboard_Remark__c}" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>-- Camera - for recording exam conduct</td>
+                        <td>5%</td>
+                        <td><apex:outputField styleClass="form-control rating" html-data-weightage="0.5" value="{!ExamCentreInspectionEvaluation__c.Camera_Rating__c}" /></td>
+                          <td>{!ExamCentreInspectionEvaluation__c.Camera_Score__c}</td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.Camera__c}" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>-- Seating Arrangement</td>
+                        <td>5%</td>
+                        <td><apex:outputField styleClass="form-control rating" html-data-weightage="0.5" value="{!ExamCentreInspectionEvaluation__c.Seating_Arrangement_Rating__c}" /></td>
+                         <td>{!ExamCentreInspectionEvaluation__c.Seating_Arrangement_Score__c}</td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.Seating_Arrangement_Remark__c}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Place for student belongings</td>
+                        <td>Bag can be kept--but belongings inside the bag: responsibility of the owner</td>
+                        <td>5%</td>
+                        <td><apex:outputField styleClass="form-control rating" html-data-weightage="0.5" value="{!ExamCentreInspectionEvaluation__c.PlaceForStudentBelongingsRating__c}" /></td>
+                        <td>{!ExamCentreInspectionEvaluation__c.PlaceForStudentBelongingsScore__c}</td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.Place_for_student_belongings__c}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Waiting area</td>
+                        <td>20% of student capacity--covered space w/o AC</td>
+                        <td>5%</td>
+                        <td><apex:outputField styleClass="form-control rating" html-data-weightage="0.5" value="{!ExamCentreInspectionEvaluation__c.Waiting_area_Rating__c}" /></td>
+                        <td>{!ExamCentreInspectionEvaluation__c.Waiting_area_Score__c}</td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.WaitingArea__c}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Specially abled assistance</td>
+                        <td>Lift / Ramp / Washroom</td>
+                        <td>5%</td>
+                        <td><apex:outputField styleClass="form-control rating" html-data-weightage="0.5" value="{!ExamCentreInspectionEvaluation__c.SpeciallyAbledAssistanceRating__c}" /></td>
+                        <td>{!ExamCentreInspectionEvaluation__c.SpeciallyAbledAssistanceScore__c}</td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.SpeciallyAbledAssistance__c}" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="">Final Score</td>
+                        <td colspan="3"></td>
+                        <td><apex:outputField styleClass="form-control" value="{!ExamCentreInspectionEvaluation__c.FINAL_SCORE_Score__c}" /></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-bordered mytable">
+                <tbody>
+                    <tr>
+                        <td><b>Mandatory Parameters</b></td>
+                        <td><b>Requirements</b></td>
+                        <td><b>Yes/No</b></td>
+                        <td><b>Remarks</b></td>
+                    </tr>
+                    <tr>
+                        <td>Electrical/Network / Systems</td>
+                        <td rowspan ="2">To verify with Sify representative on its working condition on location (Need to finalise based on Sify inputs)</td>
+                        <td>{!ExamCentreInspectionEvaluation__c.ElectricalNetworkSystemsYesNo__c}</td>
+                        <td>{!ExamCentreInspectionEvaluation__c.Electrical_Network_Systems__c}</td>
+                    </tr>
+                    <tr>
+                        <td>Power Backup</td>
+                        <td>{!ExamCentreInspectionEvaluation__c.PowerBackupYesNo__c}</td>
+                        <td>{!ExamCentreInspectionEvaluation__c.Power_Backup__c }</td>
+                    </tr>
+                    <tr>
+                        <td>Remarks</td>
+                        <td>Enter Google co-ordinates of  Building entrance.Photograph of Premises/entrance/ washrooms/ <br> </br>{!ExamCentreInspectionEvaluation__c.ShippingStreet__c},{!ExamCentreInspectionEvaluation__c.ShippingCity__c},{!ExamCentreInspectionEvaluation__c.ShippingState__c },{!ExamCentreInspectionEvaluation__c.ShippingPostalCode__c }</td>
+                        <td></td>
+                        <td><apex:outputText value="{!ExamCentreInspectionEvaluation__c.Remarks__c }" escape="false" /></td>
+                    </tr>
+                    <tr>
+                        <td>Name &amp; Contact Number</td>
+                        <td>{!ExamCentreInspectionEvaluation__c.Name__c} : {!ExamCentreInspectionEvaluation__c.Contact_Number__c}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                     <tr>
+                        <td>Inspection done by &amp; Designation</td>
+                        <td>{!ExamCentreInspectionEvaluation__c.Name_Detail_enter_by__c} : {!ExamCentreInspectionEvaluation__c.Designation__c}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+  <apex:commandButton id="printpagebutton" style="background-color: #008CBA;color:white; font-size: 26px;" value="Print" onclick="printpage();"/>
+        </div>
+    </apex:form>
+    <script>
+        function printpage() {
+            $('[id$=printpagebutton]').hide();
+            window.print();
+            $('[id$=printpagebutton]').show();
+        }
+    </script> 
+
+</apex:page>

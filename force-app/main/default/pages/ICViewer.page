@@ -1,0 +1,24 @@
+<apex:page sidebar="FALSE"  standardController="IC_Payment__c" extensions="nmICRedirectExtension">
+<apex:form id="formSctn" >
+   <apex:pageBlock id="criterianBlk" title="Please select the criteria">
+    <apex:pageBlockSection columns="1" id="pbSctn">
+    
+   
+       <apex:inputField value="{!IC_Payment__c.Centers__c}"/> 
+   
+   
+       <apex:inputField required="TRUE" value="{!IC_Payment__c.Payment_Month__c}" /> 
+           
+     <!--   <apex:outputText style="font-family:monospace;font-weight:bolder;font-size:medium"   value="Type the Year"/>   -->          
+       <apex:inputField required="TRUE"  value="{!IC_Payment__c.Payment_Year__c}" />
+
+    </apex:pageBlockSection>
+    <apex:pagemessages ></apex:pagemessages>
+    
+    <apex:pageBlockButtons location="bottom">
+      <apex:commandButton action="{!icRedirect}" value="Go to IC Payment"/>
+    </apex:pageBlockButtons>
+  </apex:pageBlock>
+  
+</apex:form>
+</apex:page>

@@ -1,0 +1,136 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 03-04-2024
+  @last modified by  : @BK
+-->
+<apex:page showHeader="false" controller="nmThankYou">
+<!-- Facebook Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '146694735869022'); 
+fbq('track', 'PageView');
+</script>
+    <!-- Conversion Pixel - NMIMS_PaymentConfimation_8378387 - DO NOT MODIFY -->
+    <script src="https://secure.adnxs.com/px?id=839255&seg=8378387&t=1" type="text/javascript"></script>
+    <!-- End of Conversion Pixel -->
+
+<noscript>
+<img height="1" width="1" 
+src="https://www.facebook.com/tr?id=146694735869022&ev=PageView
+&noscript=1"/>
+</noscript>
+<!-- End Facebook Pixel Code -->
+<head>
+<!--
+       <script type="text/javascript">
+            history.pushState(null, null, 'nmThankYou');
+                    window.addEventListener('popstate', function () {
+                    history.pushState(null, null, 'nmThankYou');
+              });
+       </script>
+       -->
+  </head>
+    <div class="fieldscontainer ">
+        <div class="onecolumnrow">
+            <div >
+            <center><img src="{!URLFOR($Resource.Images,'images/logo.png')}"/></center>
+            </div>
+             
+            <div style="font-size:16px;padding-top:18px;">
+                <center><h1>NMIMS CENTRE FOR DISTANCE AND ONLINE EDUCATION</h1></center>
+            </div>
+            <div>
+                <center><h1 style="font-size:30px;">Thank-You For Payment</h1></center>
+            </div>
+            <div >
+                <center><h1 style="font-size:16px;">Please save your Receipt</h1></center>
+            </div> 
+        </div>
+    </div> 
+     
+    <div>
+        <center>
+        <apex:iframe height="600px" scrolling="true" id="idIFramePDF" width="800px" src="/nmAdmissionReciept?PaymentId={!idPayment}" />
+        </center>
+    </div>
+    
+    <apex:outputPanel rendered="{!upGradRegistration}">
+        <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window,document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '633256313481494'); 
+        fbq('track', 'PageView');
+        </script>
+        <noscript>
+        <img height="1" width="1" 
+        src="https://www.facebook.com/tr?id=633256313481494&ev=PageView
+        &noscript=1"/>
+        </noscript>
+
+        <script>
+        function gtag_report_conversion(url) {
+        var callback = function () {
+            if (typeof(url) != 'undefined') {
+            window.location = url;
+            }
+        };
+        gtag('event', 'conversion', {
+            'send_to': 'AW-944847598/PSxtCLT325MBEO71xMID',
+            'event_callback': callback
+        });
+        return false;
+        }
+        </script>
+
+        <script>
+        fbq('track', 'SubmitApplication');
+        </script>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!upGradAdmission}">
+        <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window,document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '633256313481494'); 
+        fbq('track', 'PageView');
+        </script>
+        <noscript>
+        <img height="1" width="1" 
+        src="https://www.facebook.com/tr?id=633256313481494&ev=PageView
+        &noscript=1"/>
+        </noscript>
+
+        <script>
+        fbq('track', 'Purchase');
+        </script>
+        <!--Add the event code to the HTML element for the payment (or similar) page view-->
+
+        <script>
+        gtag('event', 'conversion', {
+            'send_to': 'AW-944847598/jINSCLa16JQBEO71xMID',
+            'transaction_id': ''
+        });
+        </script>
+    </apex:outputPanel>
+</apex:page>

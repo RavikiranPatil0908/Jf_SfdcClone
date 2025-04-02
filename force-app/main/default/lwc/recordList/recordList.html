@@ -1,0 +1,152 @@
+<!--
+  @File Name          : recordList.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 12/21/2019, 2:21:51 PM
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    17/12/2019   @BK     Initial Version
+-->
+<template>
+    <!-- Message Toast Starts here-->
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant} auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+    <!-- Message Toast Ends here-->
+    <template if:true={loadSpinner}>
+        <c-lwc-custom-spinner></c-lwc-custom-spinner>
+    </template>
+    <lightning-card title="Opportunity List" icon-name="custom:custom63">
+        <div class="slds-m-around_medium">
+            <div class="slds-grid slds-wrap">
+
+                <div class="slds-col slds-large-size_1-of-2 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+                    <lightning-input type="text" name="studentNo" label="Student Number" value={searchFields.studentNo} onchange={handleChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-large-size_1-of-2 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+                    <lightning-input type="text" name="studentName" label="Student Name" value={searchFields.studentName} onchange={handleChange}></lightning-input>
+                </div>
+                
+                <div class="slds-col slds-large-size_1-of-2 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+                    <lightning-input type="text" name="name"  label="Opportunity Name" value={searchFields.name} onchange={handleChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-large-size_1-of-2 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+                    <lightning-input type="text" name="semester" label="Opportunity Semester" value={searchFields.semester} onchange={handleChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-large-size_1-of-2 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+                    <lightning-input type="text" name="session" label="Opportunity Session" value={searchFields.session} onchange={handleChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-large-size_1-of-2 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+                    <lightning-input type="text" name="year" label="Opportunity Year" value={searchFields.year} onchange={handleChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-large-size_1-of-2 slds-medium-size_1-of-1 slds-size_1-of-1 slds-p-horizontal_x-small slds-p-vertical_large">
+                    <lightning-combobox
+                        name="oppStage"
+                        label="Opportunity Stage"
+                        placeholder="Select stage"
+                        value={searchFields.year}
+                        options={stage}
+                        onchange={handleChange} >
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-large-size_1-of-2 slds-medium-size_1-of-1 slds-size_1-of-1 slds-p-horizontal_x-small slds-p-vertical_large">
+                    <lightning-combobox
+                        name="chooseProgram"
+                        label="Choose Program"
+                        placeholder="Select Choose Program"
+                        value={searchFields.chooseProgram}
+                        options={ChoosedPrograms}
+                        onchange={handleChange} >
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-large-size_1-of-1 slds-medium-size_1-of-1 slds-size_1-of-1 slds-p-horizontal_x-small slds-p-vertical_large">
+                    <button class="slds-button slds-button_success" onclick={searchOpporutnity}>Search</button> &nbsp;&nbsp;&nbsp;
+                    <button class="slds-button slds-button_destructive" onclick={clearSearchCriteria}>Clear</button>
+                </div>
+            </div>
+            <template if:true={lstOpportunity}>
+                <div class="slds-grid">
+                    <div class="slds-col slds-large-size_1-of-8 slds-medium-size_1-of-8 slds-size_1-of-1 slds-p-around_small">
+                        <lightning-combobox
+                            name="pageSizeOptions"
+                            label="Show Entries"
+                            placeholder="Select Size"
+                            value={pagesize}
+                            options={pageSizeOptions}
+                            onchange={handleChangeOnSize} >
+                        </lightning-combobox>
+                    </div>
+                </div>
+                <table
+                    class="slds-table slds-table_bordered slds-table_striped slds-table_cell-buffer slds-table_fixed-layout">
+                    <thead>
+                        <tr class="slds-text-heading_label">
+                            <th class="" scope="col" style="width:3.75rem">
+                                <div class="slds-truncate slds-assistive-text" title="Errors">Errors</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Name">Name</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Student Number">Student Number</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Student Number">Student Name</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Session">Session</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Year">Year</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Opportunity Status"> Opportunity Status</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Student Details">Student Details</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Use the Apex model and controller to fetch server side data -->
+                        <template for:each={lstOpportunity} for:item="objOpporunity" for:index="index">
+                            <tr key={objOpporunity.Id}>
+                                <td>
+                                    <div class="slds-truncate">{index}</div>
+                                </td>
+                                <th scope="row">
+                                    <a href="javascript:void(0);">
+                                        <div class="slds-truncate" title={objOpporunity.Name} data-id={objOpporunity.Id} onclick={handleClick}>{objOpporunity.Name}</div>
+                                    </a>
+                                </th>
+                                <td>
+                                    <div class="slds-truncate" title={objOpporunity.Account.nm_StudentNo__c}>{objOpporunity.Account.nm_StudentNo__c}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate" title={objOpporunity.Account.Name}>{objOpporunity.Account.Name}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate" title={objOpporunity.nm_Session__c}>{objOpporunity.nm_Session__c}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate" title={objOpporunity.nm_Year__c}>{objOpporunity.nm_Year__c}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate" title={objOpporunity.Opportunity_Status__c}>{objOpporunity.Opportunity_Status__c}</div>
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0);">
+                                        <div class="slds-truncate" title="Student Details:" data-studentno={objOpporunity.Account.nm_StudentNo__c} onclick={handleClick}>Student Details</div>
+                                    </a> 
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </template>
+        </div>
+        <p class="slds-m-around_medium content">
+            Total records: <b>{totalrecords} </b> Page <b>{currentpage}</b> of <b> {totalpages}</b>
+        </p>
+    </lightning-card>
+</template>

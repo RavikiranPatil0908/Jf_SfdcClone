@@ -1,0 +1,238 @@
+<apex:page controller="nmBlackBoardReports"> 
+<apex:includeScript value="{!URLFOR($Resource.NMIMS_CSSJS,'js/vendor/jquery-1.11.0.min.js')}"/>   
+    <div style="line-height:25px;">
+        <table style="width:75%;" border="1" cellpadding="0" cellspacing="0">
+            <th style="width:2%;text-align:center;">S.No</th>
+            <th style="width:35%;text-align:center">Report Link</th>
+            <th style="width:60%;text-align:center">Report Filter</th>
+            <tr>
+                <td style="text-align:center">
+                    1
+                </td>
+                <td>
+                    Student Creation in BB 
+                </td>
+                <td style="text-align:center">                   
+                    <apex:outputLink value="https://ap1.salesforce.com/00O90000006ivTg" target="_blank" >Click Here</apex:outputLink>                   
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">
+                    2
+                </td>
+                <td>
+                    Student Creation in BB (Old Structure)
+                </td>
+                <td style="text-align:center">                   
+                    <apex:outputLink value="https://ap1.salesforce.com/00O90000007IQWo" target="_blank" >Click Here</apex:outputLink>                   
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">
+                    3
+                </td>
+                <td>
+                    Student Creation in LDAP 
+                </td>
+                <td style="text-align:center">
+                    <apex:outputLink value="https://ap1.salesforce.com/00O90000006iIkL" target="_blank" >Click Here</apex:outputLink>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">
+                    4
+                </td>
+                <td>
+                    Student Creation in LDAP (Old Structure)
+                </td>
+                <td style="text-align:center">
+                    <apex:outputLink value="https://ap1.salesforce.com/00O90000007IQWy" target="_blank" >Click Here</apex:outputLink>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">
+                    5
+                </td>
+                <td>
+                   Student Creation in SAP
+                </td>
+                <td style="text-align:center">
+                     <apex:outputLink value="https://ap1.salesforce.com/00O90000006j3oE" target="_blank" >Click Here</apex:outputLink>
+                </td>
+            </tr>   
+            <tr>
+                <td style="text-align:center">
+                    6
+                </td>
+                <td>
+                   Student Creation in SAP (Old Structure)
+                </td>
+                <td style="text-align:center">
+                     <apex:outputLink value="https://ap1.salesforce.com/00O90000007IQXS" target="_blank" >Click Here</apex:outputLink>
+                </td>
+            </tr>           
+            <tr>
+                <td style="text-align:center">
+                    7
+                </td>
+                <td>
+                   Student Course Enrollment in BB 
+                </td>
+                <td style="text-align:left">
+                     <apex:form >
+                        &nbsp;&nbsp;<label>From Date :</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <apex:inputField id="Date1" value="{!objAccount.Account_Confirm_Date__c}"/>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
+                        <label>To Date :</label> &nbsp;
+                        <apex:inputField id="Date2" value="{!objAccount1.Account_Confirm_Date__c}"/>
+                         &nbsp;  Sem &nbsp;
+                         <apex:selectList value="{!strSelectSemister}" size="1" multiselect="false" id="idselectSem">
+                          <apex:selectOption itemValue="1" itemLabel="1"/>
+                          <apex:selectOption itemValue="2" itemLabel="2"/>
+                          <apex:selectOption itemValue="3" itemLabel="3"/>
+                          <apex:selectOption itemValue="4" itemLabel="4"/>
+                         
+                          
+                         </apex:selectList>
+                         &nbsp;
+                        <apex:commandButton value="GO" onclick="return GO3();"/>
+                    </apex:form>
+                </td>
+            </tr>    
+            <tr>
+                <td style="text-align:center">
+                    8
+                </td>
+                <td>
+                   Student Course Enrollment in BB (Old Structure)
+                </td>
+                <td style="text-align:left">
+                     <!--<apex:form >
+                        &nbsp;&nbsp;<label>From Date :</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <apex:inputField id="Date3" value="{!objAccount.Account_Confirm_Date__c}"/>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
+                        <label>To Date :</label> &nbsp;
+                        <apex:inputField id="Date4" value="{!objAccount1.Account_Confirm_Date__c}"/>
+                         &nbsp; &nbsp; &nbsp; 
+                        <apex:commandButton value="GO" />           
+                                  
+                    </apex:form>-->
+                </td>
+            </tr>          
+           <tr>
+                <td style="text-align:center">
+                    9
+                </td>
+                <td>
+                    Student Deletion from BB
+                    
+                </td>
+                <td>
+                    <apex:form >
+                       &nbsp;  <label>Select Session :</label> &nbsp; 
+                        <apex:selectList id="session1" size="1" value="{!selectedSession}">
+                            <apex:selectOptions value="{!lstSession}"></apex:selectOptions>                                          
+                        </apex:selectList> 
+                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+                        <label>Select Year :</label> &nbsp; 
+                        <apex:selectList id="year1" size="1" value="{!selectedYear}">
+                            <apex:selectOptions value="{!lstYear}"></apex:selectOptions>                                            
+                        </apex:selectList>  
+                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+                        <apex:commandButton value="GO" onclick="return GO1();"/>                      
+                    </apex:form>
+                </td>
+            </tr>  
+            <tr>
+                <td style="text-align:center">
+                    10
+                </td>
+                <td>
+                    Student De-Activation in LDAP                    
+                </td>
+                <td>
+                    <apex:form >
+                       &nbsp;  <label>Select Session :</label> &nbsp; 
+                        <apex:selectList id="session2" size="1" value="{!selectedSession}">
+                            <apex:selectOptions value="{!lstSession}"></apex:selectOptions>                                          
+                        </apex:selectList> 
+                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+                        <label>Select Year :</label> &nbsp; 
+                        <apex:selectList id="year2" size="1" value="{!selectedYear}">
+                            <apex:selectOptions value="{!lstYear}"></apex:selectOptions>                                            
+                        </apex:selectList>  
+                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;                        
+                        <apex:commandButton value="GO" onclick="return GO2();"/>
+                    </apex:form>
+                </td>
+            </tr> 
+            
+            <tr>
+                <td style="text-align:center">
+                   11
+                </td>
+                <td>
+                   List of centers for Exam Database
+                </td>
+                <td style="text-align:center">
+                     <apex:outputLink value="https://ap1.salesforce.com/00O90000007H3l3" target="_blank" >Click Here</apex:outputLink>
+                </td>
+            </tr>                          
+        </table>
+    </div>
+    <script>
+        function GO4()
+        {
+            var Date1= $('[id$=Date3]').val();
+            var Date2 = $('[id$=Date4]').val();
+            if(Date3 == '' || Date4=='')
+            {
+                alert('Please select a date');
+            }
+            else if(Date1 != '' || Date2!='')
+            {
+            var url  =  'apex/Student_Course_Enrollment_in_BB_Old?StartDate='+Date3+'&EndDate='+Date4; 
+            window.open(url,'_parent');
+            }
+            return false;
+                   
+        }
+        
+        function GO3()
+        {
+            var Date1= $('[id$=Date1]').val();
+            var Date2 = $('[id$=Date2]').val();
+            var Sem= $('[id$=idselectSem]').val();
+           
+            if(Date1 == '' || Date2=='')
+            {
+                alert('Please select a date');
+            }
+            else if(Date1 != '' || Date2!='')
+            {
+            var url  =  'apex/Student_Course_Enrollment_in_BB?StartDate='+Date1+'&EndDate='+Date2+'&SelectedSem='+Sem; 
+            window.open(url,'_parent');
+            }
+            return false;
+                   
+        }
+        function GO1()
+        {
+            var year = $('[id$=year1]').val();
+            var session = $('[id$=session1]').val();
+            var url  = '/apex/Student_Deletion_from_BB?session='+session +'&selectedYear='+year ;
+            //alert(url);
+            window.open(url,'_parent');
+            return false;
+        }
+         function GO2()
+        {
+            var year = $('[id$=year2]').val();
+            var session = $('[id$=session2]').val();
+            var url  = '/apex/Student_Deletion_from_BB?session='+session +'&selectedYear='+year ;
+            //alert(url);
+            window.open(url,'_parent');
+            return false;
+        }
+        $(".dateFormat").css('display','none');
+    
+    </script>
+</apex:page>

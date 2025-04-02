@@ -1,0 +1,79 @@
+<!--
+  @File Name          : utilityHistoryPanel.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 07-06-2020
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    30/6/2020   @BK     Initial Version
+-->
+<template>
+    <section class={utilityPanelClass} role="dialog" aria-labelledby="dialog-heading-id-1"
+        aria-describedby="dialog-content-id-1">
+        <header class="slds-docked-composer__header slds-grid slds-shrink-none" aria-live="assertive">
+            <div class="slds-media slds-media_center slds-no-space">
+                <div class="slds-media__figure slds-m-right_x-small">
+                    <lightning-icon class="slds-button__icon_left" icon-name="utility:clock" alternative-text="History"
+                        title="History" size="small"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-truncate" id="dialog-heading-id-1" title="Header">Description</h2>
+                </div>
+            </div>
+            <div class="slds-col_bump-left slds-shrink-none">
+                <lightning-button-icon icon-name="utility:minimize_window" variant="bare" onclick={handleEventClick}
+                    data-key="hide" alternative-text="Minimize Composer Panel" title="Minimize window">
+                </lightning-button-icon>
+                <lightning-button-icon icon-name="utility:expand_alt" variant="bare" onclick={handleEventClick}
+                    data-key="open" alternative-text="Expand Composer Panel" title="Expand Composer">
+                </lightning-button-icon>
+                <lightning-button-icon icon-name="utility:close" variant="bare" onclick={handleEventClick}
+                    data-key="close" alternative-text="Close Composer Panel" title="Close">
+                </lightning-button-icon>
+            </div>
+        </header>
+        <div class="slds-docked-composer__body slds-scrollable_y" id="dialog-content-id-1">
+            <template if:false={addComment}>
+                <template if:true={showList}>
+                    <div class="slds-progress slds-progress_vertical">
+                        <ol class="slds-progress__list slds-p-horizontal_small">
+                            <template for:each={descriptions} for:item="item">
+                                <li class="slds-progress__item slds-is-active" key={item.id}>
+                                    <div class="slds-progress__marker">
+                                        <span class="slds-assistive-text">Active</span>
+                                    </div>
+                                    <div class="slds-progress__item_content slds-p-bottom_none">
+                                        <p class="slds-text-heading_x-small"><u>{item.header}</u> <span class="slds-text-color_weak slds-p-left_x-small">{item.date}</span></p>
+                                        <ul class="slds-list_horizontal slds-has-dividers_right slds-text-body_small">
+                                            <li class="slds-item">{item.body}</li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </template>
+                        </ol>
+                        <div aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" role="progressbar">
+                            <span class="slds-assistive-text">Progress: 25%</span>
+                        </div>
+                    </div>
+                </template>
+                <template if:false={showList}>
+                    <span style="white-space: pre-line" class="slds-p-around_small">{leadDescription}</span>
+                </template>
+            </template>
+            <template if:true={addComment}>
+                <label class="slds-assistive-text" for="composer-text-input-1">Take notes</label>
+                <textarea id="composer-text-input-1" 
+                    class="slds-docked-composer__input slds-input_bare slds-text-longform slds-grow"
+                    placeholder="Enter Description here..." onchange={handleChange} >{comment}</textarea>
+            </template>
+        </div>
+        <footer class="slds-docked-composer__footer slds-shrink-none">
+            <div class="slds-col_bump-left slds-text-align_right">
+                <button class="slds-button slds-button_brand" if:false={addComment} onclick={handleEventClick} data-key="add">Add Note</button>
+                <button class="slds-button slds-button_brand" if:true={addComment} onclick={handleEventClick} data-key="save">Save</button>
+            </div>
+        </footer>
+    </section>
+</template>

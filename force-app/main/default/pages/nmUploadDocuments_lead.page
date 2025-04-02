@@ -1,0 +1,22 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 01-10-2024
+  @last modified by  : @BK
+-->
+<apex:page controller="nmUploadDocuments_lead" tabStyle="Lead">
+<apex:includeScript value="{!URLFOR($Resource.Scripts,'scripts/jquery-1.8.2.min.js')}"/>
+    
+    <apex:sectionHeader subtitle="Upload Documents" title="Lead"/>
+    
+    <div style="margin-bottom:40px;">
+        <a href="/{!leadId}" style="float:left;"><b>Student Name:</b> {!leadName}</a>
+    </div>
+    
+
+     <apex:iframe src="{!$Label.DOCUMENT_SERVER}uploadDocumentForm?leadId={!leadId}&uid={!LeadUId}&type=leads{!mode}" scrolling="true"  height="800px" />
+  <!--  <apex:outputPanel rendered="{!!allowed}">
+    <h2> You Are Not Eligible To Upload Document </h2>
+    </apex:outputPanel>--->
+</apex:page>

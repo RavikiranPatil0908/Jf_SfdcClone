@@ -1,0 +1,48 @@
+.theme-steel-blue .navbar {
+background-color: #fff; }
+
+.theme-steel-blue .navbar-brand {
+color: #337ab7; }
+.theme-steel-blue .navbar .navbar-toggle {
+color: #000;}
+.theme-steel-blue .navbar-brand:hover {
+    color: #337ab7; }
+.theme-steel-blue .navbar-brand:active {
+    color: #337ab7; }
+.theme-steel-blue .navbar-brand:focus {
+    color: #337ab7; }
+
+.theme-steel-blue .nav > li > a {
+color: #000; }
+.theme-steel-blue .nav > li > a > span {
+color: #fff; }
+.theme-steel-blue .nav > li > a:hover {
+    background-color: transparent; }
+.theme-steel-blue .nav > li > a:focus {
+    background-color: transparent; }
+
+.theme-steel-blue .nav .open > a {
+background-color: transparent; }
+.theme-steel-blue .nav .open > a:hover {
+    background-color: transparent; }
+.theme-steel-blue .nav .open > a:focus {
+    background-color: transparent; }
+
+.theme-steel-blue .bars {
+color: #000; }
+
+.theme-steel-blue .sidebar .menu .list li.active {
+background-color: transparent; }
+.theme-steel-blue .sidebar .menu .list li.active > :first-child i, .theme-steel-blue .sidebar .menu .list li.active > :first-child span {
+    color: #337ab7; }
+
+.theme-steel-blue .sidebar .menu .list .toggled {
+background-color: transparent; }
+
+.theme-steel-blue .sidebar .menu .list .ml-menu {
+background-color: transparent; }
+
+.theme-steel-blue .sidebar .legal {
+background-color: #fff; }
+.theme-steel-blue .sidebar .legal .copyright a {
+    color: #337ab7 !important; }

@@ -1,0 +1,109 @@
+<!--
+  @description       : 
+  @author            :
+  @group             : 
+  @last modified on  : 12-18-2024
+  @last modified by  : @vickysahu
+-->
+
+<template>
+
+    <div class="slds-show_medium">
+        <div class="test-listViewManager slds-card slds-card_boundary slds-grid slds-grid_vertical forceListViewManager">
+            <div class="slds-page-header_object-home slds-page-header_joined slds-page-header_bleed slds-page-header slds-shrink-none test-headerRegion forceListViewManagerHeader bottom-border">
+                <div class="slds-grid">
+                    <div class="slds-col slds-has-flexi-truncate firstHeaderRow">
+                        <div class="slds-media slds-no-space slds-grow">
+                            <div class="slds-media__figure">
+                                <lightning-icon class="slds-align_absolute-center" icon-name="standard:lead" alternative-text="Lead"
+                                    size="medium"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <nav role="navigation" aria-label="Breadcrumbs">
+                                    <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                                        <li class="slds-breadcrumb__item slds-line-height_reset">
+                                            <span class="slds-var-p-right_x-small uiOutputText forceBreadCrumbItem">Video</span>
+                                        </li>
+                                    </ol>
+                                </nav>
+                                <h1 class="slds-truncate slds-page-header__title slds-text-color_default">
+                                    <a href="javascript:void(0);" class="slds-card__header-link" title="Bachelor Leads">
+                                        <span>Video Verification</span>
+                                    </a>
+                                </h1>
+                            </div>
+
+                            <div class="slds-m-right_xx-small">
+                                <lightning-button-group>
+                                    <lightning-button-icon icon-name="utility:filterList"  alternative-text="Filter" title="Filter" data-key="filter" onclick={handleClick}></lightning-button-icon>
+                                </lightning-button-group>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid listDisplays safari-workaround-anchor">
+                <div class="slds-grid listViewContainer safari-workaround slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 bottom-border" if:true={showFilter}>
+                        <div class="slds-text-heading_small slds-p-horizontal_small slds-p-top_x-small">Filters</div>
+                        <fieldset class="slds-form-element slds-form-element_compound">
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element__row slds-wrap">
+                                    
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        
+                                        <lightning-select
+                                                name = 'Status'
+                                                label='Status'
+                                                value={filters.TaskStatus}
+                                                options={statusTaskValues}
+                                                onchange={handleStatusChangeTask}
+                                                multiple
+                                                size="3"></lightning-select>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-input type="date" data-key="To_From_Date" value={filters.To_From_Date} label="To From Date" onchange={handleChange}></lightning-input>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-p-around_small">
+                                        <lightning-input type="date" data-key="To_Call_Date" value={filters.To_Call_Date} label="To Call Date" onchange={handleChange}></lightning-input>
+                                    </div>
+                                    
+                                    <div class="slds-size_1-of-1 slds-p-around_small">
+                                        <div class="slds-float_right">
+                                            <lightning-button label="Cancel" data-key="cancel" class="slds-p-right_small"
+                                                title="close" onclick={handleClick}></lightning-button>
+                                            <lightning-button variant="brand" label="Search" data-key="save" 
+                                                title="Apply Filter" onclick={searchTask}></lightning-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-no-space forceListViewManagerPrimaryDisplayManager">
+                        <template if:true={DataLoading}>
+                            <div class="exampleHolder">
+                                <lightning-spinner alternative-text="Loading" size="medium" variant="brand">
+                                </lightning-spinner>
+                            </div>
+                        </template>
+                        <div class="hideSelection forceListViewManagerGrid" if:false={DataLoading}>
+                            <lightning-datatable 
+                            key-field="id" 
+                            data={data} 
+                            columns={columns} 
+                            sorted-by={sortBy}
+                            sorted-direction={sortDirection} 
+                            onsort={handleSortdata} 
+                            hide-checkbox-column 
+                            show-row-number-column>
+                            </lightning-datatable>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</template>

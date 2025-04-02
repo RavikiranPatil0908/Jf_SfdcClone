@@ -1,0 +1,262 @@
+<!--
+  @description       : 
+  @author            : @vickysahu
+  @group             : 
+  @last modified on  : 01-13-2025
+  @last modified by  : @vickysahu
+-->
+<template>
+    <!-- <div class="slds-modal__container" style="width: 100%;max-width: 100rem;"> -->
+        <!-- Modal/Popup Box LWC header here -->
+        <!-- <header class="slds-modal__header">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                type="button" title="Close" onclick={onCloseCancelationDateModal}>
+                <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                    type="button" size="small">
+                </lightning-icon>
+                <span class="slds-assistive-text">Close</span>
+            </button>
+            <h2 id="modal-heading-05" class="slds-text-heading_medium slds-hyphenate">Cancelation Dates</h2>
+        </header> -->
+       
+        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-6">
+            <template if:true={paymentConfigId}>
+                <!-- <button class="slds-button slds-button_brand slds-m-top_medium slds-m-bottom_medium slds-m-left_small slds-m-right_small" onclick={onCloseSummaryModal} type="button"
+                title="Back">Add</button> -->
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="slds-text-align_center">From Date</th>
+                            <th scope="col" class="slds-text-align_center">To Date</th>
+                            <th scope="col" class="slds-text-align_center">Amount</th>
+                            <th scope="col" class="slds-text-align_center">Admission Fee</th>
+                            <th scope="col" class="slds-text-align_center">Percentage</th>
+                            <!-- <th scope="col" class="slds-text-align_center">Program Type</th> -->
+                            <th scope="col" class="slds-text-align_center">Edit</th>
+                            <th scope="col" class="slds-text-align_center">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={processedCancellationDates} for:item="record" for:index="index">
+                            <tr key={record.Id}>
+                                <td class="slds-text-align_center">{record.formattedFromDate}</td>
+                                <td class="slds-text-align_center">{record.formattedToDate}</td>
+                                <td class="slds-text-align_center">{record.Amount__c}</td>
+                                <td class="slds-text-align_center">{record.admissionFeeDeduction}</td>
+                                <td class="slds-text-align_center">{record.Percentage__c}</td>
+                                <!-- <td class="slds-text-align_center">{record.NM_Payment_Form_Configuration__r.Program_Type__c}</td> -->
+                                <td class="slds-text-align_center">
+                                    <lightning-button 
+                                        label="Edit"
+                                        variant="brand" 
+                                        onclick={handleEdit}
+                                        data-id={record.Id}
+                                        data-index={index}>
+                                    </lightning-button>
+                                </td>
+                                <td class="slds-text-align_center">
+                                    <lightning-button 
+                                        label="Delete"
+                                        variant="destructive" 
+                                        onclick={handleDelete}
+                                        data-id={record.Id}
+                                        data-index={index}>
+                                    </lightning-button>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </template>
+            <template if:false={paymentConfigId}>
+                <p>Some thing went wrong</p>
+            </template>
+
+            <!-- Edit Modal -->
+            <template if:true={isEditModalOpen}>
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-03" aria-modal="true"
+                    aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container" style="width: 60%;max-width: 100rem;">
+                        <!-- Modal/Popup Box LWC header here -->
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                type="button" title="Close" onclick={onCloseEditModal}>
+                                <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                    type="button" size="small">
+                                </lightning-icon>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 id="modal-heading-03" class="slds-text-heading_medium slds-hyphenate">Cancelation Dates</h2>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-3">
+                            <div class="slds-col">
+                                <lightning-input 
+                                    type="date" 
+                                    label="From Date"
+                                    name="From_Date__c"
+                                    value={editModalData.From_Date__c}
+                                    onchange={handleEditFieldChange}
+                                    style="width: 500px;">
+                                </lightning-input>
+                                <template if:true={editModalData.error.From_Date__c}>
+                                    <div class="slds-text-color_error slds-text-body_small">{editModalData.error.From_Date__c}</div>
+                                </template>
+                            </div>
+                            <div class="slds-col">
+                                <lightning-input 
+                                    type="date" 
+                                    label="To Date"
+                                    name="To_Date__c"
+                                    value={editModalData.To_Date__c}
+                                    onchange={handleEditFieldChange}
+                                    style="width: 500px;">
+                                </lightning-input>
+                                <template if:true={editModalData.error.To_Date__c}>
+                                    <div class="slds-text-color_error slds-text-body_small">{editModalData.error.To_Date__c}</div>
+                                </template>
+                            </div>
+                            <div class="slds-col">
+                                <lightning-input 
+                                    type="number" 
+                                    label="Amount"
+                                    name="Amount__c"
+                                    value={editModalData.Amount__c}
+                                    data-index={index}
+                                    onchange={handleEditFieldChange}
+                                    style="width: 500px;">
+                                </lightning-input>
+                            </div>
+                            <div class="slds-col slds-align-middle">
+                                <lightning-input 
+                                    type="checkbox" 
+                                    label="Admission Fee"
+                                    name="Admission_Fee__c"
+                                    checked={editModalData.Admission_Fee__c}
+                                    onchange={handleEditFieldChange}
+                                    style="width: 500px;">
+                                </lightning-input>
+                            </div>
+                            <div class="slds-col percentage-field">
+                                <lightning-input 
+                                    type="number"
+                                    step="1"
+                                    label="Percentage"
+                                    name="Percentage__c"
+                                    value={editModalData.Percentage__c}
+                                    min="0"
+                                    max="100"
+                                    onchange={handleEditFieldChange}
+                                    style="width: 500px;">
+                                </lightning-input>
+                            </div>
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <button class="slds-button slds-button_neutral" onclick={onCloseEditModal} type="button"
+                                title="Back">Back</button>
+                            <button class="slds-button slds-button_brand" onclick={handleCancelationUpdate} type="button"
+                                title="Back">Save Changes</button>
+                        </footer>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </template>
+
+            <!-- Dynamic Input Fields -->
+            <br/>
+            <template for:each={inputFields} for:item="field" for:index="index">
+                <div key={field.fieldId} class="slds-grid slds-gutters slds-m-bottom_small">
+                    <div class="slds-col">
+                        <lightning-input 
+                            type="date" 
+                            label="From Date"
+                            name="From_Date__c"
+                            value={field.From_Date__c}
+                            data-index={index}
+                            onchange={handleFieldChange}>
+                        </lightning-input>
+                        <template if:true={field.error.From_Date__c}>
+                            <div class="slds-text-color_error slds-text-body_small">{field.error.From_Date__c}</div>
+                        </template>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-input 
+                            type="date" 
+                            label="To Date"
+                            name="To_Date__c"
+                            value={field.To_Date__c}
+                            data-index={index}
+                            onchange={handleFieldChange}>
+                        </lightning-input>
+                        <template if:true={field.error.To_Date__c}>
+                            <div class="slds-text-color_error slds-text-body_small">{field.error.To_Date__c}</div>
+                        </template>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-input 
+                            type="number" 
+                            label="Amount"
+                            name="Amount__c"
+                            value={field.Amount__c}
+                            data-index={index}
+                            onchange={handleFieldChange}>
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-align-middle">
+                        <lightning-input 
+                            type="checkbox" 
+                            label="Admission Fee"
+                            name="Admission_Fee__c"
+                            checked={field.Admission_Fee__c}
+                            data-index={index}
+                            onchange={handleFieldChange}>
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col percentage-field">
+                        <lightning-input 
+                            type="number"
+                            step="1"
+                            label="Percentage"
+                            name="Percentage__c"
+                            value={field.Percentage__c}
+                            min="0"
+                            max="100"
+                            data-index={index}
+                            onchange={handleFieldChange}>
+                        </lightning-input>
+                    </div>
+                </div>
+            </template><br/>
+            <!-- Add and Remove Buttons -->
+            <div class="slds-m-bottom_medium">
+                <lightning-button 
+                    label="Add" 
+                    variant="brand" 
+                    onclick={handleAddField}
+                    class="slds-m-right_small slds-m-top_x-large">
+                </lightning-button>
+                <template if:true={showRemoveButton}>
+                    <lightning-button 
+                        label="Remove" 
+                        variant="destructive" 
+                        onclick={handleRemoveField}>
+                    </lightning-button>
+                </template>
+            </div>
+            <template if:true={showRemoveButton}>
+                <button class="slds-button slds-button_brand" onclick={handleCancelationConfirmClick} type="button"
+                    title="Back">Save Changes</button>
+            </template>
+        </div>
+        <!-- <footer class="slds-modal__footer">
+            <template if:true={showRemoveButton}>
+                <button class="slds-button slds-button_brand" onclick={handleCancelationConfirmClick} type="button"
+                    title="Back">Save Changes</button>
+            </template>
+            <button class="slds-button slds-button_neutral" onclick={onCloseCancelationDateModal} type="button"
+                title="Back">Back</button>
+        </footer> -->
+    <!-- </div> -->
+    <template if:true={isShowSpinner}>
+        <lightning-spinner alternative-text="Loading" size="xx-small"></lightning-spinner>
+    </template>
+</template>

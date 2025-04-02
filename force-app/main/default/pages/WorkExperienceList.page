@@ -1,0 +1,60 @@
+<!--
+  @File Name          : WorkExperienceList.page
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 11/11/2019, 6:18:57 pm
+  @Modification Log   : 
+  Ver       Date            Author                  Modification
+  1.0    11/11/2019   @BK     Initial Version
+-->
+<apex:page standardController="Opportunity" tabStyle="Opportunity">
+    <script src="/soap/ajax/46.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/46.0/apex.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var accountId = "{!opportunity.AccountId}";
+
+            if(accountId) {
+                var wexpQuery = sforce.connection.query("SELECT name,nm_StartDate__c,nm_EndDate__c,Experience_Level__c,nm_Designation__c,nm_CompanyName__c,Industry__c,Department__c,Annual_Income__c,Currently_Working_Here__c from nm_WorkExperience__c where nm_Student__c= \'" + accountId + "\' order by nm_StartDate__c Desc");
+                var wexpRecord = wexpQuery.getArray("records");
+                if (wexpQuery.size > 0) {
+                    var html = '';
+                    $.each( wexpRecord, function( key, value ) {
+                        if(key > 0) {
+                            html += '<hr/>';
+                        }
+                        html += '<table width="100%"><tr>';
+                        html += '<th width="25%">Start date</th>';
+                        html += '<td width="25%">'+value.nm_StartDate__c+'</td>';
+                        html += '<th width="25%">End date</th>';
+                        html += '<td width="25%">'+value.nm_EndDate__c+'</td></tr>';
+                        html += '<tr><th width="25%">Designation</th>';
+                        html += '<td width="25%">'+value.nm_Designation__c+'</td>'
+                        html += '<th width="25%">Company Name</th>';
+                        html += '<td width="25%">'+value.nm_CompanyName__c+'</td></tr>';
+                        html += '<tr><th width="25%">Industry</th>';
+                        html += '<td width="25%">'+value.Industry__c+'</td>';
+                        html += '<th width="25%">Department</th>';
+                        html += '<td width="25%" >'+value.Department__c+'</td></tr>';
+                        html += '<tr><th width="25%">Annual Income</th>';
+                        html += '<td width="25%">'+value.Annual_Income__c+'</td>';
+                        html += '<th width="25%">Experience Level</th>';
+                        html += '<td width="25%">'+value.Experience_Level+'</td></tr>';
+                        html += '<tr><th width="25%">Currently Working Here</th>';
+                        html += '<td width="25%">'+value.Currently_Working_Here__c+'</td></tr></table>';
+                    });
+
+                    $('[id$=container]').html(html);
+                }
+            }
+        });
+    </script>
+    <body style="background: transparent !important;">
+        <apex:outputPanel id="container">
+            <h1>No Record Found.</h1>
+        </apex:outputPanel>
+    </body>
+</apex:page>

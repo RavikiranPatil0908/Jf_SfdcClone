@@ -1,0 +1,55 @@
+<template>
+    <lightning-card>
+        <div class="slds-size_4-of-6" style="margin-left: 100px;">
+            <template if:true={showSpinner}>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </template>
+            <template if:true={showMessage}>
+                <lightning-badge label={message} class="slds-badge_inverse" icon-name="standard:account"></lightning-badge>
+            </template>
+            <lightning-card>
+                <div class="slds-wrap slds-grid">
+                    <div class="page-section page-main" style="text-align: center; margin-left: 290px; margin-bottom: 20px;">
+                        <h5 slot="title" style=" font-size: 20px; font-weight: bold;">
+                            Log a Call
+                        </h5>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-select  label="Subject" value={objCase.Subject}  data-field={Subject}
+                            onchange={handleChangeSubject} variant="label-inline" options={subjects} required>
+                        </lightning-select>
+                    </div>
+    
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-textarea label="Comments" data-field={objCase.Description} value={objCase.Description} 
+                            onchange={handleChangeDescription} variant="label-inline" required>
+                        </lightning-textarea>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-select  label="Call Category" value={objCase.Call_Category__c}  data-field={objCase.Call_Category__c} 
+                            onchange={handleChangeCallCategory} variant="label-inline" options={callCategories} required>
+                        </lightning-select>
+                    </div>
+    
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-select label="Disposition" value={objCase.Disposition__c} options={dispositions}
+                            data-field={Disposition__c} onchange={handleChangeDisposition} variant="label-inline" required >
+                        </lightning-select>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-select label="Call Type" value={objCase.Call_Type__c} options={callTypes}
+                            data-field={Call_Type__c} onchange={handleChangeCalltype} variant="label-inline" required >
+                        </lightning-select>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1 slds-var-m-top_medium" style="margin-left: 270px;">
+                        <lightning-button variant="brand" type="button" label="Cancel" onclick={handleCancel}></lightning-button> &nbsp;&nbsp;
+                        <lightning-button variant="brand" type="submit" label="Save" onclick={handleSubmit}></lightning-button>
+                    </div>
+                </div>
+                    
+            </lightning-card>
+        </div>
+    </lightning-card>
+</template>

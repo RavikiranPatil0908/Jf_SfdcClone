@@ -1,0 +1,47 @@
+<!--
+  @Page Name          : NMIMS_MBA_UploadDocument.page
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 05-03-2024
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author                 Modification
+  ==============================================================================
+  1.0    6/6/2019, 1:44:13 PM   @BK     Initial Version
+-->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" cache="false" controller="nmUploadDocuments" >
+    <head>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+      <title>Upload Documents</title>
+      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet"/>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.min.css"/>
+      <apex:stylesheet value="{!URLFOR($Resource.Custom_Radio_Button_CSS)}"/>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>  
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"> </script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+        <style>
+            .form-group .control-label:after { 
+               content:"*";
+               color:red;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="py-5 text-center">
+                <img class="d-block mx-auto mb-4" src="{!URLFOR($Resource.Images,'images/logo.png')}" alt="" width="230" height="81" />
+                <h2>Upload Documents</h2>
+                <p class="lead">Please unblock this page from your browser to continue uploading your documents safely. Documents once uploaded will go under verification by NCDOE admission Committee.</p>
+            </div>
+            <h3>Student Name: {!accountName}</h3>
+            <apex:iframe scrolling="true" src="{!$Label.DOCUMENT_SERVER}uploadDocumentForm?{!IF(objType='Lead','type=leads&leadId','accountId')}={!recordId}&uid={!AccountUId}"  height="800px" /> 
+            <!-- <apex:outputPanel rendered="{!!allowed}">
+                <h2 class="mt-1">You Are Not Eligible for Upload Document </h2>
+            </apex:outputPanel> -->
+        </div>
+    </body>
+</apex:page>

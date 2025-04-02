@@ -1,0 +1,142 @@
+<!--
+  @File Name          : aepDeletedLead.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 02-24-2022
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    31/5/2020   @BK     Initial Version
+-->
+<template>
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon class="slds-align_absolute-center" icon-name="standard:lead" alternative-text="Lead"
+                        size="medium"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <a href="javascript:void(0);" class="slds-card__header-link" title="Accounts">
+                            <span>My Deleted Lead</span>
+                        </a>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner" style="min-height: 300px;">
+            <div class="slds-text-heading_medium slds-p-vertical_small">Delete Lead Management</div>
+
+            <template if:false={hasData}>
+                <article class="slds-card slds-card_boundary">
+                    <div class="slds-card__body slds-card__body_inner">
+                        <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                            <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt="" />
+                            <div class="slds-text-color_weak">
+                                <h3 class="slds-text-heading_medium">No Data Found</h3>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </template>
+
+            <template if:true={hasData}>
+                <div class="slds-show_large">
+                    <lightning-datatable key-field="id" data={currentPageData} columns={columns} hide-checkbox-column
+                        show-row-number-column>
+                    </lightning-datatable>
+                </div>
+                <div class="slds-hide_large">
+                    <ul class="slds-has-dividers_around-space">
+                        <template for:each={currentPageData} for:item="lead">
+                            <li class="slds-item" key={lead.Id}>
+                                <a href="javascript:void(0);">{lead.Name}</a>
+                                <ul>
+                                    <li>
+                                        <div class="slds-list--horizontal">
+                                            <div class="slds-item_abel slds-truncate recordCell" title="Id:">Id:</div>
+                                            <div class="slds-item_detail slds-truncate recordCell">
+                                                <span>{lead.Id}</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="slds-list--horizontal">
+                                            <div class="slds-item_abel slds-truncate recordCell" title="Email:">Email:</div>
+                                            <div class="slds-item_detail slds-truncate recordCell">
+                                                <span>{lead.Email}</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="slds-list--horizontal">
+                                            <div class="slds-item_abel slds-truncate recordCell" title="Mobile:">Mobile:</div>
+                                            <div class="slds-item_detail slds-truncate recordCell">
+                                                <span>{lead.MobilePhone}</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="slds-list--horizontal">
+                                            <div class="slds-item_abel slds-truncate recordCell" title="Lead Source:">Lead Source:</div>
+                                            <div class="slds-item_detail slds-truncate recordCell">
+                                                <span>{lead.LeadSource}</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="slds-list--horizontal">
+                                            <div class="slds-item_abel slds-truncate recordCell" title="Lead Source:">Other Lead Source:</div>
+                                            <div class="slds-item_detail slds-truncate recordCell">
+                                                <span>{lead.nm_OtherLeadSources__c}</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="slds-list--horizontal">
+                                            <div class="slds-item_abel slds-truncate recordCell" title="Choose Program:">Choose Program:</div>
+                                            <div class="slds-item_detail slds-truncate recordCell">
+                                                <span>{lead.nm_ChooseaProgram__c}</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="slds-list--horizontal">
+                                            <div class="slds-item_abel slds-truncate recordCell" title="Deleted Date:">Deleted Date:</div>
+                                            <div class="slds-item_detail slds-truncate recordCell">
+                                                <span>{lead.LastModifiedDate}</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+                <div class="slds-align_absolute-center slds-p-top_small">
+                    <ul class="slds-button-group-row">
+                        <template if:true={hasPrev}>
+                            <li class="slds-button-group-item">
+                                <button class="slds-button slds-button_neutral" onclick={onPrev}> prev
+                                </button>
+                            </li>
+                        </template>
+                        <template for:each={pagesList} for:item="pageNumber">
+                            <li class="slds-button-group-item" key={pageNumber}>
+                                <button data-id={pageNumber} class="slds-button slds-button_neutral"
+                                    onclick={onPageClick}>{pageNumber}</button>
+                            </li>
+                        </template>
+                        <template if:true={hasNext}>
+                            <li class="slds-button-group-item">
+                                <button class="slds-button slds-button_neutral" onclick={onNext}>next</button>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </template>
+        </div>
+    </article>
+</template>

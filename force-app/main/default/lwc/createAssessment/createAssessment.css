@@ -1,0 +1,9 @@
+.bottom-border {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-bottom: var(--lwc-borderWidthThin) solid #dddbda !important;
+}
+
+.search-in-list{
+    width: var(--lwc-sizeSmall);
+}

@@ -1,0 +1,236 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 03-04-2024
+  @last modified by  : @BK
+  Modifications Log 
+  Ver   Date         Author   Modification
+  1.0   04-13-2021   @BK   Initial Version
+-->
+<apex:page showHeader="false" standardStylesheets="false" controller="MobileVerification" cache="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+    <html>
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+            <title>NMIMS Distance Education: Mobile Verification</title>
+            <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."
+            />
+            <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"
+            />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+            <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/logo.png')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/select-bg.png')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/banner.jpg')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/chosen.min.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/style.scss')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/vars.scss')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css.map')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css.map')}"/>
+            <script src="https://www.google.com/recaptcha/api.js"></script>
+        <!-- <apex:includeScript value="{! $Resource.googleRecaptchaJS}"/> -->
+
+            <style>
+                .pt40 {
+                    padding-top: 40px;
+                }
+
+                .svg-inline--fa {
+                    vertical-align: top;
+                }
+                
+                .msg-error {
+                    color: #c65848;
+                }
+                
+                .g-recaptcha.error {
+                    border: solid 2px #c64848;
+                    padding: .2em;
+                    width: 19em;
+                }
+            </style>
+        </head>
+        <body class="home">
+            <!-- Header Begins Here -->
+            <c:HeaderPage ActiveBadge="MOBILE VERIFICATION" />
+            <!-- Header Ends Here -->
+
+            <apex:form >
+                <div class="tab-wrapper">
+                    <div class="container">
+                        <div class="tab-content">
+                            <div class="tab-pane active">
+                                <div class="message-box text-center" id="messageboxSectionforReg">
+                                    Mobile Verification
+                                </div>
+                                <div class="form-wrapper">
+                                    <apex:inputHidden value="{!optStatus}" id="optStatus" />
+                                    <!-- <apex:actionFunction action="{!sendOTP}" name="sendOTPMethod" /> -->
+                                    <apex:outputPanel rendered="{!IF(optStatus=='OTP Sent',false,true)}">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                <apex:inputText value="{!registrationNo}" styleClass="form-control notnull" html-placeholder="Registration No" id="RegistrationNo"
+                                                />
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <apex:commandButton value="Send OTP" styleClass="btn btn-default pull-left" id="sendBtn" onclick="if(validateRegistrationNo()) return false;"
+                                                    action="{!sendOTP}" />
+                                            </div>
+                                            
+                                            <div class="col-md-12">
+                                                <span class="msg-error error"></span>
+                                                <div id="recaptcha" class="g-recaptcha" data-sitekey="{!$Label.reCaptchaSiteKey}"></div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+
+                                    <apex:outputPanel rendered="{!IF(optStatus=='OTP Sent',true,false)}">
+                                        <center><h4 style="padding-bottom: 5px;">Enter the Verification Code Below</h4></center>
+                                        <div class="row">
+                                            <div class="col-md-4 col-md-offset-4">
+                                                <div class="form-group">
+                                                    <apex:inputText id="otp" styleClass="form-control numonly" value="{!Otp}" html-placeholder="Enter OTP.." />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="col-md-4 col-md-offset-2">
+                                                    <apex:commandButton value="Resend OTP" styleClass="btn btn-default disabled" id="resendBtn"
+                                                        action="{!sendOTP}" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <apex:commandButton value="Confirm" styleClass="btn btn-default" onclick="if(validate()) return false;" id="verifyBtn"
+                                                        action="{!VerifyOTP}" />
+                                                </div>
+                                            </div>
+                                            <div class="container" style="margin: 10px 0;" id="divTimer">
+                                                <div class="row">
+                                                  <span style="float: left;">If you haven't recieved the OTP in
+                                                    <span class="timer"></span> seconds, click resend</span>
+                                                </div>
+                                              </div>
+                                        </div>
+
+                                        <script>
+                                            otpTimer();
+                                            function validate() {
+                                                if ($('[id$=otp]').val()) {
+                                                return false;
+                                                }
+                                                return true;
+                                            }
+                                        </script>
+                                    </apex:outputPanel>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--------------------------------Message Popup-------------------------------------->
+                <apex:outputPanel rendered="{!strSecToShow == 'msg'}" id="MsgPopUp">
+                    <div class="modal popup-wrapper">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">{!HeaderMessage}</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <apex:repeat value="{!lstMsg}" var="msg">
+                                    <p>{!msg}</p>
+                                    </apex:repeat>
+                                </div>
+                                <div class="modal-footer">
+                                    <apex:outputLabel rendered="{!IF(strBtnURL !=null && strBtnURL !='',true,false)}">
+                                        <a href="{!strBtnURL}" class="btn btn-default"> OK </a>
+                                    </apex:outputLabel>
+                                    <apex:outputLabel rendered="{!IF(strBtnURL ==null || strBtnURL =='',true,false)}">
+                                    <button type="button" onclick="hideMe();return false;" class="btn btn-default ">CANCEL</button>
+                                    </apex:outputLabel>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </apex:outputPanel>
+                <!--------------------------------Message Popup-------------------------------------->
+            </apex:form>
+            <!-- Footer Component -->
+            <c:FooterPage />
+            <!--/ Footer Component -->
+            <!--All java script  -->
+            <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}"/> 
+            <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}"/>
+        
+            <script>
+                function validateRegistrationNo() {
+                    var $captcha = $( '#recaptcha' ),
+                        response = grecaptcha.getResponse();
+                        // console.log('response '+JSON.stringify(response));
+                    if (response.length === 0) {
+                        $( '.msg-error').text( "reCAPTCHA is mandatory" );
+                        if( !$captcha.hasClass( "error" ) ){
+                            $captcha.addClass( "error" );
+                        }
+                    } else {
+                        $( '.msg-error' ).text('');
+                        $captcha.removeClass( "error" );
+                        // alert( 'reCAPTCHA marked' );
+                        if ($('[id$=RegistrationNo]').val()) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+
+                function hideMe() {
+                    $('[id$=MsgPopUp]').hide();
+                    $('[id$=AlertPopUp]').hide();
+                }
+
+                //For the OTP Timer.
+                function otpTimer() {
+                    $('.timer').html(timeVal);
+                    clearInterval(loadTimer);
+                    loadTimer = setInterval(refreshTimer, timerInterval);
+                    refreshTimer();
+                }
+
+                // Alloted time in seconds
+                var timeVal = 90;
+                $('.timer').html(timeVal);
+                refreshTimer();
+
+                // Interval
+                var timerInterval = 1000;
+                var loadTimer = setInterval(refreshTimer, timerInterval);
+
+                // Refresh Timer
+                function refreshTimer() {
+                    setTimeout(function () {
+                    var myTime = parseInt($('.timer').html()) - 1;
+                    if (myTime > 0) {
+                        $('.timer').html(myTime);
+                    } else {
+                        $('.timer').html('');
+                        $('#divTimer').addClass('hidden');
+                        $("[id$=resendBtn]").removeClass('disabled');
+                    }
+                    }, 1);
+                }
+            </script>
+        </body>
+    </html>
+</apex:page>

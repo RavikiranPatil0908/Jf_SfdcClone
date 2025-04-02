@@ -1,0 +1,99 @@
+<apex:page standardController="NMAT_Lead__c" recordSetvar="unused" extensions="MassUpdateSimpleController" id="page">
+ 
+  
+  <apex:includeScript value="{!$Resource.restexplorer_scripts}" />
+  <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/modernizr-2.8.3-respond-1.4.2.min.js')}"/>
+  <apex:form id="wizard">
+ 
+  <apex:sectionHeader title="Mass Update Wizard" subtitle="Step {!step} of 5"/>
+
+      <apex:pageBlock id="step1" title="Step 1. Confirm records to be updated" mode="edit" rendered="{!step='1'}">
+            <apex:pagemessages escape="false"></apex:pagemessages>
+            <apex:pageBlockSection >
+            <apex:pageBlockTable var="a" value="{!selected}">
+                <apex:column value="{!a.Name}"/>
+                <apex:column value="{!a.Email__c}"/>
+                <apex:column value="{!a.MobilePhone__c}"/>
+                <apex:column value="{!a.Choose_a_Program__c}"/>
+                <apex:column value="{!a.Owner.Name}"/>
+            </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:panelGrid columns="2">
+            </apex:panelGrid>
+          <apex:pageBlockButtons >
+              <apex:commandButton action="{!cancel}" value="Previous"/>
+              <apex:commandButton action="{!step2}" value="Next"/>
+          </apex:pageBlockButtons>
+      </apex:pageBlock> 
+  
+      <apex:pageBlock id="field" title="Step 2. Specify the field to be udpated" mode="edit" rendered="{!step='2'}">
+          <apex:pagemessages escape="false"></apex:pagemessages>
+          <apex:outputLabel rendered="{!NOT(ISNULL(lstOfSelectedNMATRecords))}">
+          <apex:selectList id="pickList" size="4" value="{!fieldName}" required="true" multiselect="true">
+              <apex:selectOptions value="{!fieldTypeOptions}"/>
+          </apex:selectList>
+          </apex:outputLabel>
+           <apex:outputLabel rendered="{!ISNULL(lstOfSelectedLeadRecords)}">
+          <apex:selectList id="pickList1" size="2" value="{!fieldName}" required="true" multiselect="true">
+              <apex:selectOptions value="{!fieldTypeOptionsForLead}"/>
+          </apex:selectList>
+          </apex:outputLabel>
+          <apex:pageBlockButtons >
+              <apex:commandButton action="{!step3}" value="Next"/>
+              <apex:commandButton action="{!cancel}" value="Cancel" onclick="return confirmCancel()" immediate="true" style="margin-left: 2em"/>
+          </apex:pageBlockButtons>
+      </apex:pageBlock> 
+  
+      <apex:pageBlock id="step3" title="Step 3. Specify the new value for field - {!fieldName}" mode="edit" rendered="{!step='3'}">
+         <apex:pagemessages escape="false"></apex:pagemessages>
+        <apex:selectList value="{!valueToUpdate}" size="1" styleClass="ModifiedInformationCenterName" rendered="{!IF(CONTAINS(fieldName,'information_center__c'),true,false)}">
+         <apex:selectOptions value="{!InfoCenterRelatedToLC}"/>
+         </apex:selectList> 
+        <apex:inputField value="{!objNMATLead.LeadSource__c}" styleClass="ModifiedLeadSource" rendered="{!IF(CONTAINS(fieldName,'leadsource__c'),true,false)}"/>
+        <apex:outputLabel rendered="{!IF(CONTAINS(fieldName,'convert_lead__c'),true,false)}">
+        Convert Lead <apex:inputCheckbox value="{!objNMATLead.Convert_Lead__c}" />
+         </apex:outputLabel>
+             <apex:pageBlockButtons >
+              <apex:commandButton action="{!step2}" value="Previous"/>
+              <apex:commandButton action="{!step4}" value="Next"/>
+              <apex:commandButton action="{!cancel}" value="Cancel" onclick="return confirmCancel()" immediate="true" style="margin-left: 2em"/>
+             </apex:pageBlockButtons>
+      </apex:pageBlock> 
+      
+      <apex:pageBlock id="step4" title="Step 4. Confirmation" mode="edit" rendered="{!step='4'}">
+          <apex:pagemessages escape="false"></apex:pagemessages>
+          <apex:pageBlockButtons >
+              <apex:commandButton action="{!step3}" value="Previous"/>
+              <apex:commandButton action="{!step5}" value="Update"/>
+              <apex:commandButton action="{!cancel}" value="Cancel" onclick="return confirmCancel()" immediate="true" style="margin-left: 2em"/>
+          </apex:pageBlockButtons>
+      </apex:pageBlock> 
+      
+      
+      <apex:pageBlock id="step5" title="Step 5. Results" mode="edit" rendered="{!step='5'}">
+          <apex:pagemessages escape="false"></apex:pagemessages>
+          <apex:pageBlockButtons >
+              <apex:commandButton action="{!cancel}" value="Done"/>
+          </apex:pageBlockButtons>
+      </apex:pageBlock> 
+     
+     <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min_.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"/>
+     
+  </apex:form>
+   <script type="text/javascript">
+   
+    $(document).ready(function(){
+   
+    $('.ModifiedInformationCenterName> option:first-child').text('Information Center');
+    
+    $('.ModifiedLeadSource> option:first-child').text('Lead Source');
+    });
+    </script>
+</apex:page>

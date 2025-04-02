@@ -1,0 +1,255 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 11--03--2025
+  @last modified by  : @Ravi
+-->
+<template>
+	<div class="slds-var-m-horizontal_xx-large slds-var-m-top_xx-small slds-var-m-bottom_xx-large">
+		<div class="top-nav slds-box_x-medium">
+			<!--<h1 class="slds-grid_vertical-align-center">STUDENT ZONE >> STUDENT SUPPORT >> MY TICKETS </h1>-->
+			<ul class="slds-list_horizontal">
+				<template iterator:it={navLst}>
+					<a key={it.value} style="color:white;" data-id={it.value} onclick={handleNav}>
+						<h2>&nbsp;{it.value}&nbsp;</h2>
+					</a>
+					<div if:false={it.last} key={it.value} style="color:white;"> >> </div>
+				</template>
+			</ul>
+		</div>
+		<template if:true={accDetails}>
+			<div style="box-shadow: 1px 1px 4px lightgray;">
+				<h3> <img src={accDetails.url} alt="User Profile" height="3px" width="30px" /> &nbsp; {accDetails.fname}
+					{lastName} &nbsp; | &nbsp; {accDetails.email} &nbsp;| &nbsp; {accDetails.mobile} &nbsp; | &nbsp;
+					{accDetails.program} &nbsp; | &nbsp; {studentNo} | &nbsp; {accDetails.validity}</h3>
+			</div>
+		</template>
+		<template if:false={showCaseView}>
+			<div class="slds-var-m-top_x-small slds-m-bottom_xx-large">
+				<div class="slds-grid slds-wrap">
+					<div class="slds-col slds-size_2-of-12">
+						<button class="slds-button" onclick={goBack}>
+							<lightning-icon icon-name="utility:back" size="medium"
+								alternative-text="back"></lightning-icon>
+						</button>
+					</div>
+					<div class="slds-col slds-size_10-of-12">
+						<h1> {headerTitle} </h1>
+					</div>
+				</div>
+				<lightning-card class="slds-align_absolute-center slds-size_7-of-12">
+					<template if:true={showToast}>
+						<div style="background-color: #BA0517; color: white;"> {toastMsg}</div>
+						<br />
+					</template>
+					<div class="slds-wrap slds-grid">
+						<div class="slds-col slds-size_1-of-1">
+							<p>{msg}</p>
+							<lightning-combobox label="Query Type" options={queryTypes} onchange={handlePurposeChange}
+								required="true"> </lightning-combobox>
+							<br />
+						</div>
+						<div class="slds-col slds-size_1-of-1">
+							<lightning-combobox label="Category" options={categories} onchange={handleCategoryChange}
+								required="true" value={category}> </lightning-combobox>
+							<br />
+						</div>
+						<template if:true={enable}>
+							<div class="slds-col slds-size_1-of-1">
+								<lightning-combobox label="Sub Category" options={options} value={subCategory} onchange={handleChange}
+								required="true"></lightning-combobox>
+								<br />
+							</div>
+						</template>
+						<!-- <template if:true={enable}>
+							<div class="slds-col slds-size_1-of-1">
+								<lightning-combobox label="Sub Category" options={options} onchange={handleChange}
+									required="true" if:true={showSubCategory}></lightning-combobox>
+								<br />
+							</div>
+						</template> -->
+						
+						<div class="slds-col slds-size_1-of-1">
+							<lightning-input label="Subject" value={subject} onchange={handleSubjChange} disabled={disabledSubject}
+								required="true"> </lightning-input>
+							<br />
+						</div>
+
+                        <template if:true={disabledSubject}>
+							<div class="slds-col slds-size_1-of-1">
+								<lightning-input label="Proposed Research Topic (Max 30 Words)" value={proposedResearchTopic} onchange={handleTopicChange} 
+									required="true"> </lightning-input>
+								<br />
+							</div>
+							<div class="slds-col slds-size_1-of-1">
+								<lightning-textarea label="Problem Statement (Max 500 Words)" value={problemStatement} onchange={handleProblemChange} 
+									required="true"> </lightning-textarea>
+								<br />
+							</div>
+							<div class="slds-col slds-size_1-of-1">
+								<lightning-textarea label="Business Issue(s) (Max 1500 Words)" value={businessIsssues} onchange={handleBusinessIssueChange} 
+									required="true"> </lightning-textarea>
+								<br />
+							</div>
+							<div class="slds-col slds-size_1-of-1">
+								<lightning-textarea label="Relevance of Research (Max 500 Words)" value={relevanceOfResearch} onchange={handleRelevanceChange} 
+									required="true"> </lightning-textarea>
+								<br />
+							</div>
+							<div class="slds-col slds-size_1-of-1">
+								<lightning-input label="Research Objective (Max 200 Words)" value={researchObjective} onchange={handleObjectiveChange} 
+									required="true"> </lightning-input>
+								<br />
+							</div>
+							<div class="slds-col slds-size_1-of-1">
+								<lightning-textarea label="Research Hypothesis (Max 500 Words)" value={researchHypothesis} onchange={handleHyponthesisChange} 
+									required="true"> </lightning-textarea>
+								<br />
+							</div>
+							<div class="slds-col slds-size_1-of-1">
+								<lightning-textarea label="Proposed Research Methodology (Max 1500 Words)" value={researchMethodology} onchange={handleMethodologyChange} 
+									required="true"> </lightning-textarea>
+								<br />
+							</div>
+							<div class="slds-col slds-size_1-of-1">
+								<lightning-textarea label="Expected Outcomes and Implications (Max 500 Words)" value={expectedOutcomes} onchange={handleOutcomeChange} 
+									required="true"> </lightning-textarea>
+								<br />
+							</div>
+						</template>
+						<template if:false={disabledSubject}>
+							<div class="slds-col slds-size_1-of-1">
+								<lightning-textarea label="Description" onchange={handleDescChange} required="true">
+								</lightning-textarea>
+								<br />
+							</div>
+						</template>
+						
+						<template if:false={isFileUploadMandatory}>
+							<div class="slds-col slds-size_1-of-1">
+								<lightning-input type="checkbox" label="Do you want to attach related files/screenshots ?"
+									onchange={handleCheckChange} unche	cked> </lightning-input>
+								<br />
+							</div>
+						</template>
+						
+						<template if:true={isFileUploadMandatory}>
+							<div class="slds-col slds-size_1-of-1">
+								<lightning-input type="checkbox" label={fileUploadInstruction}
+									onchange={handleCheckChange} unchecked> </lightning-input>
+								<br />
+							</div>
+						</template>
+						<template if:true={isUploadFile}>
+							<div class="slds-col slds-size_1-of-1">
+								<p> File size should be less than 3 MB (pdf, png, jpg, jpeg) </p>
+								<lightning-input type="file" class="text" label="Attachment"
+									onchange={handleFileUploaded} accept={acceptedFormats} variant="destructive-text"
+									multiple>
+								</lightning-input>
+								<div class="slds-text-color_error">{error}</div>
+								<div class="container">
+									<template for:each={filesUploaded} for:item="file">
+										<lightning-pill key={file.Title} label={file.Title} data-fid={file.Title}
+											onremove={handleRemove} class="slds-text-body_small"></lightning-pill>
+									</template>
+								</div>
+							</div>
+						</template>
+						<div class="slds-col slds-size_1-of-1 slds-grow-none">
+							<lightning-button class="slds-align_absolute-center" variant="destructive" label="Submit"
+								type="submit" onclick={handleSubmit} disabled={disbaleSubmitBtn}> </lightning-button>
+						</div>
+					</div>
+					
+					<template if:true={showSpinner}>
+						<div>
+							<lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+						</div>
+					</template>
+				</lightning-card>
+			</div>
+		</template>
+	</div>
+
+	<template if:true={isCallSchedulingModalOpen}>
+		<section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+			class="slds-modal slds-fade-in-open ">
+			<div class="slds-modal__container">
+				<button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+					onclick={redirectToCaseDetails}>
+					<lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+					</lightning-icon>
+					<span class="slds-assistive-text">Close</span>
+				</button>
+				<div class="slds-modal__header">
+					<p id="modal-heading-01" class="slds-text-heading_small slds-hyphenate">Choose a preferrable date
+						and time slot to schedule a callback</p>
+				</div>
+				<div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-5">
+					<template if:true={isCallSchedulingRecordContains}>
+						<div class="slds-grid slds-gutters">
+							<div class="slds-col">
+								<lightning-combobox placeholder="Select Date" options={callSchedulingDate}
+									onchange={onScheduleDate} value={selectedDate}>
+								</lightning-combobox>
+
+							</div>
+							<div class="slds-col">
+								<lightning-combobox placeholder="Select Time Range" options={timeRangeSelected}
+									onchange={onScheduleTimeRange}>
+								</lightning-combobox>
+							</div>
+						</div>
+					</template>
+					<template if:false={isCallSchedulingRecordContains}>
+						<p>{schedulingErrorMsg}</p>
+					</template>
+				</div>
+				<div class="slds-modal__footer">
+					<template if:true={isCommentButtonAvailableForCallScheduling}>
+						<button class="slds-button slds-button_text-destructive" type="button"
+							style="margin-right: 5px;" onclick={redirectToCaseDetails} aria-label="Add Comment">Add
+							Comment</button>
+					</template>
+					<button class="slds-button slds-button_text-destructive" type="button"
+						onclick={redirectToCaseDetails} aria-label="Cancel and close">Cancel</button>
+				</div>
+			</div>
+		</section>
+		<div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+	</template>
+	<template if:true={isCallSchedulingConfirm}>
+		<section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-10"
+			class="slds-modal slds-fade-in-open">
+			<div class="slds-modal__container">
+				<button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+					onclick={oncloseModalCallScheduleConfirm}>
+					<lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+					</lightning-icon>
+					<span class="slds-assistive-text">Close</span>
+				</button>
+				<div class="slds-modal__header">
+					<h2 id="modal-heading-10" class="slds-modal__title slds-hyphenate">Call Schedule</h2>
+				</div>
+				<div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-10">
+					<p>Are you sure you want to schedule call on {selectedDate} between {selectedTimeRange} ?</p>
+				</div>
+				<div class="slds-modal__footer">
+					<button class="slds-button slds-button_text-destructive" type="button"
+						onclick={oncloseModalCallScheduleConfirm} aria-label="Cancel and close">Cancel</button>
+					<button class="slds-button slds-button_destructive" type="button" onclick={scheduleCall} disabled={disbaleBtn}>Schedule
+						Call</button>
+				</div>
+			</div>
+		</section>
+		<div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+	</template>
+
+	<!-- Message Toast Starts here-->
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant}
+        auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+    <!-- Message Toast Ends here-->
+	
+</template>

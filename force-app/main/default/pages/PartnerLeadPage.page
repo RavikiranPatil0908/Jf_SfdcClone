@@ -1,0 +1,192 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 28-03-2024
+  @last modified by  : @BK
+-->
+<apex:page showHeader="true" standardStylesheets="true" sidebar="true" applyBodyTag="false" controller="PartnerLeadBulkController">
+    <head>
+        <apex:slds />
+        <!-- custom style -->
+        <style>
+            .slds-scope .slds-icon-text-default.bgWhiteColor {
+                fill: rgb(255, 255, 255);
+            }
+        </style>
+    </head>
+    <body class="slds-scope" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container slds-icon-standard-account" title="Upload Assumptions">
+                            <svg class="slds-icon slds-icon_large" aria-hidden="true">
+                                <use
+                                    xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/standard-sprite/svg/symbols.svg#uploaded_model')}">
+                                </use>
+                            </svg>
+                            <span class="slds-assistive-text">Upload File</span>
+                        </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <a href="#" class="slds-card__header-link slds-truncate" title="Upload Stock Assumptions">
+                                <span>Upload CSV</span>
+                            </a>
+                        </h2>
+                    </div>
+                </header>
+            </div>
+            <div class="slds-card__body slds-card__body_inner">
+                <apex:form id="mainForm">
+                    <apex:pageMessages />
+                    <div class="slds-notify_container slds-is-relative slds-hide">
+                        <div class="slds-notify slds-notify_toast slds-theme_error" role="status">
+                            <span class="slds-assistive-text">error</span>
+                            <span class="slds-icon_container slds-icon-utility-error slds-m-right_small slds-no-flex slds-align-top"
+                                title="Description of icon when needed">
+                                <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                    <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#error')}"></use>
+                                </svg>
+                            </span>
+                            <div class="slds-notify__content">
+                                <h2 class="slds-text-heading_small">Only CSV files are allowed and size should exceed 3mb. </h2>
+                            </div>
+                            <div class="slds-notify__close">
+                                <button class="slds-button slds-button_icon slds-button_icon-inverse" title="Close" onclick="hideTaost();">
+                                    <svg class="slds-button__icon slds-button__icon_large slds-m-top_large" aria-hidden="true">
+                                        <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-text-heading_medium slds-var-p-vertical_small">Upload Partner Lead</div>
+                    
+                    <!----------------------------------------------  File Upload  -------------------------------------------------->
+                   <!---- <apex:outputPanel rendered="{!showCSVUpload}">-->
+                        <div class="slds-grid slds-wrap slds-var-p-top_medium">
+                            <div class="slds-form slds-col slds-large-size_1-of-2 slds-medium-size_1-of-1 slds-size_1-of-1 slds-var-p-around_medium">
+                                <div class="slds-form-element slds-form-element_horizontal">
+                                    <div class="slds-text-body_large">note: file should be csv and size 3mb max.</div>
+                                </div>
+                                <div class="slds-form-element slds-form-element_horizontal attachment-element">
+                                    <span class="slds-form-element__label" id="file-selector-primary-label-105">Attachment</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-file-selector slds-file-selector_files">
+                                            <div class="slds-file-selector__dropzone">
+                                                <apex:inputFile value="{!csvFileBody}" filename="{!csvAsString}"  id="csvFile" accept=".csv" 
+                                                styleclass="slds-file-selector__input slds-assistive-text" onchange="validateCSVFile(this)"/>
+                                                <apex:outputLabel styleClass="slds-file-selector__body" for="csvFile" id="file-selector-secondary-label106">
+                                                    <span class="slds-file-selector__button slds-button slds-button_neutral">
+                                                    <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                                                        <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#upload')}"></use>
+                                                    </svg>Upload Files</span>
+                                                    <span class="slds-file-selector__text slds-medium-show">or Drop Files</span>
+                                                </apex:outputLabel>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element__help attachment-message slds-hide" id="error-116">File type not supported</div>
+                                </div>
+                                <div class="slds-form-element slds-form-element_horizontal">
+                                    <apex:commandButton value="Reset" onclick="resetFile()" styleClass="slds-button slds-button_brand" />
+                                    <apex:commandButton value="Submit" action="{!importCSVFile}" styleClass="slds-button slds-button_brand" />
+
+                                </div>
+                            </div>
+                        </div>
+                   <!---- </apex:outputPanel>--->
+                    <!----------------------------------------------  File Upload  -------------------------------------------------->
+
+                    
+                </apex:form>
+            </div>
+
+            <footer class="slds-card__footer"></footer>
+        </article>
+
+        <apex:includeScript value="https://code.jquery.com/jquery-3.7.1.min.js" />
+
+        <script>
+            $(document).ready(function (){ 
+                $('.slds-file-selector__input').attr('aria-labelledby', 'file-selector-primary-label-105 file-selector-secondary-label106');
+            });
+            function resetFile(){
+                const file = document.querySelector('.file');
+                file.value = '';
+                file.filename = '';
+            }
+            function validateCSVFile(input) {
+                // Get the uploaded file
+                let file = input.files[0];
+                const filesize = (file.size/1024/1024).toFixed(2);
+                console.log('filesize : ' + filesize);
+                // Check if the file is a CSV  && filesize <= 0.5
+                if (file && file.name.toLowerCase().endsWith('.csv') && filesize <= 3) {
+                    console.log('Name ==>'+file.name);
+                    $('.slds-file-selector__text').text(file.name);
+                    // Allow form submission
+                }
+                else {
+                    // Prevent form submission and display error message
+                    showToast();
+                    setTimeout(showToast, 5000);
+                    $('.attachment-element').addClass('slds-has-error');
+                    $('.attachment-message').removeClass('slds-hide');
+                    input.value = ''; // Clear the file input
+                    $('.slds-file-selector__text').text('or Drop Files');
+                }
+                
+                
+            }
+
+            function showToast() {
+                $('.slds-notify_container').toggleClass("slds-hide");
+            }
+
+            function validateForm() {
+                let invalid = false;
+                $('.notnull').each(function () { 
+                    if($(this).val() === null || $(this).val().trim().length === 0) { 
+                        console.log('error in field');
+                        let className = `.${$(this).data('field')}-element`;
+                        let hideClassName = `.${$(this).data('field')}-message`;
+                        $(className).addClass('slds-has-error');
+                        $(hideClassName).removeClass('slds-hide');
+                        invalid = true;
+                    }
+                });
+                console.log('invalid ==>'+invalid);
+                return invalid;
+            }
+
+            function hideTaost() {
+                $('.slds-notify_container').addClass('slds-hide');
+            }
+
+            function inputLimiter(e,allow) {
+                let AllowableCharacters = '';
+
+                if (allow == 'Letters'){AllowableCharacters=' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';}
+                if (allow == 'Numbers'){AllowableCharacters='1234567890';}
+                if (allow == 'NameCharacters'){AllowableCharacters=' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.\'';}
+                if (allow == 'NameCharactersAndNumbers'){AllowableCharacters='1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-\'';}
+                if (allow == 'Currency'){AllowableCharacters='1234567890.';}
+
+                let k = document.all?parseInt(e.keyCode): parseInt(e.which);
+                if (k!=13 && k!=8 && k!=0){
+                    if ((e.ctrlKey==false) && (e.altKey==false)) {
+                    return (AllowableCharacters.indexOf(String.fromCharCode(k))!=-1);
+                    } else {
+                    return true;
+                    }
+                } else {
+                    return true;
+                }
+            } 
+        </script>
+    </body>
+</apex:page>

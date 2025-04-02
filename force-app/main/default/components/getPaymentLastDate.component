@@ -1,0 +1,25 @@
+<!--
+  @File Name          : getPaymentLastDate.component
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 8/6/2020, 5:37:02 pm
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    8/6/2020   shubhranshu     Initial Version
+-->
+<apex:component controller="EmailTemplateController" access="global">
+    <apex:attribute access="global" name="oppId" assignTo="{!OpportunityId}" type="ID" description="Opportunity ID" />
+    <apex:attribute access="global" name="sessionValue" assignTo="{!session}" type="String" description="session" />
+    <apex:attribute access="global" name="yearValue" assignTo="{!year}" type="Integer" description="year" />
+    <apex:attribute access="global" name="chooseProgramValue" assignTo="{!chooseProgram}" type="String" description="chooseProgram"
+    />
+    <apex:attribute access="global" name="programTypeValue" assignTo="{!programType}" type="String" description="programType"
+    />
+    <apex:repeat value="{!mapofCancellationDates}" var="dates">
+        <apex:outputText rendered="{!dates=='PaymentWindowEndDate'}">
+            <p>Last date for payment of program fee is {!mapofCancellationDates['PaymentWindowEndDate']}</p>
+        </apex:outputText>
+    </apex:repeat>
+</apex:component>

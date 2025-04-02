@@ -1,0 +1,45 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false">
+  <p style="color:red;">Important Note:</p>
+                <ul><p><span style="color:red">1.</span> Candidate has the facility of paying the Program fees in 2 instalments (1st instalment – Initial payment, 2nd instalment – Balance payment) only.</p>
+                 <p><span style="color:red">2.</span> If the candidate is not able to pay the 2nd instalment by 20th March, 2019, Administrative charges amounting to Rs. 2,500/- will be deducted.</p>
+                 <p><span style="color:red">3.</span>2nd Instalment and the eligibility documents should be submitted on or prior the cut-off dates</p>
+                 <table border="1" bordercolor="#000000" style="background-color:#F7F7F7" width="600" cellpadding="2" cellspacing="0">
+                    <tr>
+                        <th>Particulars</th>
+                        <th>Date</th>
+                    </tr>
+                    <tr>
+                     <td>Admission with Normal Fee</td>
+                     <td>6th October, 2018 to 15th February, 2019 </td>
+                    </tr>
+                    <tr>
+                        <td>Admission with Late fees of Rs. 1,000/-</td>
+                        <td>16th February, 2019 to 20th March, 2019 </td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <td>Admission with Late fees of Rs. 1,000/-</td>
+                        <td>27th February, 2017 to 14th March, 2018 </td>
+                    </tr>
+                    -->
+                 </table>
+                <p> <span style="color:red">4.</span>Below is the example showing the 2nd instalment payable in Normal and late fee slabs: eg. 1st Instalment paid is “5000” then the 2nd instalments applicable will be as follows:</p>
+                    <table border="1" bordercolor="#000000" style="background-color:#F7F7F7" width="600" cellpadding="2" cellspacing="0">
+                        <tr>
+                            <th>Date</th>
+                            <th>2nd Instalment payable</th>
+                        </tr>
+                        <tr>
+                            <td>On or before 15th February, 2019</td>
+                            <td>13,000/- (Program fee minus 1st instalment) i.e. 18,000 – 5,000 = 13,000/-</td>
+                        </tr>
+                        <tr>
+                            <td>Between 16th February, 2019 to 20th March, 2019</td>
+                            <td>14,000/- (Program fee plus late fee minus 1st instalment) i.e. (18,000 + 1,000) – 5,000 = 14,000/-</td>
+                        </tr>
+                        
+                    </table>
+                    <!--
+                    <p><span style="color:red">5.</span>Even if the entire fees is paid before 7th February, 2018 but the documents are submitted after 7th February, 2018 late fees would be applicable as per the slab mentioned in point number 3.</p> -->
+                </ul>
+</apex:page>

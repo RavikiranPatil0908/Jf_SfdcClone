@@ -1,0 +1,144 @@
+<!--
+  @File Name          : updateOpportunity.html
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 12/18/2019, 5:09:03 PM
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    12/16/2019   shubhranshu     Initial Version
+-->
+<template>
+   <!-- Message Toast Starts here-->
+   <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant} auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+   <!-- Message Toast Ends here-->
+    <div class="slds-grid slds-wrap slds-form-element">
+            <article class="slds-card slds-m-top_none">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">
+                                    <span class="slds-card__header-link slds-truncate preWrap">
+                                        <span>Update Opportunity</span>
+                                    </span>
+                                </h2>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <div class="slds-grid slds-wrap slds-form-element">
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="Student Name: " readonly="readonly" name="oppId" value={oppList.Account.Name}></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <label>Student Email :</label><br>
+                                <lightning-formatted-email value={oppList.Account.PersonEmail} ></lightning-formatted-email>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <label>Student Mobile :</label><br>
+                                <lightning-formatted-phone value={oppList.Account.PersonMobilePhone} ></lightning-formatted-phone>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="Opportunity Name: " name="oppName" readonly="readonly" value={oppList.Name}></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="Semester: " name="Semester" readonly="readonly" value={oppList.nm_Semester__c}></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                              <lightning-input type="text" label="Session :" name="Session" readonly="readonly" value={oppList.nm_Session__c} onchange={handleName}></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="Year :" name="Year" readonly="readonly" value={oppList.nm_Year__c} onchange={handleName}></lightning-input>
+                            </div>
+
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="Student No.: " readonly="readonly" name="oppId" value={oppList.Account.nm_StudentNo__c}></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="Stage Name: " readonly="readonly"  name="stage" value={oppList.StageName}></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="FeeType: " readonly="readonly" name="feeType" value={oppList.nm_Fee_Type__c}></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="Program name :" readonly="readonly" name="program" value={oppList.Program_Name__c} ></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="Choose Program :" readonly="readonly" name="chooseProg" value={oppList.ChooseProgram__c} ></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="number" label="No. of Attempt:" readonly="readonly" name="noOfAttempt" value={oppList.No_Of_Attempt__c}></lightning-input>
+                            </div>
+                            
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="Valid Upto: " readonly="readonly" value={oppList.Account.Valid_Upto__c}></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="Loan Type :" readonly="readonly" value={oppList.Loan_Type__c} ></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <div if:true={oppList.Down_Payment_Made__c}>
+                                    <lightning-input type="checkbox" disabled label="Down payment made" checked></lightning-input>
+                                </div>
+                                <div if:false={oppList.Down_Payment_Made__c}>
+                                    <lightning-input type="checkbox" disabled label="Down payment made"></lightning-input>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="number" label="Loan amount:" readonly="readonly" value={oppList.Loan_Amount__c} ></lightning-input>
+                            </div>
+
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="Loan order id: " readonly="readonly" value={oppList.Loan_Order_Id__c}></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small " if:false={eduvanz}>
+                                <lightning-input type="text" label="Loan order status :" readonly="readonly" value={oppList.Loan_Order_Status__c} ></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small " if:true={eduvanz}>
+                                <lightning-input type="text" label="Loan order status :" readonly="readonly" value={oppList.EduVanz_Current_Stage_Name__c} ></lightning-input>
+                            </div>
+
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="number" label="Total amount received:" readonly="readonly" value={oppList.Total_Amount_Received__c} ></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="number" label="Pending amount :" readonly="readonly" value={oppList.ActualPendingAmount__c} ></lightning-input>
+                            </div>
+
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="Self learning material : " readonly="readonly" name="selflearningMaterial" value={oppList.nm_SelfLearningMaterial__c}></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="Student Status :" readonly="readonly" name="studstatus" value={oppList.Account.nm_StudentStatus__c} onchange={handleName}></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="datetime" date-style="short" label="Next Follow Up Date/Time:" name="followUpDateTime" value={oppList.Next_Follow_Up_Date_Time__c} onchange={handleName}></lightning-input>
+                            </div>
+                           
+                            <div class="slds-col slds-large-size_1-of-2 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-record-edit-form object-api-name="Opportunity">
+                                    <div class="slds-col slds-large-size_1-of-1 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                        <lightning-input-field name="OppStatus" onchange={handleName} field-name="Opportunity_Status__c" value={oppList.Opportunity_Status__c} >
+                                        </lightning-input-field>
+                                    </div>
+                                    <div class="slds-col slds-large-size_1-of-1 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                        <lightning-input-field name="OppDescr" onchange={handleName} field-name="Opportunity_Description__c" value={oppList.Opportunity_Description__c}>
+                                        </lightning-input-field>
+                                    </div>
+                                </lightning-record-edit-form>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small " if:true={Descrother}>
+                                <lightning-input type="text" label="If other , please specify  :" name="otherDescr" value={oppList.DescriptionforOther__c} onchange={handleName}></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+                                <lightning-input type="text" label="Opportunity History Tracking: " readonly="readonly" name="historyTrack" value={oppList.History_Tracking__c}></lightning-input>
+                            </div>
+                            <div class="slds-col slds-large-size_1-of-1 slds-medium-size_1-of-1 slds-size_1-of-1 slds-p-horizontal_x-small slds-p-vertical_large">
+                                <button class="slds-button slds-button_brand slds-float_right" onclick={save}>Update Opportunity</button>
+                            </div>
+                        </div> 
+                    </div>
+        </article>
+    </div>
+</template>

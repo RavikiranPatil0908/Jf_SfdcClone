@@ -1,0 +1,312 @@
+<apex:page id="pageId" showHeader="false" sidebar="false" renderAs="pdf" standardController="AEP_site_inspection__c" cache="false">
+
+<head>
+    <style type="text/css" media="print">
+        @page {
+            padding-top: 10px;
+            @top-center {
+                content: element(header);
+            }
+            @bottom-left {
+                content: element(footer);
+            }
+        }
+    </style>
+</head>
+    <div class="header">
+        <table width="100%">
+            <tr><td><center><img src="{!URLFOR($Resource.NMIMS_Banner_v2,'')}" width="75%" /></center></td></tr>
+            <tr><td><center style="font-size:25px;"><b>Site Inspection Form</b></center></td></tr>
+            <tr><td><center><h3>Date of the Visit: <u>&nbsp;{!DAY(TODAY())}-{!MONTH(TODAY())}-{!YEAR(TODAY())}&nbsp;</u></h3></center></td></tr>
+        </table>
+    </div>
+    <div class="content">
+        <apex:form >
+            <table style="border:1px solid black;border-collapse:collapse; align:center; text-align:center; width:650px;">
+                <tr>
+                    <th style="border:1px solid black; padding:10px;" width="5%">Sr.No</th>
+                    <th style="border:1px solid black; padding:10px;" width="45%">Details</th>
+                    <th style="border:1px solid black; padding:10px;" width="50%">Description</th>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px;text-align:left;" width="5%">1.</td>
+                    <td style="border:1px solid black; padding:6px;text-align:left;" width="45%">Location (City) of the Information Centre</td>
+                    <td style="border:1px solid black; padding:6px;text-align:left;" width="50%">{!AEP_site_inspection__c.Location_City__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px;text-align:left;" width="5%">2.</td>
+                    <td style="border:1px solid black; padding:6px;text-align:left;" width="45%">Area (Locality) of the Information Centre</td>
+                    <td style="border:1px solid black; padding:6px;text-align:left;" width="50%">{!AEP_site_inspection__c.Area_Locality__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px;text-align:left;" width="5%">3.</td>
+                    <td style="border:1px solid black; padding:6px;text-align:left;" width="45%">Name of the Centre</td>
+                    <td style="border:1px solid black; padding:6px;text-align:left;" width="50%">{!AEP_site_inspection__c.Name_of_the_Centre__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%">4.</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="45%">Address of the Information Centre</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">{!AEP_site_inspection__c.Address_of_the_Information_Centre__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%">5.</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="45%">Any prominent Landmark (meters)</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">{!AEP_site_inspection__c.Any_prominent_Landmark__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%">6.</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="45%">Close to any Bus Stop</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%"> {!AEP_site_inspection__c.Close_to_any_Bus_Stop__c} </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%">7.</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="45%">Close to any Railway Station</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">{!AEP_site_inspection__c.Close_to_any_Railway_Station__c} </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%">8.</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="45%">Close to any Metro Station</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">{!AEP_site_inspection__c.Close_to_any_Metro_Station__c}</td>
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%">9.</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="45%">Type of the Building</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">{!AEP_site_inspection__c.Type_of_the_Building__c} </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%">10.</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="45%">Place is Owned/Leased/Rent</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">{!AEP_site_inspection__c.Place_is_Owned_Leased_Rent__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%">11.</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="45%">Competitors within the area</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">{!AEP_site_inspection__c.Competitors_within_the_area__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%">12</td>
+                    <td style="border:1px solid black; padding:6px; text-align:center;" colspan="2" width="95%"><b>Centre Location Details</b></td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; text-align:center; vertical-align: middle;" width="45%"><b>Visibility of the Centre</b></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">
+                        <table>
+                            <thead>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span style="float:left;">All directions</span> </td>
+                                    <td>
+                                        <apex:outputPanel rendered="{!AEP_site_inspection__c.All_directions__c}" style="float:right;"><img src="{!URLFOR($Resource.Checked,'')}" width="20px" /></apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(!AEP_site_inspection__c.All_directions__c,true,false)}" style="float:right;"><img src="{!URLFOR($Resource.Unchecked,'')}" width="20px" /></apex:outputPanel>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td ><span style="float:left;">On the Main Road</span> </td>
+                                    <td >
+                                        <apex:outputPanel rendered="{!AEP_site_inspection__c.On_the_Main_Road__c}"><img src="{!URLFOR($Resource.Checked,'')}" width="20px" /></apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(!AEP_site_inspection__c.On_the_Main_Road__c,true,false)}"><img src="{!URLFOR($Resource.Unchecked,'')}" width="20px" /></apex:outputPanel>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td ><span style="float:left;">Inside Lanes</span> </td>
+                                    <td>
+                                        <apex:outputPanel rendered="{!AEP_site_inspection__c.Inside_Lanes__c}"><img src="{!URLFOR($Resource.Checked,'')}" width="20px" /></apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(!AEP_site_inspection__c.Inside_Lanes__c,true,false)}"><img src="{!URLFOR($Resource.Unchecked,'')}" width="20px" /></apex:outputPanel>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; text-align:center; vertical-align: middle;" width="45%"><b>Amenities</b></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">
+                        <table class="table borderless">
+                            <thead>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td ><span style="float:left;">Parking Space</span> </td>
+                                    <td>
+                                        <apex:outputPanel rendered="{!AEP_site_inspection__c.Parking_Space__c}" style="float:right;"><img src="{!URLFOR($Resource.Checked,'')}" width="20px" /></apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(!AEP_site_inspection__c.Parking_Space__c,true,false)}" style="float:right;"><img src="{!URLFOR($Resource.Unchecked,'')}" width="20px" /></apex:outputPanel>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span style="float:left;">Washrooms</span></td>
+                                    <td>
+                                        <apex:outputPanel rendered="{!AEP_site_inspection__c.Washrooms__c}"><img src="{!URLFOR($Resource.Checked,'')}" width="20px" /></apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(!AEP_site_inspection__c.Washrooms__c,true,false)}"><img src="{!URLFOR($Resource.Unchecked,'')}" width="20px" /></apex:outputPanel>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span style="float:left;">Pantry</span></td>
+                                    <td>
+                                        <apex:outputPanel rendered="{!AEP_site_inspection__c.Pantry__c}"><img src="{!URLFOR($Resource.Checked,'')}" width="20px" /></apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(!AEP_site_inspection__c.Pantry__c,true,false)}"><img src="{!URLFOR($Resource.Unchecked,'')}" width="20px" /></apex:outputPanel>  
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <div style="page-break-after: always"/> 
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; text-align:center; vertical-align: middle;" width="45%"><b>Centre Location</b></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">
+                        <table class="table borderless">
+                            <thead>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td ><span style="float:left;">Prime Location</span> </td>
+                                    <td>
+                                        <apex:outputPanel rendered="{!AEP_site_inspection__c.Prime_Location__c}"><img src="{!URLFOR($Resource.Checked,'')}" width="20px" /></apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(!AEP_site_inspection__c.Prime_Location__c,true,false)}"><img src="{!URLFOR($Resource.Unchecked,'')}" width="20px" /></apex:outputPanel> 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span style="float:left;">Residential Location</span></td>
+                                    <td>
+                                        <apex:outputPanel rendered="{!AEP_site_inspection__c.Residential_Location__c}"><img src="{!URLFOR($Resource.Checked,'')}" width="20px" /></apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(!AEP_site_inspection__c.Residential_Location__c,true,false)}"><img src="{!URLFOR($Resource.Unchecked,'')}" width="20px" /></apex:outputPanel>    
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span style="float:left;">Commercial Location</span></td>
+                                    <td>
+                                        <apex:outputPanel rendered="{!AEP_site_inspection__c.Commercial_Location__c}"><img src="{!URLFOR($Resource.Checked,'')}" width="20px" /></apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(!AEP_site_inspection__c.Commercial_Location__c,true,false)}"><img src="{!URLFOR($Resource.Unchecked,'')}" width="20px" /></apex:outputPanel> 
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%">13.</td>
+                    <td colspan="2" style="border:1px solid black; text-align:center; vertical-align: middle;" width="95%"><b>Centre Infrastructure Details</b></td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">-   Total Carpet Area –(sq ft)</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">{!AEP_site_inspection__c.Total_Carpet_Area_sq_ft__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">-      AC’s ( Quantity)</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%"> {!AEP_site_inspection__c.AC_s_Quantity__c}</td>
+                </tr>
+                    <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">-   Centre Head/Marketing Manager Cabins</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">{!AEP_site_inspection__c.Centre_Head_Marketing_Manager_Cabins__c}</td>
+                </tr>
+                    <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">-   Counseling Cabin/Reception</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%"> {!AEP_site_inspection__c.Counseling_Cabin_Reception__c}</td>
+                </tr>
+                    <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">-   Workstation - staff</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">{!AEP_site_inspection__c.Workstation_staff__c}</td>
+                </tr>
+                    <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">-   Conference Room available</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%"> {!AEP_site_inspection__c.Conference_Room_available__c}</td>
+                </tr>
+                    <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">-     Computers (Quantity)</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%"> {!AEP_site_inspection__c.Computers_Quantity__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">-   Internet Connection and Type</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%"> {!AEP_site_inspection__c.Internet_Connection_and_Type__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">-   Phone (service provider)</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">  {!AEP_site_inspection__c.Phone_service_provider__c} </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">-   Power backup available</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%"> {!AEP_site_inspection__c.Power_backup_available__c} </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">-   Scanners / Printers</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">  {!AEP_site_inspection__c.Scanners_Printers__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">-   Space for Brand Signage</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%"> {!AEP_site_inspection__c.Space_for_Brand_Signage__c} </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%">14.</td>
+                    <td colspan="2" style="border:1px solid black; padding:6px; text-align:center; vertical-align: middle;" width="95%"><b>Manpower Details</b></td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%"> Centre Manager/Team Lead</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">{!AEP_site_inspection__c.Centre_Manager_Marketing_Manager__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">Counselors</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">{!AEP_site_inspection__c.Counselors__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">Field Executives</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">{!AEP_site_inspection__c.Field_Executives__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">Telecallers</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%"> {!AEP_site_inspection__c.Telecallers__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="5%"></td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%">Office Boy/Admin Boy</td>
+                    <td style="border:1px solid black; padding:6px; text-align:left;" width="50%"> {!AEP_site_inspection__c.Office_Boy_Admin_Boy__c}</td>
+                </tr>
+                <tr> 
+                    <td colspan="3" style="border:1px solid black; padding:6px; text-align:left;">15. <b>Remarks &#38; Recommendation:</b>  {!AEP_site_inspection__c.Remarks_Recommendation__c}</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:6px; text-align:left;"><b> Name </b></td>
+                    <td colspan="2" style="border:1px solid black; padding:6px; text-align:left;" width="70%">{!AEP_site_inspection__c.Name__c}</td>
+                </tr>
+                <tr>
+                    
+                    <td  style="border:1px solid black; padding:6px; text-align:left;"><b>Designation </b></td>
+                    <td colspan="2" style="border:1px solid black; padding:6px; text-align:left;" width="70%">{!AEP_site_inspection__c.Designation__c}</td>
+                </tr>
+                <tr>
+                    <td  style="border:1px solid black; padding:6px; text-align:left;"><b>Signature </b></td>
+                    <td colspan="2" style="border:1px solid black; padding:6px; text-align:left;" width="70%"></td>
+                </tr>
+            </table>
+        </apex:form>
+        <table width="100%" style ="font-size:20px;word-spacing:35px;">
+            <tr>
+                <td>______________________</td>
+            </tr>
+            <tr><td>Signature</td></tr>
+        </table>
+    </div>
+
+
+</apex:page>

@@ -1,0 +1,162 @@
+<!--
+  @File Name          : quickLeadCreateComponent.html
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 3/7/2020, 3:39:33 pm
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    30/6/2020   shubhranshu     Initial Version
+-->
+<template>
+     <!-- Message Toast Starts here-->
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant} auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+    <!-- Message Toast Ends here-->
+
+    <div class="slds-global-header__item quickleadHeader">
+       <center><div class="slds-text-heading_large">Quick Lead</div></center>
+      <!-- <lightning-button icon-name="action:new_lead" title="Quick Lead"></lightning-button>
+      <div class="slds-clearfix">
+         <div class="slds-float_right">
+            <div class="slds-icon-eq slds-is-animated" title="Quick Lead">
+            <div class="slds-icon-eq__bar"></div>
+            <div class="slds-icon-eq__bar"></div>
+            <div class="slds-icon-eq__bar"></div>
+            <span class="slds-assistive-text">Quick Lead</span>
+         </div>
+         </div>
+      </div> -->
+    </div>
+    <div class="slds-card__body slds-card__body_inner quickLeadForm">
+       <lightning-record-edit-form object-api-name="Lead" density="comfy" onsuccess={onSubmitHandler}>
+        <div class="slds-grid slds-wrap slds-form-element">
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+               <lightning-input type="text" label="First Name :" data-field="FirstName" required="required" placeholder="Enter the first name" value={ld.FirstName} onchange={handleName}></lightning-input>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+              <lightning-input type="text" label="Last Name :" data-field="LastName" required="required" value={ld.LastName} placeholder="Enter the last name" onchange={handleName}></lightning-input>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+              <lightning-input type="email" label="Email :" data-field="Email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required="required" value={ld.Email} placeholder="Enter the email"  onchange={handleName}></lightning-input>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+              <lightning-input type="text" label="Mobile Number :" pattern="[1-9]{1}[0-9]{9}" data-field="MobilePhone" placeholder="Enter the 10 digit mobile" required="required" value={ld.MobilePhone} onchange={handleName}></lightning-input>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small ">
+              <lightning-input-field field-name="LeadSource"  value={ld.LeadSource} data-field="LeadSource" required="required" onchange={handleName}></lightning-input-field>
+            </div>
+            
+            <template if:true={otherLeadSource}>
+               <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+                <lightning-input type="text" label="Other lead source :" data-field="nm_OtherLeadSources__c" value={ld.nm_OtherLeadSources__c} required={otherLeadSource} onchange={handleName}></lightning-input>
+               </div>
+            </template>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+              <lightning-input-field field-name="Status" value={ld.Status} data-field="Status" onchange={handleName}></lightning-input-field>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+              <lightning-input-field field-name="Lead_Description__c" value={ld.Lead_Description__c} data-field="Lead_Description__c" onchange={handleName} ></lightning-input-field>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+              <lightning-combobox required label="Choose Program" 
+                                  data-value="nm_ChooseaProgram__c" 
+                                  onchange={handleChange} 
+                                  options={chooseProgram} 
+                                  placeholder="--None--"
+                                  value={ld.nm_ChooseaProgram__c}></lightning-combobox>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+              <lightning-combobox label="Select Program Type"
+                                  data-value="nm_Program__c"
+                                  onchange={handleChange}
+                                  value={ld.nm_Program__c}
+                                  placeholder="--None--" 
+                                  options={programListOptions}
+                                  disabled= {isEmpty} ></lightning-combobox>
+            </div>
+            
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <lightning-input-field field-name="Lead_Action__c" value={ld.Lead_Action__c} data-field="Lead_Action__c" onchange={handleName} ></lightning-input-field>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <!-- <lightning-input-field field-name="Counselor_Profile__c" value={ld.Counselor_Profile__c} data-field="Counselor_Profile__c" onchange={handleName} ></lightning-input-field> -->
+               <lightning-combobox label="Select Counselor Profile"
+                                  data-value="Counselor_Profile__c"
+                                  onchange={handleChange}
+                                  value={ld.Counselor_Profile__c}
+                                  placeholder="--None--" 
+                                  options={counselorOptions} ></lightning-combobox>
+            </div> 
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <lightning-input-field field-name="nm_Gender__c" value={ld.nm_Gender__c} data-field="nm_Gender__c" onchange={handleName}></lightning-input-field>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <lightning-input type="date" value={ld.nm_DateOfBirth__c} date-style="short" data-field="nm_DateOfBirth__c" onchange={handleName} placeholder="Enter the date of birth" label="Date Of Birth"></lightning-input>
+            </div>
+            
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <lightning-input type="text" label="Stream :" data-field="nm_Stream__c" value={ld.nm_Stream__c} placeholder="Enter Stream" onchange={handleName}></lightning-input>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <lightning-input type="text" label="Highest qualification :" data-field="Highest_Qualification__c" value={ld.Highest_Qualification__c} placeholder="Enter highest qualfication" onchange={handleName} ></lightning-input>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <lightning-input-field field-name="Working__c" value={ld.Working__c} data-field="Working__c" onchange={handleName}></lightning-input-field>
+            </div>
+            
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <lightning-input-field field-name="Reason__c" value={ld.Reason__c} data-field="Reason__c" onchange={handleName}></lightning-input-field>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <lightning-input-field field-name="nm_WorkExperience__c" value={ld.nm_WorkExperience__c} data-field="nm_WorkExperience__c" onchange={handleName}></lightning-input-field>
+            </div>
+            
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <lightning-input-field field-name="Industry" value={ld.Industry} data-field="Industry" onchange={handleName}></lightning-input-field>
+            </div>
+            
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <lightning-input-field field-name="nm_Designation__c" value={ld.nm_Designation__c} data-field="nm_Designation__c" onchange={handleName} ></lightning-input-field>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <lightning-input-field field-name="Next_Follow_up__c" value={ld.Next_Follow_up__c} data-field="Next_Follow_up__c" onchange={handleName}></lightning-input-field>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <lightning-input-field field-name="nm_Mother_Tongue__c" value={ld.nm_Mother_Tongue__c} data-field="nm_Mother_Tongue__c" onchange={handleName}></lightning-input-field>
+            </div>
+            
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <lightning-input type="text" label="City :" value={ld.nm_City_P__c} data-field="nm_City_P__c" onchange={handleName} placeholder="Enter city name"></lightning-input>
+            </div>
+
+            <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+               <lightning-input-field field-name="Comment__c" value={ld.Comment__c} data-field="Comment__c" onchange={handleName}></lightning-input-field>
+            </div>
+            <br />
+            <center>
+               <!-- <lightning-button type="submit" variant="brand" label="Create Lead"></lightning-button> -->
+                <div class="slds-col slds-large-size_1-of-1 slds-medium-size_1-of-1 slds-size_1-of-1 slds-p-horizontal_x-small slds-p-vertical_large">
+                    <button class="slds-button slds-button_brand" onclick={saveLead}>Create Lead</button>
+                </div>
+            </center>
+        </div>
+      </lightning-record-edit-form>
+    </div>
+</template>

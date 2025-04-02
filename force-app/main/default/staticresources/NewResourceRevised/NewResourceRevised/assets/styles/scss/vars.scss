@@ -1,0 +1,47 @@
+// _vars.scss
+
+$red-btn:#d12229;
+$red-dark:#D71921;
+$red:#d02630;
+$light-blue:#345799;
+$gray:#58585a;
+$gray-light:#e4e4e4;
+$blue:#16659c;
+$gray-dark:#2b2b2b;
+$gray-med:#727272;
+
+/* Social Media */
+@mixin social-icon($border-rad,$bgcolor, $font-size,$color) {
+	border-radius:50%;
+	background-color:$bgcolor;
+	font-size:$font-size;
+	color:$color;
+	text-align:center;
+	@include transition(.5s,ease-out);
+	
+	&:hover{
+		color:$bgcolor;
+		background-color:$color;
+	}
+}
+
+/*--Transform--*/
+@mixin transform($prop) {
+     -webkit-transform: $prop;
+     -moz-transform: $prop;
+     -ms-transform: $prop;
+     -o-transform: $prop;
+     transform: $prop;
+}
+
+/*--transition--*/
+@mixin transition($time, $ease) {
+    -moz-transition-duration: $time;
+    -o-transition-duration: $time;
+    -webkit-transition-duration: $time;
+    transition-duration: $time;
+    -moz-transition-timing-function: $ease;
+    -o-transition-timing-function: $ease;
+    -webkit-transition-timing-function: $ease;
+    transition-timing-function: $ease;
+}

@@ -1,0 +1,440 @@
+<apex:page id="pageId" showHeader="false" sidebar="false" standardStylesheets="false" standardController="Lead" cache="false" >
+
+
+<apex:param name="leadID" value="{!Lead.id}"/>
+
+
+    <style>
+        .Processingview {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;
+            width: 100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+        }
+        
+        .required {
+            border: 2px solid #c00 !important;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .poup {
+            position: fixed;
+            top: 30%;
+            width: 40%;
+            margin-left: 30%;
+            z-index: 11;
+        }
+        
+        .messageCell {
+            color: White !important;
+        }
+        
+        .LateFee {
+            Color: red;
+            float: right;
+            margin-right: 4%;
+            font-style: italic;
+        }
+    </style>
+
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <title>NMIMS Distance Education: Refund Detailer</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs." />
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/logo.png')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/select-bg.png')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/banner.jpg')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/chosen.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/style.scss')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/vars.scss')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css.map')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css.map')}" />
+
+    </head>
+    <nav class="headerNavigation">
+        <div class="container">
+            <div class="logoImg">
+                <a href="#">
+                    <apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive" />
+                </a>
+            </div>
+
+        </div>
+    </nav>
+    <!--/ Logo & Navigation -->
+    <!-- Breadcrumb & Social Icons -->
+    <div class="topSocialWrapper">
+        <div class="container">
+            <div class="grayWrapper">
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="#">
+                            <h5>Home</h5>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <h5>Admission Info</h5>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <h5>Login</h5>
+                    </li>
+                </ol>
+            </div>
+            <div class="shareIcons">
+                <ul>
+                    <li>
+                        <a href="#" class="icon-google-plus"></a>
+                    </li>
+                    <li>
+                        <a href="#" class="icon-twitter"></a>
+                    </li>
+                    <li>
+                        <a href="#" class="icon-facebook"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--/ Bredcrums & Social Icons -->
+
+    <!-- Banner -->
+    <!--- <div class="bannerContainer" style="background-image:url({!URLFOR($Resource.ImageResource,'images/')}banner.jpg);">
+
+        <div class="container">
+            <div class="bannerIns">
+                <h2>Lead Information</h2>
+            </div>
+        </div>
+    </div> -->
+    <!--/ Banner -->
+
+    <body class="home">
+
+        <apex:form >
+        <apex:inputHidden id="hdnWorkExp" value="{!Lead.nm_WorkExperience__c}"/>
+        
+        <apex:pageMessages id="error"></apex:pageMessages>
+            <div class="tab-wrapper">
+                <div class="container"  style="padding-top: 5px;">
+                    <div class="tab-content">
+                        <div class="tab-pane active">
+                            <div class="form-wrapper">
+                                <li>
+                                    Please Complete Lead Information
+                                </li>
+                                <br></br>
+                              
+
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField id="gender" value="{!Lead.nm_Gender__c}" styleClass="form-control notnull ModifyFirstOptionForGender"  />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField value="{!Lead.Industry}" styleClass="form-control  ModifyFirstOptionOfIndustry" id="industry1"  />
+                                            </div>
+                                        </div>
+                                    </div>
+                                      <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField value="{!Lead.Request_a_visit__c}" styleClass="form-control  ModifyFirstOptionOfRequestaVisit" id="requestVisit"  />
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField value="{!Lead.nm_Designation__c}" styleClass="form-control  ModifyFirstOptionOfDesignation" id="Designation" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group required-label">
+                                            <apex:selectList styleClass="form-control notnull permanentcity disabled" id="txtPCity" html-placeholder="City" value="{!Lead.nm_City_P__c}" multiselect="false" size="1">
+                                                 <apex:selectOption itemValue="  " itemLabel="Select City"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Mumbai " itemLabel="Mumbai"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Delhi " itemLabel="Delhi"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Kolkata " itemLabel="Kolkata"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Chennai " itemLabel="Chennai"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Bangalore " itemLabel="Bangalore"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Hyderabad " itemLabel="Hyderabad"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Ahmedabad " itemLabel="Ahmedabad"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Pune " itemLabel="Pune"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Surat " itemLabel="Surat"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Jaipur " itemLabel="Jaipur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Kanpur " itemLabel="Kanpur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Lucknow " itemLabel="Lucknow"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Nagpur " itemLabel="Nagpur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Ghaziabad " itemLabel="Ghaziabad"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Indore " itemLabel="Indore"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Coimbatore " itemLabel="Coimbatore"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Kochi " itemLabel="Kochi"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Patna " itemLabel="Patna"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Visakhapatnam " itemLabel="Visakhapatnam"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Kozhikode " itemLabel="Kozhikode"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Bhopal " itemLabel="Bhopal"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Thrissur " itemLabel="Thrissur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Vadodara " itemLabel="Vadodara"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Agra " itemLabel="Agra"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Malappuram " itemLabel="Malappuram"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Thiruvananthapuram " itemLabel="Thiruvananthapuram"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Kannur " itemLabel="Kannur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Ludhiana " itemLabel="Ludhiana"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Nashik " itemLabel="Nashik"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Vijayawada " itemLabel="Vijayawada"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Madurai " itemLabel="Madurai"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Varanasi " itemLabel="Varanasi"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Meerut " itemLabel="Meerut"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Faridabad " itemLabel="Faridabad"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Rajkot " itemLabel="Rajkot"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Jamshedpur " itemLabel="Jamshedpur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Jabalpur " itemLabel="Jabalpur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Srinagar " itemLabel="Srinagar"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Asansol " itemLabel="Asansol"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Vasai-Virar " itemLabel="Vasai-Virar"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Allahabad " itemLabel="Allahabad"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Dhanbad " itemLabel="Dhanbad"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Aurangabad " itemLabel="Aurangabad"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Amritsar " itemLabel="Amritsar"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Jodhpur " itemLabel="Jodhpur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Raipur " itemLabel="Raipur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Ranchi " itemLabel="Ranchi"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Gwalior " itemLabel="Gwalior"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Kollam " itemLabel="Kollam"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Durg-Bhilainagar " itemLabel="Durg-Bhilainagar"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Chandigarh " itemLabel="Chandigarh"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Tiruchirappalli " itemLabel="Tiruchirappalli"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Kota " itemLabel="Kota"></apex:selectOption>
+                                                 <apex:selectOption itemValue=" Ranchi " itemLabel="Ranchi"></apex:selectOption>
+                                                  <apex:selectOption itemValue=" Patna " itemLabel="Patna"></apex:selectOption>
+                                                   <apex:selectOption itemValue=" Bhubaneshwar " itemLabel="Bhubaneshwar"></apex:selectOption>
+                                                   <apex:selectOption itemValue=" Guwahati " itemLabel="Guwahati"></apex:selectOption>
+                                                   <apex:selectOption itemValue=" Noida  " itemLabel="Noida "></apex:selectOption>
+                                                   <apex:selectOption itemValue=" Gurgaon " itemLabel="Gurgaon"></apex:selectOption>
+                                                 
+                                                 <apex:selectOption itemValue=" Other " itemLabel="Other"></apex:selectOption>
+                                            </apex:selectList>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group required-label">
+                                            <apex:selectList styleClass="form-control notnull permanentcity " id="txtHighestQualif" html-placeholder="Highest Qualification" value="{!Lead.Highest_Qualification__c}" multiselect="false" size="1">
+                                                <apex:selectOption itemValue=" " itemLabel="Select Highest Qualification"></apex:selectOption>
+                                                <apex:selectOption itemValue="Doctrate/Ph. D." itemLabel="Doctrate/Ph. D."></apex:selectOption>
+                                                <apex:selectOption itemValue="Masters/Post Graduation" itemLabel="Masters/Post Graduation"></apex:selectOption>
+                                                <apex:selectOption itemValue="Graduation/Diploma" itemLabel="Graduation/Diploma"></apex:selectOption>
+                                                <apex:selectOption itemValue="12th" itemLabel="12th"></apex:selectOption>
+                                                <apex:selectOption itemValue="10th" itemLabel="10th"></apex:selectOption>
+                                                <apex:selectOption itemValue="below 10th" itemLabel="below 10th"></apex:selectOption>
+                                                <apex:selectOption itemValue="Others" itemLabel="Others"></apex:selectOption>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                      <div class="row">
+                                 <div class="col-md-6">
+                                
+                                        <div class="form-group required-label">
+                                               <select name="years" id="years" class="form-control select-wrapper workExp" style="width:auto;display:inline-block;"> 
+                                                <option value="0">Work Experience in Years</option>
+                                                <option value="0">0</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                                <option value="10+">10+</option>
+                                            </select>
+                                            
+                                            <select name="months" id="months" class="form-control select-wrapper workExp" style="width:auto;display:inline-block;"> 
+                                                <option value="0"> Work Experience in Months</option>
+                                                <option value="0">0</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                            </select>
+
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <apex:commandButton value="SubmitDetails" styleClass="btn pgSubmit" id="sub0" action="{!Save}" />
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </apex:form>
+    </body>
+    <!--/ Login -->
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 col-sm-4">
+
+                </div>
+                <div class="col-md-3 col-sm-4">
+
+                </div>
+                <div class="col-md-2 col-sm-4">
+
+                </div>
+                <div class="clearfix visible-sm"></div>
+                <div class="col-md-5">
+                    <div class="connectWrapper">
+
+                        <div class="footerSocialIcons">
+                            <p class="small">Follow Us :</p>
+                            <p class="text">Connect with us via Social Media and get all our latest news and upcoming events.</p>
+                            <ul>
+                                <li>
+                                    <a href="#" class="icon-twitter"></a>
+                                </li>
+                                <li>
+                                    <a href="#" class="icon-facebook"></a>
+                                </li>
+                                <li>
+                                    <a href="#" class="icon-google-plus"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="footerBottom">
+
+                        <div class="copyRight">
+                            <p class="text">&copy; 2016 NMIMS. All Rights Reserved.</p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!--/ Footer -->
+
+    <!-- Search Popup -->
+    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form class="form-inline" id="">
+                        <input type="text" class="form-control" id="searchInput" placeholder="" />
+                        <button type="" class="icon-search"></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--All java script  -->
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}" />
+
+    <script>
+        $(document).ready(function() {
+            $('.notnull').attr('required', 'true');
+            $('.ModifyFirstOptionForGender > option:first-child').text('Select Gender');
+        $('.ModifyFirstOptionOfIndustry > option:first-child').text('Select Industry');
+        $('.ModifyFirstOptionOfTotalMonthExp > option:first-child').text('Select Total Month Of Exp');
+        $('.ModifyFirstOptionOfDesignation > option:first-child').text('Select Designation');
+        $('.ModifyFirstOptionOfRequestaVisit > option:first-child').text('Request a Visit');
+        
+            $("#reg2").click(function() {
+                $("#Show1").hide();
+            });
+            $("#reg1").click(function() {
+                $("#Show1").show();
+            });
+
+            $('[id$=btnErr]').click(function() {
+
+                $('[id$=ErrorPopUp]').hide();
+                return false;
+            });
+
+            $('[id$=btnErrNo]').click(function() {
+
+                $('[id$=SuccessPopUp]').hide();
+                return false;
+            });
+            
+            $('.workExp').change(function(){
+                console.log($(this).val());
+                var year = $('#years').val();
+                var month = $('#months').val();
+                console.log(year+'--'+month);
+                $('[id$=hdnWorkExp]').val(year +'-'+ month);
+            });
+        });
+
+        function GoTo() {
+            callSaveAndProcess();
+
+        }
+    </script>
+
+</apex:page>

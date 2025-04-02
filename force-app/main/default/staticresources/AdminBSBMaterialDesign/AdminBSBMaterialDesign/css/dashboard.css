@@ -1,0 +1,214 @@
+
+.chart-container{
+    display: flex;
+
+    width: 100%;
+    padding: 50px 0;
+    border-radius: 8px;
+    background: #fff;
+    row-gap: 30px;
+    flex-direction: column;
+    align-items: center;
+}
+.circular-progress{
+    position: relative;
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    background: conic-gradient(#7d2ae8 120deg, #ededed 0deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.circular-progress{
+    position: relative;
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    background: conic-gradient(#7d2ae8 120deg, #ededed 0deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.circular-progress::before{ 
+    content: "";
+    position: absolute;
+    height: 170px;
+    width: 170px;
+    border-radius: 50%;
+    background-color: #fff;
+}
+.progress-value{
+    position: relative;
+    font-size: 40px;
+    font-weight: 600;
+    color: #7d2ae8;
+}
+.text {
+    font-size: 30px;
+    font-weight: 500;
+    color: #606060;
+}
+
+.table .table-label {
+    color: #B8B5B5;
+}
+
+.studentDetails .table-label {
+    color: #B8B5B5;
+}
+
+.studentDetails .row.m-b-0 {
+    margin-bottom: 0px;
+}
+
+.btn:not(.btn-link):not(.btn-circle) span.noTop { 
+    top: 0px;
+    margin-left: 0px;
+}
+
+@media (max-width: 768px) {
+    .mobile-view {
+        display: block;
+    }
+
+    .desktop-view {
+        display: none;
+    }
+}
+
+@media (min-width: 769px) {
+    .mobile-view {
+        display: none;
+    }
+
+    .desktop-view {
+        display: block;
+    }
+}
+
+/* --------------------------------------------- Progress Bar -----------------------------------------------------*/
+.status-bar {
+    /* font-weight: 600; */
+    border:none;
+}
+
+.status-bar.active .awesome.material-icons {
+    color:green;
+}
+
+.awesome.material-icons {
+    font-weight: 900;
+    font-size: 20px;
+    position: relative;
+    top: 5px;
+}
+
+/* .ProgressBar.main * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.ProgressBar.main {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    flex-direction: column;
+}
+
+.ProgressBar.main ul {
+    display: flex;
+}
+
+.ProgressBar.main ul li {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 40px;
+}
+
+.ProgressBar.main ul li .label {
+    font-family: sans-serif;
+    letter-spacing: 1px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+}
+
+.ProgressBar.main ul li .step {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    background-color: #fff;
+    margin: 16px 0 10px;
+    display: grid;
+    place-items: center;
+    color: #37a0f4;
+    position: relative;
+    cursor: default;
+    border-style: solid;
+    border-color: #37a0f4;
+}
+
+.ProgressBar.main .step::after {
+    content: "";
+    position: absolute;
+    width: 147px;
+    height: 3px;
+    background-color: #37a0f4;
+    right: 30px;
+}
+
+.ProgressBar.main .first::after {
+    width: 0;
+    height: 0;
+}
+
+.ProgressBar.main ul li .step .awesome {
+    display: none;
+
+}
+
+.ProgressBar.main ul li .step p {
+    font-size: 18px;
+    z-index: 1;
+}
+
+.ProgressBar.main ul li .active {
+    background-color: #37a0f4;
+}
+
+.ProgressBar.main li .active::after {
+    background-color: #37a0f4;
+
+}
+
+.ProgressBar.main ul li .active p {
+    display: none;
+}
+
+.ProgressBar.main ul li .active .awesome {
+    display: flex;
+    z-index: 1;
+    color: #fff;
+}
+
+.ProgressBar.main li.step-elemnts {
+    width: 100px;
+}
+
+.ProgressBar.main p.label {
+    white-space: normal;
+    color: #37a0f4;
+}
+
+
+.ProgressBar.main .step-elemnts.m-b-10 {
+    margin-bottom: 10px;
+} */

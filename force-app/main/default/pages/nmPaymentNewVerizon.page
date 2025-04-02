@@ -1,0 +1,1853 @@
+<apex:page controller="nmPaymentNew"  showHeader="false" sidebar="false" standardStylesheets="false" cache="false">
+     <style>
+        .Processingview
+        {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;           
+            width:  100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+           
+        }
+        .required
+        {
+            border: 2px solid #c00 !important;
+        }
+        .overlay
+        {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+          background-color: rgba(0,0,0,0.5);
+        }
+        .poup
+        {
+            position: fixed;
+            top: 30%;
+            width: 40%;
+            margin-left: 30%;
+            z-index: 11;
+        }
+        .poupMobile
+        {
+            position: fixed;
+            top: 10%;
+            width: 50%;
+            margin-left: 30%;
+            z-index: 11;
+        }
+       /*  .messageCell
+        {
+            color:White !important;
+        } */
+        .LateFee
+        {
+            Color: red;
+            float: right;
+            margin-right: 4%;
+            font-style: italic;
+        }
+     </style>
+     <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>NMIMS Distance Education: Login</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        
+        
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/logo.png')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/select-bg.png')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/banner.jpg')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/chosen.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/style.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/vars.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css.map')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css.map')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Data,'js/vendor/modernizr-2.6.2-respond-1.1.0.min.js')}"/>
+  <!--
+        <script type="text/javascript">
+           history.pushState(null, null, 'nmPaymentNew');
+                   window.addEventListener('popstate', function () {
+                    history.pushState(null, null, 'nmPaymentNew');
+                  });
+     </script>
+        -->   
+   
+     </head>   
+ <nav class="headerNavigation">
+  <div class="container">
+    <div class="logoImg"><a href="#"><apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive"/></a></div>
+    <div class="headerLinks"><!--<a href="#" class="header-phone-link"><span class="icon-phone"></span></a>-->
+      <button class="mobileMenu"><span class="icon-menu"></span></button>
+      <div class="search"><a href="#" class="icon-search" data-toggle="modal" data-target="#searchModal"></a></div>
+      <ul class="navLinks">
+        <li class="link"> <a href="#">
+          <div class="linkIns">
+            <div class="icon-looking-for linkIcon"></div>
+            I‘m looking for <span class="icon-down-arrow arrow-down"></span> </div>
+          </a>
+          <ul class="linkDropdown">
+            <li><a href="http://distance.nmims.edu/programs.html">Programs</a></li>
+            <li><a href="http://distance.nmims.edu/academic-deliverables.html">Academic Deliverables</a></li>
+            <li class="innerDropdown"><a href="#">Resources <span class="">&gt;&gt;</span></a>
+              <ul class="linkDropdownIns">
+                <li><a href="http://distance.nmims.edu/programs.html">Programs</a></li>
+                <li><a href="http://distance.nmims.edu/examination.html">Examinations</a></li>
+                <li><a href="http://studentzone-ngasce.nmims.edu/studentportal/">Students Zone</a></li>
+                <li><a href="http://distance.nmims.edu/alumni.html">Alumni</a></li>
+              </ul>
+            </li>
+            <li><a href="#">Support</a></li>
+            <li><a href="#">Calendar</a></li>
+            <li><a href="http://distance.nmims.edu/centers.html">Locations</a></li>
+            <li><a href="http://distance.nmims.edu/alumni.html">Alumni</a></li>
+            <li><a href="http://studentzone-ngasce.nmims.edu/studentportal/">Students Zone</a></li>
+          </ul>
+        </li>
+        <li class="link"> <a href="#">
+          <div class="linkIns">
+            <div class="icon-admission linkIcon"></div>
+            Admission info <span class="icon-down-arrow arrow-down"></span> </div>
+          </a>
+          <ul class="linkDropdown">
+            <li><a href="#">Admission Process</a></li>
+            <li><a href="#">Fee Structure</a></li>
+            <li><a href="#">Request A Visit</a></li>
+            <li><a href="#">Apply Now</a></li>
+            <li><a href="#">Check Status</a></li>
+            <li><a href="#">Re-Register</a></li>
+          </ul>
+        </li>
+        <li class="link"> <a href="#">
+          <div class="linkIns">
+            <div class="icon-university linkIcon"></div>
+            The University <span class="icon-down-arrow arrow-down"></span> </div>
+          </a>
+          <ul class="linkDropdown">
+            <li class="innerDropdown"><a href="#">Why NGASCE <span class="">&gt;&gt;</span></a>
+              <ul class="linkDropdownIns open-left">
+                <li><a href="#">Key Differentiators</a></li>
+                <li><a href="#">Awards &amp; Recognition</a></li>
+                <li><a href="#">Testimonials</a></li>
+              </ul>
+            </li>
+            <li class="innerDropdown"><a href="#">About Us <span class="">&gt;&gt;</span></a>
+              <ul class="linkDropdownIns open-left">
+                <li><a href="#">Our Vision and Mission</a></li>
+                <li><a href="#">Vice Chancellor's Note</a></li>
+                <li><a href="#">Director's Note</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!--/ Logo & Navigation --> 
+  <!-- Breadcrumb & Social Icons -->
+<div class="topSocialWrapper">
+  <div class="container">
+    <div class="grayWrapper">
+      <ol class="breadcrumb">
+        <li><a href="#">
+          <h5>Home</h5>
+          </a></li>
+        <li><a href="#">
+          <h5>Admission Info</h5>
+          </a></li>
+        <li class="active">
+          <h5>Payment</h5>
+        </li>
+      </ol>
+    </div>
+    <div class="shareIcons">
+      <ul>
+        <li><a href="#" class="icon-google-plus"></a></li>
+        <li><a href="#" class="icon-twitter"></a></li>
+        <li><a href="#" class="icon-facebook"></a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!--/ Bredcrums & Social Icons --> 
+
+<!-- Banner -->
+<div class="bannerContainer" style="background-image:url({!URLFOR($Resource.ImageResource,'images/')}banner.jpg);">
+
+  <div class="container">
+    <div class="bannerIns">
+      <h2> {!IF(IsReregistartion =='false','Registration','Re-Registration') } Payment</h2>
+    </div>
+  </div>
+</div>
+<!--/ Banner --> 
+    <body class="home">
+    
+   <!-- Payment -->
+<apex:form > 
+<apex:inputHidden id="hdngetWay" value="{!paymentGetWayName}"/>   
+<apex:actionFunction name="callMakePayment" action="{!makePayment}"/>
+<form id="reg-long-form" role="form">
+<apex:pageMessages />
+ <apex:outputPanel rendered="{!(strSecToShow == 'error')}" >
+                        <p><h2>{!errMessages}</h2></p>
+                        <apex:outputLink value="/apex/nmLogin_new" id="theLink" rendered="{!isShow}"><span style="color:red">Click here</span></apex:outputLink>                        
+</apex:outputPanel>
+<apex:outputPanel rendered="{!(strSecToShow == 'main')}" >
+  <div class="tab-wrapper">
+    <div class="container">
+      <div class="tab-content">
+        <div class="tab-pane active" style="padding:0">
+          <div class="form-wrapper">
+           <apex:outputPanel rendered="{!IsReregistartion  =='false'}" >
+            <div class="row">
+              <div class="col-md-6">
+                <apex:outputPanel rendered="{!IF(objlead.nm_RegistrationNo__c !=null,true,false)}">
+                   <div class="form-group">
+                      <input type="Text" disabled="true" value="{!mapOfConfigurePayOpt['RegistartionNo']}" class="form-control" html-placeholder="Registration No"/>
+                    </div>
+                 </apex:outputPanel>
+                 <apex:outputPanel rendered="{!IF(objlead.nm_RegistrationNo__c ==null,true,false)}">
+                    <div class="form-group">
+                        <input type="Text" disabled="true" value="{!mapOfConfigurePayOpt['RegistartionNo']}" class="form-control" html-placeholder="Registration No"/>
+                   </div>
+                </apex:outputPanel>
+              </div>
+            </div>
+            <div class="message-box text-center form-group">Select a Payment Amount</div>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="radio"><strong>Payment For</strong></div>
+                </div>
+               <div class="row" style="float:right;"> 
+                <apex:outputpanel rendered="{!!payOptions.Option1.AlreadyPaid}">
+                <apex:outputpanel rendered="{!IF(ICName!='Verizon',true,false)}">
+                <div class="col-sm-4 col-md-3">
+                  <div class="radio">
+                            <div class="radio">
+                              <label>
+                                <input type="radio" name="PaymentFor" id="PaymentFor1" class="iCheckRadio" value="registration" data-mode="1" />
+                                <span>{!payOptions.Option1.Amount} Registration </span>
+                             </label>
+                           </div> <!-- /radio -->
+                   </div>
+                </div>
+                 </apex:outputpanel>
+                  </apex:outputpanel>
+                <apex:outputPanel rendered="{!IF((noOfInstallmentAllowed !=null && payOptions.Option1.AlreadyPaidInstallmentAmt == 0) || (noOfInstallmentAllowed ==null ||  payOptions.Option1.AlreadyMadeAllInsatallment),true,false )}">
+                <apex:outputpanel rendered="{!IF(payOptions.Option2.AlreadyPaid ==false && payOptions.Option8.AlreadyPaid ==false && ICName=='Verizon' ,true,false)}">
+                <div class="col-sm-4 col-md-3">
+                          <div class="radio">
+                            <label>
+                             <input type="radio" name="PaymentFor" id="PaymentFor2" class="iCheckRadio" data-mode="2" value="admission" />
+                              <span>{! (payOptions.Option2.Amount ) }{!if(payOptions.Option1.AlreadyPaid == false,' Registration + ', ' ')} {!if(ICName=='Verizon' ,'+ Exam Fees', ' ')}</span>
+                           </label>
+                        </div> <!-- /radio -->              
+                 </div>
+                </apex:outputpanel>
+                <!--  <apex:outputPanel rendered="{!!objLead.IsConverted=false}">-->
+                        <!--  <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['IsDefence']}"> -->
+                          <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['IsLateral']}">
+                          <apex:outputpanel rendered="{!IF(objaccount.nm_ChooseaProgram__c == 'Post Graduate Diploma Programs',true,false)}">
+                          <apex:outputpanel rendered="{!!payOptions.Option4.AlreadyPaid}">
+                            <div class="col-sm-4 col-md-3">
+                            <div class="radio">
+                              <label>
+                                <input type="radio" name="PaymentFor" id="PaymentFor2" class="iCheckRadio" data-mode="2" value="PGAllSemFee" />
+                                <span>{! (payOptions.Option4.Amount + payOptions.Option4.LateFeeAmount)}{!if(payOptions.Option1.AlreadyPaid == false,'  ', ' ')} Admission(All SEM) {!if(payOptions.Option4.LateFeeAmount > 0,'+ Late Fees', ' ')}</span>
+                              </label>
+                            </div> <!-- /radio -->
+                         </div>
+                          </apex:outputpanel>
+                         <!-- </apex:outputPanel> -->
+                          </apex:outputPanel>
+                           </apex:outputPanel>
+                          <!--  </apex:outputPanel>-->
+                          <!-- ------------------mayur e 22/6/2015 ------------------- -->
+                          <!-----------------phalguni--------------------------> 
+                          <apex:outputPanel rendered="{!objLead.IsConverted=false}">
+                          <!-- <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['IsDefence']}"> -->
+                          <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['IsLateral']}">
+                        
+                          <apex:outputpanel rendered="{!IF(objLead.nm_ChooseaProgram__c == 'Post Graduate Diploma Programs' && ICName!='Verizon',true,false)}">
+                          <apex:outputpanel rendered="{!!payOptions.Option4.AlreadyPaid}">
+                            <div class="col-sm-4 col-md-3">  
+                            <div class="radio">
+                              <label>
+                                <input type="radio" name="PaymentFor" id="PaymentFor2" class="iCheckRadio" data-mode="2" value="PGAllSemFee" />
+                                <span>{! (payOptions.Option4.Amount + payOptions.Option4.LateFeeAmount) }{!if(payOptions.Option1.AlreadyPaid == false,' Registration + ', ' ')} Admission(All SEM) {!if(payOptions.Option4.LateFeeAmount > 0,'+ Late Fees', ' ')}</span>
+                              </label>
+                            </div> <!-- /radio -->
+                         </div>
+                          </apex:outputpanel>
+                          </apex:outputPanel> 
+                         <!-- </apex:outputPanel> -->
+                          </apex:outputPanel>
+                           </apex:outputPanel>
+
+                          <!---------------Phalguni--------------------->
+                          <!-- ----------------- For Annual Fee ---------------------- -->
+                         
+                           <!-- ------------------mayur s 3-Oct-2015 ------------------- -->
+                          <apex:outputPanel rendered="{!objLead.IsConverted=false}"> 
+                         <!-- <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['IsDefence']}"> -->
+                          <apex:outputpanel rendered="{!IF((objLead.nm_ChooseaProgram__c = 'Diploma Programs' || objLead.nm_ChooseaProgram__c = 'Post Graduate Diploma Programs') && ICName!='Verizon',true,false)}">
+                          <apex:outputpanel rendered="{!!payOptions.Option5.AlreadyPaid}">
+                         <div class="col-sm-4 col-md-3">
+                           <div class="radio">
+                              <label>
+                                <input type="radio" name="PaymentFor" id="PaymentFor5" class="iCheckRadio" data-mode="2" value="AnnualFee" />
+                                <span>{! (payOptions.Option5.Amount + payOptions.Option5.LateFeeAmount) }{!if(payOptions.Option1.AlreadyPaid == false,' Registration + ', ' ')} Admission(Annual) {!if(payOptions.Option5.LateFeeAmount > 0,'+ Late Fees', ' ')}</span>
+                              </label>
+                            </div> <!-- /radio -->
+                          </div> 
+                          </apex:outputpanel>
+                          </apex:outputPanel>
+                        <!--  </apex:outputPanel> -->
+                          </apex:outputPanel>
+                          
+                           <!-- ------------------Advance Certificate Program Annual ------------------- -->
+                          <apex:outputPanel rendered="{!objLead.IsConverted=false}"> 
+                          <!-- <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['IsDefence']}"> -->
+                          <apex:outputpanel rendered="{!IF((objLead.nm_ChooseaProgram__c = 'Certificate Programs' && CONTAINS(mapOfConfigurePayOpt['ProgramName'],'Advanced Certificate')),true,false)}">
+                           <apex:outputpanel rendered="{!!mapOfSectionRenderedValue['Sem2Lateral']}">
+                          <apex:outputpanel rendered="{!!payOptions.Option5.AlreadyPaid}">
+                         <div class="col-sm-4 col-md-3">
+                           <div class="radio">
+                              <label>
+                                <input type="radio" name="PaymentFor" id="PaymentFor5" class="iCheckRadio" data-mode="2" value="AnnualFee" />
+                                <span>{! (payOptions.Option5.Amount + payOptions.Option5.LateFeeAmount) }{!if(payOptions.Option1.AlreadyPaid == false,' Registration + ', ' ')} Admission(Annual) {!if(payOptions.Option5.LateFeeAmount > 0,'+ Late Fees', ' ')}</span>
+                              </label>
+                            </div> <!-- /radio -->
+                          </div> 
+                          </apex:outputpanel>
+                          </apex:outputPanel>
+                         </apex:outputPanel> 
+                          </apex:outputPanel>
+                          <!------------------------------------------------------------------------>
+                         
+                      <!--------------------------------------------------Lateral Admission --------------------------------------------------------------------------------------->
+                          <apex:outputPanel rendered="{!objLead.IsConverted=false}"> 
+                          <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['IsDefence']}">
+                          <apex:outputpanel rendered="{!IF(objLead.nm_ChooseaProgram__c == 'Post Graduate Diploma Programs' && ICName!='Verizon',true,false)}">
+                          <apex:outputpanel rendered="{!!payOptions.Option5.AlreadyPaid}">
+                          <apex:outputpanel rendered="{!mapOfSectionRenderedValue['Sem2Lateral']}">
+                            <div class="col-md-4 col-md-3">
+                            <div class="radio">
+                              <label>
+                                <input type="radio" name="PaymentFor" id="PaymentFor6" class="iCheckRadio" data-mode="2" value="MultipleSemFee" />
+                                <span>{! (payOptions.Option6.Amount + payOptions.Option6.LateFeeAmount)}{!if(payOptions.Option1.AlreadyPaid == false,' Registration + ', ' ')} Admission(For Semester 2 and 3 and 4) {!if(payOptions.Option4.LateFeeAmount > 0,'+ Late Fees', ' ')}</span>
+                              </label>
+                            </div> <!-- /radio -->
+                            </div>
+                          </apex:outputpanel>
+                          </apex:outputpanel>
+                          </apex:outputPanel>
+                          </apex:outputPanel>
+                          </apex:outputPanel>
+                      <!---------------------------------------------------end of Lateral Admission -------------------------------------------------------------------------------->   
+                          <!-- ------------------mayur e 3-Oct-2015 ------------------- -->
+                         
+                         <!-- <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['IsDefence']}"> -->
+                          <apex:outputpanel rendered="{!IF((objaccount.nm_ChooseaProgram__c = 'Diploma Programs' || objaccount.nm_ChooseaProgram__c = 'Post Graduate Diploma Programs'),true,false)}">
+                          <apex:outputpanel rendered="{!!payOptions.Option5.AlreadyPaid}">
+                            <div class="col-sm-4 col-md-3"> 
+                            <div class="radio">
+                              <label>
+                                <input type="radio" name="PaymentFor" id="PaymentFor5" class="iCheckRadio" data-mode="2" value="AnnualFee" />
+                                <span>{! (payOptions.Option5.Amount + payOptions.Option5.LateFeeAmount) }{!if(payOptions.Option1.AlreadyPaid == false,' ', ' ')} Admission(Annual) {!if(payOptions.Option5.LateFeeAmount > 0,'+ Late Fees', ' ')}</span>
+                              </label>
+                            </div> <!-- /radio -->
+                            </div>
+                          </apex:outputpanel>
+                          </apex:outputPanel>
+                        <!--  </apex:outputPanel> -->
+                          
+                          <!-- ------------------Advance Certificate Program Annual------------------- -->
+                         
+                        <!--  <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['IsDefence']}"> -->
+                          <apex:outputpanel rendered="{!IF((objaccount.nm_ChooseaProgram__c = 'Certificate Programs' && CONTAINS(mapOfConfigurePayOpt['ProgramName'],'Advanced Certificate')),true,false)}">
+                          <apex:outputpanel rendered="{!!payOptions.Option5.AlreadyPaid}">
+                           <apex:outputpanel rendered="{!!mapOfSectionRenderedValue['Sem2Lateral']}">
+                            <div class="col-sm-4 col-md-3"> 
+                            <div class="radio">
+                              <label>
+                                <input type="radio" name="PaymentFor" id="PaymentFor5" class="iCheckRadio" data-mode="2" value="AnnualFee" />
+                                <span>{! (payOptions.Option5.Amount + payOptions.Option5.LateFeeAmount) }{!if(payOptions.Option1.AlreadyPaid == false,' ', ' ')} Admission(Annual) {!if(payOptions.Option5.LateFeeAmount > 0,'+ Late Fees', ' ')}</span>
+                              </label>
+                            </div> <!-- /radio -->
+                            </div>
+                          </apex:outputpanel>
+                          </apex:outputPanel>
+                        </apex:outputPanel> 
+                          
+                          <!----------------------------------------------->
+                           <!--------------------------------------------------Lateral Admission --------------------------------------------------------------------------------------->
+                            
+                       <!--  <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['IsDefence']}"> -->
+                          <apex:outputpanel rendered="{!IF(Contains(objaccount.nm_ChooseaProgram__c,'Diploma Programs'),true,false)}">
+                          <apex:outputpanel rendered="{!!payOptions.Option5.AlreadyPaid}">            
+                           <apex:outputpanel rendered="{!mapOfSectionRenderedValue['Sem2Lateral']}">
+                           <div class="col-sm-4 col-md-3">
+                           <div class="radio">
+                              <label>
+                                <input type="radio" name="PaymentFor" id="PaymentFor7" class="iCheckRadio" data-mode="2" value="MultipleSemFee" />
+                                <span>{! (payOptions.Option6.Amount + payOptions.Option6.LateFeeAmount)}{!if(payOptions.Option1.AlreadyPaid == false,' Registration + ', ' ')} Admission(For Semester 2 and 3 and 4) {!if(payOptions.Option4.LateFeeAmount > 0,'+ Late Fees', ' ')}</span>
+                              </label>
+                            </div> <!-- /radio -->
+                            </div>
+                          </apex:outputpanel>
+                          </apex:outputpanel>
+                          </apex:outputPanel>
+                          </apex:outputpanel>
+                       <!--   </apex:outputPanel> -->
+                          <!---------------------------------------------------------------------------------------Installment Option -------------------------------------------------->
+                        <apex:outputPanel rendered="{!mapOfSectionRenderedValue['AllowedToMakeInstallment']}">
+                            <apex:outputPanel rendered="{!!payOptions.Option1.AlreadyMadeAllInsatallment}">
+                                <div class="col-sm-4 col-md-3">
+                                 <div class="row">
+                                    <div class="radio">
+                                      <label>
+                                        <input type="radio" name="PaymentFor" id="installmentId" class="iCheckRadio" data-mode="2" value="Installment" />
+                                        <span>Installment</span>
+                                      </label>
+                                    </div> <!-- /radio -->
+                                <div id="InsallmentPayOpt" style="display:none;">
+                                    <div class="form-group" stlyle="display: inline-block;">
+                                    <apex:outputpanel rendered="{!IF((noOfInstallmentAllowed !=null && payOptions.Option1.AlreadyPaidInstallmentAmt == 0) || (payOptions.Option1.AlreadyPaidInstallmentAmt > 0 && payOptions.Option1.InstallmentPayFor =='Admission') || payOptions.Option1.InstallmentPayFor == '' ,true,false)}">
+                                        <div class="radio">
+                                          <label>
+                                            <input type="radio" name="PaymentForInstallMent" id="InstallmentForAdmission" class="iCheckRadio" data-mode="2" value="admission" />
+                                            <span>admisssion(Semester {!mapOfConfigurePayOpt['CurrentSem']} )</span>
+                                          </label>
+                                        </div> <!-- /radio -->
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!IF((noOfInstallmentAllowed !=null && payOptions.Option1.AlreadyPaidInstallmentAmt == 0) || (payOptions.Option1.AlreadyPaidInstallmentAmt > 0 && payOptions.Option1.InstallmentPayFor =='AnnualFee') || payOptions.Option1.InstallmentPayFor == ''  ,true,false)}">
+                                    <apex:outputpanel rendered="{!IF((objLead.nm_ChooseaProgram__c = 'Diploma Programs' || objLead.nm_ChooseaProgram__c = 'Post Graduate Diploma Programs' || objaccount.nm_ChooseaProgram__c = 'Diploma Programs' || objaccount.nm_ChooseaProgram__c = 'Post Graduate Diploma Programs'),true,false)}">
+                                        <div class="radio">
+                                          <label>
+                                            <input type="radio" name="PaymentForInstallMent" id="InstallmentForAnnual" class="iCheckRadio" data-mode="2" value="AnnualFee" />
+                                            <span>Admission({!IF((objLead.nm_ChooseaProgram__c = 'Diploma Programs' || objaccount.nm_ChooseaProgram__c = 'Diploma Programs'),'Diploma - All Sem','PG - Annual')})</span>
+                                          </label>
+                                        </div> <!-- /radio -->
+                                    </apex:outputpanel>
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!IF((noOfInstallmentAllowed !=null && payOptions.Option1.AlreadyPaidInstallmentAmt == 0) || (payOptions.Option1.AlreadyPaidInstallmentAmt > 0 && payOptions.Option1.InstallmentPayFor =='AnnualFee') || payOptions.Option1.InstallmentPayFor == ''  ,true,false)}">
+                                    <apex:outputpanel rendered="{!IF(((objLead.nm_ChooseaProgram__c = 'Certificate Programs'  || objaccount.nm_ChooseaProgram__c = 'Certificate Programs') && CONTAINS(mapOfConfigurePayOpt['ProgramName'],'Advanced Certificate' )),true,false)}">
+                                        <div class="radio">
+                                          <label>
+                                            <input type="radio" name="PaymentForInstallMent" id="InstallmentForCertiAnnual" class="iCheckRadio" data-mode="2" value="AnnualFee" />
+                                            <span>Admission('Certificate-Annual')</span>
+                                          </label>
+                                        </div> <!-- /radio -->
+                                    </apex:outputpanel>
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!IF((noOfInstallmentAllowed !=null && payOptions.Option1.AlreadyPaidInstallmentAmt == 0) || (payOptions.Option1.AlreadyPaidInstallmentAmt > 0 && payOptions.Option1.InstallmentPayFor =='PGAllSemFee') || payOptions.Option1.InstallmentPayFor == ''  ,true,false)}">
+                                    <apex:outputpanel rendered="{!IF(((objLead.nm_ChooseaProgram__c = 'Post Graduate Diploma Programs' ||  objaccount.nm_ChooseaProgram__c = 'Post Graduate Diploma Programs') && !mapOfSectionRenderedValue['IsLateral'] && mapOfConfigurePayOpt['CurrentSem']=='1'),true,false)}">
+                                        <div class="radio">
+                                          <label>
+                                            <input type="radio" name="PaymentForInstallMent" id="InstallmentForPG" class="iCheckRadio" data-mode="2" value="PGAllSemFee" />
+                                            <span>Admission(PG - All Sem)</span>
+                                          </label>
+                                        </div> <!-- /radio -->
+                                      </apex:outputpanel>
+                                    </apex:outputpanel>
+                                    </div>
+                                </div>  
+                                <apex:variable value="{!payOptions.Option1.NoOfInstallment+1}" var="noOfInstallments"/>
+                                <apex:outputPanel rendered="{!!payOptions.Option1.AlreadyPaid}">
+                                <div id="FirstInstallment" style="display:none;">
+                                    <input type="text" name="Installment Amount" class="numonly" id="InstallmentAmountValidateForRegi" placeholder="Enter First Installment"/>
+                                    <div class="row">
+                                          <p class="LateFee">* There will be Only {!noOfInstallments} Installments Option Available</p> 
+                                    </div>
+                                </div>   
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!payOptions.Option1.AlreadyPaid}">
+                                <div id="SecondInstallment" style="display:none;">
+                                    <input type="text" name="Installment Amount" class="numonly" id="InstallmentAmountValidateForAdmission" placeholder="Enter First Installment "/>
+                                    <div class="row">
+                                          <p class="LateFee">*There will be Only  {!noOfInstallments} Installments Option Available</p> 
+                                    </div>
+                                </div>   
+                                </apex:outputPanel>
+                                <div id="balanceAmount" style="display:none;">
+                                   <p class="LateFee">* Balance Amount To Be Pay Rs <span id="amountToBePaid"></span></p>
+                                </div>
+                                 
+                      </div>
+                     </div> 
+                                       
+                     </apex:outputPanel>
+                   </apex:outputPanel>   
+   <!-----------------------------------------------------------------------------------------------end ------------------------------------------------------------>
+                        
+                       <apex:outputPanel rendered="{!(payOptions.Option2.LateFeeAmount != null && payOptions.Option2.LateFeeAmount > 0)}">
+                            <div class="row">
+                              <p class="LateFee">*Late Fee Rs.{!payOptions.Option2.LateFeeAmount} is applicable from <apex:outputText value="{0, date, MMMM d','  yyyy}"><apex:param value="{!objLateFee.Start_Date__c}" /></apex:outputText></p> 
+                            </div>
+                      </apex:outputPanel>
+                 <div class="clearfix"></div>
+            <!--------------------------------------------------Installment Note --------------------------------------------------------------------------------------------------------------->
+                        <div id="NoteToDisplayForInstallmentSAS" style="display:none;">
+                            <p style="color:red;">Important Note:</p>
+                            <ul><p><span style="color:red">1.</span>Candidate has the facility of paying the Program fees in 3 instalments (1st instalment – Initial payment, 2nd instalment – Part Payment and 3rd Instalment - Balance payment) only.</p>
+                             <p><span style="color:red">2.</span>If the candidate is not able to pay the 2nd/3rd instalment and/or not able to complete his admission process by the end of the drive i.e. 25th March, 2018, Administrative charges amounting to Rs. 5,000/- will be deducted and the balance amount will be Refunded to the candidate.</p>
+                             <p><span style="color:red">3.</span>3rd Instalment and the eligibility documents should be submitted on or prior the cut-off date i.e. 25th March, 2018.</p>
+                             <p><span style="color:red">4.</span>Even if the entire fees is paid before 25th March, 2018 but the documents are not submitted, admission will not be granted.</p>
+                            </ul> 
+                        </div>
+                        
+                        <div id="NoteToDisplayForInstallment" style="display:none;">
+                           <!-- <p style="color:red;">Important Note:</p>
+                            <ul><p><span style="color:red">1.</span>Candidate has the facility of paying the Program fees in 2 instalments (1st instalment – Initial payment, 2nd instalment – Balance payment) only.</p>
+                             <p><span style="color:red">2.</span>If the candidate is not able to pay the 2nd instalment and/or not able to complete his admission process by the end of the drive  i.e. 8th September, 2017, Administrative charges amounting to Rs. 2500/- will be deducted and the balance amount will be Refunded to the candidate.</p>
+                             <p><span style="color:red">3.</span>2nd Instalment and the eligibility documents should be submitted on or prior the cut-off dates.</p>
+                             <table border="1" bordercolor="#000000" style="background-color:#F7F7F7" width="700" cellpadding="2" cellspacing="0">
+                                <tr>
+                                    <th>Particulars</th>
+                                    <th>Date</th>
+                                </tr>
+                                <tr>
+                                 <td>Admission with Normal Fee</td>
+                                 <td>1st April, 2017 (Saturday) to 3rd August, 2017 (Thursday)</td>
+                                </tr>
+                                <tr>
+                                    <td>Admission with Late fees of Rs. 500/-</td>
+                                    <td>4th August, 2017 (Friday) to 23rd August, 2017 (Wednesday)</td>
+                                </tr>
+                                <tr>
+                                    <td>Admission with Late fees of Rs. 1000/-</td>
+                                    <td>24th August, 2017 (Thursday) to 9th September, 2017 (Saturday)</td>
+                                </tr>
+                             </table>
+                            <p> <span style="color:red">4.</span>Below is the chart showing the 2nd instalment payable in Normal and late fee slabs: eg. 1st Instalment paid is “5000” then the 2nd instalments applicable will be as follows:</p>
+                                <table border="1" bordercolor="#000000" style="background-color:#F7F7F7" width="700" cellpadding="2" cellspacing="0">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>2nd Instalment payable</th>
+                                    </tr>
+                                    <tr>
+                                        <td>On or before 3rd August, 2017</td>
+                                        <td>13000/- (Program fee minus 1st instalment) i.e. 18000 – 5000 = 13000/-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Between 4th August, 2017 to 23rd August, 2017</td>
+                                        <td>13500/- (Program fee plus late fee minus 1st instalment) i.e. (18000 + 500) – 5000 = 13500/-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Between 24th August, 2017 to 9th September, 2017</td>
+                                        <td>14000/- (Program fee plus late fee minus 1st instalment) i.e. (18000 + 1000) – 5000 = 14000/-</td>
+                                    </tr>
+                                </table>
+                                <p><span style="color:red">5.</span>Even if the entire fees is paid before 3rd August, but the documents are submitted after 3rd August, late fees would be applicable as per the slab mentioned in point number 3.</p>
+                            </ul>-->
+                            <apex:include pageName="nm_InstallmentNote"/>
+                            </div>
+                            <div id="NoteToDisplayForInstallmentReReg" style="display:none;">
+                        <apex:include pageName="nm_InstallmentNoteReReg"/>
+                        </div>
+<!--------------------------------------------------------end ------------------------------------------------------------------------------------------------------------------------>   
+                      <!---------------------------------------------------end of Lateral Admission --------------------------------------------------------------------------------> 
+                        <!--  <apex:outputPanel rendered="{! intTotalSem > 1 && noPayOptions >=3}">
+                              <div class="col-sm-4 col-md-3">
+                                <div class="radio">
+                                  <label>
+                                    <input type="radio" name="PaymentFor" id="PaymentFor2" class="iCheckRadio" data-mode="2" value="admission" />
+                                    <span>{! (payOptions.Option3.Amount + payOptions.Option3.LateFeeAmount) } {!if(payOptions.Option1.AlreadyPaid != false,' Registration + ', ' ')} Full Addmission Fee{!if(payOptions.Option3.LateFeeAmount > 0,'+ Late Fees', ' ')}</span>
+                                  </label>
+                                </div> 
+                              </div>
+                          </apex:outputPanel>--->
+                       
+          <apex:outputPanel rendered="false">
+            <div id="opnlShowEmI">
+                        <div class="row">
+                          <div class="col-xs-18 col-sm-3" style="margin-left:180px;">
+                            <div class="radio">
+                              <label>
+                                <input type="radio" name="EMI" id="FullFee" class="iCheckRadio" value="FullFee" data-mode="1" />
+                                <span>Full Fee</span>
+                              </label>
+                            </div> <!-- /radio -->
+                          </div> <!-- /col-xs-9 -->
+                            <div class="radio" id="uncheck1">
+                              <label>
+                                <input type="radio" name="EMI" id="EMI" class="iCheckRadio" data-mode="2" value="EMI"  />
+                                <span>EMI</span>
+                              </label>
+                            </div> <!-- /radio -->
+                        </div> <!-- /row --> 
+                       </div>
+               </apex:outputPanel> 
+             </div>
+              </div>
+            </div>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!IsReregistartion  =='true'}">
+                    <div class="row">
+                      <div class="col-md-6">
+                         <apex:outputPanel rendered="{!objAccount.nm_StudentNo__c != null}">
+                           <div class="form-group">
+                             <label for="first_name">Student No</label>
+                              <input type="Text" disabled="true" value="{!objAccount.nm_StudentNo__c}" class="form-control" />
+                           </div>
+                         </apex:outputPanel>
+                         <apex:outputPanel rendered="{!!(objAccount.nm_StudentNo__c != null)}">
+                           <div class="form-group">
+                             <label for="first_name">Registration No</label>
+                              <input type="Text" disabled="true" value="{!objAccount.nm_RegistrationNumber__c}" class="form-control" />
+                           </div>
+                         </apex:outputPanel>
+                         <div class="form-group">
+                           <label for="first_name">Amount</label>
+                             <input type="Text" disabled="true" value="{!ReRegistartionAmount+payOptions.Option2.LateFeeAmount}" class="form-control"/>
+                         </div>
+                         <apex:outputPanel rendered="{!(objLateFee.Late_Fees__c != null && objLateFee.Late_Fees__c > 0)}">
+                           <div class="form-group">
+                              <span style="color:red;">*Late Fee Rs.{!objLateFee.Late_Fees__c} is applicable from <apex:outputText value="{0, date, MMMM d','  yyyy}"><apex:param value="{!objLateFee.Start_Date__c}" /></apex:outputText></span> 
+                           </div>
+                         </apex:outputPanel>
+                        </div>
+                       </div> 
+                       <apex:outputPanel rendered="{!IF((noOfInstallmentAllowed !=null && payOptions.Option1.AlreadyPaidInstallmentAmt == 0) || (noOfInstallmentAllowed ==null ||  payOptions.Option1.AlreadyMadeAllInsatallment),true,false )}"> 
+                        <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['AllowedToPayMultipleSemFee']}">
+                            <div class="message-box text-center form-group">Selected Amount</div>
+                             <div class="form-group">
+                              <div class="row">
+                                <div class="col-md-3">
+                                  <div class="radio"><strong>Select Semester To Pay:</strong></div>
+                                </div>
+                                <div class=" col-md-6">
+                                <div class="col-sm-4 col-md-4">
+                                        <div class="radio">
+                                          <label>
+                                            <input type="radio" name="PaymentFor" id="readmissionRadio1" class="iCheckRadio" data-mode="2" value="ReRegistrationPayment" required="required" />
+                                            <span>{!ReRegistartionAmount+payOptions.Option2.LateFeeAmount}(For Semester {!sem} Only) {!IF(payOptions.Option2.LateFeeAmount >0,'+Late Fee','')}</span>
+                                         </label>
+                                       </div> <!-- /radio -->
+                                      </div>
+                                   </div>   
+                               </div>
+                              </div>
+                        </apex:outputPanel>       
+                        
+                           <apex:outputPanel rendered="{!mapOfSectionRenderedValue['AllowedToPayMultipleSemFee']}">
+                            <div class="message-box text-center form-group">Do You Want To Pay For Multiple Semester</div>
+                             <div class="form-group">
+                              <div class="row">
+                                <div class="col-md-3">
+                                  <div class="radio"><strong>Select Semester To Pay:</strong></div>
+                                </div>
+                                <div class=" col-md-6">
+                                <apex:outputLabel rendered="{!IF(sem =='2',true,false)}">
+                                      <div class="col-sm-4 col-md-4">
+                                        <div class="radio">
+                                          <label>
+                                            <input type="radio" name="PaymentFor" id="readmissionRadio" class="iCheckRadio" data-mode="2" value="ReRegistrationPayment" required="required" />
+                                            <span>{!ReRegistartionAmount+payOptions.Option7.LateFeeAmount}(For Semester 2 Only) {!IF(payOptions.Option7.LateFeeAmount >0,'+Late Fee','')}</span>
+                                         </label>
+                                       </div> <!-- /radio -->
+                                      </div> 
+                                      <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['IsDefence']}">
+                                    <div class=" col-sm-4 col-md-4">   
+                                       <div class="radio">
+                                          <label>
+                                            <input type="radio" name="PaymentFor" id="reannualRadio" class="iCheckRadio" value="AnnualFee" data-mode="1"  required="required"/>
+                                           <span>{!(payOptions.Option5.LateFeeAmount+payOptions.Option5.Amount)} (For Semester 2 and 3){!IF(payOptions.Option5.LateFeeAmount >0,'+Late Fee','')}</span>                                 
+                                         </label>
+                                       </div> <!-- /radio -->
+                                   </div>
+                                   <div class=" col-sm-4 col-md-4">   
+                                       <div class="radio">
+                                          <label>
+                                            <input type="radio" name="PaymentFor" id="remultipleSemRadio" class="iCheckRadio" data-mode="2" value="MultipleSemFee" />
+                                            <span>{!payOptions.Option6.LateFeeAmount+payOptions.Option6.Amount}(For Semester 2 and 3 and 4){!IF(payOptions.Option6.LateFeeAmount >0,'+Late Fee','')}</span>                                 
+                                         </label>
+                                       </div> <!-- /radio -->
+                                   </div> 
+                                    </apex:outputpanel>
+                                </apex:outputLabel>
+                             </div>
+                         <div class=" col-md-6">
+                        <apex:outputLabel rendered="{!IF(sem =='3',true,false)}">
+                              <div class=" col-md-6">
+                                <div class="radio">
+                                  <label>
+                                    <input type="radio" name="PaymentFor" id="rereadmissionRadio" class="iCheckRadio" value="ReRegistrationPayment" data-mode="1" required="required" />
+                                    <span>{!ReRegistartionAmount+payOptions.Option2.LateFeeAmount} (For Semester 3 Only){!IF(payOptions.Option2.LateFeeAmount >0,'+Late Fee','')}</span>
+                                 </label>
+                               </div> <!-- /radio -->
+                              </div> 
+                                <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['IsDefence']}">
+                            <div class=" col-md-6">   
+                               <div class="radio">
+                                  <label>
+                                    <input type="radio" name="PaymentFor" id="rereannualRadio" class="iCheckRadio" data-mode="2" value="AnnualFee" />
+                                  <span>{!(payOptions.Option5.LateFeeAmount+payOptions.Option5.Amount)}(For Semester 3 and 4) {!IF(payOptions.Option5.LateFeeAmount >0,'+Late Fee','')}</span>                                 
+                                 </label>
+                               </div> <!-- /radio -->
+                           </div>
+                           </apex:outputpanel>
+                        </apex:outputLabel>
+                     </div>  
+                      <div class="col-md-6">
+                        <apex:outputLabel rendered="{!IF(sem =='4',true,false)}">
+                              <div class=" col-md-6">
+                                <div class="radio">
+                                  <label>
+                                    <input type="radio" name="PaymentFor" id="admissionRadio2" class="iCheckRadio" data-mode="2" value="ReRegistrationPayment" required="required" />
+                                    <span>{!ReRegistartionAmount+payOptions.Option2.LateFeeAmount}(For Semester 4 Only) {!IF(payOptions.Option2.LateFeeAmount >0,'+Late Fee','')}</span>
+                                 </label>
+                               </div> <!-- /radio -->
+                              </div> 
+                        </apex:outputLabel>
+                     </div>         
+                    </div>      
+                  </div>
+                 </apex:outputPanel>  
+                 
+                      </apex:outputPanel>
+                      <div class="clearfix"></div>
+                      
+             <!---------------------------------------------------------------------------------------Installment Option -------------------------------------------------->
+                        <apex:outputPanel rendered="{!mapOfSectionRenderedValue['AllowedToMakeInstallment']}">
+                            <apex:outputPanel rendered="{!!payOptions.Option1.AlreadyMadeAllInsatallment}">
+                                <div class="col-sm-4 col-md-3">
+                                 <div class="row">
+                                    <div class="radio">
+                                      <label>
+                                        <input type="radio" name="PaymentFor" id="installmentId" class="iCheckRadio" data-mode="2" value="Installment" />
+                                        <span>Installment</span>
+                                      </label>
+                                    </div> <!-- /radio -->
+                                <div id="InsallmentPayOpt" style="display:none;">
+                                    <div class="form-group" stlyle="display: inline-block;">
+                                    <apex:outputpanel rendered="{!IF((noOfInstallmentAllowed !=null && payOptions.Option1.AlreadyPaidInstallmentAmt == 0) || (payOptions.Option1.AlreadyPaidInstallmentAmt > 0 && payOptions.Option1.InstallmentPayFor =='Admission') || payOptions.Option1.InstallmentPayFor == '' ,true,false)}">
+                                        <div class="radio">
+                                          <label>
+                                            <input type="radio" name="PaymentForInstallMent" id="InstallmentForAdmission" class="iCheckRadio" data-mode="2" value="admission" />
+                                            <span>admisssion(Semester {!mapOfConfigurePayOpt['CurrentSem']} )</span>
+                                          </label>
+                                        </div> <!-- /radio -->
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!IF((noOfInstallmentAllowed !=null && payOptions.Option1.AlreadyPaidInstallmentAmt == 0) || (payOptions.Option1.AlreadyPaidInstallmentAmt > 0 && payOptions.Option1.InstallmentPayFor =='AnnualFee') || payOptions.Option1.InstallmentPayFor == ''  ,true,false)}">
+                                    <apex:outputpanel rendered="{!IF((objLead.nm_ChooseaProgram__c = 'Diploma Programs' || objLead.nm_ChooseaProgram__c = 'Post Graduate Diploma Programs' || objaccount.nm_ChooseaProgram__c = 'Diploma Programs' || objaccount.nm_ChooseaProgram__c = 'Post Graduate Diploma Programs'),true,false)}">
+                                        <div class="radio">
+                                          <label>
+                                            <input type="radio" name="PaymentForInstallMent" id="InstallmentForAnnual" class="iCheckRadio" data-mode="2" value="AnnualFee" />
+                                            <span>Admission({!IF((objLead.nm_ChooseaProgram__c = 'Diploma Programs' || objaccount.nm_ChooseaProgram__c = 'Diploma Programs'),'Diploma - All Sem','PG - Annual')})</span>
+                                          </label>
+                                        </div> <!-- /radio -->
+                                    </apex:outputpanel>
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!IF((noOfInstallmentAllowed !=null && payOptions.Option1.AlreadyPaidInstallmentAmt == 0) || (payOptions.Option1.AlreadyPaidInstallmentAmt > 0 && payOptions.Option1.InstallmentPayFor =='AnnualFee') || payOptions.Option1.InstallmentPayFor == ''  ,true,false)}">
+                                    <apex:outputpanel rendered="{!IF(((objLead.nm_ChooseaProgram__c = 'Certificate Programs'  || objaccount.nm_ChooseaProgram__c = 'Certificate Programs') && CONTAINS(mapOfConfigurePayOpt['ProgramName'],'Advanced Certificate' )),true,false)}">
+                                        <div class="radio">
+                                          <label>
+                                            <input type="radio" name="PaymentForInstallMent" id="InstallmentForCertiAnnual" class="iCheckRadio" data-mode="2" value="AnnualFee" />
+                                            <span>Admission('Certificate-Annual')</span>
+                                          </label>
+                                        </div> <!-- /radio -->
+                                    </apex:outputpanel>
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{!IF((noOfInstallmentAllowed !=null && payOptions.Option1.AlreadyPaidInstallmentAmt == 0) || (payOptions.Option1.AlreadyPaidInstallmentAmt > 0 && payOptions.Option1.InstallmentPayFor =='PGAllSemFee') || payOptions.Option1.InstallmentPayFor == ''  ,true,false)}">
+                                    <apex:outputpanel rendered="{!IF(((objLead.nm_ChooseaProgram__c = 'Post Graduate Diploma Programs' ||  objaccount.nm_ChooseaProgram__c = 'Post Graduate Diploma Programs') && !mapOfSectionRenderedValue['IsLateral'] && mapOfConfigurePayOpt['CurrentSem']=='1'),true,false)}">
+                                        <div class="radio">
+                                          <label>
+                                            <input type="radio" name="PaymentForInstallMent" id="InstallmentForPG" class="iCheckRadio" data-mode="2" value="PGAllSemFee" />
+                                            <span>Admission(PG - All Sem)</span>
+                                          </label>
+                                        </div> <!-- /radio -->
+                                      </apex:outputpanel>
+                                    </apex:outputpanel>
+                                    </div>
+                                </div>  
+                                <apex:variable value="{!payOptions.Option1.NoOfInstallment+1}" var="noOfInstallments"/>
+                                <apex:outputPanel rendered="{!!payOptions.Option1.AlreadyPaid}">
+                                <div id="FirstInstallment" style="display:none;">
+                                    <input type="text" name="Installment Amount" class="numonly" id="InstallmentAmountValidateForRegi" placeholder="Enter First Installment"/>
+                                    <div class="row">
+                                          <p class="LateFee">* There will be Only {!noOfInstallments} Installments Option Available</p> 
+                                    </div>
+                                </div>   
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!payOptions.Option1.AlreadyPaid}">
+                                <div id="SecondInstallment" style="display:none;">
+                                    <input type="text" name="Installment Amount" class="numonly" id="InstallmentAmountValidateForAdmission" placeholder="Enter First Installment "/>
+                                    <div class="row">
+                                          <p class="LateFee">*There will be Only  {!noOfInstallments} Installments Option Available</p> 
+                                    </div>
+                                </div>   
+                                </apex:outputPanel>
+                                <div id="balanceAmount" style="display:none;">
+                                   <p class="LateFee">* Balance Amount To Be Pay Rs <span id="amountToBePaid"></span></p>
+                                </div>
+                                 
+                      </div>
+                     </div>                   
+                     </apex:outputPanel>
+                   </apex:outputPanel>
+                    
+   <!-----------------------------------------------------------------------------------------------end ------------------------------------------------------------>
+                        
+                       <apex:outputPanel rendered="{!(payOptions.Option2.LateFeeAmount != null && payOptions.Option2.LateFeeAmount > 0)}">
+                            <div class="row">
+                              <p class="LateFee">*Late Fee Rs.{!payOptions.Option2.LateFeeAmount} is applicable from <apex:outputText value="{0, date, MMMM d','  yyyy}"><apex:param value="{!objLateFee.Start_Date__c}" /></apex:outputText></p> 
+                            </div>
+                      </apex:outputPanel>
+                 <div class="clearfix"></div>
+            <!--------------------------------------------------Installment Note --------------------------------------------------------------------------------------------------------------->
+                        <div id="NoteToDisplayForInstallmentSAS" style="display:none;">
+                            <p style="color:red;">Important Note:</p>
+                            <ul><p><span style="color:red">1.</span>Candidate has the facility of paying the Program fees in 3 instalments (1st instalment – Initial payment, 2nd instalment – Part Payment and 3rd Instalment - Balance payment) only.</p>
+                             <p><span style="color:red">2.</span>If the candidate is not able to pay the 2nd/3rd instalment and/or not able to complete his admission process by the end of the drive i.e. 25th March, 2018, Administrative charges amounting to Rs. 5,000/- will be deducted and the balance amount will be Refunded to the candidate.</p>
+                             <p><span style="color:red">3.</span>3rd Instalment and the eligibility documents should be submitted on or prior the cut-off date i.e. 25th March, 2018.</p>
+                             <p><span style="color:red">4.</span>Even if the entire fees is paid before 25th March, 2018 but the documents are not submitted, admission will not be granted.</p>
+                            </ul> 
+                        </div>
+                        
+                        <div id="NoteToDisplayForInstallment" style="display:none;">
+                           <!-- <p style="color:red;">Important Note:</p>
+                            <ul><p><span style="color:red">1.</span>Candidate has the facility of paying the Program fees in 2 instalments (1st instalment – Initial payment, 2nd instalment – Balance payment) only.</p>
+                             <p><span style="color:red">2.</span>If the candidate is not able to pay the 2nd instalment and/or not able to complete his admission process by the end of the drive  i.e. 8th September, 2017, Administrative charges amounting to Rs. 2500/- will be deducted and the balance amount will be Refunded to the candidate.</p>
+                             <p><span style="color:red">3.</span>2nd Instalment and the eligibility documents should be submitted on or prior the cut-off dates.</p>
+                             <table border="1" bordercolor="#000000" style="background-color:#F7F7F7" width="700" cellpadding="2" cellspacing="0">
+                                <tr>
+                                    <th>Particulars</th>
+                                    <th>Date</th>
+                                </tr>
+                                <tr>
+                                 <td>Admission with Normal Fee</td>
+                                 <td>1st April, 2017 (Saturday) to 3rd August, 2017 (Thursday)</td>
+                                </tr>
+                                <tr>
+                                    <td>Admission with Late fees of Rs. 500/-</td>
+                                    <td>4th August, 2017 (Friday) to 23rd August, 2017 (Wednesday)</td>
+                                </tr>
+                                <tr>
+                                    <td>Admission with Late fees of Rs. 1000/-</td>
+                                    <td>24th August, 2017 (Thursday) to 9th September, 2017 (Saturday)</td>
+                                </tr>
+                             </table>
+                            <p> <span style="color:red">4.</span>Below is the chart showing the 2nd instalment payable in Normal and late fee slabs: eg. 1st Instalment paid is “5000” then the 2nd instalments applicable will be as follows:</p>
+                                <table border="1" bordercolor="#000000" style="background-color:#F7F7F7" width="700" cellpadding="2" cellspacing="0">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>2nd Instalment payable</th>
+                                    </tr>
+                                    <tr>
+                                        <td>On or before 3rd August, 2017</td>
+                                        <td>13000/- (Program fee minus 1st instalment) i.e. 18000 – 5000 = 13000/-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Between 4th August, 2017 to 23rd August, 2017</td>
+                                        <td>13500/- (Program fee plus late fee minus 1st instalment) i.e. (18000 + 500) – 5000 = 13500/-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Between 24th August, 2017 to 9th September, 2017</td>
+                                        <td>14000/- (Program fee plus late fee minus 1st instalment) i.e. (18000 + 1000) – 5000 = 14000/-</td>
+                                    </tr>
+                                </table>
+                                <p><span style="color:red">5.</span>Even if the entire fees is paid before 3rd August, but the documents are submitted after 3rd August, late fees would be applicable as per the slab mentioned in point number 3.</p>
+                            </ul>-->
+                            <apex:include pageName="nm_InstallmentNote"/>
+                        </div>
+                         </apex:outputPanel> 
+<!--------------------------------------------------------end ------------------------------------------------------------------------------------------------------------------------>          
+           <div class="clearfix"></div>
+            <div class="message-box text-center form-group">Mode of Payment</div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-3">
+                          <div class="radio"><strong>Select a mode of payment</strong></div>
+                        </div>
+                        <div class="col-sm-4 col-md-3">
+                          <div class="radio">
+                            <label>
+                                <input type="radio" name="PaymentMode" id="PaymentMode1" class="iCheckRadio" value="Online" data-mode="1"  required="required"/>
+                                 <span>Online</span>
+                             </label>
+                          </div>
+                        </div>
+                        <div class="col-sm-4 col-md-3">
+                          <div class="radio">
+                            <label>
+                              <input type="radio" name="PaymentMode" id="PaymentMode2" class="iCheckRadio" data-mode="2" value="Demand Draft" />
+                                <span>Demand Draft</span>
+                             </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-------------------------Demand Draft Details----------------------------------------------------------------------------------------------->
+                <apex:outputPanel rendered="{!If(icValue != 'true', true, false)}">   
+                    <div class="row" id="DDNote">
+                        <apex:outputPanel rendered="{!IF(objAccount.id !=null && ICName !='Verizon',true,false)}"> 
+                              <p class="note"><span style="color:red;">Note:</span> Kindly personally submit the Demand Draft to: {!objAccount.nm_Centers__r.name} {!objAccount.nm_Centers__r.nm_City__c}</p>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(objLead.id !=null && ICName !='Verizon',true,false)}"> 
+                              <p class="note"><span style="color:red;">Note:</span> Kindly personally submit the Demand Draft to: {!objLead.nm_InformationCenter__r.name} {!objLead.nm_InformationCenter__r.Address__c}</p>
+                        </apex:outputPanel>
+                         <apex:outputPanel rendered="{!IF(ICName =='Verizon',true,false)}"> 
+                              <p class="note"><span style="color:red;">Note:</span> Kindly personally submit the Demand Draft to: LC Bangalore</p>
+                        </apex:outputPanel>
+                    </div> <!-- /row -->   
+                  </apex:outputPanel> 
+                   
+                   <apex:outputPanel rendered="{!If(icValue== 'true' && (!mapOfSectionRenderedValue['PaymentClosed'] || mapOfSectionRenderedValue['AllowedToMakePayment'] ), true, false)}">
+                       <div class="row" id="DDNote">
+                                <div class="col-md-4">
+                                <div class="form-group required-label">
+                                  
+                                  <apex:inputField id="txtddno" value="{!objPayment.nm_DemandDraftNumber__c}" styleClass="form-control notnull" html-placeholder="Demand Draft Number"/>
+                                </div>
+                               </div> 
+                               <div class="col-md-4">
+                                <div class="form-group">
+                                  
+                                  <apex:inputField id="txtddbank" value="{!objPayment.nm_NameoftheBank__c}" styleClass="form-control notnull" html-placeholder="Name of the Bank"/>
+                                </div>
+                               </div> 
+                                <div class="col-md-4">
+                                <div class="form-group required-label">
+                                  
+                                  <div class="input-group date" data-date-format="DD/MM/YYYY" id="datetimepicker1"><span class="dateInput dateOnlyInput">
+                                  <apex:inputText value="{!objPayment.nm_DemandDraftDate__c}" styleClass="form-control notnull" id="dob" html-placeholder="Demand Draft Date"/>
+                                    </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                </div>
+                              </div>
+                                <div class="col-md-4">
+                                  <div class="form-group required-label">
+                                  
+                                  <apex:inputField id="txtbankloc" value="{!objPayment.nm_BankLocation__c}" styleClass="form-control notnull" html-placeholder="Bank Location"/>
+                                </div>
+                                </div>
+                                <div class="col-md-4">
+                                <div class="form-group required-label">
+                                 
+                                  <div class="input-group date" data-date-format="DD/MM/YYYY" id="datetimepicker2"><span class="dateInput dateOnlyInput">
+                                  <apex:inputText value="{!objPayment.nm_DispatchDate__c}" styleClass="form-control notnull" id="doc1" html-placeholder="Dispatch Date"/>
+                                    </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
+                                </div>
+                              </div>
+                          </div> <!-- /row -->   
+                   </apex:outputPanel>
+         <!-----------------------------------------------------------------end Dd Section---------------------------------------------------------------->  
+         
+             <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['PaymentClosed'] || mapOfSectionRenderedValue['AllowedToMakePayment']}">        
+                  
+                 <div class="col-sm-6">
+                    <apex:commandButton value="Make Payment" styleClass="btn pgSubmit"  id="PayBtn" onclick="GoToPayment();return false;"/>
+                  </div>
+                 
+               </apex:outputPanel>
+              
+              <apex:outputPanel rendered="{!mapOfSectionRenderedValue['PaymentClosed'] && !mapOfSectionRenderedValue['AllowedToMakePayment']}"> 
+              <apex:outputText value="{!paymentClosureMessage}" style="float:left;"></apex:outputText> 
+              </apex:outputPanel> 
+               
+                  <div class="col-sm-6">
+                   <apex:outputPanel rendered="{!!mapOfSectionRenderedValue['PaymentClosed'] || mapOfSectionRenderedValue['AllowedToMakePayment']}">
+                   <apex:outputPanel rendered="{!If(icValue== 'true', true, false)}">
+                                <apex:commandButton value="Save DD Details" styleClass="btn pgSubmit"  id="PayBtndd" action="{!SaveDD}" />
+                  </apex:outputPanel>
+                   </apex:outputPanel>
+                  </div>
+                  <div class="rows">
+                      <div class="col-sm-6">
+                       <apex:commandButton value="Print Form" styleClass="btn btn-default" id="PrintForm" rendered="{!if(IsReregistartion == 'true',true,false)}" onclick="window.open('/apex/PrintReRegistrationForm?sem={!sem}&id={!recordId}', '_blank', '');" />                              
+                      </div>        
+                   </div>
+                   <div class="row">
+              <div class="col-sm-6 text-right">
+              <apex:outputPanel rendered="{!IsReregistartion == 'false'}">
+                 <apex:outputPanel rendered="{!IF(objlead.IsConverted = false,true,false)}"> 
+                       <div class="col-xs-18 col-sm-9 form-group">
+                        <apex:commandButton value="Print form" styleClass="btn btn-default"  id="prifo" onclick="paymentprint()" />                             
+                      </div>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(objlead.IsConverted = true,true,false)}"> 
+                      <div class="col-xs-18 col-sm-9 form-group">
+                         <apex:commandButton value="Print form" styleClass="btn btn-default"  id="prifo1" onclick="paymentprintAdmission()" />                             
+                     </div>
+                   </apex:outputPanel>
+                  </apex:outputPanel> 
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+   <!----------------------------------------PrintForm Section---------------------->            
+                       <script>
+                            function paymentprint() {
+                                   window.open('/apex/nm_PrintRegistrationForm?id={!recordId}');
+                                }
+                               
+                            
+                          </script> 
+                        <script>
+                           function paymentprintAdmission()
+                           {
+                              window.open('/apex/nmPrintAdmissionForm?id={!objAccount.id}');
+                           }  
+                         </script>  
+                          
+ <!----------------------------------------end------------------------------->
+ </apex:outputPanel> 
+     <apex:inputHidden id="hdnPaymentMode" value="{!objPayment.nm_ModeOfPayment__c}"/>
+    <apex:inputHidden id="hdnPaymentOption" value="{!strSelectedPayFor}"/> 
+    <apex:inputhidden id="hdnInstallmentAmount" value="{!InstallmentAmount}"/>  
+    <apex:inputhidden id="hdnInstallmentPaymentOption" value="{!strSelectedPayForInstallment}"/>  
+</form>
+<!-------------------------------------------------------PopUpSection-------------------------------------------------------------------------------------->
+ <apex:outputPanel rendered="{!strSecToShow == 'PopUpError'}" id="ErrorPopUp">  
+  <div class="modal popup-wrapper">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Important Message</h4>
+              </div>
+              <div class="modal-body">
+                <p>{!errMessages }</p>
+               </div>
+              <div class="modal-footer">
+              <apex:outputLabel rendered="{!IF(Url !='' && Url !=null,true,false)}">
+                <a href="/apex/nmLogin_New" class="btn btn-default">OK</a>
+              </apex:outputLabel>
+              <apex:outputLabel rendered="{!IF(Url =='' || Url ==null,true,false)}">
+                 <button type="submit" class="btn btn-default" id="disclaimerBtn1">I Agree</button>
+               </apex:outputLabel>   
+              </div>
+            </div>
+          </div>
+        </div>
+     <div class="overlay"></div>
+ </apex:outputPanel>
+<!-----------------------------------------------------end------------------------------------------------------------------------------------------------------>
+
+<!--/ Payment --> 
+
+<!----------------------------------------------Payment GetWay Options --------------------------------------------->
+    <div style="display:none;" id="PaymentGetWayOption">  
+        <div class="modal popup-wrapper">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title">Important Message</h4>
+                  </div>
+                  <div class="modal-body">
+                    <p> Select Payment GateWay  </p>
+                  </div>
+                  <div class="modal-footer">
+                   <div class="row">
+                   <div class="col-sm-6">
+                    <apex:commandButton styleclass="btn btn-default" value="BillDesk GateWay" id="billDeskgetWay" />
+                  </div>
+                  <div class="col-sm-6 text-right">
+                    <apex:commandButton styleclass="btn btn-default" value="HDFC GateWay" id="hdfcDeskgetWay" />
+                  </div>
+                </div>
+              </div>
+            </div>
+           </div>
+         </div> 
+        <div class="overlay"></div>
+    </div>
+    <!------------------------------------------------end -------------------------------------------------------------->
+</apex:form>
+ <!--------------------------------------------AddDisclaimer----------------------------------------------->
+<div style="display:none;" id="AddDisclaimer">
+  <div class="modal popup-wrapper">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Disclaimer:</h4>
+              </div>
+              <div class="modal-body">
+                  <p>Fee payment does not guarantee admission. Admission confirmation is subject to document submission by the Student and document approval by the University as per the Eligibility Criteria defined by the University. In case documents are not submitted or get rejected after fee payment, the tution fee will be refunded to the student by the University as per the refund policies.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn" id="disclaimerBtn">I Agree</button>
+              </div>
+            </div>
+          </div>
+        </div>
+     <div class="overlay"></div>
+</div>  
+<!---------------------------------------------------------------------------------------------------------------------->  
+<!-----------------------------------------------------------------Insallment Note ------------------------------------------>
+<div style="display:none;width=100%" id="InstallmentNoteSAS">  
+    <div class="modal popup-wrapper">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title">Important Message</h4>
+             </div>
+             <div class="modal-body" style="font-size:15px;width: 100%;height:300px;">
+                <p style="color:red;">Important Note:</p>
+                <ul><p><span style="color:red">1.</span>Candidate has the facility of paying the Program fees in 3 instalments (1st instalment – Initial payment, 2nd instalment – Part Payment and 3rd Instalment - Balance payment) only.</p>
+                 <p><span style="color:red">2.</span>If the candidate is not able to pay the 2nd/3rd instalment and/or not able to complete his admission process by the end of the drive i.e. 25th March, 2018, Administrative charges amounting to Rs. 5,000/- will be deducted and the balance amount will be Refunded to the candidate.</p>
+                 <p><span style="color:red">3.</span>3rd Instalment and the eligibility documents should be submitted on or prior the cut-off date i.e. 25th March, 2018.</p>
+                 <p><span style="color:red">4.</span>Even if the entire fees is paid before 25th March, 2018 but the documents are not submitted, admission will not be granted.</p>
+                </ul> 
+              </div>
+              <div class="modal-footer">
+                  <div class="row">
+                       <div class="col-sm-6">
+                            <button type="Submit" class="btn btn-default" id="disclaimerBtnForInstallmentSAS">I Agree</button>
+                      </div>
+                </div>
+              </div>
+              </div>
+          </div>
+     </div>
+     <div class="overlay"></div>
+</div>
+              
+<div style="display:none;width=100%" id="InstallmentNote">  
+    <div class="modal popup-wrapper">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Important Message</h4>
+              </div>
+              <div class="modal-body" style="overflow:scroll;font-size:12px;width: 100%;height:300px;">
+                <!--<p style="color:red;">Important Note:</p>
+                <ul><p><span style="color:red">1.</span>Candidate has the facility of paying the Program fees in 2 instalments (1st instalment – Initial payment, 2nd instalment – Balance payment) only.</p>
+                 <p><span style="color:red">2.</span>If the candidate is not able to pay the 2nd instalment and/or not able to complete his admission process by the end of the drive  i.e. 8th September, 2017, Administrative charges amounting to Rs. 2500/- will be deducted and the balance amount will be Refunded to the candidate.</p>
+                 <p><span style="color:red">3.</span>2nd Instalment and the eligibility documents should be submitted on or prior the cut-off dates.</p>
+                 <table border="1" bordercolor="#000000" style="background-color:#F7F7F7" width="700" cellpadding="2" cellspacing="0">
+                    <tr>
+                        <th>Particulars</th>
+                        <th>Date</th>
+                    </tr>
+                    <tr>
+                     <td>Admission with Normal Fee</td>
+                     <td>1st April, 2017 (Saturday) to 3rd August, 2017 (Thursday)</td>
+                    </tr>
+                    <tr>
+                        <td>Admission with Late fees of Rs. 500/-</td>
+                        <td>4th August, 2017 (Friday) to 23rd August, 2017 (Wednesday)</td>
+                    </tr>
+                    <tr>
+                        <td>Admission with Late fees of Rs. 1000/-</td>
+                        <td>24th August, 2017 (Thursday) to 9th September, 2017 (Saturday)</td>
+                    </tr>
+                 </table>
+                <p> <span style="color:red">4.</span>Below is the chart showing the 2nd instalment payable in Normal and late fee slabs: eg. 1st Instalment paid is “5000” then the 2nd instalments applicable will be as follows:</p>
+                    <table border="1" bordercolor="#000000" style="background-color:#F7F7F7" width="700" cellpadding="2" cellspacing="0">
+                        <tr>
+                            <th>Date</th>
+                            <th>2nd Instalment payable</th>
+                        </tr>
+                        <tr>
+                            <td>On or before 3rd August, 2017</td>
+                            <td>13000/- (Program fee minus 1st instalment) i.e. 18000 – 5000 = 13000/-</td>
+                        </tr>
+                        <tr>
+                            <td>Between 4th August, 2017 to 23rd August, 2017</td>
+                            <td>13500/- (Program fee plus late fee minus 1st instalment) i.e. (18000 + 500) – 5000 = 13500/-</td>
+                        </tr>
+                        <tr>
+                            <td>Between 24th August, 2017 to 9th September, 2017</td>
+                            <td>14000/- (Program fee plus late fee minus 1st instalment) i.e. (18000 + 1000) – 5000 = 14000/-</td>
+                        </tr>
+                    </table>
+                    <p><span style="color:red">5.</span>Even if the entire fees is paid before 3rd August, but the documents are submitted after 3rd August, late fees would be applicable as per the slab mentioned in point number 3.</p>
+                </ul> --->
+                <apex:include pageName="nm_InstallmentNote"/>
+              </div>
+               
+              <div class="modal-footer">
+               <div class="row">
+               <div class="col-sm-6">
+                <button type="Submit" class="btn btn-default" id="disclaimerBtnForInstallment">I Agree</button>
+              </div>
+            </div>
+          </div>
+        </div>
+       </div>
+     </div> 
+    <div class="overlay"></div>
+</div>
+
+<!------------------------------------------------End ----------------------------------------------------------------------------->
+<!----------------------------------------------------InstallMentRE-reg------------------------------------------------------------->
+<div style="display:none;width=100%" id="InstallmentNoteReReg">  
+    <div class="modal popup-wrapper">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Important Message</h4>
+              </div>
+              <div class="modal-body" style="overflow:scroll;font-size:12px;width: 100%;height:300px;">
+               
+                <apex:include pageName="nm_InstallmentNoteReReg"/>
+              </div>
+              <div class="modal-footer">
+               <div class="row">
+               <div class="col-sm-6">
+                <button type="Submit" class="btn btn-default" id="disclaimerBtnForInstallmentReReg">I Agree</button>
+              </div>
+            </div>
+          </div>
+        </div>
+       </div>
+     </div> 
+    <div class="overlay"></div>
+</div>
+<!-----------------------------------------------------------End-------------------------------------------------------------------->
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-2 col-sm-4">
+        <p class="small">I‘m looking for</p>
+        <ul class="footerLinks">
+          <li><a href="programs.html">Programs</a></li>
+          <li><a href="examination-process.html">Examinations</a></li>
+          <li><a href="#">Students Zone</a></li>
+          <li><a href="#">Academic Deliverables</a></li>
+          <li><a href="#">Resources</a></li>
+          <li><a href="#">Support</a></li>
+          <li><a href="#">Calendar</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3 col-sm-4">
+        <p class="small">Admission Info</p>
+        <ul class="footerLinks">
+          <li><a href="admission-process.html">Admission Process</a></li>
+          <li><a href="#">Fee Structure</a></li>
+          <li><a href="#">Lateral Admissions Or Upgradation</a></li>
+          <li><a href="#">Request A Visit</a></li>
+          <li><a href="#">Apply Now</a></li>
+          <li><a href="#">Check Status</a></li>
+          <li><a href="#">Re-Register</a></li>
+        </ul>
+      </div>
+      <div class="col-md-2 col-sm-4">
+        <p class="small">The University</p>
+        <ul class="footerLinks">
+          <li><a href="about.html">About us</a></li>
+          <li><a href="#">Vice Chancellor’s Note</a></li>
+          <li><a href="#">Director’s Note</a></li>
+          <li><a href="#">Key Differentiators</a></li>
+          <li><a href="#">Awards And Recognition</a></li>
+          <li><a href="#">Testimonials</a></li>
+          <li><a href="locations.html">Locations</a></li>
+        </ul>
+      </div>
+      <div class="clearfix visible-sm"></div>
+      <div class="col-md-5">
+        <div class="connectWrapper">
+          <form class="form-inline">
+            <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Sign Up for latest Updates" />
+            <button type="submit" class="btn btn-default custom-btn">SIGN UP</button>
+          </form>
+          <div class="footerSocialIcons">
+            <p class="small">Follow Us :</p>
+            <p class="text">Connect with us via Social Media and get all our latest news and upcoming events.</p>
+            <ul>
+              <li><a href="#" class="icon-twitter"></a></li>
+              <li><a href="#" class="icon-facebook"></a></li>
+              <li><a href="#" class="icon-google-plus"></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr />
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footerBottom">
+          <div class="pageLinks">
+            <ul>
+              <li><a href="#">NMIMS UNIVERSITY </a></li>
+              <li><a href="news.html"> NEWS AND EVENTS </a></li>
+              <li><a href="#" >BLOG </a></li>
+              <li><a href="#">CORPORATE CONNECT </a></li>
+              <li><a href="our-faculty.html">FACULTY </a></li>
+              <li><a href="#">FAQ'S </a></li>
+              <li><a href="#"> CONTACT US</a></li>
+            </ul>
+          </div>
+          <div class="copyRight">
+            <p class="text">&copy; 2016 NMIMS. All Rights Reserved.</p>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<!--/ Footer --> 
+
+<!-- Search Popup -->
+<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form class="form-inline" id="">
+          <input type="text" class="form-control" id="searchInput" placeholder=""/>
+          <button type="" class="icon-search"></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Search Popup --> 
+
+ <script >
+    $(document).ready(function(){
+         
+        $('[id$=DDNote]').hide();
+        $('[id$=PayBtndd]').hide();
+        $('[id$=FirstInstallment]').hide();
+        $('[id$=SecondInstallment]').hide();
+        $('[id$=InstallmentNote]').hide();
+        $('[id$=InstallmentNoteSAS]').hide();
+        $('[id$=InstallmentNoteReReg]').hide();
+        $('[id$=NoteToDisplayForInstallment]').hide();
+        $('[id$=NoteToDisplayForInstallmentSAS]').hide();
+        $('[id$=NoteToDisplayForInstallmentReReg]').hide();
+        $('[id$=InsallmentPayOpt]').hide();
+        $('[id$=balanceAmount]').hide();
+        // only Number Input allowed in Installment 
+        $('.numonly').keypress(function(e){ 
+            return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) ) ? false : true;
+        });
+        
+        var installmentAmountPaid = '{!payOptions.Option1.AlreadyPaidInstallmentAmt}';
+        var installmentPayFor = '{!payOptions.Option1.InstallmentPayFor}';
+        var isReRegistration = '{!IsReregistartion}';
+        if(parseInt(installmentAmountPaid) > 0 && '{!noOfInstallmentAllowed}' !='' && '{!noOfInstallmentAllowed}' !=null)
+        {
+            if('{!mapOfConfigurePayOpt['ChooseProgram']}' !='Executive Programs' && isReRegistration =='false'){
+                $('[id$=NoteToDisplayForInstallment]').show();
+            }else if (isReRegistration =='false' && '{!mapOfConfigurePayOpt['ChooseProgram']}' =='Executive Programs'){
+                $('[id$=NoteToDisplayForInstallmentSAS]').show();
+            } 
+           else {
+               $('[id$=NoteToDisplayForInstallmentReReg]').show();
+           }   
+            
+            $('[id$=InsallmentPayOpt]').show();
+            $('[id$=SecondInstallment]').show();
+            $('[id$=installmentId]').prop('checked', true );
+            $('[id$=hdnInstallmentPaymentOption]').val(installmentPayFor)
+            $('[id$=hdnPaymentOption]').val('Installment');
+            if(installmentPayFor =='admission' && isReRegistration =='false'){
+                var minAmountToPay = '{!payOptions.Option2.minAmountToPay}';
+                $('[id$=InstallmentForAdmission]').prop('checked', true );
+                $('[id$=InstallmentAmountValidateForAdmission]').val(minAmountToPay);
+                document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option2.Amount}'-minAmountToPay;                    
+                $('[id$=balanceAmount]').show();
+                $('[id$=hdnInstallmentAmount]').val(minAmountToPay);
+            }
+            else if(installmentPayFor =='admission' && isReRegistration =='true'){
+             var minAmountToPay = '{!payOptions.Option7.minAmountToPay}';
+                $('[id$=InstallmentForAdmission]').prop('checked', true );
+                $('[id$=InstallmentAmountValidateForAdmission]').val(minAmountToPay);
+                document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option7.Amount}'-minAmountToPay;                    
+                $('[id$=balanceAmount]').show();
+                $('[id$=hdnInstallmentAmount]').val(minAmountToPay);
+            }           
+            else if(installmentPayFor =='AnnualFee'){
+               var minAmountToPay = '{!payOptions.Option5.minAmountToPay}';
+                $('[id$=InstallmentForAnnual]').prop( 'checked', true );
+                $('[id$=InstallmentForCertiAnnual]').prop( 'checked', true );
+                 $('[id$=InstallmentAmountValidateForAdmission]').val(minAmountToPay);
+                document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option5.Amount}'-minAmountToPay;                    
+                $('[id$=balanceAmount]').show();
+                $('[id$=hdnInstallmentAmount]').val(minAmountToPay);
+            }else if(installmentPayFor =='PGAllSemFee'){
+               var minAmountToPay = '{!payOptions.Option4.minAmountToPay}';
+                $('[id$=InstallmentForPG]').prop( 'checked', true );
+                 $('[id$=InstallmentAmountValidateForAdmission]').val(minAmountToPay);
+                document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option4.Amount}'-minAmountToPay;                    
+                $('[id$=balanceAmount]').show();
+                $('[id$=hdnInstallmentAmount]').val(minAmountToPay);
+            }
+        }
+        
+        $('[id=InstallmentAmountValidateForAdmission]').change(function()
+        {
+            var selectedAmount =this.value;
+            var selectedOpt =$('[id$=hdnInstallmentPaymentOption]').val();
+             var isReRegistration = '{!IsReregistartion}';
+             var advanceCertificate = '{!mapOfConfigurePayOpt['ProgramName']}';
+             console.log('isReRegistration--'+isReRegistration+'---selectedAmount--'+selectedAmount);
+            if(selectedOpt =='admission' && isReRegistration =='false')
+            {
+                var minAmountToPay = '{!payOptions.Option2.minAmountToPay}';
+                var maxAmountToPay = '{!payOptions.Option2.Amount}';
+                if(parseFloat(selectedAmount) < parseFloat(minAmountToPay) || parseFloat(selectedAmount) > parseFloat(maxAmountToPay))
+                {
+                    alert('Min Installment to Pay is '+minAmountToPay+' and Max Installment to Pay '+maxAmountToPay);
+                    $('[id$=InstallmentAmountValidateForAdmission]').val("");
+                    $('[id$=balanceAmount]').hide();
+                }else
+                {
+                    $('[id$=hdnInstallmentAmount]').val(selectedAmount );
+                    document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option2.Amount}'-selectedAmount;                    
+                    $('[id$=balanceAmount]').show();
+               
+                }
+            }
+            else if (selectedOpt =='admission' && isReRegistration =='true')
+            {
+                var minAmountToPay = '{!payOptions.Option7.minAmountToPay}';
+                var maxAmountToPay = '{!payOptions.Option7.Amount}';
+                if(parseFloat(selectedAmount) < parseFloat(minAmountToPay) || parseFloat(selectedAmount) > parseFloat(maxAmountToPay))
+                {
+                    alert('Min Installment to Pay is '+minAmountToPay+' and Max Installment to Pay '+maxAmountToPay);
+                    $('[id$=InstallmentAmountValidateForAdmission]').val("");
+                    $('[id$=balanceAmount]').hide();
+                }else
+                {
+                    $('[id$=hdnInstallmentAmount]').val(selectedAmount );
+                    document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option7.Amount}'-selectedAmount;                    
+                    $('[id$=balanceAmount]').show();
+               
+                }
+            }
+            else if(selectedOpt =='AnnualFee')
+            {
+                var minAmountToPay = '{!payOptions.Option5.minAmountToPay}';
+                var maxAmountToPay = '{!payOptions.Option5.Amount}';
+                if(parseFloat(selectedAmount) < parseFloat(minAmountToPay) || parseFloat(selectedAmount) > parseFloat(maxAmountToPay))
+                {
+                    alert('Min Installment to Pay is '+minAmountToPay+' and Max Installment to Pay '+maxAmountToPay);
+                    $('[id$=InstallmentAmountValidateForAdmission]').val("");
+                    $('[id$=balanceAmount]').hide();
+                }else
+                {
+                    $('[id$=hdnInstallmentAmount]').val(selectedAmount );
+                    document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option5.Amount}'-selectedAmount;
+                     $('[id$=balanceAmount]').show();
+                }    
+            }
+            else if(selectedOpt =='PGAllSemFee')
+            {
+                var minAmountToPay = '{!payOptions.Option4.minAmountToPay}';
+                var maxAmountToPay = '{!payOptions.Option4.Amount}';
+                if(parseFloat(selectedAmount) < parseFloat(minAmountToPay) || parseFloat(selectedAmount) > parseFloat(maxAmountToPay))
+                {
+                    alert('Min Installment to Pay is '+minAmountToPay+' and Max Installment to Pay '+maxAmountToPay);
+                    $('[id$=InstallmentAmountValidateForAdmission]').val("");
+                    $('[id$=balanceAmount]').hide();
+                }else
+                {
+                    $('[id$=hdnInstallmentAmount]').val(selectedAmount );
+                    document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option4.Amount}'-selectedAmount;
+                     $('[id$=balanceAmount]').show();
+                }
+            }
+            else
+            {
+                $('[id$=hdnInstallmentAmount]').val(selectedAmount);
+                $('[id$=balanceAmount]').css("dispaly","block");
+            }
+        });
+        
+        $('[id=InstallmentAmountValidateForRegi]').change(function()
+        {
+            var selectedAmount =this.value;
+            var advanceCertificate = '{!mapOfConfigurePayOpt['ProgramName']}';
+            var isReRegistration = '{!IsReregistartion}';
+            var selectedOpt =$('[id$=hdnInstallmentPaymentOption]').val();
+            
+            if(selectedOpt =='admission' && isReRegistration == 'false')
+            {
+                var minAmountToPay = '{!payOptions.Option2.minAmountToPay}';
+                var maxAmountToPay = '{!payOptions.Option2.Amount}';
+                if(parseFloat(selectedAmount) < parseFloat(minAmountToPay) || parseFloat(selectedAmount) > parseFloat(maxAmountToPay))
+                {
+                    alert('Min Installment to Pay is '+minAmountToPay+' and Max Installment to Pay '+maxAmountToPay);
+                    $('[id$=InstallmentAmountValidateForRegi]').val("");
+                    $('[id$=balanceAmount]').hide();
+                }else
+                {
+                    $('[id$=hdnInstallmentAmount]').val(selectedAmount );
+               document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option2.Amount}'-selectedAmount;
+                     $('[id$=balanceAmount]').show();
+                }
+            }
+            else if(selectedOpt =='admission' && isReRegistration == 'true')
+            {
+                var minAmountToPay = '{!payOptions.Option7.minAmountToPay}';
+                var maxAmountToPay = '{!payOptions.Option7.Amount}';
+                if(parseFloat(selectedAmount) < parseFloat(minAmountToPay) || parseFloat(selectedAmount) > parseFloat(maxAmountToPay))
+                {
+                    alert('Min Installment to Pay is '+minAmountToPay+' and Max Installment to Pay '+maxAmountToPay);
+                    $('[id$=InstallmentAmountValidateForRegi]').val("");
+                    $('[id$=balanceAmount]').hide();
+                }else
+                {
+                    $('[id$=hdnInstallmentAmount]').val(selectedAmount );
+               document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option7.Amount}'-selectedAmount;
+                     $('[id$=balanceAmount]').show();
+                }
+            }
+            
+            else if(selectedOpt =='AnnualFee')
+            {
+                var minAmountToPay = '{!payOptions.Option5.minAmountToPay}';
+                var maxAmountToPay = '{!payOptions.Option5.Amount}';
+                if(parseFloat(selectedAmount) < parseFloat(minAmountToPay) || parseFloat(selectedAmount) > parseFloat(maxAmountToPay))
+                {
+                    alert('Min Installment to Pay is '+minAmountToPay+' and Max Installment to Pay '+maxAmountToPay);
+                    $('[id$=InstallmentAmountValidateForRegi]').val("");
+                    $('[id$=balanceAmount]').hide();
+                }else
+                {
+                    $('[id$=hdnInstallmentAmount]').val(selectedAmount );
+                     document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option5.Amount}'-selectedAmount;
+                     $('[id$=balanceAmount]').show();
+                }     
+            }
+            else if(selectedOpt =='PGAllSemFee')
+            {
+                var minAmountToPay = '{!payOptions.Option4.minAmountToPay}';
+                var maxAmountToPay = '{!payOptions.Option4.Amount}';
+                if(parseFloat(selectedAmount) < parseFloat(minAmountToPay) || parseFloat(selectedAmount) > parseFloat(maxAmountToPay))
+                {
+                    alert('Min Installment to Pay is '+minAmountToPay +'and Max Installment to Pay '+maxAmountToPay);
+                    $('[id$=InstallmentAmountValidateForRegi]').val("");
+                     $('[id$=balanceAmount]').hide();
+                }else
+                {
+                    $('[id$=hdnInstallmentAmount]').val(selectedAmount );
+                     document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option4.Amount}'-selectedAmount;
+                     $('[id$=balanceAmount]').show();
+                }
+            }
+            else
+            {
+                $('[id$=hdnInstallmentAmount]').val(selectedAmount );
+                $('[id$=balanceAmount]').css("dispaly","block");
+            }
+        });
+        
+         $('[id$=btnErr]').click(function(){
+            
+            $('[id$=ErrorPopUp]').hide();
+            return false;
+            
+        });
+        $('[id$=disclaimerBtnForInstallment]').click(function(){
+            $('[id$=InstallmentNote]').hide();
+        });
+        $('[id$=disclaimerBtnForInstallmentReReg]').click(function(){
+            $('[id$=InstallmentNoteReReg]').hide();
+        });
+        $('[id$=disclaimerBtnForInstallmentSAS]').click(function(){
+            $('[id$=InstallmentNoteSAS]').hide();
+        });
+        var opt = $('[id$=hdnPaymentMode]').val();
+        if( opt == 'Demand Draft' )
+        {
+            $('[id$=DDNote]').show();
+            $('[id$=PayBtn]').hide();
+            $('[id$=PayBtndd]').show();
+        }
+        else if( opt == 'Online' )
+        {
+            $('[id$=DDNote]').hide();
+            $('[id$=PayBtn]').show();
+            $('[id$=PayBtndd]').hide();
+        }
+    
+        $('input[name$=PaymentFor]').change(function(){
+            var selectedOpt =this.value;
+            var isReRegistartion = '{!IsReregistartion}';
+            console.log('isReRegistartion :'+isReRegistartion );
+            if(selectedOpt != undefined)   
+            {           
+                $('[id$=hdnPaymentOption]').val(selectedOpt);
+                 if(selectedOpt =='Installment'  )
+                {
+                    $('[id$=InsallmentPayOpt]').css("display","block");
+                    if('{!mapOfConfigurePayOpt['ChooseProgram']}' !='Executive Programs' && isReRegistartion =='false'){
+                        $('[id$=NoteToDisplayForInstallment]').show();
+                        $('[id$=InstallmentNote]').css("display","block");
+                        $('[id$=InstallmentNoteSAS]').css("display","none");
+                        $('[id$=InstallmentNoteReReg]').css("display","none");
+                        
+                    }else if(isReRegistartion =='false' && '{!mapOfConfigurePayOpt['ChooseProgram']}' =='Executive Programs' ){
+                        $('[id$=NoteToDisplayForInstallmentSAS]').show();
+                        $('[id$=InstallmentNote]').css("display","none");
+                        $('[id$=InstallmentNoteSAS]').css("display","block");
+                        $('[id$=InstallmentNoteReReg]').css("display","none");
+                    }
+                    else if(isReRegistartion == 'true'){
+                        $('[id$=NoteToDisplayForInstallmentReReg]').show();
+                        $('[id$=InstallmentNote]').css("display","none");
+                        $('[id$=InstallmentNoteSAS]').css("display","none");
+                        $('[id$=InstallmentNoteReReg]').css("display","block");
+                        
+                    }
+                }
+                else 
+                {
+                    $('[id$=InstallmentNote]').css("display","none");
+                    $('[id$=InstallmentNoteSAS]').css("display","none");
+                    $('[id$=InstallmentNoteReReg]').css("display","none");
+                    $('[id$=InsallmentPayOpt]').css("display","none");
+                     $('[id$=FirstInstallment]').css("display","none");
+                    $('[id$=SecondInstallment]').css("display","none");
+                    $('[id$=balanceAmount]').hide();
+                    $('[id$=NoteToDisplayForInstallment]').css("display","none");
+                    $('[id$=NoteToDisplayForInstallmentSAS]').css("display","none");
+                    $('[id$=NoteToDisplayForInstallmentReReg]').css("display","none");
+                    
+                    
+                    
+                }
+                
+                if( selectedOpt == 'admission'|| selectedOpt == 'fullFee' || ((selectedOpt == 'PGAllSemFee' || selectedOpt == 'AnnualFee' || selectedOpt == 'MultipleSemFee') && isReRegistartion == 'false'))
+                {
+                    $('[id$=AddDisclaimer]').css("display", "block");
+                }
+                if( selectedOpt != 'admission')
+                {
+                     $("#EMI").prop('checked', false);
+                }
+            }
+        });
+        
+      <!-- Installment Pay Options------------>
+       $('input[name=PaymentForInstallMent]').change(function(){
+            var selectedOpt =this.value; 
+            var isReRegistration = '{!IsReregistartion}';
+            var regdone ='{!payOptions.Option1.AlreadyPaid}';
+            if(selectedOpt != undefined)   
+            {           
+                $('[id$=hdnInstallmentPaymentOption]').val(selectedOpt);
+                $('[id$=FirstInstallment]').css("display","block");
+                $('[id$=InstallmentAmountValidateForRegi]').val("");
+                $('[id$=InstallmentAmountValidateForAdmission]').val("");
+                $('[id$=SecondInstallment]').css("display","block");
+                if(regdone =='false')
+                {
+                    if(selectedOpt =='admission' && isReRegistration == 'false')
+                    {
+                        var minAmountToPay = '{!payOptions.Option2.minAmountToPay}';
+                        $('[id$=InstallmentAmountValidateForRegi]').val(minAmountToPay);
+                        document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option2.Amount}'-minAmountToPay;                    
+                        $('[id$=balanceAmount]').show();
+                        $('[id$=hdnInstallmentAmount]').val(minAmountToPay);
+                    }
+                    else if(selectedOpt =='admission' && isReRegistration == 'true')
+                    {
+                        var minAmountToPay = '{!payOptions.Option7.minAmountToPay}';
+                        $('[id$=InstallmentAmountValidateForRegi]').val(minAmountToPay);
+                        document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option7.Amount}'-minAmountToPay;                    
+                        $('[id$=balanceAmount]').show();
+                        $('[id$=hdnInstallmentAmount]').val(minAmountToPay);
+                    }
+                    else if(selectedOpt =='AnnualFee')
+                    {
+                        var minAmountToPay = '{!payOptions.Option5.minAmountToPay}';
+                        $('[id$=InstallmentAmountValidateForRegi]').val(minAmountToPay);
+                        
+                        document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option5.Amount}' - minAmountToPay;
+                        $('[id$=balanceAmount]').show();
+                        $('[id$=hdnInstallmentAmount]').val(minAmountToPay);
+                    }
+                    else if(selectedOpt =='PGAllSemFee')
+                    {
+                        var minAmountToPay = '{!payOptions.Option4.minAmountToPay}';
+                        $('[id$=InstallmentAmountValidateForRegi]').val(minAmountToPay);   
+                        document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option4.Amount}'-minAmountToPay;
+                        $('[id$=balanceAmount]').show();
+                        $('[id$=hdnInstallmentAmount]').val(minAmountToPay);
+                    }
+                }
+                else
+                {   
+                    if(selectedOpt =='admission' && isReRegistration =='false')
+                    {
+                        var minAmountToPay = '{!payOptions.Option2.minAmountToPay}';
+                        $('[id$=InstallmentAmountValidateForAdmission]').val(minAmountToPay);
+                        document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option2.Amount}'-minAmountToPay;                    
+                        $('[id$=balanceAmount]').show();
+                        $('[id$=hdnInstallmentAmount]').val(minAmountToPay);
+                    }
+                    else if(selectedOpt =='admission' && isReRegistration =='true' )
+                    {
+                        var minAmountToPay = '{!payOptions.Option7.minAmountToPay}';
+                        $('[id$=InstallmentAmountValidateForAdmission]').val(minAmountToPay);
+                        document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option7.Amount}'-minAmountToPay;                    
+                        $('[id$=balanceAmount]').show();
+                        $('[id$=hdnInstallmentAmount]').val(minAmountToPay);
+                    }
+                    else if(selectedOpt =='AnnualFee')
+                    {
+                        var minAmountToPay = '{!payOptions.Option5.minAmountToPay}';
+                        $('[id$=InstallmentAmountValidateForAdmission]').val(minAmountToPay);
+                        document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option5.Amount}'-minAmountToPay;
+                        $('[id$=balanceAmount]').show();
+                        $('[id$=hdnInstallmentAmount]').val(minAmountToPay);
+                    }
+                    else if(selectedOpt =='PGAllSemFee')
+                    {
+                        var minAmountToPay = '{!payOptions.Option4.minAmountToPay}';
+                        $('[id$=InstallmentAmountValidateForAdmission]').val(minAmountToPay);  
+                        document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option4.Amount}'-minAmountToPay;
+                        $('[id$=balanceAmount]').show();
+                        $('[id$=hdnInstallmentAmount]').val(minAmountToPay);
+                    }
+                }
+            }
+            else 
+            {
+                $('[id$=FirstInstallment]').css("display","none");
+                $('[id$=balanceAmount]').hide();
+                $('[id$=SecondInstallment]').css("display","none");
+            }
+       });
+       <!---end --------------------------------->
+        $('[id$=disclaimerBtn]').click(function(){
+            
+            $('[id$=AddDisclaimer]').css("display", "none");
+        });
+        
+        $('[id$=disclaimerBtn1]').click(function(){
+            
+            $('[id$=ErrorPopUp]').css("display", "none");
+        });
+        
+        $('[id$=billDeskgetWay]').click(function()
+         {
+            var selectedOpt = this.value; 
+            console.log(selectedOpt);
+            $('[id$=hdngetWay]').val(selectedOpt );  
+            callMakePayment();   
+            $('[id$=PaymentGetWayOption]').css("display", "none"); 
+         }); 
+     
+     $('[id=InstallmentAmountValidateForAdmission]').keyup(function()
+        {
+            var selectedAmount =this.value;
+            var selectedOpt =$('[id$=hdnInstallmentPaymentOption]').val();
+            var isReRegistration = '{!IsReregistartion}';
+            if(selectedOpt =='admission' && isReRegistration =='false')
+            {
+                document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option2.Amount}'-selectedAmount;                    
+                $('[id$=balanceAmount]').show();
+            }
+            else if(selectedOpt =='admission' && isReRegistration =='true')
+            {
+                document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option7.Amount}'-selectedAmount;                    
+                $('[id$=balanceAmount]').show();
+            }
+            else if(selectedOpt =='AnnualFee')
+            {
+                document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option5.Amount}'-selectedAmount;
+                $('[id$=balanceAmount]').show();
+            }
+            else if(selectedOpt =='PGAllSemFee')
+            {
+                document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option4.Amount}'-selectedAmount;
+                $('[id$=balanceAmount]').show();
+            }
+        });
+        
+        $('[id=InstallmentAmountValidateForRegi]').keyup(function()
+        {
+            var selectedAmount =this.value;
+            var selectedOpt =$('[id$=hdnInstallmentPaymentOption]').val();
+            var isReRegistration = '{!IsReregistartion}';
+            if(selectedOpt =='admission' && isReRegistration=='false')
+            {
+                document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option2.Amount}'-selectedAmount;
+                $('[id$=balanceAmount]').show();
+            }
+            else if(selectedOpt =='admission' && isReRegistration=='true')
+            {
+                document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option7.Amount}'-selectedAmount;
+                $('[id$=balanceAmount]').show();
+            }
+            else if(selectedOpt =='AnnualFee')
+            {
+                document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option5.Amount}'-selectedAmount;
+                $('[id$=balanceAmount]').show();
+            }
+            else if(selectedOpt =='PGAllSemFee')
+            {
+                document.getElementById("amountToBePaid").innerHTML = '{!payOptions.Option4.Amount}'-selectedAmount;
+                $('[id$=balanceAmount]').show();
+            }
+        });
+        
+     $('[id$=hdfcDeskgetWay]').click(function()
+     {
+        var selectedOpt = this.value; 
+        console.log(selectedOpt);
+        $('[id$=hdngetWay]').val(selectedOpt );
+        callMakePayment();     
+        $('[id$=PaymentGetWayOption]').css("display", "none"); 
+     }); 
+       
+        $('input[name$=PaymentMode]').change(function(){
+            var selectedOpt = this.value; 
+            if(selectedOpt != undefined)   
+            {        
+                $('[id$=hdnPaymentMode]').val(selectedOpt);
+                if( selectedOpt == 'Demand Draft' )
+                {
+                    $('[id$=DDNote]').show();
+                    $('[id$=PayBtn]').hide();
+                    $('[id$=PayBtndd]').show();
+                }
+                else if( selectedOpt == 'Online' )
+                {
+                    $('[id$=DDNote]').hide();
+                    $('[id$=PayBtn]').show();
+                    $('[id$=PayBtndd]').hide();
+                }
+            }
+        });
+  
+    });
+    </script>
+     <script>
+       function GoToPayment()
+      {
+           $('[id$=PaymentGetWayOption]').css("display", "block");
+      }
+    </script>
+    
+    <!--All java script  -->
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min_.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"/>
+    
+    </body>    
+</apex:page>

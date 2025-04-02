@@ -1,0 +1,89 @@
+<!--
+    @description       : 
+    @author            : @BK
+    @group             : 
+    @last modified on  : 03-04-2023
+    @last modified by  : @BK
+  -->
+  <apex:page id="pageId" showHeader="false" sidebar="false" standardStylesheets="false" cache="false" applyBodyTag="false" controller="CounselorProfile">
+  <html>
+      <head>
+          <meta charset="utf-8" />
+          <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+          <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+          <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}" />
+          <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}" />
+          <style>
+              body {
+                  font-family: "Calibri-Regular";
+                  color: #58585a;
+                  font-smoothing: antialiased;
+                  -moz-font-smoothing: antialiased;
+                  -webkit-font-smoothing: antialiased;
+                  text-rendering: optimizeLegibility;
+                  padding-top: 50px;
+                  font-size: 18px;
+              }
+          </style>
+      </head>
+  
+      <body>
+          <apex:form >
+              <div class="container">
+                  <div class="row">
+                      <div class="col-md-8">
+                          <div class="card" style="100%">
+                              <div class="card-body">
+                                  <h1 class="card-title" style="color:#d02630;font-weight: bold;">Counselor Verification</h1>
+                                  <p>The information shared here is intended to aid in the identification and verification of individual counsellors.</p>
+                                  <div class="card-text row">
+                                      <apex:outputPanel layout="none" rendered="{!isExists}">
+                                          <div class="col-md-4 col-sm-4">
+                                              <img class="card-img-top" src="{!URLFOR($Resource.ProfileIcons, IF(objCP.IsActive__c,'ProfileIcons/InActive.png','ProfileIcons/Active.jpg'))}" alt="Active" style="overflow-clip-margin: content-box;
+                                              overflow: clip;
+                                              border: 0;
+                                              vertical-align: middle;"/>
+                                          </div>
+                                          <div class="col-md-8 col-sm-8" style="padding-top: 35px;font-weight: bold;">
+                                              <p>ID: {!objCP.Name}</p>
+                                              <p>Name: {!objCP.First_Name__c} {!LEFT(objCP.Last_Name__c, 1)}</p>
+                                              <p>{!IF(objCP.IsActive__c,'This is a verified counsellor but is no longer associated with NMIMS CDOE','This is a verified and active counsellor of NMIMS CDOE') }</p>
+                                          </div>
+                                      </apex:outputPanel>
+                                      <apex:outputPanel layout="none" rendered="{!!isExists}">
+                                          <div class="col-md-4 col-sm-4">
+                                              <img class="card-img-top" src="{!URLFOR($Resource.ProfileIcons, 'ProfileIcons/unFound.png')}" alt="No Record Found" style="overflow-clip-margin: content-box;
+                                              overflow: clip;
+                                              border: 0;
+                                              vertical-align: middle;
+                                              padding-left: 30px;"/>
+                                          </div>
+                                          <div class="col-md-8 col-sm-8" style="padding-top: 35px;font-weight: bold;">
+                                              <p style="color:#d02630;">No Records Found!</p>
+                                              <p>Either this counsellor does not exist with NMIMS CDOE</p>
+                                              <p>Or the entered url/link is wrong</p>
+                                              <!-- <h3 style="color:#d02630;font-weight: bold;">This counsellor does not exist with NMIMS CDOE</h3> -->
+                                          </div>
+                                      </apex:outputPanel>
+                                      <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
+                                          <span style="color:#d02630;font-weight: bold;">Note:</span>
+                                          <ul>
+                                              <li>Applicants are advised to exercise caution when interacting with impersonators posing as NMIMS CDOE's counsellors and selling a program from another university.</li>
+                                              <li>Please note that the Degree / Diploma / Certificate as the case might be, will be awarded NMIMS Center For Distance And Online Education (NMIMS CDOE), a constituent School of SVKM's NMIMS Deemed-to-be-University.</li>
+                                          </ul>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col"></div>
+                  </div>
+              </div>
+          </apex:form>
+          <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}" />
+          <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}" />
+      </body>
+  </html>
+  </apex:page>

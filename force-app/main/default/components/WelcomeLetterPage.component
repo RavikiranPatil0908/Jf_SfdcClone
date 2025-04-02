@@ -1,0 +1,135 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 28-06-2024
+  @last modified by  : @BK
+-->
+<apex:component access="global" controller="WelcomeLetterPageController">
+    <apex:attribute access="global" name="recordId" type="ID" description="Record Id" assignTo="{!objectId}"/>
+    <style>
+        .studentDetails .row.m-b-0 {
+            margin-bottom: 0px;
+        }
+
+        .card .header.p-b-0.p-t-0.p-l-0.p-r-0 {
+            padding: 0px;
+        }
+
+        .bg-steel-blue {
+            background-color: #337ab7;
+        }
+
+        @media print {
+            body {
+                visibility: hidden;
+            }
+            .emailBody {
+                visibility: visible;
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+
+            div {
+                break-inside: avoid;
+            }
+        }
+
+        .body.row.padding-0 {
+            padding: 0px;
+        }
+
+        .btn-custom {
+            border-bottom: 5px solid #285e8e;
+            position: relative;
+            margin-right: 5px;
+        }
+
+        .btn-custom:hover {
+            top: 0.5px;
+            border-bottom-width: 2.5px;
+        }
+
+        .btn-custom:active {
+            top: 5px;
+            border-bottom: 0;
+        }
+    </style>
+    <div class="container-fluid">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="body">
+                    <div class="row clearfix studentDetails">
+                        <div class="row col-xs-12 col-sm-8 col-md-6 col-lg-6 m-b-0 align-center">
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"><span class="table-label">Student status</span></div>
+                            <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8"><span style="color:green">Confirmed</span></div>
+                        </div>
+                        <div class="row col-xs-12 col-sm-4 col-md-4 col-lg-6 m-b-0 align-center">
+                            <a href="{!$Label.Student_Zone_Base_Url}" class="btn btn-primary btn-lg btn-custom waves-effect">Login to Student Portal</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="header p-b-0 b-b-n p-t-0 p-l-0 p-r-0">
+                    <ul class="nav nav-pills nav-justified thumbnail setup-panel align-center bg-steel-blue">
+                        <li class="active" id="InterivewFormTab">
+                            <a href="javascript:void(0);" style="color: #fff; cursor:default">
+                                <span class="list-group-item-heading font-18 font-bold">WELCOME LETTER</span>
+                            </a>
+                        </li>                     
+                    </ul>
+                </div>
+                <div class="body row clearfix padding-0">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 align-center">
+                        <button type="button" onclick="printDiv('emailBody')" class="btn btn-primary btn-lg btn-custom">Print Letter!</button>
+                    </div>
+                    <div id="emailBody" class="emailBody col-xs-12 col-sm-12 col-md-12 col-lg-12 align-center">
+                        <apex:outputText value="{!emailHtmlBody}" escape="false" />
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 align-center">
+                        <button type="button" onclick="printDiv('emailBody')" class="btn btn-primary btn-lg btn-custom">Print Letter!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // function printDiv(divId) {
+        //     let printContents = document.getElementById(divId).innerHTML;
+        //     console.log(printContents);
+        //     let originalContents = document.body.innerHTML;
+        //     document.body.innerHTML = printContents;
+        //     window.print();
+        //     document.body.innerHTML = originalContents;
+        // }
+
+        function printDiv(DivID) {
+            $('.no-print').css("display","none");
+            var disp_setting="toolbar=yes,location=no,";
+            disp_setting+="directories=yes,menubar=yes,";
+            disp_setting+="scrollbars=yes,width=650, height=600, left=100, top=25";
+            var content_vlue = document.getElementById(DivID).innerHTML;
+            var docprint=window.open("","",disp_setting);
+            docprint.document.open();
+            docprint.document.write('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"');
+            docprint.document.write('"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">');
+            docprint.document.write('<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">');
+            docprint.document.write('<head><title>My Title</title>');
+            docprint.document.write('<style type="text/css">body{ margin:0px;');
+            docprint.document.write('font-family:verdana,Arial;color:#000;');
+            docprint.document.write('font-family:Verdana, Geneva, sans-serif; font-size:12px;}');
+            docprint.document.write('a{color:#000;text-decoration:none;} </style>');
+            docprint.document.write('</head><body onLoad="self.print()"><center>');
+            docprint.document.write(content_vlue);
+            docprint.document.write('</center></body></html>');
+            docprint.document.close();
+            docprint.focus();
+            $('.no-print').removeAttr("style");
+        }
+    </script>
+</apex:component>

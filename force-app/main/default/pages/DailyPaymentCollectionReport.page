@@ -1,0 +1,141 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 03-03-2021
+  @last modified by  : @BK
+  Modifications Log 
+  Ver   Date         Author   Modification
+  1.0   03-03-2021   @BK   Initial Version
+-->
+<apex:page showHeader="false" controller="DailyPaymentCollectionController" standardStylesheets="false">
+    <style>
+        .fsWrapper{
+            width: 100%;
+            margin: 0 auto;
+        }
+        a {
+            color: #000;
+        }
+
+        .headerTitle{
+            font-family: arial, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff!important;
+            text-align: left;
+            text-transform: uppercase;
+            background: #4e75a3;
+            display: block;
+            padding: 10px;
+            margin:0;
+        }
+
+        .dataTable table{
+            width: 100%;
+            font-family: arial, sans-serif;
+            border: solid 1px #E0E3E5;
+            border-collapse: collapse;
+        }
+
+        .dataTable  th{
+            background: #999999;
+            border-top: solid 1px #E0E3E5;
+            border-right: solid 1px #E0E3E5;
+            color: #fff;
+            font-size: 0.8em;
+            font-weight: normal;
+            padding: 11px 2px 10px 5px;
+        }
+
+        .dataTable td {
+            border-top: solid 1px #E0E3E5;
+            border-right: solid 1px #E0E3E5;
+            color: #797979;
+            font-size: 13px;
+            padding: 5px 2px 5px 5px;
+        }
+
+        .actionBtnWrapper {
+            float: right;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        .actionBtnWrapper .btn{
+            padding: 5px 10px;
+            background: #0b51a3;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: arial, sans-serif;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            border-radius: 0;
+            transition: 0.5s ease-in-out;
+            cursor: pointer;
+        }
+        .actionBtnWrapper .btn:hover{
+            color: #fff;
+            text-decoration: none;
+            background: #074894;
+        }
+    </style>
+    <apex:form styleClass="fsWrapper">
+        <apex:outputPanel styleClass="dataTable">
+            <apex:pageBlock >
+                <h2 class="headerTitle">Daily Payment Collection Report</h2>
+                
+
+                <apex:pageBlockSection columns="2">
+                    <apex:pageBlockSectionItem >
+                        <b>LC Name</b>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <b>Total</b>
+                    </apex:pageBlockSectionItem>
+                    <apex:repeat value="{!keyValues }" var="key">
+                        <apex:pageBlockSectionItem >
+                            {!key}
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            {!mapOfLCVsTotal[key]} 
+                        </apex:pageBlockSectionItem>
+                    </apex:repeat>
+                </apex:pageBlockSection>
+                
+                <apex:pageBlockSection columns="2">
+                    <apex:pageBlockSectionItem >
+                        <h3>Grand Totals ({!totalRecords} records)</h3>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <h3>Total: {!totalAmount}</h3>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+                
+                <apex:pageBlockTable value="{!lstPayments}" var="record">
+                    <apex:column headerValue="Name">
+                        <apex:outputLink value="/{!record.id}" target="_blank" >{!record.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column value="{!record.Candidate_Name__c}" />
+                    <apex:column headerValue="Lead Name">
+                        <apex:outputLink value="/{!record.nm_Lead__c}" target="_blank" >{!record.nm_Lead_Name__c}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Opportunity Name">
+                        <apex:outputLink value="/{!record.nm_OpportunityNew__c}" target="_blank" >{!record.nm_OpportunityNew__r.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column value="{!record.nm_PaymentType__c}" />
+                    <apex:column value="{!record.LCName__c}" />
+                    <apex:column value="{!record.IC_Name__c}" />
+                    <apex:column value="{!record.Validity_Extension__r.Name}" />
+                    <apex:column value="{!record.nm_ModeOfPayment__c}" />
+                    <apex:column value="{!record.nm_PaymentGatewayName__c}" />
+                    <apex:column value="{!record.nm_PaymentStatus__c}" />
+                    <apex:column value="{!record.nm_Amount__c}" />
+                    <apex:column value="{!record.CreatedBy.Name}" />
+                </apex:pageBlockTable>
+            </apex:pageBlock>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

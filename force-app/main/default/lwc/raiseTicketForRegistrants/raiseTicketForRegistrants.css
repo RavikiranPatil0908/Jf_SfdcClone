@@ -1,0 +1,46 @@
+h1{
+		font-size: 24px;
+		color: #032d60;
+		font-weight: bold;
+}
+
+lightning-card{		
+		--slds-c-card-color-border: white;
+		--slds-c-card-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+		--slds-c-card-spacing-block-end: 2rem;
+		--slds-c-card-spacing-block-start: 2rem;		
+		--slds-c-card-spacing-inline-end: 2rem;
+		--slds-c-card-spacing-inline-start: 2rem;
+}
+
+:host {
+    font-family: 'Poppins', sans-serif;
+}
+
+h1, label, p, span, div {
+    font-family: 'Poppins', sans-serif;
+}
+
+lightning-formatted-rich-text {
+		color: #BA0517;
+		font-weight: bold;
+		font-size: 15px;
+}
+.slds-scope a, .slds-scope button{
+		color: #BA0517;		
+}
+
+.text {
+		color: #032d60;
+		font-weight: bold;
+}
+
+.highlight {
+		border-top: 2px solid #032d60;
+}
+
+@media only screen and (min-width: 640px) {
+	.paddingLeft {
+		padding-left: 10px;
+	}
+}

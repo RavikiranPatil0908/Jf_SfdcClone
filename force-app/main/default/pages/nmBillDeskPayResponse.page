@@ -1,0 +1,3 @@
+<apex:page controller="nmBillDeskPayResponse" action="{!StorePaymentInSystem}" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+  {!results}
+</apex:page>

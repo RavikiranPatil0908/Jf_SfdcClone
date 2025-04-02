@@ -1,0 +1,26 @@
+<!--
+  @File Name          : AccountKnowlarityPage.page
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 29/1/2020, 1:33:16 pm
+  @Modification Log   : 
+  Ver       Date            Author                  Modification
+  1.0    29/1/2020   @BK     Initial Version
+-->
+<apex:page standardController="Account">
+    <script src="/soap/ajax/46.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/46.0/apex.js" type="text/javascript"></script>
+    <div id="knowlarityPanel" style="display:none;">
+        <c:KnowlarityComponent PrimaryNumber="{!account.PersonMobilePhone}" SecondaryNumber="{!account.Phone}" recordId="{!account.id}" recordType="Account" ownerId="{!$User.Id}" centerId="{!account.IC_Name_1__c}" stdCode="{!account.nm_STDCode__c}"/>
+    </div>
+    <!-- to check if user is enabled for Knowlarity. -->
+    <script>
+        var userQuery = sforce.connection.query(`SELECT id,Knowlarity_User__c FROM User WHERE id='{!$User.Id}'`);
+        var userRecord = userQuery.getArray("records");
+        if (userQuery.size > 0 && userRecord[0].Knowlarity_User__c == 'true') {
+            document.getElementById("knowlarityPanel").style.display = "block";
+        }
+    </script>
+</apex:page>

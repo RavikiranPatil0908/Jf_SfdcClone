@@ -1,0 +1,324 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 23-08-2023
+  @last modified by  : @BK
+-->
+<apex:page standardController="Account" extensions="StudentMetrics">
+<head>
+<apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+<apex:includeLightning />   
+</head>
+<div class="container">
+   
+   <div style="font-size:20px;">
+   <!-- <a href="{!$Label.Student_Portal}viewStudentDetailsDashBoard?sapId={!Account.nm_StudentNo__c}&token={!token}" target="_blank"> -->
+   <apex:form >
+   <apex:commandLink action="{!navigateTo360}" id="theCommandLink" target="_blank">
+   <apex:image value="{!URLFOR($Resource['student360'])}" styleclass="img-responsive" title="View Student 360 information"
+   style="height:50px;padding-left:0px;"/> 
+   </apex:commandLink>
+   </apex:form>
+   
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="reRegProbability-chart-container">FusionCharts XT will load here!</div>
+        </div>
+        <div class="col-md-6">
+            <div id="assignmentStatus-chart-container">FusionCharts XT will load here!</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="passFailStatus-chart-container">FusionCharts XT will load here!</div>
+        </div>
+        <div class="col-md-6">
+             <div id="ExamBookingStatus-chart-container">FusionCharts XT will load here!</div>
+        </div>
+    </div>
+</div>    
+<script type="text/javascript" src="https://static.fusioncharts.com/code/latest/fusioncharts.js"></script>
+<script type="text/javascript" src="https://static.fusioncharts.com/code/latest/themes/fusioncharts.theme.fint.js?cacheBust=56"></script>
+<script type="text/javascript">
+/*-------------------------------Assignment Status ------------------------------------------------------*/
+  var AssignmentCategoryArray = [];
+  var ANSSeriesArray = [];
+  var SubmittedArray = [];
+  
+  var sem1ANS = '{!Account.sem1NoOfANS__c}';
+  var sem2ANS = '{!Account.sem2NoOfANS__c}';
+  var sem3ANS = '{!Account.sem3NoOfANS__c}';
+  var sem4ANS = '{!Account.sem4NoOfANS__c}'
+  var totalANS = '{!Account.totalNoOfANS__c}';
+  
+  var sem1AssginmentSubmitted = '{!Account.sem1NoOfAssignSubmitted__c}';
+  var sem2AssginmentSubmitted = '{!Account.sem2NoOfAssignSubmitted__c}';
+  var sem3AssginmentSubmitted = '{!Account.sem3NoOfAssignSubmitted__c}';
+  var sem4AssginmentSubmitted = '{!Account.sem4NoOfAssignSubmitted__c}';
+  var totalAssignmentSubmitted = '{!Account.totalNoOfAssignSubmitted__c}'; 
+  
+  if(sem1ANS !='' || sem1AssginmentSubmitted !=''){
+    AssignmentCategoryArray.push({"label": "Sem 1 ({!sem1Drive})"});
+    ANSSeriesArray.push({"value" : sem1ANS});
+    SubmittedArray.push({"value" : sem1AssginmentSubmitted})
+  }
+  
+  if(sem2ANS !='' || sem2AssginmentSubmitted !=''){
+    AssignmentCategoryArray.push({"label": "Sem 2 ({!sem2Drive})"});
+    ANSSeriesArray.push({"value" : sem2ANS});
+    SubmittedArray.push({"value" : sem2AssginmentSubmitted})
+  }
+  
+  if(sem3ANS !='' || sem3AssginmentSubmitted !=''){
+    AssignmentCategoryArray.push({"label": "Sem 3 ({!sem3Drive})"});
+    ANSSeriesArray.push({"value" : sem3ANS});
+    SubmittedArray.push({"value" : sem3AssginmentSubmitted})
+  }
+  
+  if(sem4ANS !='' || sem4AssginmentSubmitted !=''){
+    AssignmentCategoryArray.push({"label": "Sem 4 ({!sem4Drive})"});
+    ANSSeriesArray.push({"value" : sem4ANS});
+    SubmittedArray.push({"value" : sem4AssginmentSubmitted})
+  }
+  
+  console.log('AssignmentCategoryArray '+AssignmentCategoryArray);
+  console.log('ANS Array '+ANSSeriesArray);
+  console.log('SubmittedArray '+SubmittedArray);
+  
+  FusionCharts.ready(function () {
+    var revenueChart = new FusionCharts({
+        type: 'mscolumn2d',
+        renderAt: 'assignmentStatus-chart-container',
+        width: '400',
+        height: '300',
+        dataFormat: 'json',
+        dataSource: {
+            "chart": {
+                "caption": "Semester Wise Assignment Status",
+                    "yAxisName": "# Of Subjects",
+                    "plotFillAlpha":"90",
+                    "theme": "fint",
+                    "rotateValues": "0",
+                    "valueFontSize" : "13"
+            },
+                "categories": [{
+                "category": AssignmentCategoryArray
+            }],
+                "dataset": [{
+                "seriesname": "ANS",
+                "color": "#E82010",
+                "data": ANSSeriesArray
+            }, {
+                "seriesname": "Assignment Submitted",
+                "color": "#3EC429",
+                "data": SubmittedArray
+            }]
+        }
+    });
+
+    revenueChart.render();
+});
+/*------------------------------------------------end Assignment Status ----------------------------------------------------------*/
+
+/*------------------------------------------------Pass Fail Status ---------------------------------------------------------------*/
+  var PassFailCategoryArray = [];
+  var PassArray = [];
+  var FailArray = [];
+
+  var sem1NoOfPassSubjects = '{!Account.sem_1_No_Of_Passed_Subjects__c}';
+  var sem2NoOfPassSubjects = '{!Account.sem_2_No_Of_Passed_Subjects__c}';
+  var sem3NoOfPassSubjects = '{!Account.sem_3_No_Of_Passed_Subjects__c}';
+  var sem4NoOfPassSubjects = '{!Account.sem_4_No_Of_Passed_Subjects__c}';
+  var totalNoOfPassSubjects = '{!Account.Total_No_Of_Passed_Subjects__c}';
+  
+  var sem1NoOfFailSubjects = '{!Account.sem_1_No_Of_Failed_Subjects__c}';
+  var sem2NoOfFailSubjects = '{!Account.sem_2_No_Of_Failed_Subjects__c}';
+  var sem3NoOfFailSubjects = '{!Account.sem_3_No_Of_Failed_Subjects__c}';
+  var sem4NoOfFailSubjects = '{!Account.sem_4_No_Of_Failed_Subjects__c}';
+  var totalNoOfFailSubjects = '{!Account.Total_No_Of_Failed_Subjects__c}';
+  
+  if(sem1NoOfPassSubjects !='' || sem1NoOfFailSubjects !=''){
+    PassFailCategoryArray.push({"label": "Sem 1 ({!sem1Drive})"});
+    PassArray.push({"value" : sem1NoOfPassSubjects});
+    FailArray.push({"value" : sem1NoOfFailSubjects})
+  }
+  
+  if(sem2NoOfPassSubjects !='' || sem2NoOfFailSubjects !=''){
+    PassFailCategoryArray.push({"label": "Sem 2 ({!sem2Drive})"});
+    PassArray.push({"value" : sem2NoOfPassSubjects});
+    FailArray.push({"value" : sem2NoOfFailSubjects})
+  }
+  
+  if(sem3NoOfPassSubjects !='' || sem3NoOfFailSubjects !=''){
+    PassFailCategoryArray.push({"label": "Sem 3 ({!sem3Drive})"});
+    PassArray.push({"value" : sem3NoOfPassSubjects});
+    FailArray.push({"value" : sem3NoOfFailSubjects})
+  }
+  
+  if(sem4NoOfPassSubjects !='' || sem4NoOfFailSubjects !=''){
+    PassFailCategoryArray.push({"label": "Sem 4 ({!sem4Drive})"});
+    PassArray.push({"value" : sem4NoOfPassSubjects});
+    FailArray.push({"value" : sem4NoOfFailSubjects})
+  }
+  
+  FusionCharts.ready(function () {
+    var revenueChart = new FusionCharts({
+        type: 'mscolumn2d',
+        renderAt: 'passFailStatus-chart-container',
+        width: '400',
+        height: '300',
+        dataFormat: 'json',
+        dataSource: {
+            "chart": {
+                "caption": "Semester Wise Pass Fail Status",
+                    "yAxisName": "# Of Subjects",
+                    "plotFillAlpha":"90",
+                    "theme": "fint",
+                    "rotateValues": "0",
+                    "valueFontSize" : "13"
+            },
+                "categories": [{
+                "category": PassFailCategoryArray
+            }],
+                "dataset": [{
+                "seriesname": "Failed",
+                "color": "#E82010",
+                "data": FailArray
+            }, {
+                "seriesname": "Passed",
+                "color": "#3EC429",
+                "data": PassArray
+            }]
+        }
+    });
+
+    revenueChart.render();
+});
+/*-----------------------------------------------end Pass Fail --------------------------------------------------------------------*/
+
+/*------------------------------------------------Exam Booking Status ---------------------------------------------------------------*/
+  var ExamBookingCategoryArray = [];
+  var BookedArray = [];
+  var PendingBookingArray = [];
+
+  var sem1NoOfBookedSubjects = '{!Account.sem_1_No_Of_Booked_Subjects__c}';
+  var sem2NoOfBookedSubjects = '{!Account.sem_2_No_Of_Booked_Subjects__c}';
+  var sem3NoOfBookedSubjects = '{!Account.sem_3_No_Of_Booked_Subjects__c}';
+  var sem4NoOfBookedSubjects = '{!Account.sem_4_No_Of_Booked_Subjects__c}';
+  var totalNoOfBookedSubjects = '{!Account.Total_No_Of_Booked_Subjects__c}';
+  
+  var sem1NoOfPendingBookingSubjects = '{!Account.sem_1_No_Of_Booking_Pending_Subjects__c}';
+  var sem2NoOfPendingBookingSubjects = '{!Account.sem_2_No_Of_Booking_Pending_Subjects__c}';
+  var sem3NoOfPendingBookingSubjects = '{!Account.sem_3_No_Of_Booking_Pending_Subjects__c}';
+  var sem4NoOfPendingBookingSubjects = '{!Account.sem_4_No_Of_Booking_Pending_Subjects__c}';
+  var totalNoOfPendingBookingSubjects = '{!Account.Total_No_Of_Booking_Pending_Subjects__c}';
+  
+  if(sem1NoOfBookedSubjects !='' || sem1NoOfPendingBookingSubjects !=''){
+    ExamBookingCategoryArray.push({"label": "Sem 1 "});
+    BookedArray.push({"value" : sem1NoOfBookedSubjects});
+    PendingBookingArray.push({"value" : sem1NoOfPendingBookingSubjects})
+  }
+  
+  if(sem2NoOfBookedSubjects !='' || sem2NoOfFailSubjects !=''){
+    ExamBookingCategoryArray.push({"label": "Sem 2 "});
+    BookedArray.push({"value" : sem2NoOfBookedSubjects});
+    PendingBookingArray.push({"value" : sem2NoOfFailSubjects})
+  }
+  
+  if(sem3NoOfBookedSubjects !='' || sem3NoOfPendingBookingSubjects !=''){
+    ExamBookingCategoryArray.push({"label": "Sem 3 "});
+    BookedArray.push({"value" : sem3NoOfBookedSubjects});
+    PendingBookingArray.push({"value" : sem3NoOfPendingBookingSubjects})
+  }
+  
+  if(sem4NoOfBookedSubjects !='' || sem4NoOfPendingBookingSubjects !=''){
+    ExamBookingCategoryArray.push({"label": "Sem 4 "});
+    BookedArray.push({"value" : sem4NoOfBookedSubjects});
+    PendingBookingArray.push({"value" : sem4NoOfPendingBookingSubjects})
+  }
+  
+  FusionCharts.ready(function () {
+    var revenueChart = new FusionCharts({
+        type: 'mscolumn2d',
+        renderAt: 'ExamBookingStatus-chart-container',
+        width: '400',
+        height: '300',
+        dataFormat: 'json',
+        dataSource: {
+            "chart": {
+                "caption": "Semester Wise Exam Booking Status",
+                    "yAxisName": "# Of Subjects",
+                    "plotFillAlpha":"90",
+                    "theme": "fint",
+                    "rotateValues": "0",
+                    "valueFontSize" : "13"
+            },
+                "categories": [{
+                "category": ExamBookingCategoryArray
+            }],
+                "dataset": [{
+                "seriesname": "Pending Bookings",
+                "color": "#E82010",
+                "data": PendingBookingArray
+            }, {
+                "seriesname": "Booked",
+                "color": "#3EC429",
+                "data": BookedArray
+            }]
+        }
+    });
+
+    revenueChart.render();
+});
+/*-----------------------------------------------end Exam Booking --------------------------------------------------------------------*/
+
+/*--------------------------------------------------Re-Reg Probability ---------------------------------------------------------------*/
+ FusionCharts.ready(function(){
+    var fusioncharts = new FusionCharts({
+    type: 'angulargauge',
+    renderAt: 'reRegProbability-chart-container',
+    width: '400',
+    height: '250',
+    dataFormat: 'json',
+    dataSource: {
+        "chart": {
+            "caption": "Re-Registration Probability",
+            "numberSuffix": "%",
+            "lowerLimit": "0",
+            "upperLimit": "100",
+            "lowerLimitDisplay": "Less Likely",
+            "upperLimitDisplay": "Definitely",
+            "showValue": "1",
+            "valueBelowPivot": "1",
+            "theme": "fint"
+        },
+        "colorRange": {
+            "color": [{
+                "minValue": "0",
+                "maxValue": "10",
+                "code": "#e44a00"
+            }, {
+                "minValue": "10",
+                "maxValue": "40",
+                "code": "#f8bd19"
+            }, {
+                "minValue": "40",
+                "maxValue": "100",
+                "code": "#6baa01"
+            }]
+        },
+        "dials": {
+            "dial": [{
+                "value": '{!Account.Re_Reg_Probability__c}'
+            }]
+        }
+    }
+}
+);
+    fusioncharts.render();
+});
+/*------------------------------------------end Of Re-Reg Probability -------------------------------------------------------------------*/
+</script>
+</apex:page>

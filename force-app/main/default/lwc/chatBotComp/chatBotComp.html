@@ -1,0 +1,99 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 20-12-2023
+  @last modified by  : @BK
+-->
+<template>
+    <div class="stateBody embeddedServiceSidebarState embeddedServiceLiveAgentStateChat background-color">
+        <template if:true={isSubmit}>
+            <div class="messageArea" lwc:ref="messageArea" onscroll={handleScrollBtn}>
+                <ul class="messageWrapper" lwc:ref="messageWrapper">
+                    <template for:each={messagelist} for:item="msg">
+                        <li key={msg.index} class="slds-var-p-horizontal_small slds-var-p-vertical_x-small" >
+                            <template lwc:if={msg.isBot}>
+                                <lightning-card >
+                                    <h3 slot="title" class="header-color">
+                                        <lightning-icon icon-name="utility:einstein" size="small" class="header-color" ></lightning-icon>
+                                        <span > Assistant</span>
+                                    </h3>
+                                    <p class="slds-var-p-horizontal_small">
+                                        <template lwc:if={msg.isTyping}>
+                                            <span class="slds-icon-typing slds-is-animated" title="waiting for response">
+                                                <span class="slds-icon-typing__dot"></span>
+                                                <span class="slds-icon-typing__dot"></span>
+                                                <span class="slds-icon-typing__dot"></span>
+                                                <span class="slds-assistive-text">waiting for response</span>
+                                            </span>
+                                        </template>
+                                        <template lwc:else>
+                                            <lightning-formatted-text value={msg.message}> </lightning-formatted-text>
+                                        </template>
+                                    </p>
+                                </lightning-card>
+                            </template>
+                            <template lwc:else>
+                                <article class="slds-card background-color slds-text-align_right" if:false={msg.isBot}>
+                                    <div class="slds-card__header slds-grid">
+                                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                            <div class="slds-media__body">
+                                                <h2 class="slds-card__header-title display-block">
+                                                    <span class="slds-text-heading_small slds-truncate">
+                                                        <slot name="title">
+                                                            <h3 slot="title">You</h3>
+                                                        </slot>
+                                                    </span>
+                                                </h2>
+                                            </div>
+                                            <div class="slds-no-flex">
+                                            </div>
+                                        </header>
+                                    </div>
+                                    <div class="slds-card__body slds-card__body_inner">{msg.message}</div>
+                                </article>
+                            </template>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+            <div tabindex="-1" class="chasitorInputWrapper dynamicResizeTextOneRow text embeddedServiceLiveAgentStateChatInputFooter"
+                data-aura-class="embeddedServiceLiveAgentStateChatInputFooter">
+                <div class="footerMenuWrapper">
+                    <div class="footer-menu">
+                        <lightning-button-icon class="slds-dropdown-trigger slds-dropdown-trigger_click" menu-alignment="bottom-left" 
+                        icon-name="utility:undo" title="Select Program" onclick={handleClick}><label>Back</label></lightning-button-icon>
+                    </div>
+                </div>
+                <div class="chasitorControls">
+                    <label for="chat-input-id" class="assistiveText uiLabel" data-aura-class="uiLabel">
+                        <span class="">Enter Message</span>
+                    </label>
+                    <textarea role="textbox" aria-describedby="" id="chat-input-id" placeholder="Type your message..." rows="1"
+                        class={textareaClass} cols="20" onkeypress={handleEnter}
+                        data-aura-class="uiInput uiInputTextArea uiInput--default uiInput--textarea" disabled={agentTyping}
+                        data-interactive-lib-uid="2"></textarea>
+                    <span class="assistiveText">End of Dialog</span>
+                </div>
+            </div>
+        </template>
+
+        <template if:false={isSubmit}>
+            <div class="slds-form-element slds-var-m-around_x-large">
+                <lightning-combobox
+                    name="program"
+                    label="Select Program"
+                    value=""
+                    placeholder="Select Program"
+                    options={options}
+                    onchange={handleChange}
+                    required>
+                </lightning-combobox>
+            </div>
+            <div class="slds-form-element slds-var-m-around_x-large slds-align_absolute-center">
+                <lightning-button class="width-full" variant="brand" label="Submit" title="Submit" onclick={onSubmit}></lightning-button>
+            </div>
+        </template>
+    </div>
+    
+</template>

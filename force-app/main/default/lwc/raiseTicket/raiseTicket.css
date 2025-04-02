@@ -1,0 +1,14 @@
+h1{
+		font-size: 24px;
+		color: #032d60;
+		font-weight: bold;
+}
+
+lightning-card{		
+		--slds-c-card-color-border: white;
+		--slds-c-card-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+		--slds-c-card-spacing-block-end: 2rem;
+		--slds-c-card-spacing-block-start: 2rem;		
+		--slds-c-card-spacing-inline-end: 2rem;
+		--slds-c-card-spacing-inline-start: 2rem;
+}

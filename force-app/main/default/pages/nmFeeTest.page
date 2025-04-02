@@ -1,0 +1,335 @@
+<apex:page controller="MassFeeReceiptController"  showHeader="false" renderAs="pdf" applyBodyTag="false" readOnly="true" rendered="{!NOT(ISNULL(lstpayment))}">
+   
+
+<head>
+        <style type="text/css" media="print">
+               @page {
+                padding-top: 30px;
+                @top-center {
+                    content: element(header);
+                }
+                @bottom-left{
+                    content: element(footer);
+                    padding-bottom:2px;
+                }
+                margin-bottom:3.1cm;
+                margin-top:2cm;
+                margin-right:.9cm;
+                margin-left:.8cm;
+               
+            }
+            div.header {
+                padding: 10px;
+                position: running(header);
+            }
+            div.footer {
+                display: block;
+                position: running(footer);
+            }
+            div.Ending {
+             page-break-after: always;
+            }
+            
+     
+            .page-break {
+                display:block;
+                page-break-after:always;
+            }
+            .pagenumber:before {
+                content: counter(page);
+            }
+            .pagecount:before {
+                content: counter(pages);
+            }
+       
+           p {
+           line-height:14px;
+           margin-left:.1cm;
+           margin-right:.1cm;
+           margin-top:.1cm;
+           margin-bottom:.1cm;
+           
+           
+           }
+   
+        </style>
+    </head>
+    
+    <div class="header">
+          <table width="100%" style ="font-size:8px;word-spacing:35px;">
+          <tr>
+             
+               <td width="1%" align="left"><img src="{!URLFOR($Resource.SVKM_logo)}"/> </td>
+                        <td width="100%" style="font-size:14px;"><b>SHRI VILE PARLE KELAVANI MANDAL'S</b><div style="width:100%; margin-left:.1cm;word-spacing:70px;"><b>Narsee Monjee Institute of Management Studies</b></div>
+                        <div width="100%" style ="font-size:13px;"><p>(Declared as Deemed-to-be University under Section 3 of the UGC Act, 1956)</p></div>
+                        <div width="100%" style ="font-size:13px;"><p>V.L.Mehta Marg, Vile- Parle(W) , Mumbai 400056.INDIA</p></div>
+                        <div width="100%" style ="font-size:13px;"><p>Tel. No.:&nbsp;4235 5555 &nbsp; Email : accountant@nmims.edu &nbsp; WebSite:&nbsp;www.nmims.edu</p></div>
+                        <br> </br>
+                        
+                        </td>
+                        
+                       
+               </tr>
+               
+               </table>                               
+  </div>
+
+    <!--     
+    <div class="footer">
+    {!lstpayment[0].nm_OpportunityNew__r.Account.Ref__c}
+        <div style="width:100%;line-height:40%;border:1px solid black ;word-spacing:30px;font:bold 8px/9px Helvetica Narrow,sans-serif;width:750px;position:relative;text-align: justify;">
+           <span style="text-align: left;margin-right:1cm;padding-left: 50cm;font-size:10px;"> <br/><b>  Foot Note:</b> </span>
+            <p>           
+            1.&nbsp;Provisional receipt subject to realisation of DD/PO/Cheque.&nbsp;&nbsp;2.&nbsp;Eligibility for admission to be approved by Authorities.&nbsp;&nbsp;3.&nbsp;This receipt is to be surrendered while claiming the refund of deposit.
+            4.&nbsp;Deposit will be refundable in accordance with the rules laid down by Authorities from time to time against the original fee  receipt.&nbsp;&nbsp;5.&nbsp;Fees are subject to changes/approval by authorities.&nbsp;&nbsp;6.&nbsp;Yuva Raksha Group Insurance Scheme Premium is for Personal Accident Insurance.The Insurance policy will be effective only when the fees from all the students of our college is collected and insurance premium is remitted to the Insurance company.&nbsp; 
+            7.&nbsp;Without prejudice and Subject to revision of fees to be  paid as per the undertaking.
+            </p>
+         </div>
+     </div>
+  -->
+     
+    <body onload="init()" >
+        <apex:repeat value="{!lstpayment}" var="payment" rendered="{!NOT(ISNULL(lstpayment))}">
+            <div class="page-break" >
+         
+                <div style="width:100%;line-height:30%;font:Normal 14px/28px Helvetica Narrow, sans-serif;">
+                    <div style="width:100%;background:#ffffff; float:left; line-height:30%;font-weight:100;">
+                       
+                       
+                       <div style="margin-top:5px;page-break-before:always;">
+                       <div width="100%" style ="font-size:13px;text-align: left;margin-right:0.2cm;padding-left: 1cm;"><p> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;  GSTIN:- &nbsp;&nbsp; 27AABTS8228H1Z8 </p></div>
+                           <center><b>FEES RECEIPT</b></center>
+                           <br/>  <br/>
+                       </div>
+                        <div class="footer">
+       <br/><br/> <br/>
+         <div style="width:100%;line-height:40%;border:1px solid black ;word-spacing:30px;font:bold 8px/9px Helvetica Narrow,sans-serif;width:750px;position:relative;text-align: justify;">
+           <span style="text-align: left;margin-right:1cm;padding-left: 50cm;font-size:10px;"> <br/><b>  Foot Note:</b> </span>
+            <p>           
+            1.&nbsp;Provisional receipt subject to realisation of DD/PO/Cheque.&nbsp;&nbsp;2.&nbsp;Eligibility for admission to be approved by Authorities.&nbsp;&nbsp;3.&nbsp;This receipt is to be surrendered while claiming the refund of deposit.
+            4.&nbsp;Deposit will be refundable in accordance with the rules laid down by Authorities from time to time against the original fee  receipt.&nbsp;&nbsp;5.&nbsp;Fees are subject to changes/approval by authorities.&nbsp;&nbsp;6.&nbsp;Yuva Raksha Group Insurance Scheme Premium is for Personal Accident Insurance.The Insurance policy will be effective only when the fees from all the students of our college is collected and insurance premium is remitted to the Insurance company.&nbsp; 
+            7.&nbsp;Without prejudice and Subject to revision of fees to be  paid as per the undertaking.
+            </p>
+         </div>
+     </div>
+                       <div id = "Contents" style="margin-left:3%;line-height: 100%; margin-top:1%;font-size:13px;">
+                     
+                       <table width="100%" style ="font-size:12px;">
+                               <tr>
+                                    <td width="20%"><b>Receipt Number</b></td> 
+                                    <td width="30%">:&nbsp;&nbsp;{!payment.Receipt_Number__c}</td>
+                                    <td width="20%"><b>Program Name</b></td>
+                                    <td style ="white-space:nowrap;">:&nbsp;&nbsp;{!payment.Program_Name__c}</td>
+                                </tr>
+                                 <tr>
+                                    <td width="20%"><b>Date</b></td>
+                                    <td width="30%">:&nbsp;&nbsp;<apex:outputText styleClass="ot" value="{0, date, dd'.'MM'.'yyyy}">
+                                            <apex:param value="{!TODAY()}" /> 
+                                        </apex:outputText></td>
+                                   
+                                </tr>
+                                  <tr>
+                                    <td width="20%"><b>Student Name</b></td>
+                                    <td width="30%">:&nbsp;&nbsp;{!payment.nm_OpportunityNew__r.Account.Salutation}&nbsp;{!payment.nm_OpportunityNew__r.Account.Name}</td>
+                                    <td width="20%"><b>Session</b> </td>
+                                    <td>:&nbsp;&nbsp;{!'Semester'}{!payment.nm_OpportunityNew__r.nm_Semester__c}</td>
+                                </tr>
+                                  <tr>
+                                    <td width="20%"><b>Student No.</b></td>
+                                    <td width="30%">:&nbsp;&nbsp;{!payment.nm_OpportunityNew__r.Account.nm_StudentNo__c }</td>
+                                    <td width="20%"><b>Academic Year</b></td>
+                                    <td>:&nbsp;&nbsp;{!payment.nm_OpportunityNew__r.Academic_Year__c}</td>
+                                </tr>  
+                                 
+                                
+                                </table>
+                                 <br/> <br/>
+                                <div style="margin-top:10px; margin-bottom:15px;width:720px;">
+                                 <table style="border: 1px solid;border-top: 0.5px solid;border-bottom: 0.5px solid;word-spacing:35px;border-collapse:collapse;text-align:center;font-size:12px;" width="100%" >
+                                  
+                                   <tr>                          
+                                       <th style="border:0.5px solid;width:70%;">Particulars</th>
+                                       <th style="border:0.5px solid ;">Amount Rs.</th>                          
+                                   </tr>
+                                   
+                                    <tr> 
+                                                           
+                                       <th style="border:0.5px solid ;"><div style=" text-align: left;"><b>Tution Fee</b></div></th>
+                                       <th style="border:0.5px solid ;"><div style="text-align:Right;"><b><apex:outputText value="{0, number, ###,###,###,###,##0.00}">
+                                      
+                                         <apex:param value="{!payment.Tuition_Fees__c}"/>
+                                       
+                                        </apex:outputText></b></div></th>  
+                                                               
+                                   </tr>
+                                   
+                                   <apex:outputText rendered="{!AND( OR(CONTAINS(payment.nm_OpportunityNew__r.nm_Program__r.nm_Type__c,'Certificate'),CONTAINS(payment.nm_OpportunityNew__r.nm_Program__r.nm_Type__c,'Executive')),CONTAINS(UPPER(payment.CityWithState__c),'MAHARA'))}">
+                                        <tr> 
+                                            <th style="border:0.5px solid ;"><div style=" text-align: left;"><b>CGST (9%)</b></div></th>
+                                           <th style="border:0.5px solid ;"><div style="text-align:Right;"><b> <apex:outputText value="{0, number, ###,###,###,###,##0.00}">
+                                            <apex:param value="{!(payment.Tuition_Fees__c*9)/100}"/>
+                                            </apex:outputText>
+                                            </b></div></th>  
+                                        </tr>
+                                         <tr> 
+                                            <th style="border:0.5px solid ;"><div style=" text-align: left;"><b>SGST (9%)</b></div></th>
+                                           <th style="border:0.5px solid ;"><div style="text-align:Right;"><b> <apex:outputText value="{0, number, ###,###,###,###,##0.00}">
+                                            <apex:param value="{!(payment.Tuition_Fees__c*9)/100}"/>
+                                            </apex:outputText>
+                                            </b></div></th>  
+                                        </tr>
+                                        
+                                    </apex:outputText> 
+                                 <apex:outputText rendered="{!AND(OR(CONTAINS(payment.nm_OpportunityNew__r.nm_Program__r.nm_Type__c,'Certificate'),CONTAINS(payment.nm_OpportunityNew__r.nm_Program__r.nm_Type__c,'Executive')),NOT(CONTAINS(UPPER(payment.CityWithState__c),'MAHARA')))}">
+                                     <tr> 
+                                        <th style="border:0.5px solid ;"><div style=" text-align: left;"><b>IGST(18%)</b></div></th>
+                                       <th style="border:0.5px solid ;"><div style="text-align:Right;"><b> <apex:outputText value="{0, number, ###,###,###,###,##0.00}">
+                                        <apex:param value="{!(payment.Tuition_Fees__c*18)/100}"/>
+                                        </apex:outputText>
+                                        </b></div></th>  
+                                    </tr> 
+                                 </apex:outputText>
+                                   <apex:outputText rendered="{!IF(payment.IcChangeFee__c!=0,true,false)}">
+                                    <tr> 
+                                                           
+                                       <th style="border:0.5px solid ;"><div style=" text-align: left;"><b>Miscellaneous Fee</b></div></th>
+                                       <th style="border:0.5px solid ;"><div style="text-align:Right;"><b><apex:outputText value="{0, number, ###,###,###,###,##0.00}">
+                                      
+                                         <apex:param value="{!payment.IcChangeFee__c}"/>
+                                        
+                                       
+                                        </apex:outputText></b></div></th>  
+                                                               
+                                   </tr>
+                                   </apex:outputText>
+                                   
+                                   <apex:outputText rendered="{!IF(payment.ProgramChangeFee__c!=0,true,false)}">
+                                     <tr> 
+                                                           
+                                       <th style="border:0.5px solid ;"><div style=" text-align: left;"><b>Program Change Fee</b></div></th>
+                                       <th style="border:0.5px solid ;"><div style="text-align:Right;"><b><apex:outputText value="{0, number, ###,###,###,###,##0.00}">
+                                         <apex:param value="{!payment.ProgramChangeFee__c}"/>                                      
+                                       </apex:outputText>
+                                       
+                                        </b></div></th>  
+                                                               
+                                   </tr>
+                                   </apex:outputText>
+                                     <apex:outputText rendered="{!mapOfLateFees[payment.nm_OpportunityNew__c] !=0}">
+                                    <tr> 
+                                                           
+                                       <th style="border:0.5px solid ;"><div style=" text-align: left;"><b>Late Fee</b></div></th>
+                                       <th style="border:0.5px solid ;"><div style="text-align:Right;"><b><apex:outputText value="{0, number, ###,###,###,###,##0.00}">
+                                        <apex:param value="{!mapOfLateFees[payment.nm_OpportunityNew__c]}"/>
+                                       </apex:outputText>
+                                       </b>
+                                        </div></th> 
+                                              
+                                       </tr> 
+                               </apex:outputText> 
+                               <apex:outputText rendered="{!mapOfStudnetKit[payment.nm_OpportunityNew__c] !=0}">
+                                    <tr>                    
+                                       <th style="border:0.5px solid ;"><div style=" text-align: left;"><b>Student Kits Fees</b></div></th>
+                                       <th style="border:0.5px solid ;"><div style="text-align:Right;"><b><apex:outputText value="{0, number, ###,###,###,###,##0.00}">
+                                        <apex:param value="{!mapOfStudnetKit[payment.nm_OpportunityNew__c]}"/> 
+                                         </apex:outputText></b></div></th>       
+                                       </tr> 
+                               </apex:outputText>                
+                                    <tr>                          
+                                       <th style="border:0.5px solid;"><div style=" text-align: Right;"><b>Total</b></div></th>
+                                       <th style="border:0.5px solid;"><div style="text-align: right;"><b><apex:outputText value="{0, number, ###,###,###,###,##0.00}">
+                                        <apex:param value="{!mapOfTotalAmount[payment.nm_OpportunityNew__c]}"/>
+                                        </apex:outputText></b></div></th>                          
+                                   </tr>
+                                   <tr>
+                                    <td style="border:0.5px solid black;text-align:Left;" colspan="2"><b>Total Amount in Words  :  RUPEES {!mapOfcurrencytowords[payment.nm_OpportunityNew__c] } ONLY</b></td>
+                                    
+                                   </tr>
+                                    <tr>
+                                    <td style="border:1px solid black;" colspan="2">
+                                    <table style ="font-size:12px;text-align: left;"> 
+                                   <tr>
+                                        <apex:outputText rendered="{!IF(payment.nm_ModeOfPayment__c !='Online',true,false)}">
+                                        <td width="25%"><b>DD/PO/Cheque No</b></td>
+                                        <td width="30%">:&nbsp;&nbsp;{!payment.nm_DemandDraftNumber__c}</td>
+                                        </apex:outputText>
+                              
+                                     
+                                        <apex:outputText rendered="{!IF(payment.nm_ModeOfPayment__c =='Online',true,false)}">
+                                        <td width="25%"><b>Transaction ID</b></td>
+                                        <td width="30%">:&nbsp;&nbsp;{!payment.nm_Merchant_Track_Id__c}</td>
+                                        </apex:outputText>
+                                     
+                      
+                                        <apex:outputText rendered="{!IF(payment.nm_ModeOfPayment__c !='Online',true,false)}">
+                                        <td width="20%"><b>&nbsp;&nbsp;&nbsp;&nbsp;DD Date</b></td>
+                                        <td>&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;{!payment.nm_SAPDDDate__c}</td>
+                                        </apex:outputText>
+                                   
+                                
+                                        <apex:outputText rendered="{!IF(payment.nm_ModeOfPayment__c =='Online',true,false)}">
+                                        <td width="20%"> &nbsp;&nbsp;&nbsp;&nbsp;<b>Transaction Date</b></td>
+                                        <td>&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;{!payment.nm_SAPTransactionDate__c}</td>
+                                        </apex:outputText>                
+                                    </tr>
+                                    <tr>
+                                    <td> </td>
+                                    <td> </td>
+                                    
+                                     </tr>
+                                    
+                                  <tr>
+                                        <td width="20%"><b>Bank Name</b></td>
+                                        <td width="30%">:&nbsp;&nbsp;{!payment.nm_NameoftheBank__c}</td>
+                                        <td width="20%"> &nbsp;&nbsp;&nbsp;&nbsp;<b>Bank Branch Name</b></td>
+                                        <td width="45%">&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;{!payment.nm_BankLocation__c}</td>
+                                        
+                                                                                       
+                                  </tr>
+                                   <tr>
+                                    <td> </td>
+                                    <td> </td>
+                                    
+                                     </tr>
+                                  
+                                  <tr>
+                                        <td width="25%" height = "30px"><b>Cashier's Signature</b></td>
+                                        <td>:</td>
+                                       
+                                        <td width="20%"> &nbsp;&nbsp;&nbsp;&nbsp;<b>Revenue Stamp</b></td>
+                                        <td>&nbsp;&nbsp;&nbsp;&nbsp;:</td>
+               
+                                  </tr>
+                                  <tr>
+                                        <td width="25%" height = "30px"><b>Student's Signature</b></td>
+                                        <td>:</td>
+                                       
+                                        <td width="20%"> &nbsp;&nbsp;&nbsp;&nbsp;<b>City With State</b></td>
+                                        <td>&nbsp;&nbsp;&nbsp;&nbsp;:{!payment.CityWithState__c}</td>                        
+                                           
+                                  </tr>
+                                    </table>
+                                    </td>
+                                   </tr>
+                            
+                            </table>
+                            </div>
+                                   
+                            </div>
+                                
+                            
+                        </div>
+                       
+                            
+                </div> 
+            
+            
+            
+            
+            
+     </div>
+     <div class="page-break"></div>
+        </apex:repeat>    
+    </body> 
+    
+</apex:page>

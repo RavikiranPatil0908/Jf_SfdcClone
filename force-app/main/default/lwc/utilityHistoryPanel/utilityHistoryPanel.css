@@ -1,0 +1,17 @@
+.utilityPanel {
+    width: 25rem;
+    height: 25rem;
+    /* bottom: 5rem; */
+}
+
+.slds-is-closed.utilityPanel {
+    bottom: 4.875rem;
+}
+
+.slds-is-open.utilityPanel {
+    bottom: 5.5rem;
+}
+
+.slds-docked-composer__body {
+    height: 22.313rem;
+}

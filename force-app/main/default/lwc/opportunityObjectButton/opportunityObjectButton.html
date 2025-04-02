@@ -1,0 +1,41 @@
+<!--
+  @File Name          : opportunityObjectButton.html
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 30/5/2020, 6:57:28 pm
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    4/4/2020   shubhranshu     Initial Version
+-->
+<template>
+     <!-- Message Toast Starts here-->
+     <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant} auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+     <!-- Message Toast Ends here-->
+    <!-- <template if:true={oppRender}>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_4-of-12">
+                <button class="slds-button slds-button_text-destructive" data-value="PrintReRegForm" onclick={handleChange}>Print Re-Registration Form</button>
+            </div>
+            <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_4-of-12">
+                <button class="slds-button slds-button_text-destructive" data-value="admPayment" onclick={handleChange}>Make Admission Payment</button>
+            </div>
+            <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_4-of-12">
+                <button class="slds-button slds-button_text-destructive" data-value="studentDetails" onclick={handleChange}>Student Details</button>
+            </div>
+        </div>
+        <br />
+    </template>   -->
+    <template if:true={oppRender}>
+      <div class="slds-m-top_medium slds-m-bottom_x-large slds-align_absolute-center">
+          <lightning-button-group>
+              <lightning-button data-value="PrintReRegForm" onclick={handleChange} label="Re-Registration Form" icon-name="utility:print"></lightning-button>
+              <lightning-button data-value="admPayment" onclick={handleChange} label="Make Admission Payment" icon-name="utility:money"></lightning-button>
+              <lightning-button-menu alternative-text="Show menu" variant="border-filled">
+                  <lightning-menu-item data-value="studentDetails" onclick={handleChange} label="Student Details" icon-name="utility:user"></lightning-menu-item>
+              </lightning-button-menu>
+          </lightning-button-group>
+      </div>
+    </template>
+</template>

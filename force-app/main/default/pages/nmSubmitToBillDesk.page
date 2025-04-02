@@ -1,0 +1,278 @@
+<!--
+  @Page Name          : nmSubmitToBillDesk.page
+  @Description        : 
+  @Author             : Balakrishnan
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 05-03-2024
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author                 Modification
+  ==============================================================================
+  1.0    22/3/2019, 12:25:13 PM   Balakrishnan     Initial Version
+-->
+<apex:page standardController="Lead" showHeader="false" sidebar="false" standardStylesheets="false">
+
+<style>
+        .Processingview
+        {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;           
+            width:  100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+           
+        }
+        .required
+        {
+            border: 2px solid #c00 !important;
+        }
+        .overlay
+        {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+          background-color: rgba(0,0,0,0.5);
+        }
+        .poup
+        {
+            position: fixed;
+            top: 30%;
+            width: 40%;
+            margin-left: 30%;
+            z-index: 11;
+        }
+        .messageCell
+        {
+            color:White !important;
+        }
+        .LateFee
+        {
+            Color: red;
+            float: right;
+            margin-right: 4%;
+            font-style: italic;
+        }
+     </style>
+     <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>NMIMS Distance Education: Login</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        
+        
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/typography.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/font-awesome.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap-theme.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap-datetimepicker.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/flat/grey.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/main.css')}"/>
+        
+        <apex:includeScript value="{!URLFOR($Resource.Data,'js/vendor/modernizr-2.6.2-respond-1.1.0.min.js')}"/>
+    </head>
+    <body class="home">
+    
+    <header>
+        
+      <section class="main-header">
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-18 col-sm-6">
+              <a href="#">
+                  <apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive"/>
+              </a>
+            </div> <!-- /col-xs-10 -->
+            <div class="col-xs-18 col-sm-12">
+              <h1 class="text-right">Payment</h1>
+            </div> <!-- /col-xs-8 -->
+          </div> <!-- /row -->
+        </div> <!-- /container -->
+      </section> <!-- /main-header -->  
+      
+    </header> <!-- /header -->
+    
+    <section class="content-container" style="" id="full">
+            <div class="container" >
+                <div class="row">
+                    <br/>
+                    <div class="col-sm-18">
+                        <div class="registration-box complete">   
+    
+                            <h2>Redirecting to Payment Gateway. Please wait..</h2>
+        
+                    </div>
+                       <p> key = {!$CurrentPage.parameters.key} </p>
+                        <p> txnid = {!$CurrentPage.parameters.txnid} </p>
+                        <p> amount =  {!$CurrentPage.parameters.amount}</p>
+                        <p> udf1 = {!$CurrentPage.parameters.udf1} </p>
+                        <p> surl = {!$CurrentPage.parameters.surl} </p>
+                        <p> furl = {!$CurrentPage.parameters.furl} </p>
+                        <p> curl = {!$CurrentPage.parameters.curl} </p>
+                        <p> firsatname = {!$CurrentPage.parameters.firstname} </p>
+                        <p> email = {!$CurrentPage.parameters.email} </p>
+                        <p> city = {!$CurrentPage.parameters.city} </p>
+                        <p> country = {!$CurrentPage.parameters.country} </p>
+                        <p> zipcode = {!$CurrentPage.parameters.zipcode} </p>
+                        <p> phone = {!$CurrentPage.parameters.phone} </p>
+                        <p> SALT = {!$CurrentPage.parameters.SALT} </p>
+                        <p> algo = {!$CurrentPage.parameters.algo} </p>
+                        <p> hash = {!$CurrentPage.parameters.hash} </p>
+                        <p> productinfo = {!$CurrentPage.parameters.productinfo} </p>
+                        <p> befor encry secure_hash = {!$CurrentPage.parameters.test} </p> 
+                </div>
+            </div>
+        </div>
+    </section>
+    
+   <apex:outputLabel rendered="{!IF($CurrentPage.parameters.type=='BillDesk GateWay' || $CurrentPage.parameters.type ==null,true,false)}">
+    <form id="billDeskForm"  method="post" action="{!$Label.BillDesk_URL}">
+    <input type="hidden" value="{!$CurrentPage.parameters.msg}" name="msg" id="msgId" />
+    </form>
+  </apex:outputLabel>
+  
+   <apex:outputLabel rendered="{!IF($CurrentPage.parameters.type=='HDFC GateWay',true,false)}">
+  <!--  <form id="hdfcDeskForm"  method="post" action="https://secure.ebs.in/pg/ma/payment/request">
+    <input type="hidden" value="{!$CurrentPage.parameters.account_id}" name="account_id" />
+    <input type="hidden" value="{!$CurrentPage.parameters.address}" name="address" />
+    <input type="hidden" value="{!$CurrentPage.parameters.amount}" name="amount" />
+    <input type="hidden" value="{!$CurrentPage.parameters.channel}" name="channel" />
+    <input type="hidden" value="{!$CurrentPage.parameters.city}" name="city" />
+    <input type="hidden" value="{!$CurrentPage.parameters.country}" name="country" />
+    <input type="hidden" value="{!$CurrentPage.parameters.currency}" name="currency" />
+    <input type="hidden" value="{!$CurrentPage.parameters.description}" name="description"/>
+    <input type="hidden" value="{!$CurrentPage.parameters.email}" name="email" />
+    <input type="hidden" value="{!$CurrentPage.parameters.mode}" name="mode" />
+    <input type="hidden" value="{!$CurrentPage.parameters.name}" name="name" />
+    <input type="hidden" value="{!$CurrentPage.parameters.phone}" name="phone" />
+    <input type="hidden" value="{!$CurrentPage.parameters.postal_code}" name="postal_code" />
+    <input type="hidden" value="{!$CurrentPage.parameters.reference_no}" name="reference_no" />
+    <input type="hidden" value="{!$CurrentPage.parameters.return_url}" name="return_url" />
+    <input type="hidden" value="{!$CurrentPage.parameters.secure_hash}" name="secure_hash" />   
+    </form>-->
+  <form id="hdfcDeskForm" action="{!$Label.HDFC_Url}" method="post">
+        <input type="hidden" value="{!$CurrentPage.parameters.key}" name="key" />
+        <input type="hidden" value="{!$CurrentPage.parameters.txnid}" name="txnid" />
+        <input type="hidden" value="{!$CurrentPage.parameters.amount}" name="amount" />
+        <input type="hidden" value="{!$CurrentPage.parameters.udf1}" name="udf1" />
+        <input type="hidden" value="{!$CurrentPage.parameters.udf2}" name="udf2" />
+        <input type="hidden" value="{!$CurrentPage.parameters.udf3}" name="udf3" />
+        <input type="hidden" value="{!$CurrentPage.parameters.surl}" name="surl" />
+        <input type="hidden" value="{!$CurrentPage.parameters.furl}" name="furl" />
+        <input type="hidden" value="{!$CurrentPage.parameters.curl}" name="curl" />
+        <input type="hidden" value="{!$CurrentPage.parameters.firstname}" name="firstname"/>
+        <input type="hidden" name="lastname" value="" />
+        <input type="hidden" value="{!$CurrentPage.parameters.email}" name="email" />
+        <input type="hidden" value="{!$CurrentPage.parameters.phone}" name="phone" />
+        <input type="hidden" value="{!$CurrentPage.parameters.city}" name="city" />
+        <input type="hidden" value="{!$CurrentPage.parameters.productinfo}" name="productinfo" />
+        <input type="hidden" value="{!$CurrentPage.parameters.country}" name="country" />
+        <input type="hidden" value="{!$CurrentPage.parameters.zipcode}" name="zipcode" />
+        <input type="hidden" value="{!$CurrentPage.parameters.hash}" name="hash" />
+  </form>
+  </apex:outputLabel>
+
+  <apex:outputPanel rendered="{!IF($CurrentPage.parameters.type=='Paytm GateWay',true,false)}" >
+    <form id="paytmDeskForm" action="{!$Label.Paytm_Url}" method="post">
+      <input type="hidden" value="{!$CurrentPage.parameters.MID}" name="MID" />
+      <input type="hidden" value="{!$CurrentPage.parameters.ORDER_ID}" name="ORDER_ID" />
+      <input type="hidden" value="{!$CurrentPage.parameters.CHANNEL_ID}" name="CHANNEL_ID" />
+      <input type="hidden" value="{!$CurrentPage.parameters.CUST_ID}" name="CUST_ID" />
+      <input type="hidden" value="{!$CurrentPage.parameters.MOBILE_NO}" name="MOBILE_NO" />
+      <input type="hidden" value="{!$CurrentPage.parameters.EMAIL}" name="EMAIL" />
+      <input type="hidden" value="{!$CurrentPage.parameters.TXN_AMOUNT}" name="TXN_AMOUNT" />
+      <input type="hidden" value="{!$CurrentPage.parameters.WEBSITE}" name="WEBSITE"/>
+      <input type="hidden" value="{!$CurrentPage.parameters.INDUSTRY_TYPE_ID}" name="INDUSTRY_TYPE_ID" />
+      <input type="hidden" value="{!$CurrentPage.parameters.CALLBACK_URL}" name="CALLBACK_URL" />
+      <input type="hidden" value="{!$CurrentPage.parameters.CHECKSUMHASH}" name="CHECKSUMHASH" />
+      <input type="hidden" value="{!$CurrentPage.parameters.MERC_UNQ_REF}" name="MERC_UNQ_REF" />
+      <!-- <input type="hidden" value="{!$CurrentPage.parameters.PROMO_CAMP_ID}" name="PROMO_CAMP_ID" /> -->
+
+    </form>
+  </apex:outputPanel>
+
+  <apex:outputPanel rendered="{!IF($CurrentPage.parameters.type=='Razorpay GateWay',true,false)}">
+        <form id="razorpayDeskForm" action="{!$Label.RazorPay_Url}" method="POST">
+            <input type="hidden" value="{!$Label.RazorPay_key_id}" name="key_id" />
+            <input type="hidden" value="NMIMS Center For Distance And Online Education" name="name" />
+            <input type="hidden" value="{!$CurrentPage.parameters.orderId}" name="order_id" />
+            <input type="hidden" value="{!$CurrentPage.parameters.amount}" name="amount" />
+            <input type="hidden" value="{!$CurrentPage.parameters.Name}" name="prefill[name]" />
+            <input type="hidden" value="{!$CurrentPage.parameters.contact}" name="prefill[contact]" />
+            <input type="hidden" value="{!$CurrentPage.parameters.email}" name="prefill[email]" />
+            <input type="hidden" value="{!$CurrentPage.parameters.callback_url}" name="callback_url" />
+            <!-- <input type="hidden" value="{!$CurrentPage.parameters.cancel_url}" name="cancel_url" /> -->
+        </form>
+    </apex:outputPanel>
+
+  <apex:outputPanel rendered="{!IF($CurrentPage.parameters.type=='BillDesk GateWay v2',true,false)}">
+        <form name="sdklaunch" id="billDeskFormv2" action="{!$CurrentPage.parameters.baseUrl}web/v1_2/embeddedsdk" method="POST">
+            <!-- <input type="hidden" id="merchantLogo" name="merchantLogo" value=" base64 image of logo"> -->
+            <input type="hidden" id="flowType" name="flowType" value="payments" />
+            <input type="hidden" id="retryCount" name="retryCount" value="0" />
+            <input type="hidden" id="bdOrderId" name="bdOrderId" value="{!$CurrentPage.parameters.bdOrderId}" />
+            <input type="hidden" id="merchantId" name="merchantId" value="{!$CurrentPage.parameters.merchantId}" />
+            <input type="hidden" id="authToken" name="authToken" value= "{!$CurrentPage.parameters.authToken}" />
+            <input type="hidden" id="returnUrl" name="returnUrl" value="{!$CurrentPage.parameters.ru}" />
+            <!-- <input name='submit' type='submit' value='Complete your Payment' /> -->
+        </form>
+    </apex:outputPanel>
+  
+<footer>
+      
+      <div class="footer-links">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-10">
+              <a href="http://distance.nmims.edu/sitemap.html">Sitemap</a> | <a href="http://distance.nmims.edu/privacy-policy.html">Privacy Policy</a> | <a href="http://distance.nmims.edu/disclaimer.html">Disclaimer</a> | <a href="http://distance.nmims.edu/wp-content/uploads/2015/06/TC_Cancellation_Refund.pdf" target="_blank">TC, Admission Cancellation and Refund Policy </a> <br />&copy; 2015 NMIMS. All Rights Reserved. 
+            </div>
+            <div class="col-sm-8">
+              <ul class="footer-icons clearfix">
+                <li><a class="footer-social ico-facebook" href="https://www.facebook.com/NMIMSSCE" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                <li><a class="footer-social ico-twitter" href="https://twitter.com/NMIMS_SCE" target="_blank"><i class="fa fa-twitter"></i></a></li>    
+                <li><a class="footer-social ico-google-plus" href="https://plus.google.com/u/0/115020127358464487864/about" target="_blank"><i class="fa fa-google-plus"></i></a></li>  
+                <li><a class="footer-social ico-youtube" href="https://www.youtube.com/user/NMIMSSCE" target="_blank"><i class="fa fa-youtube"></i></a></li>    
+              </ul>  
+            </div>
+          </div> <!-- /row -->
+        </div> <!-- /container -->
+      </div> <!-- /footer-links -->
+      
+    </footer>
+
+
+<script>
+ window.onload=function(){
+  if('{!$CurrentPage.parameters.type}' == 'BillDesk GateWay') {
+    document.getElementById('billDeskForm').submit();
+  } else if('{!$CurrentPage.parameters.type}' == 'HDFC GateWay') {  
+    document.getElementById('hdfcDeskForm').submit();
+  } else if('{!$CurrentPage.parameters.type}'=='Paytm GateWay') {
+    document.getElementById('paytmDeskForm').submit();
+  } else if ('{!$CurrentPage.parameters.type}' == 'Razorpay GateWay') {
+    document.getElementById('razorpayDeskForm').submit();
+  } else if ('{!$CurrentPage.parameters.type}' == 'BillDesk GateWay v2') {
+    document.getElementById('billDeskFormv2').submit();
+  }
+};
+</script>
+
+<apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/jquery-1.11.0.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/jquery.validate.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/additional-methods.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/moment.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/bootstrap-datetimepicker.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/icheck.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.Data, 'js/main.js')}"/>
+
+</body>
+</apex:page>

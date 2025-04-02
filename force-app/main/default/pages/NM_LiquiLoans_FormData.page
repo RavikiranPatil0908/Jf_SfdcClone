@@ -1,0 +1,158 @@
+<!--
+  @File Name          : NM_LiquiLoans_FormData.page
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 1/16/2020, 11:44:00 AM
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    12/2/2019   shubhranshu     Initial Version
+-->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" cache="false">
+
+<style>
+        .Processingview
+        {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;           
+            width:  100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+           
+        }
+        .required
+        {
+            border: 2px solid #c00 !important;
+        }
+        .overlay
+        {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+          background-color: rgba(0,0,0,0.5);
+        }
+        .poup
+        {
+            position: fixed;
+            top: 30%;
+            width: 40%;
+            margin-left: 30%;
+            z-index: 11;
+        }
+        .messageCell
+        {
+            color:White !important;
+        }
+        .LateFee
+        {
+            Color: red;
+            float: right;
+            margin-right: 4%;
+            font-style: italic;
+        }
+     </style>
+     
+     <head>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/bootstrap-datetimepicker.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/chosen.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/styles/scss/style.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/styles/scss/vars.scss')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/style.css.map')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/fonts.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/style.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/vars.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'assets/css/vars.css.map')}"/>  
+         
+        
+        <script type="text/javascript">
+            history.pushState(null, null, 'NM_LiquiLoans_FormData');
+                    window.addEventListener('popstate', function () {
+                    history.pushState(null, null, 'NM_LiquiLoans_FormData');
+              });
+       </script>
+    </head>
+    <body class="home">
+        
+     <div class="tab-wrapper">
+        <div class="container">
+          <div class="tab-content">
+            <div class="tab-pane active">
+             <div class="form-wrapper">
+              <div class="tab-content">
+               <div class="tab-pane active">
+               <div class="message-box form-group text-center">Liqui Loan Application</div>
+                <div class="form-wrapper">
+                    <h2>Redirecting to LiquiLoans... Please wait..</h2>
+                    <p>Do not press 'Back' or 'Refresh' button</p>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>       
+            </div>
+          </div>
+         </div>
+   
+   <form id="LiquiLoanForm" method="get" enctype="multipart/form-data" action="{!$Label.LiquiLoans_API_FormData_URL }">
+    <input type="hidden" value="{!$CurrentPage.parameters.sid}" name="sid" />
+    <input type="hidden" value="{!$CurrentPage.parameters.UDF}" name="UDF" />
+    <input type="hidden" value="{!$CurrentPage.parameters.URN}" name="URN" />
+    <input type="hidden" value="{!$CurrentPage.parameters.name}" name="name" />
+    <input type="hidden" value="{!$CurrentPage.parameters.email}" name="email" />
+    <input type="hidden" value="{!$CurrentPage.parameters.mobile}" name="mobile" />
+    <input type="hidden" value="{!$CurrentPage.parameters.loanAmount}" name="loanAmount" />
+    <input type="hidden" value="{!$CurrentPage.parameters.callback}" name="callback" />
+    <input type="hidden" value="{!$CurrentPage.parameters.gender}" name="gender" />
+    <input type="hidden" value="{!$CurrentPage.parameters.CHECKSUM}" name="CHECKSUM" />
+    <input type="hidden" value="{!$CurrentPage.parameters.Timestamp}" name="Timestamp" />
+    <input type="hidden" value="{!$CurrentPage.parameters.edit_email}" name="edit_email" />
+    <input type="hidden" value="{!$CurrentPage.parameters.edit_mobile}" name="edit_mobile" />
+    <input type="hidden" value="{!$CurrentPage.parameters.edit_name}" name="edit_name" />
+    <input type="hidden" value="{!$CurrentPage.parameters.schemeId}" name="schemeId" />
+    
+   </form>
+
+<script>
+ window.onload=function()
+{
+   document.getElementById('LiquiLoanForm').submit();
+};
+</script>
+ <!--All java script  -->
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'assets/js/jquery-1.11.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'assets/js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'assets/js/jquery.validate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'assets/js/moment.js')}"/>
+     <apex:includeScript value="{!URLFOR($Resource.NewResource, 'assets/js/bootstrap-datetimepicker.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'assets/js/chosen.jquery.min.js')}"/> 
+    <apex:includeScript value="{!URLFOR($Resource.NewResource, 'assets/js/main.js')}"/>
+ 
+<!-- Footer -->
+          <footer>
+  <div class="container">
+    
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footerBottom">
+        
+          <div class="copyRight">
+            <p class="text">&copy; 2019 NMIMS. All Rights Reserved.</p>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+        <!--/ Footer --> 
+</body>
+</apex:page>

@@ -1,0 +1,441 @@
+<apex:page controller="NextFollowUp" cache="false" sidebar="false" showheader="false">
+
+    <head>
+    
+    <style>
+        .Processingview {
+            position: fixed;
+            background: url('{!URLFOR($Resource.Icon)}');
+            background-repeat: no-repeat;
+            background-position: center;
+            width: 100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+        }
+        
+        .required {
+            border: 2px solid #c00 !important;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .poup {
+            position: fixed;
+            top: 30%;
+            width: 40%;
+            margin-left: 30%;
+            z-index: 11;
+        }
+        
+        .messageCell {
+            color: Black !important;
+        }
+        
+        .LateFee {
+            Color: red;
+            float: right;
+            margin-right: 4%;
+            font-style: italic;
+            font-family: Trebuchet MS;
+        }
+        
+        
+        
+        .radioOpt td,
+        .radioOptinput,
+        .radioOpt label {
+            color: #666c71;
+            font-family: Calibri, Geneva, sans-serif;
+            font-size: 20px;
+            margin: 0 10px 0 10px;
+        }
+    </style>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>NMIMS Distance Education: Take Survey
+    </title>
+    <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs." />
+    <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/logo.png')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/select-bg.png')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/banner.jpg')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/chosen.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/style.scss')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/vars.scss')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css.map')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css.map')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.datetimeNew, 'datetimeNew/css/bootstrap-datetimepicker.min.css')}" />
+    </head>
+    <nav class="headerNavigation">
+        <div class="container">
+            <div class="logoImg">
+                <a href="#">
+                    <apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive" />
+                </a>
+            </div>
+        </div>
+    </nav>
+    <!-- Breadcrumb & Social Icons -->
+    <div class="topSocialWrapper">
+        <div class="container">
+            <div class="shareIcons">
+                <ul>
+                    <li>
+                        <a href="https://plus.google.com/u/0/116325782206816676798" class="icon-google-plus">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/NMIMS_SCE" class="icon-twitter">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.facebook.com/NMIMSSCE" class="icon-facebook">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--/ Bredcrums & Social Icons -->
+    <!-- Banner -->
+    <div class="container">
+        <div class="bannerIns">
+        </div>
+    </div>
+    <!--/ Banner -->
+    <div>
+        <apex:form id="theForm">
+          <apex:inputHidden id="hdnWorkExp" value="{!objLead.nm_WorkExperience__c}"/>
+        <apex:pagemessages id="error"></apex:pagemessages>
+            <div class="tab-wrapper">
+                <div class="container">
+                    <div class="tab-content">
+                        <div class="tab-pane active">
+                            <div class="form-wrapper">
+                               <apex:outputPanel rendered="{!displayMessage ==''}">
+                                <h1>Please fill in below details:</h1>
+                                <apex:outputPanel rendered="{!(testparam =='NFDate')}">
+                                <div>
+                                    <div class="form-group">
+                                        <label for="dtp_input1" class="col-md-2 control-label">Next Follow up date/time</label>
+                                        <div class="input-group date form_datetime col-md-5" id="form_datetime" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                                            <input class="form-control" size="16" type="text" readonly="readonly" placeholder="Select Date Time" />
+                                            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                        <apex:inputHidden id="dtp_input1" value="{!objLead.Student_Define_Date_Time__c}" /><br/>
+                                    </div>
+                                    
+
+                                </div>
+                                
+                                </apex:outputPanel>
+                                 <br></br>
+                                 <br></br>
+                                <apex:outputPanel rendered="{!(testparam =='reason') || (testparam =='reasonForOther')}">
+                                    <div class="form-group">
+                                        <div class="col-6">
+                                            <div id="radio">
+                                                <label>Do let us know how soon you are likely to register for the July 2018 batch: </label>
+                                                <apex:selectRadio value="{!objLead.Student_Plan_to_Start__c}" styleClass="radioOpt" layout="pageDirection" onchange="testFunction(this)" id="planTo">
+                                                  
+                                                    <apex:selectoptions value="{!StudentPlantoStart}" />
+                                                </apex:selectRadio>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!testparam=='reasonForOther'}">
+                                <div class="form-group" id="ReasonForNotJoinID" style="display:none">
+                                    <div class="col-6" >
+                                        <div id="radio">
+                                            <label> If you have selected last option, is there any reason for not going ahead with the admission: </label>
+                                            <apex:selectRadio value="{!objLead.Reason_for_not_joining__c}" styleClass="radioOpt" layout="pageDirection" id="reason" onchange="testFunctionOne(this)">
+                                                <apex:selectoptions value="{!ReasonForNotJoining}"></apex:selectoptions>
+                                            </apex:selectRadio>
+                                        </div>
+                                    </div>
+                                </div>
+                                </apex:outputPanel>
+                                 <apex:outputPanel rendered="{!testparam=='LeadCaptureDetail'}">
+                                 <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <apex:inputField id="name" value="{!objLead.Name}" styleClass="form-control notnull disabled" html-placeholder="First Name" />
+                                       </div>
+                                 </div>
+                                 <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                             <apex:inputField id="mobile" value="{!objLead.MobilePhone}" styleClass="form-control notnull disabled" html-placeholder="Mobile Phone" />
+                                        </div>
+                                 </div>
+                                 <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                             <apex:inputField id="email" value="{!objLead.Email}" styleClass="form-control notnull disabled" html-placeholder="Email" />
+                                        </div>
+                                 </div>
+                                <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField id="gender" value="{!objLead.nm_Gender__c}" styleClass="form-control notnull ModifyFirstOptionForGender"  />
+                                            </div>
+                                        </div>
+                                 </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField value="{!objLead.Industry}" styleClass="form-control  ModifyFirstOptionOfIndustry" id="industry1"  />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField value="{!objLead.Request_a_visit__c}" styleClass="form-control  ModifyFirstOptionOfRequestaVisit" id="TotalMonthExp"  />
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group required-label">
+                                            <div class="select-wrapper">
+                                                <apex:inputField value="{!objLead.nm_Designation__c}" styleClass="form-control  ModifyFirstOptionOfDesignation" id="Designation" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group required-label">
+                                            <apex:selectList styleClass="form-control notnull permanentcity " id="txtPCity" html-placeholder="City" value="{!objLead.nm_City_P__c}" multiselect="false" size="1">
+                                                 <apex:selectOption itemValue="  " itemLabel="Select City"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Mumbai " itemLabel="Mumbai"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Delhi " itemLabel="Delhi"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Kolkata " itemLabel="Kolkata"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Chennai " itemLabel="Chennai"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Bangalore " itemLabel="Bangalore"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Hyderabad " itemLabel="Hyderabad"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Ahmedabad " itemLabel="Ahmedabad"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Pune " itemLabel="Pune"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Surat " itemLabel="Surat"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Jaipur " itemLabel="Jaipur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Kanpur " itemLabel="Kanpur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Lucknow " itemLabel="Lucknow"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Nagpur " itemLabel="Nagpur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Ghaziabad " itemLabel="Ghaziabad"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Indore " itemLabel="Indore"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Coimbatore " itemLabel="Coimbatore"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Kochi " itemLabel="Kochi"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Patna " itemLabel="Patna"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Visakhapatnam " itemLabel="Visakhapatnam"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Kozhikode " itemLabel="Kozhikode"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Bhopal " itemLabel="Bhopal"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Thrissur " itemLabel="Thrissur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Vadodara " itemLabel="Vadodara"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Agra " itemLabel="Agra"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Malappuram " itemLabel="Malappuram"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Thiruvananthapuram " itemLabel="Thiruvananthapuram"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Kannur " itemLabel="Kannur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Ludhiana " itemLabel="Ludhiana"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Nashik " itemLabel="Nashik"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Vijayawada " itemLabel="Vijayawada"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Madurai " itemLabel="Madurai"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Varanasi " itemLabel="Varanasi"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Meerut " itemLabel="Meerut"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Faridabad " itemLabel="Faridabad"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Rajkot " itemLabel="Rajkot"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Jamshedpur " itemLabel="Jamshedpur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Jabalpur " itemLabel="Jabalpur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Srinagar " itemLabel="Srinagar"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Asansol " itemLabel="Asansol"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Vasai-Virar " itemLabel="Vasai-Virar"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Allahabad " itemLabel="Allahabad"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Dhanbad " itemLabel="Dhanbad"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Aurangabad " itemLabel="Aurangabad"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Amritsar " itemLabel="Amritsar"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Jodhpur " itemLabel="Jodhpur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Raipur " itemLabel="Raipur"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Ranchi " itemLabel="Ranchi"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Gwalior " itemLabel="Gwalior"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Kollam " itemLabel="Kollam"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Durg-Bhilainagar " itemLabel="Durg-Bhilainagar"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Chandigarh " itemLabel="Chandigarh"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Tiruchirappalli " itemLabel="Tiruchirappalli"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Kota " itemLabel="Kota"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Ranchi " itemLabel="Ranchi"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Patna " itemLabel="Patna"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Bhubaneshwar " itemLabel="Bhubaneshwar"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Guwahati " itemLabel="Guwahati"></apex:selectOption>
+                                                <apex:selectOption itemValue=" Noida  " itemLabel="Noida "></apex:selectOption>
+                                                <apex:selectOption itemValue=" Gurgaon " itemLabel="Gurgaon"></apex:selectOption>
+                                            </apex:selectList>
+
+                                        </div>
+                                    </div>
+
+                                    
+                                      <div class="col-md-6 col-sm-12">
+                                        <div class="form-group required-label">
+                                            <apex:selectList styleClass="form-control notnull permanentcity " id="txtHighestQualif" html-placeholder="Highest Qualification" value="{!objLead.Highest_Qualification__c}" multiselect="false" size="1">
+                                                <apex:selectOption itemValue=" " itemLabel="Select Highest Qualification"></apex:selectOption>
+                                                <apex:selectOption itemValue="Doctrate/Ph. D." itemLabel="Doctrate/Ph. D."></apex:selectOption>
+                                                <apex:selectOption itemValue="Masters/Post Graduation" itemLabel="Masters/Post Graduation"></apex:selectOption>
+                                                <apex:selectOption itemValue="Graduation/Diploma" itemLabel="Graduation/Diploma"></apex:selectOption>
+                                                <apex:selectOption itemValue="12th" itemLabel="12th"></apex:selectOption>
+                                                <apex:selectOption itemValue="10th" itemLabel="10th"></apex:selectOption>
+                                                <apex:selectOption itemValue="below 10th" itemLabel="below 10th"></apex:selectOption>
+                                                <apex:selectOption itemValue="Others" itemLabel="Others"></apex:selectOption>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                    
+                                      <div class="row">
+                                 <div class="col-md-6">
+                                
+                                        <div class="form-group required-label">
+                                               <select name="years" id="years" class="form-control select-wrapper workExp" style="width:auto;display:inline-block;"> 
+                                                <option value="0">Work Experience in Years</option>
+                                                <option value="0">0</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                                <option value="10+">10+</option>
+                                            </select>
+                                            
+                                            <select name="months" id="months" class="form-control select-wrapper workExp" style="width:auto;display:inline-block;"> 
+                                                <option value="0"> Work Experience in Months</option>
+                                                <option value="0">0</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                            </select>
+
+                                            
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </apex:outputPanel>
+                                <div class="col-md-5" style="display:none" id="Otherid">
+                                    <div class="form-group required-label">
+                                    <apex:inputField styleClass="form-control " html-placeholder="Reason for not joining" id="fname"  value="{!objLead.Other_Reason_for_not_joining__c}"/>
+                                    </div>
+                                </div>
+                                
+                                <apex:includeScript value="{!URLFOR($Resource.datetimeNew, 'datetimeNew/js/jquery-1.8.3.min.js')}"/>
+                                <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+                                <apex:includeScript value="{!URLFOR($Resource.datetimeNew, 'datetimeNew/js/bootstrap-datetimepicker.js')}"/>
+                                <script type="text/javascript">
+                                    var todaysDate = new Date();
+                                    var pastDate = new Date();
+                                    pastDate.setDate(pastDate.getDate());
+                                    $(document).ready(function() {
+                                        $('.notnull').attr('required', 'true');
+                                        $('.disabled').prop('disabled',true);
+                                        $('.ModifyFirstOptionForGender > option:first-child').text('Select Gender');
+                                        $('.ModifyFirstOptionOfIndustry > option:first-child').text('Select Industry');
+                                        $('.ModifyFirstOptionOfRequestaVisit > option:first-child').text('Select Request A Visit');
+                                        $('.ModifyFirstOptionOfDesignation > option:first-child').text('Select Designation');
+                                        
+                                         $('.form_datetime').datetimepicker({
+                                            language:  'en',
+                                            weekStart: 1,
+                                            todayBtn:  1,
+                                            autoclose: 1,
+                                            todayHighlight: 1,
+                                            startView: 2,
+                                            forceParse: 0,
+                                            showMeridian: 1,
+                                            startDate: todaysDate,
+                                            linkField: '[id$=dtp_input1]',
+                                            linkFormat: "dd/mm/yyyy HH:ii P"
+                                        });
+
+                                        
+                                    });
+                                    function testFunction(id)
+                                    {
+                                        var SelectValue =id.value;
+                                         
+                                        if(SelectValue=='Not this drive'){
+                                            $('[id$=ReasonForNotJoinID]').css('display', 'block'); 
+                                        }
+                                        else
+                                        {
+                                          $('[id$=ReasonForNotJoinID]').css('display', 'none');
+                                        }
+                                    
+                                    }
+                                    function testFunctionOne(id)
+                                    {
+                                        var SelectOne = id.value;
+                                       
+                                        if(SelectOne=='Others')
+                                        {
+                                           $('[id$=Otherid]').css('display', 'block');
+                                        }
+                                        else
+                                        {
+                                           $('[id$=Otherid]').css('display', 'none');
+                                        }
+                                    }
+                                     $('.workExp').change(function(){
+                                    console.log($(this).val());
+                                    var year = $('#years').val();
+                                    var month = $('#months').val();
+                                    console.log(year+'--'+month);
+                                    $('[id$=hdnWorkExp]').val(year +'-'+ month);
+                                });
+                                </script>
+                                
+                                <br> </br>
+                                <div class="clearfix"></div>
+                                <apex:outputPanel >
+
+                                    <apex:commandButton value="Submit" styleClass="btn pgSubmit" id="nextRegitrtn" action="{!saveFllowUpdate}" />
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!displayMessage !=''}">
+                                <div>
+                                    <center><span style="font-size:35px; font-weight:bold;">{!displayMessage}</span></center>
+                                </div>
+                            </apex:outputPanel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:form>
+    </div>
+</apex:page>

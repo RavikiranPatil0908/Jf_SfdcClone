@@ -1,0 +1,37 @@
+<!--
+  @File Name          : opportunitySearchComponent.html
+  @Description        : 
+  @Author             : shubhranshu
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 12/21/2019, 1:55:03 PM
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    12/16/2019   shubhranshu     Initial Version
+-->
+<template>
+    <!-- Message Toast Starts here-->
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant} auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+    <!-- Message Toast Ends here-->
+    <div class="slds-global-header__item slds-card">
+        <div class="slds-global-header__logo"></div>
+    </div>
+    <div class="slds-card__body slds-card__body_inner slds-p-top_small">
+        <template if:true={showLoginPanel}>
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+                    <lightning-input type="text" name="emailId" onchange={handleName} value={emailId} placeholder="Enter the email" label="Email"></lightning-input>
+                </div>
+                <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-2 slds-size_1-of-1 slds-p-around_x-small">
+                    <lightning-input type="text" name="password" onchange={handleName} value={password} placeholder="Enter the password" label="Password"></lightning-input>
+                </div>
+                <div class="slds-col slds-large-size_1-of-3 slds-medium-size_1-of-1 slds-size_1-of-1 slds-p-horizontal_x-small slds-p-vertical_large">
+                    <button class="slds-button slds-button_success" onclick={searchCenter}>Check &amp; validate</button>
+                </div>
+            </div>
+        </template>
+        <template if:true={checkValidVendor}>
+            <c-pagination-parent center-record-id={centerId}></c-pagination-parent>
+        </template>
+    </div>
+</template>

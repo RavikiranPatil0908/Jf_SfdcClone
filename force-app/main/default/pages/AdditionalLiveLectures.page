@@ -1,0 +1,387 @@
+<!--
+  @Page Name         : AdditionalLiveLectures.page
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 03-04-2024
+  @last modified by  : @BK
+  Modifications Log 
+  Ver   Date         Author   Modification
+  1.0   04-19-2021   @BK   Initial Version
+-->
+<apex:page controller="AdditionalLiveLectures" showHeader="false" sidebar="false" standardStylesheets="false" cache="false" applyBodyTag="false">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <title>NMIMS Distance Education: Login</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."
+        />
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.LiveLectureResource, 'LiveLectureResource/style.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/paymentpage.css')}" />
+
+        <script type="text/javascript">
+            // history.pushState(null, null, 'nmPaymentNew');
+            // window.addEventListener('popstate', function () {
+            //     history.pushState(null, null, 'nmPaymentNew');
+            // });
+        </script>
+
+        <!-- Conversion Pixel - NMIMS_PaymentConfimation_8378387 - DO NOT MODIFY -->
+        <script src="https://secure.adnxs.com/px?id=839255&seg=8378387&t=1" type="text/javascript"></script>
+        <!-- End of Conversion Pixel -->
+
+        <!-- <style>
+            
+        </style> -->
+
+        <script>
+            var imageURL = '{!$Resource.emptyCart}';
+        </script>
+    </head>
+    <body>
+         <!-- Header Begins Here -->
+         <c:HeaderPage ActiveBadge="PAYMENT" />
+         <!-- Header Ends Here -->
+
+        <apex:form id="PaymentForm">
+            <div class="transparent-background loaderPanel" style="display:none;">
+                <div class="loader-center">
+                    <div class="loader">Loading...</div>
+                </div>
+            </div>
+            <!-- Hidden Fields -->
+            <apex:actionFunction name="callMakePayment" action="{!MakeOnlinePayment}" />
+            <apex:inputHidden id="hdnCurrentSemester" value="{!currentSemester}" />
+            <apex:inputHidden id="hdngetWay" value="{!paymentGateWayName}" />
+            <apex:inputHidden id="hdnLiveLecturesOption" value="{!liveLecType}" />
+            <apex:inputHidden id="hdnCourseList" value="{!courseList}" />
+            <apex:inputHidden id="hdnBacklogList" value="{!backlogList}" />
+            <apex:inputHidden id="hdnOldCourseList" value="{!OldCourseList}" />
+            <apex:inputHidden id="hdnOldBacklogList" value="{!OldBacklogList}" />
+            <apex:inputHidden id="hdnLectureCantBeSwitch" value="{!lectureCantBeSwitch}" />
+            <apex:inputHidden id="hdnPaymentOption" value="{!feeType}" />
+            <apex:inputHidden id="hdnSubjectsCount" value="{!jsonMapOfLectureTypeAndSubjects}" />
+            <apex:inputHidden id="hdnfeePaidAmount" value="{!feePaidAmount}" />
+            <apex:inputHidden id="hdnfeePaidBacklogAmount" value="{!feePaidBacklogAmount}" />
+            <apex:inputHidden value="{!jsonMapOfProductAndAmount}" id="jsonStringOfProductVsAmount" />
+            <apex:inputHidden value="{!jsonMapOfsetOfApplicablePaymentOptionForStudent}" id="jsonMapOfsetOfApplicablePaymentOptionForStudent" />
+            <form id="reg-long-form" role="form">
+                <apex:pageMessages />
+                 <!-- Hidden Field -->
+                 <apex:outputPanel id="ErrorPopUpPanel">
+                    <apex:inputHidden id="message" value="{!message}"/>
+                    <apex:inputHidden id="strSecToShow" value="{!strSecToShow}"/>
+                    <apex:inputHidden id="returnUrl" value="{!returnUrl}"/>
+                </apex:outputPanel>
+                <div class="tab-wrapper">
+                    <div class="container-fluid">
+                        <div class="tab-content">
+                            <div class="tab-pane active" style="padding:0">
+                                <div class="form-wrapper">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    Student Number
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <input type="Text" disabled="true" value="{!studentNo}" class="form-control" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" id="paymentOptionSection">
+                                            <div class="col-md-8" style="border-right: 1px solid black; ">
+                                                
+                                                <!-------------------------------------------------------------- Payment: Addon Live Lectures -------------------------------->
+                                                <div class="message-box text-center form-group padding10 margin">Payment: Addon Live Lectures
+                                                    <a class="icon-down-arrow toggleBtn" style="float: right;color:white" href="javascript:void(0);" data-id="paymentFoSection1"></a>
+                                                </div>
+                                                <div class="form-group paymentFoSection1">
+                                                    <div class="row">
+                                                        <div class="col-md-2">
+                                                            <strong>Payment For</strong>
+                                                        </div>
+                                                        <div class="col-md-10 row">
+                                                            <apex:variable var="setOfApplicablePaymentOption" value="{!''}{!setOfApplicablePaymentOptionForStudent}" />
+
+                                                            <div class="btn-group liveLectureBtnGroup" style="padding:5px;" role="group" aria-label="Basic example">
+                                                                <apex:outputpanel rendered="{!IF(CONTAINS(setOfApplicablePaymentOption,'1SemLecturesFee') && mapOfProductAndAmount['1SemLecturesFee'] > 0,true, false)}">
+                                                                    <button type="button" class="btn btn-secondary PaymentForLiveLectures mr5 SemBundles" data-mode="1" data-value="1SemLecturesFee">
+                                                                        {!currentSemesterWithPlural} Semester – Rs. {!mapOfProductAndAmount['1SemLecturesFee']}
+                                                                    </button>
+                                                                </apex:outputpanel>
+
+                                                                <apex:outputpanel rendered="{!IF(CONTAINS(setOfApplicablePaymentOption,'2SemLecturesFee') && mapOfProductAndAmount['2SemLecturesFee'] > 0,true,false)}">
+                                                                    <button type="button" class="btn btn-secondary PaymentForLiveLectures mr5 SemBundles" data-mode="2" data-value="2SemLecturesFee">
+                                                                        Annual (2 Semesters) – Rs. {!mapOfProductAndAmount['2SemLecturesFee']}    
+                                                                    </button>
+                                                                </apex:outputpanel>
+
+                                                                <apex:outputpanel rendered="{!IF(CONTAINS(setOfApplicablePaymentOption,'3SemLecturesFee') && mapOfProductAndAmount['3SemLecturesFee'] > 0,true,false)}">
+                                                                    <button type="button" class="btn btn-secondary PaymentForLiveLectures mr5 SemBundles" data-mode="3" data-value="3SemLecturesFee">
+                                                                        Multiple (3 Semesters) – Rs. {!mapOfProductAndAmount['3SemLecturesFee']}
+                                                                    </button>
+                                                                </apex:outputpanel>
+
+                                                                <apex:outputpanel rendered="{!IF(CONTAINS(setOfApplicablePaymentOption,'4SemLecturesFee') && mapOfProductAndAmount['4SemLecturesFee'] > 0,true,false)}">
+                                                                    <button type="button" class="btn btn-secondary PaymentForLiveLectures mr5 SemBundles" data-mode="4" data-value="4SemLecturesFee">
+                                                                        Program (All 4 Sems) – Rs. {!mapOfProductAndAmount['4SemLecturesFee']}
+                                                                    </button>
+                                                                </apex:outputpanel>
+                                                                <apex:outputpanel rendered="{!IF(CONTAINS(setOfApplicablePaymentOption,'Custom') && (!CONTAINS('1SemLecturesFee:2SemLecturesFee:3SemLecturesFee:4SemLecturesFee',liveLecType) || IsBlank(liveLecType) ),true,false)}">
+                                                                    <button type="button" class="btn btn-secondary PaymentForLiveLectures mr5" data-mode="5" data-value="Custom">
+                                                                        Choose Subjects for {!currentSemester}<apex:outputText value="{!CASE(MOD(VALUE(currentSemester),10),1,"st",2,"nd",3,"rd","th")}"/> Semester
+                                                                    </button>
+                                                                </apex:outputpanel>
+                                                                <apex:outputPanel rendered="{!IF(liveLecType = 'No' || IsBlank(liveLecType), true, false)}">
+                                                                    <button type="button" class="btn btn-secondary PaymentForLiveLectures mr5" data-mode="6" data-value="No">
+                                                                        No Live Lectures
+                                                                    </button>
+                                                                </apex:outputPanel>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-------------------------------------------------------------- Choose Subjects -------------------------------------->
+                                                <div class="SubjectSection hide">
+                                                    <div class="message-box text-center form-group padding10 margin">Semester {!currentSemester} 
+                                                        <a class="icon-down-arrow toggleBtn" style="float: right;color:white" href="javascript:void(0);" data-id="paymentFoSection2"></a>
+                                                    </div>
+                                                    <div class="form-group paymentFoSection2">
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <strong>Subjects</strong>
+                                                            </div>
+                                                            <div class="col-md-10 row">
+                                                                <div class="btn-group" style="padding:5px;" role="group" aria-label="Basic example">
+                                                                    <apex:repeat value="{!mapOfCourseKeyVsCurrentCourseObj}" var="key">
+                                                                        <button type="button" class="btn btn-secondary ChooseSubjects mr5" data-mode="1" data-value="{!mapOfCourseKeyVsCurrentCourseObj[key].Student_Zone_Course_Id__c}">
+                                                                            {!mapOfCourseKeyVsCurrentCourseObj[key].Name}
+                                                                        </button>
+                                                                    </apex:repeat>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-------------------------------------------------------------- Session Scheduled List -------------------------------------->
+                                                <div class="SubjectSection hide">
+                                                    <div class="message-box text-center form-group padding10 margin">Lecture Schedule
+                                                        <a class="icon-down-arrow toggleBtn" style="float: right;color:white" href="javascript:void(0);" data-id="paymentFoSection3"></a>
+                                                    </div>
+                                                    <div class="pb10">
+                                                        <p class="font-smaller">Note: You are requested to check the detailed lecture schedule so that you can make an informed decision to subscribe for live subjects.
+                                                            <br/>Please check both - upcoming and elapsed lectures by clicking on the individual subject names below.</p>
+                                                    </div>
+                                                    <div class="form-group paymentFoSection3">
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <strong>Subjects</strong>
+                                                            </div>
+                                                            <div class="col-md-10 row">
+                                                                <div class="btn-group" style="padding:5px;" role="group" aria-label="Basic example">
+                                                                    <apex:repeat value="{!mapOfCourseKeyVsCurrentCourseObj}" var="key">
+                                                                        <a target="_blank" class="btn btn-secondary mr5 hyperlink" href="https://studentzone-ngasce.nmims.edu/acads/m/viewScheduleSessionByPSSId?year={!sessionYear}&month={!sessionMonth}&pssId={!mapOfCourseKeyVsCurrentCourseObj[key].Student_Zone_Course_Id__c}">{!mapOfCourseKeyVsCurrentCourseObj[key].Name}</a>
+                                                                    </apex:repeat>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-------------------------------------------------------------- Backlog Subjects -------------------------------------->
+                                                <apex:outputPanel rendered="{!sizeOfMapOfBacklogCourseIdVsBacklogObject > 0}" layout="none">
+                                                <div class="">
+                                                    <div class="message-box text-center form-group padding10 margin">Backlog Subjects
+                                                        <a class="icon-down-arrow toggleBtn" style="float: right;color:white" href="javascript:void(0);" data-id="paymentFoSection4"></a>
+                                                    </div>
+                                                    <div class="form-group paymentFoSection4">
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <strong>Subjects</strong>
+                                                            </div>
+                                                            <div class="col-md-10 row">
+                                                                <div class="btn-group" style="padding:5px;" role="group" aria-label="Basic example">
+                                                                    <apex:repeat value="{!mapOfBacklogCourseIdVsBacklogObject}" var="key">
+                                                                        <button type="button" class="btn btn-secondary ChooseBacklogSubjects mr5" data-mode="1" data-value="{!mapOfBacklogCourseIdVsBacklogObject[key].subjectId}">
+                                                                            SEM - {!mapOfBacklogCourseIdVsBacklogObject[key].sem} - {!mapOfBacklogCourseIdVsBacklogObject[key].subject}
+                                                                        </button>
+                                                                    </apex:repeat>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                </apex:outputPanel>
+
+                                            </div>
+                                            <div class="col-md-4" >
+                                                <div class="message-box text-center form-group padding10 margin">My Cart</div>
+                                                <div class="form-group mycartClass">
+                                                    <center><img src="{!URLFOR($Resource.emptyCart)}" width="90%"/></center>
+                                                    <hr style="border-top: 1px solid black" />
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-4 col-md-offset-7">
+                                                        <button type="button" class="btn btn-secondary makePayment" disabled="true">
+                                                            Make Payment
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
+            <!----------------------------------------------Payment GetWay Options ---------------------------------------------->
+            <div style="display:none;" id="PaymentGateWayOption">
+                <div class="modal popup-wrapper">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Important Message</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p> Select Payment GateWay </p>
+                                <div class="cc-selector-2 row padding10">
+                                    <apex:outputPanel layout="block" styleclass="col-sm-3 text-center" rendered="{!objPaymentFormConfiguration.BillDesk_Gateway__c}">
+                                        <input id="billDeskgateway" type="radio" name="paymentGatewayGrp" value="BillDesk GateWay" />
+                                        <label class="drinkcard-cc billDeskgateWay" for="billDeskgateway" />
+                                    </apex:outputPanel>
+
+                                    <apex:outputPanel layout="block" styleclass="col-sm-3 text-center" rendered="{!objPaymentFormConfiguration.HDFC_Gateway__c}">
+                                        <input id="hdfcgateway" type="radio" name="paymentGatewayGrp" value="HDFC GateWay" />
+                                        <label class="drinkcard-cc hdfcgateWay" for="hdfcgateway" />
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="block" styleclass="col-sm-3 text-center" rendered="{!objPaymentFormConfiguration.Paytm_Gateway__c}">
+                                        <input id="paytmgateway" type="radio" name="paymentGatewayGrp" value="Paytm GateWay" />
+                                        <label class="drinkcard-cc paytmgateWay" for="paytmgateway" />
+                                    </apex:outputPanel>
+
+                                    <apex:outputPanel layout="block" styleclass="col-sm-3 text-center" rendered="{!objPaymentFormConfiguration.Razorypay_Gateway__c}">
+                                        <input id="razorpaygateway" type="radio" name="paymentGatewayGrp" value="Razorpay GateWay" />
+                                        <label class="drinkcard-cc razorpaygateWay" for="razorpaygateway" />
+                                    </apex:outputPanel>
+
+                                    <apex:outputPanel layout="block" styleclass="col-sm-3 text-center" rendered="{!objPaymentFormConfiguration.ICICI_Gateway__c}" >
+                                        <input id="icicigateway" type="radio" name="paymentGatewayGrp" value="ICICI GateWay" />
+                                        <label class="drinkcard-cc icicigateway" for="icicigateway" />
+                                    </apex:outputPanel>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="row">
+                                    <div class="col-sm-4" style="float:right">
+                                        <apex:commandButton styleclass="btn btn-default" value="Cancel" id="btnCancel" onclick="hideme();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="overlay"></div>
+            </div>
+            <!------------------------------------------------end -------------------------------------------------------------->
+
+            <!-------------------------------------------- Error Popup------------------------------------------------>
+            <div style="display:none" id="errorPopupPanel">
+                <div class="modal popup-wrapper">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title"><p id="errorTitle"></p></h4>
+                            </div>
+                            <div class="modal-body">
+                                <p id="errorMessage"></p>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="btn" onclick="hidePopup();">I Agree</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="overlay"></div>
+            </div>
+
+            <apex:outputPanel rendered="{!strSecToShow == 'PopUpError'}" id="MsgPopUp">
+                <!---->
+                <div class="modal popup-wrapper">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Important Message</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>{!message}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <apex:commandLink value="Ok" styleClass="btn btn-default " id="btn1" status="processing"
+                        action="/apex/nmLogin_New" rendered="{! returnUrl!=''}" />
+                        <apex:outputLabel rendered="{!IF(returnUrl ==null || returnUrl !='',true,false)}">
+                            <button type="button" onclick="hideMe();return false;" class="btn btn-default">CANCEL</button>
+                        </apex:outputLabel>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </apex:outputPanel>
+            <!------------------------------------------------end -------------------------------------------------------------->
+        </apex:form>
+        <!-- Footer Component -->
+        <c:FooterPage />
+        <!-- Footer Component -->
+
+        <!-- Search Popup -->
+        <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <form class="form-inline" id="">
+                            <input type="text" class="form-control" id="searchInput" placeholder="" />
+                            <button type="" class="icon-search"></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!--All java script  -->
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/chosen.jquery.min_.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery.validate.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.LiveLectureResource, 'LiveLectureResource/script.js')}" />
+        <script type="text/javascript" src="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/js/fontawesome.min.js')}" data-auto-replace-svg="nest"/>
+        <!-- <script>
+            if('{!JSENCODE(strSecToShow)}' == 'PopUpError'){
+                openPopUp();
+            }
+        </script> -->
+    </body>
+</apex:page>

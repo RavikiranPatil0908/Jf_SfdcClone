@@ -1,0 +1,62 @@
+<!-- <apex:page controller="allrows" >
+    <apex:sectionHeader title="My Deleted Lead" subtitle="Delete Lead Management" />
+
+    <apex:pageBlock >
+        <apex:pageMessages id="error" />
+
+        <apex:form id="theForm">
+            <apex:pageblock >
+                <apex:pageBlockSection >
+                    <apex:panelGrid columns="7" id="buttons">
+                        <apex:pageBlockTable value="{!Leadvalue}" var="c">
+                            <apex:column value="{!c.name}" />
+                            <apex:column value="{!c.id}" />
+                            <apex:column value="{!c.email}" />
+                            <apex:column value="{!c.MobilePhone}" />
+                            <apex:column value="{!c.LeadSource}" />
+                            <apex:column value="{!c.nm_ChooseaProgram__c}" />
+                            <apex:column value="{!c.IC_Name__c }" />
+                        </apex:pageBlockTable>
+                    </apex:panelGrid>
+                </apex:pageBlockSection>
+                
+                <apex:pageBlockButtons location="Bottom">
+                    <apex:commandButton value="First" action="{!setCon.First}" reRender="theForm" />
+
+                    <apex:commandButton value="Previous" action="{!setCon.Previous}" reRender="theForm" />
+
+                    <apex:commandButton value="Next" action="{!setCon.Next}" reRender="theForm" />
+
+                    <apex:commandButton value="Last" action="{!setCon.Last}" reRender="theForm" />
+                </apex:pageBlockButtons>
+
+                <apex:outputText >Page Number {!pageNumber} </apex:outputText>
+            </apex:pageblock>
+        </apex:form>
+    </apex:pageBlock>
+</apex:page> -->
+<apex:page lightningStylesheets="true" >
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+<apex:includeLightning />
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Deleted Lead Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+    <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+</head>
+<body>
+    <div id="lightning" />
+    <script>
+        $Lightning.use("c:aepPurchaseLicesneApp", function() {
+            $Lightning.createComponent("c:lwcNavigation" ,{"page":"aepDeletedLead"},
+            "lightning",
+            function (cmp) {
+                console.log('AEP Deleted List view component created successfully ...');
+            });
+        });
+    </script>
+</body>
+</html>
+</apex:page>

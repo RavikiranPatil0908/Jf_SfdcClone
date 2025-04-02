@@ -1,0 +1,21 @@
+<apex:page showHeader="false" sidebar="false">
+  <html>
+    <apex:includeLightning />    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />  
+
+    <body>
+    <div id="LightningComponentid" />   
+    <script>
+    $Lightning.use("c:FileUploadLwcvfApp", function() {        
+        $Lightning.createComponent("c:fileUpload",
+          { rid: '{!$CurrentPage.parameters.rid}',
+            cid: '{!$CurrentPage.parameters.cid}' },
+          "LightningComponentid",
+          function(cmp) {
+             console.log('LWC Componenet added in VF page');            
+          });
+    });
+    </script>
+    </body>
+    </html>
+</apex:page>

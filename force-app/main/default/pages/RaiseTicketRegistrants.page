@@ -1,0 +1,34 @@
+<!--
+  @description       : 
+  @author            : @Ravi
+  @group             : 
+  @last modified on  : 28--03--2025
+  @last modified by  : @Ravi
+-->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" cache="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+    <html>
+    <apex:includeLightning />
+    <head>
+        <!-- Google Tag Manager -->
+        <c:HeaderGTagManager />
+        <!-- Google Tag Manager -->
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    </head>
+    <body>
+        <c:BodyGTagManager />
+        <div id="LightningComponentid" />
+        <script>
+            $Lightning.use("c:raiseTicketRegistrantsApp", function () {
+                $Lightning.createComponent("c:raiseTicketForRegistrants",
+                    {
+                    },
+                    "LightningComponentid",
+                    function (cmp) {
+                        console.log('LWC Componenet added in VF page');
+                    });
+            });
+        </script>
+    </body>
+
+    </html>
+</apex:page>

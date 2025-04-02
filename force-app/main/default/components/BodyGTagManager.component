@@ -1,0 +1,9 @@
+<apex:component >
+    <!-- Google Tag Manager (noscript) -->
+    <apex:outputPanel rendered="{!$Label.Environment == 'Production'}">
+        <noscript>
+            <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PG5275RJ" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+        </noscript>
+    </apex:outputPanel>
+    <!-- End Google Tag Manager (noscript) -->
+</apex:component>

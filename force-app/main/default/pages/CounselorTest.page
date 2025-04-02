@@ -1,0 +1,392 @@
+<!--
+  @File Name          : CounselorTest.page
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 02-23-2021
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    16/12/2019   @BK     Initial Version
+-->
+<apex:page controller="ExecutiveSurveyController" cache="false" sidebar="false" showheader="false">
+    <style>
+        .Processingview
+        {
+            position: fixed;
+            background: url('{!URLFOR($Resource.Icon)}');
+            background-repeat: no-repeat;
+            background-position: center;           
+            width:  100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+           
+        }
+        .required
+        {
+            border: 2px solid #c00 !important;
+        }
+        .fs25 {
+            font-size: 25px;
+        }
+        .fl-right {
+            float: right;
+        }
+        .overlay
+        {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+          background-color: rgba(0,0,0,0.5);
+        }
+        .poup
+        {
+            position: fixed;
+            top: 30%;
+            width: 40%;
+            margin-left: 30%;
+            z-index: 11;
+        }
+        .messageCell
+        {
+            color:Black !important;
+        }
+        .LateFee
+        {
+            Color: red;
+            float: right;
+            margin-right: 4%;
+            font-style: italic;
+            font-family:Trebuchet MS;
+        }
+        input[type="text"]:focus {
+            border-color: #66AFEA !important;
+            outline: 0 !important;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6) !important;
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6) !important;
+
+        }
+     
+        <apex:outputText value="{!objSurvey.Survey_Container_CSS__c}" />
+    </style>
+    <script> 
+        var requests = {}; 
+        /*history.pushState(null, null, 'CounselorTest');
+        window.addEventListener('popstate', function () {
+            history.pushState(null, null, 'CounselorTest');
+        });*/
+    </script>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+   
+    <title>NMIMS Distance Education: Take Survey</title>
+    <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+    <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/logo.png')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/select-bg.png')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.ImageResource,'images/banner.jpg')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/chosen.min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/style.scss')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/styles/scss/vars.scss')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css.map')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/fonts.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/style.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/vars.css.map')}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.30.0/dist/sweetalert2.all.min.js" integrity="sha256-jnoqEEbdlSKYZyk08TF+r6uJk+OMkxhu6x/Jk7sKJJs=" crossorigin="anonymous"></script>
+
+     
+     <nav class="headerNavigation">
+         <div class="container">
+            <div class="logoImg"><apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive"/></div>          
+         </div>
+     </nav>
+     <!-- Breadcrumb & Social Icons -->
+        <div class="topSocialWrapper" style="padding-bottom: 10px;">
+          <div class="container">
+           
+            <div class="shareIcons">
+           
+              <ul>
+                <li><a href="https://plus.google.com/u/0/116325782206816676798" class="icon-google-plus" style="display:none;"></a></li>
+                <li><a href="https://twitter.com/NMIMS_SCE" class="icon-twitter"  style="display:none;"></a></li>
+                <li><a href="https://www.facebook.com/NMIMSSCE" class="icon-facebook" style="display:none;"></a></li>
+              </ul>
+             
+            </div>
+          </div>
+        </div>
+        <!--/ Bredcrums & Social Icons --> 
+        <!-- Banner -->
+        
+       
+          <div class="container">
+            <div class="bannerIns">
+            
+            </div>
+          </div>
+          
+       
+        <!--/ Banner --> 
+
+<div id="survey_container">   
+    <apex:form id="theForm"   >
+        <div class="tab-wrapper">
+            <div class="container">
+                <div class="tab-content">
+                    <div class="tab-pane active">
+                        <div class="form-wrapper">
+                            <apex:outputPanel id="seeSurvey" >
+                                <span class="fs25"><apex:outputField value="{!objSurvey.Survey_Header__c}"/></span>
+                                <h1><apex:outputField value="{!objSurvey.Name}" rendered="{!objSurvey.Hide_Survey_Name__c == false}" /></h1>
+                                <apex:outputPanel styleClass="fs25 fl-right" rendered="{!thankYouRendered == true}">Your total score is <span style="font-weight: bold;text-decoration: underline;">
+                                    <apex:outputText value="{0, number, ###,###}">
+                                        <apex:param value="{!Marks}"/>
+                                    </apex:outputText>%</span>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+
+                            <apex:pageMessages id="errorMessage" />
+                            <apex:pageBlock > 
+                                <div id="qList">
+                                    <apex:variable var="index" value="{!0}" />
+                                    <apex:repeat value="{!allQuestions}" var="qPreview" id="aQPreview">
+
+                                        <div id="{!qPreview.orderNumber}" class="questionPanel{!index} row" style="{!IF((index < 1 && totalRespond < 1) || (index < 1 && allQuestions.size == totalRespond) || thankYouRendered == true,'display:block;',
+                                        IF(index == totalRespond && allQuestions.size != totalRespond,'display:block;','display:none;'))}">
+                                            <div class="col-md-12">
+                                                <h1 class="question">
+                                                    <span style="font-family:Calibri ;font-size: 60%;font-weight:bold;"> 
+                                                        <span class="questionNumber">{!qPreview.orderNumber})</span>
+                                                        <font family="calibri "><apex:outputText escape="false" value="{!qPreview.question}"/> </font>
+                                                        <apex:outputText rendered="{! (qPreview.renderSelectCheckboxes == 'true' && !thankYouRendered)}" ><span class="fl-right">(Multiple-Select Question)</span></apex:outputText>
+                                                    </span>
+                                                    <apex:outputPanel rendered="{!qPreview.required}" styleClass="requiredText;font-family:Trebuchet MS;" />
+                                                </h1>
+                                                <div class="form-group" >
+                                                    <div id="radio"> 
+                                                        <spam style="font-family:Calibri">
+                                                            <apex:selectRadio layout="pageDirection" rendered="{!qPreview.renderSelectRadio}" value="{!qPreview.selectedOption}" >
+                                                                <br></br><apex:selectOptions value="{!qPreview.singleOptions}" html-class="question{!index} radioOptions" html-style="margin-right: 10px;" html-onchange="answerSelected(this,'{!index}','radio');"/>
+                                                            </apex:selectRadio>
+                                                        </spam>
+                                                    </div>
+                                                </div>  
+                                                <div class="form-group" >
+                                                    <div id="checkbox">     
+                                                        <spam style="font-family:Calibri">      
+                                                            <apex:selectCheckboxes layout="pageDirection" rendered="{!qPreview.renderSelectCheckboxes}" value="{!qPreview.selectedOptions}" >
+                                                                <apex:selectOptions value="{!qPreview.multiOptions}" html-class="question{!index} radioOptions" html-data-id="{!qPreview.question}" html-style="margin-right: 10px;" html-onchange="answerSelected(this,'{!index}','checkbox');" />
+                                                            </apex:selectCheckboxes> 
+                                                        </spam>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group otherOptionPanel{!index}" style="display:none;">
+                                                    <input type="text" class="form-control otherOption{!index}" style="width:45%;border: 1px solid;border-radius:5px;" placeholder="Please specify" />
+                                                </div>
+                                                <apex:outputPanel rendered="{!thankYouRendered == true}"> 
+                                                    <apex:variable var="q" value="{!0}" />
+                                                    <apex:repeat var="list" value="{!SurveyResponse}">
+                                                        <apex:outputPanel rendered="{!IF(list.Survey_Question__r.Question__c == qPreview.question, true, false)}" >
+                                                            <script> 
+                                                                requests["{!q}"] = {
+                                                                    'id':"{!list.id}",
+                                                                    'questionId':"{!index}",
+                                                                    'marks':"{!list.Marks__c}",
+                                                                    'answer':"{!list.Survey_Question__r.Answer__c}",
+                                                                    'type':"{!list.Survey_Question__r.Type__c}",
+                                                                    'givenAnswer': "{!list.Response_text__c}"
+                                                                };
+                                                            </script> 
+                                                        </apex:outputPanel>
+                                                        <apex:variable var="q" value="{!q+1}" />
+                                                    </apex:repeat>
+                                                </apex:outputPanel>
+                                            </div>
+                                            <apex:outputPanel rendered="{!thankYouRendered == false}">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <apex:outputPanel rendered="{!IF(index+1 != allQuestions.size,true,false)}">
+                                                            <apex:CommandLink action="{!saveAndNext}" value="Next" rerender="errorMessage,otherOption" styleClass="btn btn-danger" target="_blank"  oncomplete="nextQuestion(this);" onclick="if(validate(this)) return false;" html-data-index="{!index}" html-data-type="{!IF(qPreview.renderSelectRadio == 'true','radio','checkbox')}">
+                                                                <apex:param name="questionId" value="{!qPreview.orderNumber}" assignTo="{!questionId}"/>
+                                                            </apex:CommandLink>
+                                                        </apex:outputPanel>
+
+                                                        <apex:outputPanel rendered="{!IF(index+1 == allQuestions.size,true,false)}">
+                                                            <apex:CommandLink action="{!saveAndNext}" value="Submit" rerender="theForm" styleClass="btn btn-danger" onclick="if(validate(this)) return false;" html-data-index="{!index}" html-data-type="{!IF(qPreview.renderSelectRadio == 'true','radio','checkbox')}">
+                                                                <apex:param name="questionId" value="{!qPreview.orderNumber}" assignTo="{!questionId}"/>
+                                                            </apex:CommandLink>
+                                                        </apex:outputPanel>
+                                                    </div> 
+                                                </div>
+                                            </apex:outputPanel>
+                                        </div>
+                                    <apex:variable var="index" value="{!index + 1}" />
+                                    </apex:repeat> 
+                                    <apex:inputHidden value="{!otherOption}" id="otherOption" />
+                                </div>  
+                            </apex:pageBlock>
+                            <!-- Result Section -->
+                            <apex:outputPanel rendered="{!thankYouRendered == true}">
+                                <script>
+                                    $(document).ready(function() {
+                                        console.dir(requests);
+                                        if(!$.isEmptyObject(requests)){
+                                            for (var key in requests) {
+                                                if (requests.hasOwnProperty(key)) {
+                                                    let styleClass = 'question'+requests[key].questionId;
+                                                    if(requests[key].type == 'Single Select--Vertical'){
+                                                        checkSurveyForRadio(styleClass,requests[key]);
+                                                    }else if(requests[key].type == 'Multi-Select--Vertical') {
+                                                        checkSurveyForCheckBox(styleClass,requests[key]);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
+                                </script>
+                                
+                            </apex:outputPanel>
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+        </div>   
+    </apex:form>
+</div>
+<apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-duration-format/2.2.2/moment-duration-format.min.js"></script>
+<script>
+
+    function validate(elem) {
+        let checkedValues = [];
+        let questionNumber = $(elem).data('index');
+        let type = $(elem).data('type');
+        let radioName = $('.question'+questionNumber).attr("name");
+
+        let id = $("input[name='"+radioName+"']:checked").attr("id");
+        let textVal = $("label[for='"+id+"']").text();
+
+        //For checkbox condition.
+        if(type == 'checkbox') {
+            $.each($("input[name='"+radioName+"']:checked"), function(){            
+                checkedValues.push($("label[for='"+$(this).attr('id')+"']").text().trim());
+            });
+        }
+        
+        let flag = false;
+        if(!$("input[name='"+radioName+"']:checked").val()){
+            flag = true;
+        }else if($("input[name='"+radioName+"']:checked").val() && textVal.indexOf('Other') > -1 && type == 'radio'){
+            if(!$('.otherOption'+questionNumber).val()){
+                flag = true;
+            }else{
+                $('[id$=otherOption]').val($('.otherOption'+questionNumber).val());
+            }
+        }else if(checkedValues.length > 0 && $.inArray('Other', checkedValues) > -1 && type == 'checkbox'){
+            if(!$('.otherOption'+questionNumber).val()){
+                flag = true;
+            }else{
+                $('[id$=otherOption]').val($('.otherOption'+questionNumber).val());
+            }
+        }
+
+        if(flag) {
+            Swal({type: 'warning',title: 'Oops! You seemed to have missed filling your response.'});
+            return true;
+        }else{
+            let btn = elem;
+            setTimeout(function(){ 
+                // Use the Salesforce CSS style to make the button appear disabled
+                $(elem).addClass('disabled');
+                btn.text = "Saving..."; 
+            }, 50);
+            return false;
+        }
+    }
+
+    function nextQuestion(elem) {
+        if(!$('.infoM3').length){
+            let questionNumber = $(elem).data('index');
+            console.log('questionNumber-->'+questionNumber);
+            let nextQuestionNumber = parseInt(questionNumber)+1;
+            if($('.questionPanel'+nextQuestionNumber).length){
+                $('.questionPanel'+questionNumber).hide();
+                $('.questionPanel'+nextQuestionNumber).show();
+            }
+        }
+    }
+
+    function answerSelected(elem,indexVal,type) {
+        let Radiolabel = $("label[for='"+elem.id+"']").text();
+        if(type == 'radio'){
+            if(Radiolabel.indexOf('Other') > -1){
+                $('.otherOptionPanel'+indexVal).show();
+            }else{
+                $('.otherOptionPanel'+indexVal).hide();
+                $('.otherOption'+indexVal).val('');
+            }
+        }else{
+            let checkedValues = [];
+            $.each($("input[name='"+elem.name+"']:checked"), function(){            
+                checkedValues.push($("label[for='"+$(this).attr('id')+"']").text().trim());
+            });
+            console.dir(checkedValues);
+            if($.inArray('Other', checkedValues) > -1){
+                $('.otherOptionPanel'+indexVal).show();
+            }else{
+                $('.otherOptionPanel'+indexVal).hide();
+                $('.otherOption'+indexVal).val('');
+            }
+        }  
+    }
+
+    function checkSurveyForRadio(styleClass,requests) {
+        //To show correct answer.
+        $( "."+styleClass ).each(function( index ) {
+            let val = $(this).siblings().text();
+            // console.log(index+' '+val+' '+ requests.answer+' '+requests.givenAnswer);
+            if(val.trim() == requests.answer.trim()){
+                // console.log('right');
+                $(this).siblings().css({ "color":"green", "font-style": "oblique"});
+            }
+            if (val.trim() == requests.givenAnswer.trim() && requests.answer.trim() != requests.givenAnswer.trim()) {
+                // console.log('wrong');
+                $(this).siblings().css({ "color":"red", "font-style": "oblique"});
+            }
+        });
+    }
+
+    function checkSurveyForCheckBox(styleClass,requests) {
+        //To show correct answer.
+        let checkedValues = requests.givenAnswer.split(',');
+        let elem = $("."+styleClass).first();
+        let elemName = $(elem).attr('name');
+        let answers = requests.answer.split(',').map(Function.prototype.call, String.prototype.trim);
+
+        $.each($("input[name='"+elemName+"']"), function() {
+            let label = $("label[for='"+$(this).attr('id')+"']").text().trim();
+            if( $.inArray(label, checkedValues) !== -1 ) {
+                if( $.inArray(label, answers) !== -1 ) {
+                    $(this).siblings().css({ "color":"green", "font-style": "oblique"});
+                }else{
+                    $(this).siblings().css({ "color":"red", "font-style": "oblique"});
+                }
+            }else if( $.inArray(label, answers) !== -1 ) {
+                $(this).siblings().css({ "color":"green", "font-style": "oblique"});
+            }
+        });
+    }
+
+</script>
+</apex:page>

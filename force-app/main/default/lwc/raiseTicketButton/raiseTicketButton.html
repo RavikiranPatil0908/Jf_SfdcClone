@@ -1,0 +1,103 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 08-17-2024
+  @last modified by  : @Monikac
+-->
+<template>
+	<div class="slds-align_absolute-center slds-size_2-of-3">
+		<lightning-card>
+			<h1> Raise a Ticket </h1>
+			<template if:true={showVerify}>
+				<div class="slds-grid slds-wrap">
+
+					<div class="slds-col slds-size_1-of-1">
+						<lightning-input type="text" label="Student Number" placeholder="Enter a Student No"
+							onchange={handleNoChange} required="true"> </lightning-input>
+						<br />
+						{message}
+						<br />
+						<div class="slds-col">
+							<lightning-button class="slds-align_absolute-center" variant="brand" label="Verify"
+								type="submit" onclick={handleVerify}> </lightning-button>
+						</div>
+					</div>
+				</div>
+			</template>
+			<template if:true={verified}>
+				<template if:true={showDetails}>
+					<h4> Name: {account.Name} </h4> <br />
+					<h4> Program: {account.nm_Program__r.Name} </h4> <br />
+					<h4> Batch: {account.Batch_Name_For_Account__c} </h4> <br />
+					<br />
+				</template>
+				<template if:true={showToast}>
+					<br />
+					<div style="background-color: #BA0517; color: white;"> Fill all the mandatory details </div>
+					<br />
+				</template>
+				<div class="slds-wrap slds-grid">
+					{error}
+					<div class="slds-col slds-size_1-of-1">
+						<lightning-combobox label="Query Type" options={queryTypes} onchange={handlePurposeChange}
+							required="true"> </lightning-combobox>
+						<br />
+					</div>
+					<div class="slds-col slds-size_1-of-1">
+						<lightning-combobox label="Category" options={categories} onchange={handleCategoryChange}
+							required="true" value={category}> </lightning-combobox>
+						<br />
+					</div>
+					<template if:true={enable}>
+						<div class="slds-col slds-size_1-of-1">
+							<c-search-box required="true" label="Sub Category" options={options} value={subCategory}
+								onchange={handleChange}></c-search-box>
+							<br />
+						</div>
+					</template>
+					<div class="slds-col slds-size_1-of-1">
+						<lightning-input label="Subject" value={subject} onchange={handleSubjChange} required="true">
+						</lightning-input>
+						<br />
+					</div>
+
+					<div class="slds-col slds-size_1-of-1">
+						<lightning-textarea label="Description" onchange={handleDescChange} required="true">
+						</lightning-textarea>
+						<br />
+					</div>
+					<div class="slds-col slds-size_1-of-1">
+						<lightning-input type="checkbox" label="Do you want to attach related files/screenshots ?"
+							onchange={handleCheckChange} unchecked> </lightning-input>
+						<br />
+					</div>
+					<template if:true={isUploadFile}>
+						<div class="slds-col slds-size_1-of-1">
+							<p> File size should be less than 3 MB (pdf, png, jpg, jpeg) </p>
+							<lightning-input type="file" class="text" label="Attachment" onchange={handleFileUploaded}
+								accept={acceptedFormats} variant="destructive-text" multiple>
+							</lightning-input>
+							{error}
+							<div class="container">
+								<template for:each={filesUploaded} for:item="file">
+									<lightning-pill key={file.Title} label={file.Title} data-fid={file.Title}
+										onremove={handleRemove} class="slds-text-body_small"></lightning-pill>
+								</template>
+							</div>
+						</div>
+					</template>
+				</div>
+				<div class="slds-col">
+					<lightning-button class="slds-align_absolute-center" variant="destructive" label="Submit"
+						type="submit" onclick={handleSubmit}> </lightning-button>
+				</div>
+			</template>
+			<template if:true={showSpinner}>
+				<div>
+					<lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+				</div>
+			</template>
+		</lightning-card>
+	</div>
+</template>

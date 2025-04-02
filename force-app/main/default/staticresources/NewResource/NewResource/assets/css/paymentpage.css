@@ -1,0 +1,302 @@
+/* Payment Page Csss */
+
+.Processingview {
+    position: fixed;
+    background: url('{!URLFOR($Resource.loading_img)}');
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    z-index: 1004;
+    left: 3%;
+    top: 1%;
+
+}
+
+.required {
+    border: 2px solid #c00 !important;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.poup {
+    position: fixed;
+    top: 30%;
+    width: 40%;
+    margin-left: 30%;
+    z-index: 11;
+}
+
+.poupMobile {
+    position: fixed;
+    top: 10%;
+    width: 50%;
+    margin-left: 30%;
+    z-index: 11;
+}
+
+/*  .messageCell
+{
+    color:White !important;
+} */
+
+.LateFee {
+    Color: red;
+    margin-right: 4%;
+    font-style: italic;
+}
+
+.downPayment {
+    Color: red;
+    float: left;
+    margin-right: 4%;
+    font-style: italic;
+}
+
+@media (max-width: 767px) {
+    .form-wrapper .eduVanzProceed {
+        width: 100% !important;
+    }
+}
+
+.eduVanzProceed {
+    margin-top: 20px;
+}
+
+.loanHeader {
+    padding: 7px 30px !important;
+    margin: 5px 5px 30px 5px !important;
+}
+
+.transparent-background {
+    content: '';
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.loader-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.loader {
+    color: #ffffff;
+    font-size: 20px;
+    margin: 100px auto;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    position: relative;
+    text-indent: -9999em;
+    -webkit-animation: load4 1.3s infinite linear;
+    animation: load4 1.3s infinite linear;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+.loaderMessage {
+    color: white;
+    font-size: 20px;
+    margin: 100px auto;
+}
+
+@-webkit-keyframes load4 {
+    0%,
+    100% {
+        box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+    }
+    12.5% {
+        box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+    }
+    25% {
+        box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+    }
+    37.5% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+    }
+    50% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+    }
+    62.5% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+    }
+    75% {
+        box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+    }
+    87.5% {
+        box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+    }
+}
+
+@keyframes load4 {
+    0%,
+    100% {
+        box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+    }
+    12.5% {
+        box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+    }
+    25% {
+        box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+    }
+    37.5% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+    }
+    50% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+    }
+    62.5% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+    }
+    75% {
+        box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+    }
+    87.5% {
+        box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+    }
+}
+
+.svg-inline--fa {
+    vertical-align: top;
+}
+
+.topSocialWrapper .shareIcons {
+    width: auto;
+}
+
+.loanButton{
+    width: 100%;
+}
+.padding10 {
+    padding: 10px !important;
+}
+.padding5 {
+    padding: 5px;
+}
+.btn.active {
+    background-color: #d02630;
+}
+
+.btn {
+    white-space:normal !important; 
+    word-wrap: break-word; 
+    word-break: normal;
+    
+}
+
+.message-box.margin {
+    margin: 0px -5px 30px -5px !important;
+}
+
+/* .btn-group>.mr5:not(:last-child):not(.dropdown-toggle) {
+    margin-right:5px;
+} */
+
+.m5 {
+    margin: 5px;
+    margin-left: 5px !important;
+}
+
+.fright {
+    float: right;
+}
+
+.mt10 {
+    margin-top: 10px;
+}
+
+.sessionTimer.ml-auto{
+    color:#fff;
+    margin-left:auto!important;
+    line-height: 23px!important;
+    font-size: 17px;
+    font-family: Aller-Bold;
+    text-transform: uppercase;
+    padding: 10px 30px 10px;
+    text-overflow: ellipsis;
+    max-width: 230px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.sessionTimeLabel {
+    margin-right: 8px;
+    font-size: 12px;
+}
+
+.sessionTime {
+    letter-spacing: 3px;
+    padding: 3px;
+    font-size: .778em;
+    font-weight: 500;
+    background-color: rgba(0,0,0,.18)!important;
+}
+
+@media screen and (max-width : 1920px){
+    .div-only-mobile{
+        visibility:hidden;
+    }
+}
+@media screen and (max-width : 906px){
+    .desk{
+        visibility:hidden;
+    }
+    .div-only-mobile{
+        visibility:visible;
+    }
+}
+
+.p-horizontal_10 {
+    padding-left : 10px;
+    padding-right: 10px; 
+}
+
+/*  Custom card Css */
+.cc-selector-2 input{
+    position:absolute;
+    z-index:999;
+}
+
+.billDeskgateWay{background-image:url(https://ngasce.secure.force.com/resource/1648451282000/PaymentGatewayImages/PaymentGatewayImages/BillDesk.jpg); background-size: 100% 90% !important;}
+.hdfcgateWay{background-image:url(https://ngasce.secure.force.com/resource/1648451282000/PaymentGatewayImages/PaymentGatewayImages/hdfc.webp); background-size: 85% 100% !important;}
+.paytmgateWay{background-image:url(https://ngasce.secure.force.com/resource/1648451282000/PaymentGatewayImages/PaymentGatewayImages/paytm.png);}
+.razorpaygateWay{background-image:url(https://ngasce.secure.force.com/resource/1648451282000/PaymentGatewayImages/PaymentGatewayImages/Razorpay.webp);}
+.ccavenuegateWay{background-image:url(https://topbestalternative.com/wp-content/uploads/2019/09/cc-avenue-logo-600x600.png); background-size: 100% 90% !important;}
+.icicigateway{background-image:url(https://ngasce.secure.force.com/resource/1648451282000/PaymentGatewayImages/PaymentGatewayImages/cashfree.png); background-size: 100% 90% !important;}
+
+.drinkcard-cc{
+    cursor:pointer;
+    background-size:contain;
+    background-repeat:no-repeat;
+    display:inline-block;
+    width:100px;height:70px;
+    -webkit-transition: all 100ms ease-in;
+    -moz-transition: all 100ms ease-in;
+    transition: all 100ms ease-in;
+}
+
+.drinkcard-cc:hover{
+    border: 1px solid black;
+    -webkit-transform: scale(1.3);
+	transform: scale(1.3);
+}

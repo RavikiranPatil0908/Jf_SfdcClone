@@ -1,0 +1,71 @@
+<!--
+  @File Name          : logOfCall.html
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : @BK
+  @Last Modified On   : 26/5/2020, 12:28:17 pm
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    14/5/2020   @BK     Initial Version
+-->
+<template>
+    <template if:false={enableEdit}>
+        <div class="slds-grid">
+            <button name="recap" type="button" class="slds-button slds-button_neutral slds-col slds-size_7-of-8"
+                onclick={toggeleEditOption}>
+                <template if:true={isCall}>Recap your call...</template>
+                <template if:false={isCall}>Create a Task</template>
+            </button>
+            <button name="add" type="button" class="slds-button slds-button_brand slds-col slds-size_1-of-8"
+                onclick={toggeleEditOption}>Add</button>
+        </div>
+    </template>
+    <template if:true={enableEdit}>
+        <div class="slds-form" role="list">
+            <div class="slds-form__row">
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                        <lightning-input type="text" label="Name" value={leadName} disabled></lightning-input>
+                    </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                        <lightning-combobox name="subject" label="Subject" placeholder="Select Subject"
+                            options={subjectOptions} value={task.Subject} onchange={handleChange} data-field="Subject" required>
+                        </lightning-combobox>
+                    </div>
+                </div>
+                <template if:false={isCall}>
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <lightning-input type="date" name="dueDate" label="Due Date" date-style="short"
+                                value={task.ActivityDate} onchange={handleChange} data-field="ActivityDate"></lightning-input>
+                        </div>
+                    </div>
+
+                    <div class="slds-form__item" role="listitem">
+                        <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                            <lightning-combobox name="status" label="Status" placeholder="Select Status"
+                                options={statusOptions} value={task.Status} data-field="Status" onchange={handleChange}>
+                            </lightning-combobox>
+                        </div>
+                    </div>
+                </template>
+
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                        <lightning-textarea name="comment" label="Comments" value={task.Description}
+                            onchange={handleChange} data-field="Description" required></lightning-textarea>
+                    </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_stacked slds-is-editing">
+                        <lightning-button variant="brand" label="Save" title="Primary action" class="slds-float_right"
+                            onclick={handleClick}></lightning-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,20 @@
+.slds-global-header__logo {
+    background-image: url('/resource/ImageResource/images/logo.png');
+    height: 4rem;
+}
+
+.headerPage{
+    height: 5.0rem;
+}
+
+.paddingfromtop{
+    padding-top: 80px;
+}
+
+.paddingfromright{
+    padding-right: 200px;
+}
+
+.img-height {
+    height: 100% !important;
+}

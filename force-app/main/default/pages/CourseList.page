@@ -1,0 +1,56 @@
+<!--
+  @File Name         : CourseList.page
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 03-20-2021
+  @last modified by  : @BK
+  Modifications Log 
+  Ver   Date         Author   Modification
+  1.0   03-20-2021   @BK   Initial Version
+-->
+<apex:page standardController="Opportunity" tabStyle="Opportunity">
+    <script src="/soap/ajax/46.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/46.0/apex.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            let liveLecturesType = "{!opportunity.LiveLecturesType__c}";
+            if(liveLecturesType && liveLecturesType != 'No') {
+                let sem = "{!opportunity.Sem__c}",
+                programStructure = "{!opportunity.Program_Structure__c}",
+                programId = "{!opportunity.nm_Program__c}",
+                consumerType = "{!opportunity.ConsumerType__c}",
+                courseList = "{!opportunity.CourseList__c}",
+                selArr = liveLecturesType == 'Custom' && courseList != null && courseList != '' ? courseList.split(',') : [],
+                query = `SELECT id,Name,Student_Zone_Course_Id__c FROM nm_Courses__c WHERE Semester__c=${parseInt(sem)} AND Program_Structure__c='${programStructure}' AND Program__c='${programId}' AND ConsumerType__c='${consumerType}'`;
+                
+                var courseListQuery = sforce.connection.query(query);
+                var courseListRecord = courseListQuery.getArray("records");
+                if (courseListQuery.size > 0) {
+                    var html = '';
+                    $.each( courseListRecord, function( key, value ) {
+                        
+                        if(key > 0) {
+                            html += '<hr/>';
+                        }
+                        let code = parseInt(value.Student_Zone_Course_Id__c).toString();
+                        let style = liveLecturesType!='Custom' || (selArr.length > 0 && selArr.includes(parseInt(value.Student_Zone_Course_Id__c).toString())) ? 'style="background-color:lightgreen"' : '';
+                        html += '<table width="100%" '+style+'><tr>';
+                        html += '<th width="25%">Course id:</th>';
+                        html += '<td width="25%">'+code+'</td>';
+                        html += '<th width="25%">Course Name:</th>';
+                        html += '<td width="25%">'+value.Name+'</td></tr></table>';
+                    });
+
+                    $('[id$=CourseListContainer]').html(html);
+                }
+            }
+        });
+    </script>
+    <body style="background: transparent !important;">
+        <apex:outputPanel id="CourseListContainer">
+            <h1>No Record Found.</h1>
+        </apex:outputPanel>
+    </body>
+</apex:page>

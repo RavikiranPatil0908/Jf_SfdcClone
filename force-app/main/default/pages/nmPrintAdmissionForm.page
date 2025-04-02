@@ -1,0 +1,510 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 07-03-2024
+  @last modified by  : @BK
+-->
+<apex:page showHeader="false" standardStylesheets="false" controller="nmPrintAdmissionForm">
+
+     <style>
+        .Processingview
+        {
+            position: fixed;
+            background: url('{!URLFOR($Resource.loading_img)}');
+            background-repeat: no-repeat;
+            background-position: center;           
+            width:  100%;
+            height: 100%;
+            z-index: 1004;
+            left: 3%;
+            top: 1%;
+           
+        }
+        .container 
+        {
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+        .content-container 
+        {
+            background-color: #e5e5e5;
+            -webkit-border-radius: 0.6em;
+            -moz-border-radius: 0.6em;
+            border-radius: 0.6em;
+            padding: 5%;
+            position: relative;
+            margin-bottom: 5%;
+            margin-top: 5%;
+        }
+        .content-container p 
+        {
+            padding-top: 5%;
+            padding-left: 3%;
+            padding-right: 3%;
+            padding-bottom: 3%;
+            line-height: 1.8em;
+        }
+        .section-title 
+        {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: inline-block;
+            padding: 1.3% 10% 1.3% 3%;
+            color: #ffffff;
+            text-transform: uppercase;
+            font-size: 1em;
+            background: #282425;
+            background: -webkit-gradient(linear, 0 0, 0 bottom, from(#8b8b8b), to(#282425));
+            background: -webkit-linear-gradient(#8b8b8b, #282425);
+            background: -moz-linear-gradient(#8b8b8b, #282425);
+            background: -ms-linear-gradient(#8b8b8b, #282425);
+            background: -o-linear-gradient(#8b8b8b, #282425);
+            background: linear-gradient(#8b8b8b, #282425);
+            -webkit-border-radius: 0.6em 0 0.6em 0;
+            -moz-border-radius: 0.6em 0 0.6em 0;
+            border-radius: 0.6em 0 0.6em 0;
+        }
+        .col-sm-2
+        {
+            
+        }
+        .col-sm-4
+        {
+            width:28%;
+        }
+        .form-group
+        {
+            width:100%;
+        }
+        .form-control
+        {
+            border-radius:4px;
+        }
+        .preview-container 
+        {
+            margin-top: 2%;
+            background-color: #c4c4c4;
+            padding: 5%;
+        }
+     </style>
+     
+     <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>NMIMS Distance Education: Print Admission Form</title>
+        <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+        <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        
+        
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/typography.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/font-awesome.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap-theme.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/bootstrap-datetimepicker.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/flat/grey.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Data, 'css/main.css')}"/>
+        
+        <apex:includeScript value="{!URLFOR($Resource.Data,'js/vendor/modernizr-2.6.2-respond-1.1.0.min.js')}"/>
+    </head>
+    
+    <body class="home">
+    
+    <header>
+        
+      <section class="main-header">
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-18 col-sm-6">
+                <a href="#">
+                    <apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}" styleClass="img-responsive"/>
+                </a>
+            </div> <!-- /col-xs-10 -->
+            <div class="col-xs-18 col-sm-12">
+              <h1 class="text-right">Admission Form</h1>
+            </div> <!-- /col-xs-8 -->
+          </div> <!-- /row -->
+        </div> <!-- /container -->
+      </section> <!-- /main-header -->  
+      
+    </header> <!-- /header -->
+    
+    <apex:form id="formid1">
+        <apex:inputHidden value="{!optStatus}" id="hdnadmCancel" />
+        <apex:inputHidden id="hdnOtp" value="{!Otp}" />
+    
+        <apex:actionStatus id="processing" startStyleClass="Processingview"/>
+        
+        <apex:outputpanel id="pnlDeclaration1">
+            <div class="container">
+            
+                <div class="content-container">
+                
+                    <div class="section-title">Declaration</div>
+                    <p>
+                      I hereby declare that the information furnished by me in the Admission 
+                        form is true and correct to the best of my knowledge. I am aware that my 
+                        candidature and/or admission at NCDOE ({!BatchName}) and subsequent 
+                        process can be cancelled unilaterally by NMIMS at any stage if the 
+                        information furnished by me is found to be incorrect and in such a case all 
+                        the fees paid by me will be forfeited and will not be refunded to me.
+                    </p>
+                   
+                    <div class="row">
+                        
+                        <!-- <div class="col-sm-1">&nbsp;</div> -->
+                        <div class="printApplicationSection">             
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <div class='input-group date' id='datetime' data-date-format="DD/MM/YYYY">
+                                        <input id="PDFDate1" type='text' class="form-control" />
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>
+                                    </div>
+                                </div>
+                                <div class="text-center">DATE</div>
+                            </div>
+                            
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <select id="PDFPlace1" class="form-control">
+                                        <option selected="true">None</option>
+                                        <apex:repeat value="{!lstCities}" var="obj">
+                                            <option>{!obj}</option>
+                                        </apex:repeat>
+                                    </select>
+                                </div>
+                                <div class="text-center">PLACE</div>
+                            </div>
+                            <apex:inputHidden id="PDFDate" value="{!PDFDate}"/>
+                            <apex:inputHidden id="PDFPlace" value="{!PDFPlace}"/>
+                            <apex:actionFunction name="Call" action="{!PrintForm}" />
+                            <div class="col-sm-3">
+                                <div class="row">
+                                    <div class="col-sm-12 form-button-signin" style="padding-top: 0px;">
+                                        <div class="text-right">
+                                            <apex:commandLink styleclass="btn btn-default signin print"  onclick="GO();return false;" value="Preview Admission Form"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 pull-right" style="{!IF(IsStudentNumber,'display:block;margin-right: 5%', 'display:none')}">
+                                <input type="button" class="btn btn-default" onclick="showWelcomeMailer();return false;" value="View Welcome Mailer"
+                                />
+                            </div>
+                        </div>
+                        <div class="WelcomeMailerSection" style="display:none">
+                                <apex:outputPanel id="otpPopUp" >
+                                                    <br/>
+                                                    <p id="otpTextMessage" style="{!IF(optStatus == '', 'display:block; margin-bottom: 10px;padding:10px', 'display:none')}">To view the Welcome Mailer, please generate and enter the OTP which will be sent to your registered mobile number.</p>
+                                                    <apex:commandButton rendered="{!IF(optStatus == '',true,false)}" style="margin-left: 20px" value="Send OTP" styleClass="btn btn-default pull-left" id="sendBtn123" onclick="sendOTP()"
+                                                        action="{!sendOTP}" rerender="otpPopUp" />
+                                                    
+                                                    <div id="otpInput" style="{!IF(optStatus == 'OTP Sent', 'display:block; margin-left: 10px', 'display:none')}">
+                                                        <p id="otpMessage"  style="{!IF(optStatus == 'OTP Sent', 'display:block; margin-bottom: 10px;padding:10px', 'display:none')}">{!mobileText}</p>
+                                                        <apex:inputText id="otp" rendered="{!IF(optStatus == 'OTP Sent',true,false)}" styleClass="form-control numonly col-sm-4" 
+                                                            html-placeholder="Enter OTP.." />
+                                                            <apex:commandButton value="Confirm" styleClass="btn btn-default" style="margin-left:10px"  onclick="if(validate()) return false;" id="verifyBtn" action="{!VerifyOTP}"
+                                                                rendered="{!IF(optStatus == 'OTP Sent',true,false)}" reRender="otpPopUp,DisplayInputQueryID1,DisplayInputQueryID" />
+
+                                                    </div>
+                                                <div class=""  id="resendOTTTP" style="{!IF(optStatus == 'OTP Sent', 'display:block; margin-left: 10px', 'display:none')}">
+                                                    
+                                                    
+                                                    
+                                                    <br />
+                                                    <apex:commandButton value="Resend OTP" styleClass="btn btn-default pull-left   disabled" id="sendBtn" style="margin-bottom: 10px; margin-left: 10px; margin-right: 10px" onclick="sendOTP();" action="{!sendOTP}"
+                                                        reRender="otpPopUp" />
+                                                    <div class="container" style="margin-top: 10px;margin-bottom: 10px;" id="divTimer">
+                                                        <div class="row">
+                                                            <span style="float: left;">If you haven't recieved the OTP in
+                                                                <span class="timer"></span> seconds, click resend</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div style="{!IF(optStatus == '903' || optStatus == '907', 'display:block', 'display:none')}">
+                                                    <apex:commandButton value="Resend OTP" styleClass="btn btn-default pull-left"  id="sendBtn2" onclick="sendOTP();" rerender="otpPopUp" action="{!sendOTP}"
+                                                         />
+                                                </div>
+                                                <apex:inputHidden value="{!resendOtp}" id="hdnResendCode" />
+                                                <apex:commandButton value="Click here to view Welcome Mailer" styleClass="btn btn-default"  id="sendEmail" action="{!sendEmail}"
+                                                    rendered="{!IF(optStatus == 'OTP Verified',true,false)}" reRender="otpPopUp,emailMessage,showPreviewOfPDF" />
+
+                                    <script>
+                                        // otpTimer();
+                                         $(document).ready(function () {
+
+                                                var timeVal = 90;
+                                                $('.timer').html(timeVal);
+
+                                                if(isNaN(timeVal)) {
+                                                    system.debug(timeVal);
+                                                    console.log('inside intup should hide')
+                                                     
+                                                } 
+                                            })
+
+                                            function otpTimer() {
+                                                // var timeVal = 90;
+                                                var timerInterval = 1000;
+                                                var timeInterval = 0;
+                                                // $('.timer').html(timeVal);
+                                                // console.log($('.timer').html())
+                                                console.log('otpTimer -----> ')
+                                                // clearInterval(loadTimer);
+                                                timeVal = 90;
+                                                $('.timer').html(timeVal);
+                                                
+                                                timeInterval =  setInterval(function () {
+                                                    console.log('interval');
+                                                    console.log($('.timer').html())
+                                                    var myTime = parseInt($('.timer').html()) - 1;
+                                                    // console.log(myTime)
+                                                    if (myTime > 0) {
+                                                        $('.timer').html(myTime);
+                                                    } else {
+                                                        $('.timer').html('');
+                                                        $('#divTimer').addClass('hidden');
+                                                        $("[id$=sendBtn]").removeClass('disabled');
+                                                        console.log('inside NAN')
+                                                        $('#otpInput').hide();
+                                                        clearInterval(timeInterval);
+                                                        
+                                                    }
+                                                }, timerInterval);
+                                            }
+
+                                            function sendOTP() {
+                                                    console.log('sendOTP ---> ')
+                                                    $('#otpInput').show();
+                                                    
+                                                    otpTimer();
+                                                    $('[id$=hdnResendCode]').val('true');
+                                            }
+                                            function validate() {
+                                                console.log('validate call' );
+                                                if ($('[id$=otp]').val()) {
+                                                    $('[id$=hdnOtp]').val($('[id$=otp]').val());
+                                                console.log('validate false ' + validate);
+                                                    return false;
+                                                }
+                                                return true;
+                                            }
+
+                                                function checkoptStatus() {
+                                                    // console.log($('[id$=hdnadmCancel]').val());
+                                                }
+                                    </script>
+                                        <apex:outputText id="emailMessage" style="margin-bottom: 10px;" rendered="{!IF(optStatus == 'Email Send',true,false)}">
+                                            <p>{!emailText}</p>
+                                        </apex:outputText>
+                                </apex:outputPanel>
+                            <!-- </div> -->
+                            <div class="col-sm-4">
+                                <apex:commandButton value="GO Back To Print Application Form" style="margin-left: 10px" onclick="showPrintApplicationForm();" styleClass="btn btn-default" id="goBackToApplication" action="{!showEmailContentToFalse}"
+                                    reRender="otpPopUp,emailMessage,showPreviewOfPDF" />
+                                <!-- <input type="button" class="btn btn-default" style="margin-left: 10px" value="GO Back To Print Application Form" onclick="showPrintApplicationForm();return false;"/> -->
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <!-- To Redirect to Payment Page if Payment is pending even though student is confirmed. -->
+                    <apex:outputPanel layout="block" styleClass="row" rendered="{!paymentUrl!=null}">
+                        <div class="col-12" style="padding-bottom: 5px;">Note: Click Proceed to Pay button to pay the balance amount.</div>
+                        <div class="col-md-4 form-button-signin" style="padding-top: 0px;">
+                            <apex:commandLink styleclass="btn btn-default signin print"  value="Proceed to Pay" action="/apex/{!paymentUrl}"/>
+                        </div>
+                    </apex:outputPanel>
+
+                    <div class="row">
+                        <div style="width:100%;">
+                            <div class="preview-container" style="padding: 2%;">
+                                <div class="text-center">
+                                     <apex:outputPanel id="showPreviewOfPDF">
+                                         <apex:outputpanel rendered="{!showpage}">
+                                    
+                                             <iframe src="/apex/nmPrintPreview?id={!AccountId}&date={!PDFDate}&city={!PDFPlace}" width="100%" height="500px" style="border:none;"/>                            
+                                    
+                                         
+                                         </apex:outputpanel>
+                                         <apex:outputpanel rendered="{!showEmailContent}">
+                                         
+                                             <iframe src="/apex/nm_WelcomeLetter?studentNo={!objAccount.nm_StudentNo__c}" width="100%" height="500px" style="border:none;" />
+                                         
+                                         
+                                         </apex:outputpanel>
+                                     </apex:outputPanel>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $('#datetime').datetimepicker({
+                  pickTime: false,
+                  icons: {
+                    date: "fa fa-calendar",
+                  }
+                });
+            </script>
+        </apex:outputpanel>
+        
+    </apex:form>
+    
+    <footer>
+      
+      <div class="footer-links">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-10">
+              <a href="http://distance.nmims.edu/sitemap.html">Sitemap</a> | <a href="http://distance.nmims.edu/privacy-policy.html">Privacy Policy</a> | <a href="http://distance.nmims.edu/disclaimer.html">Disclaimer</a><br />&copy; 2014 NMIMS. All Rights Reserved. 
+            </div>
+            <div class="col-sm-8">
+              <ul class="footer-icons clearfix">
+                <li><a class="footer-social ico-facebook" href="https://www.facebook.com/NMIMSSCE" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                <li><a class="footer-social ico-twitter" href="https://twitter.com/NMIMS_SCE" target="_blank"><i class="fa fa-twitter"></i></a></li>    
+                <li><a class="footer-social ico-google-plus" href="https://plus.google.com/u/0/115020127358464487864/about" target="_blank"><i class="fa fa-google-plus"></i></a></li>  
+                <li><a class="footer-social ico-youtube" href="https://www.youtube.com/user/NMIMSSCE" target="_blank"><i class="fa fa-youtube"></i></a></li>    
+              </ul>  
+            </div>
+          </div> <!-- /row -->
+        </div> <!-- /container -->
+      </div> <!-- /footer-links -->
+      
+    </footer>
+    
+    <script >
+    $(document).ready(function(){
+        
+        $('input[name$=OptRadio]').on('ifChanged', function(event){
+            var selectedOpt = $(this).filter(':checked').val(); 
+            if(selectedOpt != undefined)   
+            {   
+                     
+                $('[id$=hdnPaymentMode]').val(selectedOpt);
+                if( selectedOpt == 'NewApp' )
+                {
+                    $('[id$=idNew]').css('display','non');
+                    $('[id$=idCompleteForm]').css('display','none');
+                    $('[id$=idReRegistration]').css('display','none');
+                }
+                else if( selectedOpt == 'CmpltReg' )
+                {
+                    $('[id$=idNew]').css('display','none');
+                    $('[id$=idCompleteForm]').css('display','non');
+                    $('[id$=idReRegistration]').css('display','none');
+                }
+                else if( selectedOpt == 'ReReg' )
+                {
+                    $('[id$=idNew]').css('display','none');
+                    $('[id$=idCompleteForm]').css('display','none');
+                    $('[id$=idReRegistration]').css('display','non');
+                }
+            }
+        });
+        $('[id$=btn2]').click(function(){
+            $('[id$=MsgPopUp]').hide();
+            return false;
+        });
+    });
+    </script>
+    
+    
+    <!--All java script  -->
+    <apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/jquery-1.11.0.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/jquery.validate.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/additional-methods.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/moment.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/bootstrap-datetimepicker.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Data, 'js/vendor/icheck.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Data, 'js/main.js')}"/>
+    
+    <script type="text/javascript">
+    // $(document).ready(function () {
+        
+    //     var timeVal = 90;
+    //     $('.timer').html(timeVal);
+    // })
+    
+    // function otpTimer() {
+    //     // var timeVal = 90;
+    //     var timerInterval = 1000;
+    //         // $('.timer').html(timeVal);
+    //         console.log($('.timer').html())
+    //         console.log('otpTimer -----> ')
+    //         // clearInterval(loadTimer);
+
+    //         setInterval(function () {
+    //             console.log('interval');
+    //             console.log($('.timer').html())
+    //             var myTime = parseInt($('.timer').html()) - 1;
+    //             console.log(myTime)
+    //             if (myTime > 0) {
+    //                 $('.timer').html(myTime);
+    //             } else {
+    //                 $('.timer').html('');
+    //                 $('#divTimer').addClass('hidden');
+    //                 $("[id$=sendBtn]").removeClass('disabled');
+    //             }
+    //         }, 1000)
+            
+    //         // var loadTimer = setInterval(refreshTimer(), timerInterval);
+    //         // refreshTimer();
+    //     }
+        // Alloted time in seconds
+        // var timeVal = 90;
+        // $('.timer').html(timeVal);
+        // // refreshTimer();
+        // // Interval
+        // var timerInterval = 1000;
+        // var loadTimer = setInterval(refreshTimer, timerInterval);
+
+        // Refresh Timer
+        function refreshTimer() {
+            console.log($('.timer').html())
+            // setTimeout(function () {
+                var myTime = parseInt($('.timer').html()) - 1;
+                // console.log(myTime)
+                if (myTime > 0) {
+                    $('.timer').html(myTime);
+                } else {
+                    $('.timer').html('');
+                    $('#divTimer').addClass('hidden');
+                    $("[id$=sendBtn]").removeClass('disabled');
+                }
+            // }, 1);
+        }
+        
+        function GO()
+        {         
+            $('[id$=PDFDate]').val($('#PDFDate1').val());
+            $('[id$=PDFPlace]').val($('#PDFPlace1').val()) ;             
+            Call();
+        }
+
+        function showWelcomeMailer() {
+            console.log('button clicked')
+            $('.WelcomeMailerSection').show();
+            $('.printApplicationSection').hide();
+
+        }
+        function showPrintApplicationForm() {
+            
+            console.log('button clicked')
+            $('.printApplicationSection').show();
+            $('.WelcomeMailerSection').hide();
+        }
+
+        
+       
+
+    </script>
+    
+    </body>
+  
+</apex:page>

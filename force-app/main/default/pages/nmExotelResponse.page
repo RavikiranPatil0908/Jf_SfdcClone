@@ -1,0 +1,5 @@
+<apex:page controller="nmExotelResponse" action="{!UpdateStatusCallback}">
+  <apex:form >
+      <h1>Exotel Response Page</h1>
+  </apex:form>
+</apex:page>

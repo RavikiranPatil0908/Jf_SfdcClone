@@ -1,0 +1,213 @@
+<!-- sldsValidatorIgnore -->
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 01-17-2025
+  @last modified by  : @vickysahu
+-->
+<template>
+	<div class="slds-var-m-horizontal_xx-large slds-var-m-top_xx-small slds-var-m-bottom_xx-large">
+		<div class="top-nav slds-box_x-medium">
+			<ul class="slds-list_horizontal">
+				<template iterator:it={navLst}>
+					<a key={it.value} style="color:white;" data-id={it.value} onclick={handleNav}>
+						<h1>&nbsp;{it.value}&nbsp;</h1>
+					</a>
+					<div if:false={it.last} key={it.value} style="color:white;"> >> </div>
+				</template>
+			</ul>
+		</div>
+		<template if:true={accDetails}>
+			<div style="box-shadow: 1px 1px 4px lightgray;">
+				<h2> <img src={accDetails.url} alt="User Profile" height="3px" width="30px" /> &nbsp; {accDetails.fname}
+					{lastName} &nbsp; | &nbsp; {accDetails.email} &nbsp;| &nbsp; {accDetails.mobile} &nbsp; | &nbsp;
+					{accDetails.program} &nbsp; | &nbsp; {sno} | &nbsp; {accDetails.validity}</h2>
+			</div>
+		</template>
+
+		<template if:true={showCaseDetails}>
+			<div class="slds-grid slds-grid_align-spread slds-var-m-vertical_medium">
+				<div class="slds-col title"> 1-Connect - My Tickets</div>
+				<div class="slds-col slds-align-middle"> 
+					<lightning-button class="slds-m-left_x-small" variant="destructive" label="Knowledge Articles" onclick={openKnowledgeArticles}></lightning-button>
+				</div>
+			</div>
+			
+			<div class="slds-grid slds-grid_vertical-align-center slds-gutters">
+				<div class="slds-col slds-size_1-of-4">
+					<select class="slds-select" onchange={changeHandler}>
+						<template for:each={options} for:item="opt">
+							<option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+						</template>
+					</select>
+				</div>
+				<div class="slds-col slds-size_1-of-4">
+					<lightning-input name="enter-search" placeholder="Search" variant="label-hidden"
+						onchange={handleKeyChange} type="search"></lightning-input>
+				</div>
+				<div class="slds-col slds-size_1-of-4 slds-col_bump-left">
+					<button class="slds-button slds-button_destructive slds-button_width c-border_color slds-float_right" data-type="call" onclick={handleCreateCase}>
+						<lightning-icon size="xx-small"
+							class="icon slds-icon_container_circle slds-icon-action-call slds-icon_container"
+							icon-name="action:call"> </lightning-icon>
+							<div class="c-hcCasesHeader_hcCasesHeader"> Schedule a Callback </div>
+					</button>
+				</div>
+				<div class="">
+					<button class="slds-button slds-button_neutral slds-button_width slds-button_color" data-type="ticket" onclick={handleCreateCase}>
+						<lightning-icon size="xx-small"
+							class="icon slds-icon_container_circle slds-icon-action-new-child-case slds-icon_container"
+							icon-name="action:new_child_case"> </lightning-icon>
+						<div class="c-hcCasesHeader_hcCasesHeader"> Raise a Ticket </div>
+					</button>
+				</div>
+			</div>
+
+			<div class="table-margin slds-card_boundary my-table-container">
+				<template if:true={caseList}>
+					<lightning-datatable class="slds-table_header-fixed_container slds-scrollable_y slds-border_top"
+						data={caseList} columns={caseColumns} rowactions={rowActions} key-field="Id"
+						onrowaction={handleRowAction} hide-checkbox-column>
+					</lightning-datatable>
+				</template>
+			</div>
+		</template>
+		<!-- New Case Creation Section -->
+		<template if:true={showCreateCase}>
+			<c-create-case-comp onmycustomevent={handlemycustomevent} onnavevent={handlenavevent} nav-lst={navLst}
+				program={program}></c-create-case-comp>
+		</template>
+		<!-- Individual Case View -->
+		<template if:true={showCaseView}>
+			<c-case-view onmycustomevent={handlemycustomevent} onupdatenavevent={handleupdatenavevent} is-view={isView}
+				record-id={recordId} nav-lst={navLst}></c-case-view>
+		</template>
+	</div>
+	<!-- Call Escalation Section -->
+	<template if:true={showEscalationModel}>
+		<section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-02"
+			class="slds-modal slds-fade-in-open ">
+			<div class="slds-modal__container">
+				<div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-6">
+					<p>Your ticket has been escalated. While we work on resolving your issue, would you like to schedule
+						a callback with one of our counsellors?</p>
+				</div>
+				<div class="slds-modal__footer">
+					<button class="slds-button slds-button_text-destructive" type="button" style="margin-right: 5px;"
+						onclick={handleCallback} aria-label="Yes" >Yes</button>
+					<button class="slds-button slds-button_destructive" type="button" onclick={handleCancel}
+						aria-label="No">No
+					</button>
+				</div>
+			</div>
+		</section>
+		<div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+	</template>
+	<template if:true={showEscalationSuccess}>
+		<section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-02"
+			class="slds-modal slds-fade-in-open ">
+			<div class="slds-modal__container">
+				<template if:false={showL4Message}>
+					<div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-7">
+						<p>Your ticket has been escalated successfully.</p>
+					</div>
+				</template>
+				<template if:true={showL4Message}>
+					<div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-8">
+						<p>Escalation to Level 4 has been halted. An email notification has been sent to your registered email address for further details.</p>
+					</div>
+				</template>
+				<div class="slds-modal__footer">
+					<button class="slds-button slds-button_destructive" type="button" onclick={handleCancel}
+						aria-label="No"> Ok
+					</button>
+				</div>
+			</div>
+		</section>
+		<div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+	</template>
+	<template if:true={isCallSchedulingModalOpen}>
+		<section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+			class="slds-modal slds-fade-in-open ">
+			<div class="slds-modal__container">
+				<button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+					onclick={oncloseModalCallScheduleModal}>
+					<lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+					</lightning-icon>
+					<span class="slds-assistive-text">Close</span>
+				</button>
+				<div class="slds-modal__header">
+					<p id="modal-heading-01" class="slds-text-heading_small slds-hyphenate">{modalMsg.title}</p>
+				</div>
+				<div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-5">
+					<template if:true={isCallSchedulingRecordContains}>
+						<div class="slds-grid slds-gutters">
+							<div class="slds-col">
+								<lightning-combobox placeholder="Select Date" options={callSchedulingDate}
+									onchange={onScheduleDate} value={selectedDate}>
+								</lightning-combobox>
+
+							</div>
+							<div class="slds-col">
+								<lightning-combobox placeholder="Select Time Range" options={timeRangeSelected}
+									onchange={onScheduleTimeRange}>
+								</lightning-combobox>
+							</div>
+						</div>
+					</template>
+					<template if:false={isCallSchedulingRecordContains}>
+						<p>{modalMsg.messgae}</p>
+					</template>
+				</div>
+				<div class="slds-modal__footer">
+					<template if:true={isCommentButtonAvailableForCallScheduling}>
+						<button class="slds-button slds-button_text-destructive" type="button"
+							style="margin-right: 5px;" onclick={onAddCommentFromSchedule} aria-label="Add Comment">Add
+							Comment</button>
+					</template>
+					<button class="slds-button slds-button_text-destructive" type="button"
+						onclick={oncloseModalCallScheduleModal} aria-label="Cancel and close">{modalMsg.btnTitle}</button>
+				</div>
+			</div>
+		</section>
+		<div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+	</template>
+	<template if:true={isCallSchedulingConfirm}>
+		<section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-10"
+			class="slds-modal slds-fade-in-open">
+			<div class="slds-modal__container">
+				<button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+					onclick={oncloseModalCallScheduleConfirm}>
+					<lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+					</lightning-icon>
+					<span class="slds-assistive-text">Close</span>
+				</button>
+				<div class="slds-modal__header">
+					<h2 id="modal-heading-10" class="slds-modal__title slds-hyphenate">Call Schedule</h2>
+				</div>
+				<div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-10">
+					<p>Are you sure you want to schedule call on {selectedDate} between {selectedTimeRange} ?</p>
+				</div>
+				<div class="slds-modal__footer">
+					<button class="slds-button slds-button_text-destructive" type="button"
+						onclick={oncloseModalCallScheduleConfirm} aria-label="Cancel and close">Cancel</button>
+					<button class="slds-button slds-button_destructive" type="button" onclick={scheduleCall} 
+						disabled={disbaleBtn}>Schedule
+						Call</button>
+				</div>
+			</div>
+		</section>
+		<div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+	</template>
+	<template if:true={showSpinner}>
+		<div class="exampleHolder">
+			<lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+		</div>
+	</template>
+
+	<!-- Message Toast Starts here-->
+    <c-lwc-custom-toast title={showPopup.title} message={showPopup.message} variant={showPopup.variant}
+        auto-close="true" auto-close-error-warning="true"></c-lwc-custom-toast>
+    <!-- Message Toast Ends here-->
+</template>

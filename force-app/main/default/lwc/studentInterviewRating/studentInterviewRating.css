@@ -1,0 +1,102 @@
+html {
+    font-size: 50px;
+}
+
+.contentClass{
+    color:green;
+    font-weight: bold;
+}
+ 
+.messageClass{
+    border-top: 1px solid #ccc;
+    width:100%;
+}
+
+.slds-page-header{
+    display:none;
+}
+.bPageHeader {
+    display: none;
+}
+
+.img-container{
+    height: 400px;
+  width:100%; 
+  padding:3px; 
+}
+
+.img-content{
+    height:400px;
+    overflow:hidden ;
+    object-fit: cover;
+}
+
+.numberCircle {
+    border-radius: 50%;
+
+    background: #fff;
+    border: 2px solid #666;
+    color: #666;
+    text-align: center;
+
+    /* font: 32px Arial, sans-serif; */
+}
+
+span.step {
+  background: green;
+  border-radius: 0.8em;
+  -moz-border-radius: 0.8em;
+  -webkit-border-radius: 0.8em;
+  color: #ffffff;
+  display: inline-block;
+  font-weight: bold;
+  line-height: 1.6em;
+  margin-right: 5px;
+  text-align: center;
+  width: 1.6em; 
+}
+
+.passColor {
+    background-color:rgb(218, 247, 166)
+;
+    font-weight: bold;
+}
+
+.failColor {
+    background-color: rgb(251, 27, 21);
+    color: whitesmoke;
+    font-weight: bold;
+}
+
+
+.reason{
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.reason:hover{
+    text-overflow:clip;
+    width:auto;
+    white-space: normal;
+}
+
+/* 
+.sidebar-list {
+    margin: 2px;
+    padding: 2px;
+} */
+
+.tableScroll {
+    overflow: auto;
+    overflow-y: hidden;
+    height: 10rem;
+}
+
+nav ul{height:100vh;}
+nav ul{overflow:hidden; overflow-y:scroll;}
+
+
+.wrapText {
+    white-space: pre-wrap;
+}

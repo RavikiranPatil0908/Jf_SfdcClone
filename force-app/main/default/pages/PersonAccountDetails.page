@@ -1,0 +1,27 @@
+<apex:page standardController="Account" lightningStylesheets="true" >
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+<apex:includeLightning />
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>NMIMS Distance Education</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Award winning distance education university, Narsee Monjee offers wide range of Professional management courses like PG, Diploma & Certification programs."/>
+    <meta name="keywords" content="Narsee Monjee Distance Learning University, NMIMS Distance Programs, Executive Education, Top distance learning program in India, PG Diploma, Certification courses, Online Education"/>
+</head>
+<body style="background-color: #f3f2f2;">
+    <div id="lightning" />
+    <script>
+        $Lightning.use("c:aepPurchaseLicesneApp", function() {
+            $Lightning.createComponent("c:personAccountDetails",{
+                recordId: "{!$CurrentPage.parameters.Id}"
+            },
+            "lightning",
+            function (cmp) {
+                console.log('personAccountDetails component created successfully ...');
+            });
+        });
+    </script>
+</body>
+</html>
+</apex:page>

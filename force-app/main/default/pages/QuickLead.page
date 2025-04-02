@@ -1,0 +1,758 @@
+<!--
+  @File Name          : QuickLead.page
+  @Description        : 
+  @Author             : @BK
+  @Group              : 
+  @Last Modified By   : shubhranshu
+  @Last Modified On   : 05-03-2021
+  @Modification Log   : 
+  Ver       Date            Author                  Modification
+  1.0    8/2/2020   @BK     Initial Version
+-->
+<apex:page id="pageId" showHeader="true" sidebar="false" standardController="Lead" extensions="QuickLeadController" standardStylesheets="false" cache="false" >
+<apex:param name="leadID" value="{!Lead.id}"/>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}"/>
+        <!--------------------------------------Sweet Alert ---------------------------------->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.0/sweetalert2.all.min.js"></script>
+        <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+        <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/css/style.css" rel="stylesheet"/>
+        <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/node-waves/waves.css" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css"/>
+        
+        <apex:stylesheet value="{!URLFOR($Resource.fontawesome_icons,'/font-awesome-4.7.0/css/font-awesome.css')}"/>
+    
+    </head>
+    <!-- Additional CSS -->
+    <apex:define name="custom-style">
+        <style>
+            .navBarStyle{
+                box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+                z-index: 12;
+                margin-bottom: 20px;
+                background-color:#fff;
+                
+            
+            }
+
+            li.select2-results__option {
+                margin-left: unset;
+            }
+
+            @media (min-width: 1200px) {
+            .container{
+                max-width: 1350px;
+                }
+            }
+            
+            .btn-custom{
+            border-bottom:5px solid #285e8e;
+            position:relative;
+            margin-right: 5px;
+            }
+
+            .form-group .form-line .form-label {
+                    top: -10px;
+                }
+            .cardSectionInfo {
+                margin-top: -10px;
+                margin-bottom: 20px;
+                display: block;
+                font-size: 13px;
+                color: #444;
+            }
+            
+            .btn-custom:hover {
+            top:0.5px;
+            border-bottom-width:2.5px;
+            }
+            .btn-custom:active {
+            top:5px;
+            border-bottom:0;
+            }
+            .border-red a{
+                border: 1px solid red;
+            }
+
+            .swal2-confirm {
+                background: none;
+            }
+
+            .btn.pgSubmit {
+                padding: 10px 15px 10px 15px;
+                background: none;
+                color: white;
+            }
+
+        </style>
+    </apex:define>
+    <body class="home">
+        <apex:pageMessages id="error" />
+        <div class="container clearfix">
+            <div class="setup-content" id="personalInformationPanel">
+                <apex:form id="personalInformation">
+                    <div class="clearfix"></div>
+                        
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="card">
+                                <div class="header">
+                                    <h2>Quick Lead Form</h2>
+                                </div>
+                                <div class="body">
+                                    <h2 class="card-inside-title">Basic Information</h2>
+                                    <div class="cardSectionInfo">Every mandatory field is marked<apex:outputText style="color:red;font-style:bold" value=" *"/> </div>
+                                    
+                                    <div class="row">
+                                        
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="First Name"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="firstName" styleClass="form-control notnull doNotAllowedSpecialCharacter " value="{!Lead.FirstName}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Last Name"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="lastName" styleClass="form-control notnull doNotAllowedSpecialCharacter " value="{!Lead.LastName}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Email"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="email" styleClass="form-control notnull emailValidation " value="{!Lead.Email}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="Mobile Number"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="mobilephone" styleClass="form-control notnull mobileNoValidation numonly " value="{!Lead.MobilePhone}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12" rendered="{!!BEGINS($Profile.Name, 'Information Center')}">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="AEP"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <select id="informationCenter" class="form-control notnull">
+                                                        <option value=" ">---None--</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <apex:inputHidden id="hdnInformationCenter" value="{!Lead.nm_InformationCenter__c}"/>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " style="z-index: 1;" value="Lead Source"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="leadSource" styleClass="form-control notnull select2Field" value="{!Lead.LeadSource}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12 otherLeadSourcePanel" style="display:none;">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="Other Lead Source"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="otherLeadSource" styleClass="form-control otherLeadSource" value="{!Lead.nm_OtherLeadSources__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" style="z-index: 1;" value="Lead Status"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="leadStatus" styleClass="form-control notnull select2Field" value="{!Lead.Status}">
+                                                        <apex:actionSupport rerender="select2DescriptionPanel" event="onchange"/>
+                                                    </apex:inputField>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" style="z-index: 1;" value="Lead Status-Description"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="leadDescription" styleClass="form-control notnull select2Description" value="{!Lead.Lead_Description__c}" >
+                                                    </apex:inputField>
+                                                </div>
+                                            </div>
+                                            <apex:outputPanel id="select2DescriptionPanel">
+                                                <script>
+                                                    $(document).ready(function() { 
+                                                        $('.select2Description').select2();
+                                                        $('.select2Description').siblings('span').find('span.select2-selection--single').css({"border-style":"none","outline":"none","height":"34px"});
+                                                    });
+                                                </script>
+                                            </apex:outputPanel>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12 reasonForDeadLeadPanel" style="display:none;">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="Reason for Dead & Invalid Leads"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="reasonForDeadLead" styleClass="form-control reasonForDeadLead" value="{!Lead.nm_Reason_for_Dead_Invalid_Leads__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Program Category"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="chooseProgram" styleClass="form-control notnull" value="{!Lead.nm_ChooseaProgram__c}">
+                                                        <!-- <apex:actionSupport event="onchange" rerender="selectedProgram"/> -->
+                                                    </apex:inputField>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:inputHidden value="{!selectedProgram}" id="selectedProgram2"/>
+                                        
+                                        <apex:actionFunction name="updateFields" rerender="selectedProgram" />
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Program Specialization-selective"></apex:outputLabel>
+                                                    <apex:selectList styleClass="form-control" id="selectedProgram" value="{!Lead.nm_Program__c}" multiselect="false" size="1">
+                                                        <apex:selectOptions value="{!ProgramsList}"/>
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Lead Action"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="leadAction" styleClass="form-control notnull" value="{!Lead.Lead_Action__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12" rendered="{!BEGINS($Profile.Name, 'Information Center')}">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Counsellor Profile"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:selectList styleClass="form-control notnull" id="counsellorCode" value="{!Lead.Counselor_Profile__c}" multiselect="false" size="1">
+                                                        <apex:selectOptions value="{!CounselorList}"/>
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="Gender" />
+                                                    <apex:inputField id="gender" styleClass="form-control" value="{!Lead.nm_Gender__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="input-group date datetimepicker2 form-line" data-date-format="DD/MM/YYYY"><span class="dateInput dateOnlyInput">
+                                                    <apex:outputlabel styleClass="form-label" value="Date of Birth" style="z-index:4;"></apex:outputLabel>                                                        
+                                                    <apex:inputfield value="{!Lead.nm_DateOfBirth__c}" styleClass="form-control dateOfBirth" showDatePicker="false" id="dateOfBirth" />
+                                                    </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Stream"></apex:outputLabel>
+                                                    <apex:inputField id="stream" styleClass="form-control" value="{!Lead.nm_Specialization__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Graduation Degree Percentage"></apex:outputLabel>
+                                                    <apex:inputField id="degreePer" styleClass="form-control" value="{!Lead.nm_BachelorsDegreePercentage__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="Highest Qualification"/>
+                                                    <apex:selectList styleClass="form-control" id="txtHighestQualif" value="{!Lead.Highest_Qualification__c}" multiselect="false" size="1">
+                                                        <apex:selectOption itemValue=" " itemLabel="---None--"></apex:selectOption>
+                                                        <apex:selectOption itemValue="Doctrate/Ph. D." itemLabel="Doctrate/Ph. D."></apex:selectOption>
+                                                        <apex:selectOption itemValue="Masters/Post Graduation" itemLabel="Masters/Post Graduation"></apex:selectOption>
+                                                        <apex:selectOption itemValue="Graduation/Diploma" itemLabel="Graduation/Diploma"></apex:selectOption>
+                                                        <apex:selectOption itemValue="12th" itemLabel="12th"></apex:selectOption>
+                                                        <apex:selectOption itemValue="10th" itemLabel="10th"></apex:selectOption>
+                                                        <apex:selectOption itemValue="below 10th" itemLabel="below 10th"></apex:selectOption>
+                                                        <apex:selectOption itemValue="Others" itemLabel="Others"></apex:selectOption>
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                    
+                                    </div>
+                                    <div class="row">
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Working"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="checkWorking" styleClass="form-control notnull" value="{!Lead.Working__c}"/>
+                                                    
+                                                    <!-- <select class="form-control notnull" id="checkWorking">
+                                                        <option value=" ">--None--</option>
+                                                        <option value="yes">Yes</option>
+                                                        <option value="no">No</option>
+                                                    </select> -->
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                        
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12 notWorkingPanel" style="display:none;">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Reason For not Working"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>
+                                                    <apex:inputField id="notWorking" styleClass="form-control notWorking" value="{!Lead.Reason__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="workExpereincePanel" style="display:none;">
+                                            <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <div class="form-line">   
+                                                        <apex:outputlabel styleClass="form-label" value="Work Experience"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputlabel>
+                                                        <apex:inputField id="workExperience" styleClass="form-control workExpereince" value="{!Lead.nm_WorkExperience__c}"/>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+                                            
+
+                                            <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <div class="form-line">   
+                                                        <apex:outputlabel styleClass="form-label " value="Industry"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputlabel>
+                                                        <apex:inputField id="industry" styleClass="form-control workExpereince" value="{!Lead.Industry}"/>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+
+                                            <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <div class="form-line">   
+                                                        <apex:outputlabel styleClass="form-label " value="Designation"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputlabel>
+                                                        <apex:inputField id="designation" styleClass="form-control workExpereince" value="{!Lead.nm_Designation__c}"/>
+                                                    </div>
+                                                </div>
+                                            </apex:outputpanel>
+                                        </apex:outputpanel> 
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="input-group datetimepicker3 date form-line" data-date-format="DD/MM/YYYY" id="datetimepicker3"><span class="dateInput dateOnlyInput">
+                                                    <apex:outputlabel styleClass="form-label" value="Next Follow Up Date/Time" style="z-index:4;"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputLabel>                                                        
+                                                    <apex:inputfield value="{!Lead.Next_Follow_up__c}" styleClass="form-control notnull nextFollowUpDate" showDatePicker="false" id="nextFollowUpDate" />
+                                                    </span><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " style="z-index: 1;" value="Mother Tongue"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputlabel>
+                                                    <apex:inputField id="motherTongue" styleClass="form-control notnull select2Field" value="{!Lead.nm_Mother_Tongue__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                        <apex:outputpanel styleClass="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label " value="City"><apex:outputText style="color:red;font-style:bold" value=" *"/></apex:outputlabel>
+                                                    <apex:inputField id="city" styleClass="form-control notnull" value="{!Lead.nm_City_P__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+
+                                    </div>
+                                    <div class="row clearfix">
+                                        <apex:outputpanel styleClass="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="form-line">   
+                                                    <apex:outputlabel styleClass="form-label" value="Comment" />
+                                                    <apex:inputField id="comment" styleClass="form-control" style="z-index: 1" value="{!Lead.Comment__c}"/>
+                                                </div>
+                                            </div>
+                                        </apex:outputpanel>
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="col-md-9">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <apex:commandButton styleClass="btn btn-primary pgSubmit btn-lg btn-custom waves-effect" onclick="return onSubmit('personalInformation');" value="Submit" action="{!save}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>     
+                </apex:form>
+            </div>
+        </div>
+
+        <!---------------------------------------------------------------Footer Starts here -------------------------------------------->
+        <!-- Custom jQuery -->
+        <apex:includeScript value="{!URLFOR($Resource.JSZIP, 'jQuery.min.js')}"/>
+        
+        <!-- jQuery Js -->
+        <apex:includeScript value="{!URLFOR($Resource.JSZIP, 'admin.js')}"/>
+        
+        <!-- jQuery Js -->
+        <apex:includeScript value="{!URLFOR($Resource.JSZIP, 'bootstrap.js')}"/>
+        
+        <!-- Waves Effect Plugin Js -->
+        <apex:includeScript value="{!URLFOR($Resource.JSZIP, 'waves.js')}"/>
+        
+        <!---------------Date Picker Js -------------------------------------------->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/main.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"/>
+        <!-------------------------------------------Custom Js -------------------------------->
+        <!-- <script language="JavaScript1.2" src="/js/functions.js"></script> -->
+        <script src="/soap/ajax/46.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/46.0/apex.js" type="text/javascript"></script>
+
+        <script>
+            var ProfileName = '{!$Profile.Name}';
+            var totalAcad =  2;
+            $(document).ready(function() {
+                $('.select2Field').select2();
+                $('.select2Field').siblings('span').find('span.select2-selection--single').css({"border-style":"none","outline":"none","height":"34px"});
+
+                setTimeout(checkContainer, 3000);
+
+                if(!ProfileName.startsWith("Information Center")){
+                    getInformationCenter();
+                }
+
+                $('.disabled').attr('disabled',true);
+                $('.readonly').attr('readonly','readonly');
+
+                /*-------------------- Remove Error message on enter start ------------------------*/
+                $('body').on('change', '.notnull', function(e) {
+                    $(this).closest('div.form-group').children('span.error').remove();
+                });
+
+                $('body').on('keypress', '.notnull', function(e) {
+                    $(this).closest('div.form-group').children('span.error').remove();
+                });
+
+                $('body').on('dp.change', '.date', function() {
+                    $(this).closest('div.form-group').children('span.error').remove();
+                });
+
+
+                $('body').on('keypress','.numonly', function(e){ 
+                    return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) ) ? false : true;
+                });
+
+                $(".doNotAllowedSpecialCharacter").keypress(function (e){
+                    var regex = new RegExp("^[a-z  A-Z]*$");
+                    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+                    if (!regex.test(str) && str !="'") {
+                        $(this).focus();
+                        $(this).val('');
+                        e.preventDefault();
+                        $(this).closest('div.form-group').children('span.error').remove();
+                        $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+                    }else{
+                        $(this).closest('div.form-group').children('span.error').remove();
+                    }
+                });
+
+
+                /*-----------------------------------------------------------Personal Details Validation ---------------------------------*/
+
+                $('.datetimepicker2').datetimepicker({
+                    format: 'DD/MM/YYYY',
+                    useCurrent: false,
+                    maxDate: moment()
+                });
+                
+                $(".emailValidation").change(function(){
+                    var emailAddress = $(this).val();
+                    if(!isValidEmailAddress(emailAddress)){
+                        showHtmlMessage('Invalid Information','Please Enter Email Address.');
+                        $(this).val("");
+                    }
+                });
+
+                $(".mobileNoValidation").change(function(){
+                    var mobileNumberValue = $(this).val();
+                    var pattern = "^(?!(\\d)\\1{8})";
+                    pattern = new RegExp(pattern);
+                    if(!pattern.test(mobileNumberValue)){  
+                        showHtmlMessage('Invalid Information','Please Enter Valid Mobile Number');
+                        $(this).val("");
+                    }else if(mobileNumberValue.length >10 || mobileNumberValue.length<10){
+                        showHtmlMessage('Invalid Information','Please Enter 10 digit Mobile Number');
+                        $(this).val("");
+                    }
+                });
+
+                $('#informationCenter').change(function (){
+                    let val = $(this).val();
+                    if(val){
+                        $('[id$=hdnInformationCenter]').val(val);
+                    }
+                });
+
+                if('{!Lead.Next_Follow_up__c}' != '') {
+                    $('.datetimepicker3').datetimepicker({
+                        format : 'DD/MM/YYYY hh:mm A',
+                        useCurrent: true,
+                        //minDate: moment().add(1,'d')
+                    });
+                }else{
+                    $('.datetimepicker3').datetimepicker({
+                        format : 'DD/MM/YYYY hh:mm A',
+                        useCurrent: true,
+                        minDate: moment().add(1,'d')
+                    });
+                }
+                
+                /*---------------------------------------------- Validation rules Check ---------------------------------------*/
+
+                // Lead Status.
+                $('[id$=leadStatus]').change(function (){
+                    let val = $(this).val();
+                    if(val == 'Invalid No / Wrong No' || val == 'Dead'){
+                        $('.reasonForDeadLeadPanel').show();
+                        $('[id$=reasonForDeadLead]').addClass('notnull');
+                    }else{
+                        $('.reasonForDeadLeadPanel').hide();
+                        $('[id$=reasonForDeadLead]').removeClass('notnull');
+                    }
+                });
+
+                //Lead Source.
+                $('[id$=leadSource]').change(function (){
+                    let val = $(this).val();
+                    if(val == 'Other'){
+                        $('.otherLeadSourcePanel').show();
+                        $('[id$=otherLeadSource]').addClass('notnull');
+                    }else{
+                        $('.otherLeadSourcePanel').hide();
+                        $('[id$=otherLeadSource]').removeClass('notnull');
+                    }
+                });
+
+                //For first time to load all the Post Graduation Program (escaping the required validation.)
+                if(!$('[id$=lastName]').val()){
+                    $('[id$=lastName]').val('.');
+                    $('[id$=chooseProgram]').trigger('change');
+                    $('[id$=lastName]').val('');
+                }
+                
+
+                $('[id$=chooseProgram]').change(function (){
+                    if(!$('[id$=lastName]').val()){
+                        console.log($('[id$=chooseProgram]').val());
+                        showHtmlMessage('Name Fields Required','Please fill the name fields first.');
+                        $('[id$=chooseProgram]').val('Post Graduate Diploma Programs');
+                    }
+                    var chooseProgramVal = $(this).val();
+                    if(chooseProgramVal === 'Master Programs'){
+                        $('[id$=checkWorking]').val('Yes');
+                        $('[id$=checkWorking]').trigger('change');
+                        $('[id$=stream]').addClass('notnull');
+                        $('[id$=degreePer]').addClass('notnull');
+
+                    }else if(chooseProgramVal === 'Bachelor Programs'){
+                        $('[id$=checkWorking]').val('Yes');
+                        $('[id$=checkWorking]').trigger('change');
+                        $('[id$=stream]').removeClass('notnull');
+                        $('[id$=degreePer]').removeClass('notnull');
+                    }else{
+                        $('[id$=checkWorking]').val('');
+                        $('[id$=checkWorking]').trigger('change');
+                        $('[id$=stream]').removeClass('notnull');
+                        $('[id$=degreePer]').removeClass('notnull');
+                    }
+
+                    $('[id$=selectedProgram2]').val($('[id$=chooseProgram]').val());
+                    updateFields();
+                });
+                
+                if( $('[id$=chooseProgram]').val() == null || $('[id$=chooseProgram]').val() == '' ){
+                    $('[id$=chooseProgram]').val('Post Graduate Diploma Programs');
+                }else{
+                    $('[id$=chooseProgram]').trigger('change');
+                }
+
+                /* ---------------------------------------------- Work Expereince Check --------------------------------------- */
+
+                $('[id$=checkWorking]').change(function (){
+                    let val = $(this).val();
+                    let chooseProgramVal = $('[id$=chooseProgram]').val();
+                        if(val == "Yes"){
+                        
+                            //To add required and show workexpereince.
+                            $('.workExpereincePanel').show();
+                            $('.workExpereince').addClass('notnull');
+
+                            //To hide not working Field 
+                            $('.notWorkingPanel').hide();
+                            $('.notWorking').removeClass('notnull');
+
+                        }else if(val == "No" && (chooseProgramVal === 'Master Programs' || chooseProgramVal === 'Bachelor Programs')){
+                            showHtmlMessage('Invalid Details','Work Experience is mandatory for Master/Bachelor Programs');
+                            $(this).val('Yes');
+                            $('[id$=checkWorking]').trigger('change');
+                        }else if(val == "No"){
+                            //To remove required and hide workexpereince.
+                            $('.workExpereincePanel').hide();
+                            $('.workExpereince').removeClass('notnull');
+
+                            //To show not working Field 
+                            $('.notWorkingPanel').show();
+                            $('.notWorking').addClass('notnull');
+                        }else {
+                            
+                             //To hide not working Field 
+                            $('.notWorkingPanel').hide();
+                            $('.notWorking').removeClass('notnull');
+
+                            //To remove required and hide workexpereince.
+                            $('.workExpereincePanel').hide();
+                            $('.workExpereince').removeClass('notnull');
+                        }
+                    
+                });
+
+                if($('[id$=checkWorking]').val()) {
+                    $('[id$=checkWorking]').trigger('change');
+                }
+                
+            });
+
+            function checkContainer () {
+                $('.select2Description').select2();
+                $('.select2Description').siblings('span').find('span.select2-selection--single').css({"border-style":"none","outline":"none","height":"34px"});
+               
+            }
+
+
+            /*--------------------show error Popup message -------------------*/
+            function showHtmlMessage(header,message) {
+                swal({
+                    title: header+"!",
+                    text: message,
+                    type: "warning"
+                });
+            }
+
+            function validateForm(id){
+                var flag = 0;
+                $(id).find('.notnull').each(function () {
+                    if($(this).val() !=null){
+                        if ($(this).val().trim().length == 0) {
+                            flag = 1;
+                            console.log('Id Required Value --'+$(this).attr('id'));
+                            $(this).focus();
+                            $(this).closest('div.form-group').children('span.error').remove();
+                            $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');
+                        }
+                    }else{
+                        flag = 1;
+                        console.log('Id Required Value --'+$(this).attr('id'));
+                        $(this).focus();
+                        $(this).closest('div.form-group').children('span.error').remove();
+                        $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');    
+                    }
+                });
+                return flag;  
+            }
+            
+            function isValidEmailAddress(emailAddress) {
+                var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+                return pattern.test(emailAddress);
+            } 
+
+            function onSubmit(Id){
+                var flag = validateForm('[id$='+Id+']');
+
+                if (flag != 0 ) {
+                    showHtmlMessage('Invalid Details','Please fill all required fields.');
+                    //$('ul.setup-panel li a[href="#'+Id+'Panel"]').trigger('click');
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+
+            function getInformationCenter() {
+                let query,accountName;
+                let userEmailId = '{!$User.Email}';
+                sforce.connection.sessionId = '{!$Api.Session_ID}';
+                try {
+                    if(userEmailId) {
+                        query = "select id, Name from nm_Centers__c where Email__c = '"+userEmailId+"' and nm_Active__c = true and RegistrationClosed__c = false order by name asc";
+                    }else{
+                        //query = "select id, Name from nm_Centers__c where nm_Active__c = true and recordtype.Name = 'Information Center' and RegistrationClosed__c = false order by name asc";
+                        query = "select id, Name from nm_Centers__c where nm_Active__c = true and RegistrationClosed__c = false order by name asc";
+                    
+                    }
+                    let qr = sforce.connection.query(query);
+                    let records = qr.getArray("records");
+                    if (qr.size > 0) {
+                        $.each( records, function( key, value ) { 
+                            $('#informationCenter').append(new Option(value.Name, value.Id));
+                        });
+                        console.log($('[id$=hdnInformationCenter]').val());
+                        if($('[id$=hdnInformationCenter]').val()) {
+                            $('#informationCenter').val($('[id$=hdnInformationCenter]').val());
+                        }
+                    }
+                    else{
+                        showHtmlMessage('Query Error','Query to populate Information Center failed. No Rows Found.');
+                    }
+                }catch(error) {
+                    console.log(error);
+                    console.dir(error);
+                    alert(error.faultstring);
+                }
+            }
+
+            
+        </script>
+    </body>
+
+</apex:page>

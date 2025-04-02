@@ -1,0 +1,97 @@
+<apex:page Controller="MassUpdateCaseController" sidebar="false" readOnly="false">
+
+   <style>
+        .activeTab {
+            background-color: #236FBD;
+            color: white;
+            background-image: none
+        }
+
+        .inactiveTab {
+            background-color: lightgrey;
+            color: black;
+            background-image: none
+        }
+        .bottom-margin{
+            margin-bottom: -5px;
+}
+    </style>
+
+    <apex:form >
+        <apex:pageMessages id="error"/>
+        <apex:pageBlock mode="edit">
+                <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                        <apex:outputLabel for="startingstugffgddentno"></apex:outputLabel>
+                        <apex:panelGroup >
+                            <p>Please enter Case number ","(comma) seperated</p>
+                        </apex:panelGroup>
+                    </apex:pageBlockSectionItem>
+    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel for="startingstudentno"> <b>Case Numbers:</b></apex:outputLabel>
+                        <apex:panelGroup >
+                            <apex:inputTextarea id="studentNumbers" value="{!listOfCaseNumber}" rows="10" cols="50" /> 
+                            <span class="red">*</span>
+                        </apex:panelGroup>
+                    </apex:pageBlockSectionItem>
+                    
+                         <apex:pageBlockSectionItem >
+                        <apex:outputLabel for="selectList"><b>Types Of Subject</b></apex:outputLabel>
+                        
+                            <apex:outputPanel id="OuterPanel">
+                                <apex:outputPanel id="Inner">
+                                    <apex:selectList id="selectList" value="{!typeOfsubject}" size="1" multiselect="false">
+                                        <apex:selectOptions value="{!SubLists}"/>
+                                            <apex:actionSupport event="onchange" reRender="Inner"/>
+                                    </apex:selectList>
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputPanel id="ShowPanel" rendered="{!(typeOfsubject == 'New Subject')}">
+                                        <apex:outputLabel for="startingstudentno"> <b>subject:</b></apex:outputLabel>
+                                    <apex:inputTextarea id="studentNumbers" value="{!Subjectcase}" rows="1" cols="20" styleClass="bottom-margin" /> 
+                                    </apex:outputPanel>
+                            </apex:pageBlockSectionItem>                             
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                  
+            <apex:pageBlockSectionItem >   
+            <apex:outputLabel for="selectList"><b>Select Type Of Update </b></apex:outputLabel>
+            <apex:outputPanel id="OuterPanel">
+            <apex:outputPanel id="InnerPanel">
+            <apex:selectList id="selectList" value="{!typeOfUpdate}" size="1" multiselect="false">
+            <apex:selectOptions value="{!OptionList}"/>
+            <apex:actionSupport event="onchange" reRender="InnerPanel"/>
+            </apex:selectList>
+            </apex:outputPanel> 
+            </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+            
+            <apex:pageBlockSectionItem >
+                        <apex:outputLabel for="startingstudentno"> <b>Description:</b></apex:outputLabel>
+                        <apex:panelGroup >
+                            <apex:inputTextarea id="studentNumbers" value="{!Description}" rows="7" cols="40" /> 
+                            <span class="red">*</span>
+                        </apex:panelGroup>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+    
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton id="onButtonClick"  action="{!CreateAEPReq}" value="Mass Case Update" />
+                </apex:pageBlockButtons>
+            </apex:pageBlock>
+    </apex:form>
+
+    <script>
+            $(document).ready(function(){
+            $("[id$='studentNumbers']").change(function(){
+            var stringList = $("[id$='studentNumbers']").val();
+            var arrayOfStudentNumbers = new Array();
+            arrayOfStudentNumbers = stringList.split(',');
+            $("[id$='studentNumbers']").val($.unique(arrayOfStudentNumbers));
+
+            });
+
+            });
+    </script>
+</apex:page>

@@ -1,0 +1,55 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 30-04-2024
+  @last modified by  : @BK
+-->
+<apex:page controller="nm_AdmissionRecieptClass" renderAs="pdf">
+    <div style="width:98%; margin:5px auto;font:Normal 16px/30px Helvetica Narrow, sans-serif;">
+        <div style="width:100%; border:3px solid #000000; background:#ffffff; float:left; margin-bottom:15px;">
+            <!-- Header Start -->
+            <div style="height:16px; margin-top:5px;">
+                <apex:outputText value="Date: {0,date,dd-MM-yyyy}" style="float:right; margin-right:50px;">
+                   <apex:param value="{!TODAY()}" />
+               </apex:outputText>
+            </div>
+            <div>
+                <img src="{!URLFOR($Resource.Images,'images/logo.png')}" width="50%" style="margin-left:23%;"/>
+            </div>
+            <div style="margin:10px 0;font-size:15px;">
+                <center><b>PAYMENT ACKNOWLEDGEMENT RECEIPT</b>(for Admission)</center>
+            </div>
+            <!-- Header End -->
+            <div id = "Contents" style="margin-left:5%; margin-right:5%; margin-top:5%;font-weight: normal">
+                <div style="margin-bottom:2%"><b>Registration No.:</b>&nbsp;&nbsp;{!objPayment.nm_OpportunityNew__r.Account.nm_RegistrationNumber__c} </div>
+                <div style="margin-bottom:2%"><b>Name:</b>&nbsp;&nbsp;{!objPayment.nm_OpportunityNew__r.Account.name}</div>
+                <div style="margin-bottom:2%"><b>Receipt Date:</b>&nbsp;&nbsp;<apex:outputText value="{0,date,dd-MM-yyyy}"><apex:param value="{!TODAY()}" /></apex:outputText></div> 
+                <div style="margin-bottom:2%"><b>IC Code:</b>&nbsp;&nbsp;{!objPayment.nm_OpportunityNew__r.Account.nm_Centers__r.Name}</div>
+                <div style="margin-bottom:2%"><b>Program:</b>&nbsp;&nbsp;{!objPayment.nm_OpportunityNew__r.nm_Program__r.name}</div>
+                <div style="margin-top:10px; margin-bottom:15px;">
+                    <table style="border:1px solid black;border-collapse:collapse; align:center; text-align:center; width:600px;">
+                        <tr>
+                            <th style="border:1px solid black;">Transaction ID</th>
+                            <th style="border:1px solid black;">Transaction Date</th>
+                            <th style="border:1px solid black;">Mode</th>
+                            <th style="border:1px solid black;">Ref No #</th>
+                            <th style="border:1px solid black;">Amount</th>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black;">{!objPayment.nm_TransactionID__c}</td>
+                            <td style="border:1px solid black;"><apex:outputText value="{0,date,dd-MM-yyyy}"><apex:param value="{!objPayment.createdDate}" /></apex:outputText></td>
+                            <td style="border:1px solid black;">{!objPayment.nm_ModeOfPayment__c}</td>
+                            <td style="border:1px solid black;">{!objPayment.nm_RefNo__c}</td>
+                            <td style="border:1px solid black;">{!objPayment.nm_Amount__c}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="margin-bottom:2%">Payment is successful and total amount paid is Rs. {!objPayment.nm_Amount__c}</div>
+                <div style="margin-bottom:2%">Disclaimer: Payment is subject to realization.</div>
+                <div style="margin-bottom:2%">(This is a computer generated acknowledgement hence no need of Signature).</div>
+                <div style="margin-bottom:150px"></div>                 
+            </div>
+        </div>
+    </div>  
+</apex:page>

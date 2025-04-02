@@ -1,0 +1,386 @@
+<!--
+  @description       : 
+  @author            : @BK
+  @group             : 
+  @last modified on  : 02-11-2023
+  @last modified by  : @BK
+-->
+<apex:page renderAs="pdf" showHeader="FALSE" applyHtmlTag="false" standardController="IC_Payment__c" extensions="nmPaymentReportExtension" readOnly="true" >
+<!--<apex:image url="{!URLFOR($Resource.NMIMS_CSSJS, 'images/logo.png')}" alt="logo" styleClass="img-responsive"/>-->
+<!--<apex:stylesheet value="{!URLFOR($Resource.pdfStyle,'/pdfStyler/TableCSS.css')}"/>-->
+<head>
+<style>
+@page {
+            size: letter;
+            margin: 5mm;
+            
+            @bottom-center {
+                content: "Page " counter(page) " of " counter(pages);
+            }
+        }
+        
+        
+body {
+    width: 100%;
+    margin: 10px auto;
+    font-family: 'trebuchet MS', 'Lucida sans', Arial;
+    font-size: 14px;
+    color: #444;
+}
+
+table {
+    *border-collapse: collapse; /* IE7 and lower */
+    border-spacing: 0;
+    width: 100%;    
+}
+
+.bordered {
+    border: solid #ccc 1px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 1px 1px #ccc; 
+    -moz-box-shadow: 0 1px 1px #ccc; 
+    box-shadow: 0 1px 1px #ccc;         
+}
+
+.bordered tr:hover {
+    background: #fbf8e9;
+    -o-transition: all 0.1s ease-in-out;
+    -webkit-transition: all 0.1s ease-in-out;
+    -moz-transition: all 0.1s ease-in-out;
+    -ms-transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out;     
+}    
+    
+.bordered td, .bordered th {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    padding: 5px;
+    text-align: left;  
+    nowrap: nowrap;  
+}
+
+.bordered th {
+    background-color: #dce9f9;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ebf3fc), to(#dce9f9));
+    background-image: -webkit-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image:    -moz-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image:     -ms-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image:      -o-linear-gradient(top, #ebf3fc, #dce9f9);
+    background-image:         linear-gradient(top, #ebf3fc, #dce9f9);
+    -webkit-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset; 
+    -moz-box-shadow:0 1px 0 rgba(255,255,255,.8) inset;  
+    box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;        
+    border-top: none;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5); 
+}
+
+.bordered td:first-child, .bordered th:first-child {
+    border-left: none;
+}
+
+.bordered th:first-child {
+    -moz-border-radius: 6px 0 0 0;
+    -webkit-border-radius: 6px 0 0 0;
+    border-radius: 6px 0 0 0;
+}
+
+.bordered th:last-child {
+    -moz-border-radius: 0 6px 0 0;
+    -webkit-border-radius: 0 6px 0 0;
+    border-radius: 0 6px 0 0;
+}
+
+.bordered th:only-child{
+    -moz-border-radius: 6px 6px 0 0;
+    -webkit-border-radius: 6px 6px 0 0;
+    border-radius: 6px 6px 0 0;
+}
+
+.bordered tr:last-child td:first-child {
+    -moz-border-radius: 0 0 0 6px;
+    -webkit-border-radius: 0 0 0 6px;
+    border-radius: 0 0 0 6px;
+}
+
+.bordered tr:last-child td:last-child {
+    -moz-border-radius: 0 0 6px 0;
+    -webkit-border-radius: 0 0 6px 0;
+    border-radius: 0 0 6px 0;
+}
+
+
+
+/*----------------------*/
+
+.zebra td, .zebra th {
+    padding: 10px;
+    border-bottom: 1px solid #f2f2f2;    
+}
+
+.zebra tbody tr:nth-child(even) {
+    background: #f5f5f5;
+    -webkit-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset; 
+    -moz-box-shadow:0 1px 0 rgba(255,255,255,.8) inset;  
+    box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;        
+}
+
+.zebra th {
+    text-align: left;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5); 
+    border-bottom: 1px solid #ccc;
+    background-color: #eee;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f5f5f5), to(#eee));
+    background-image: -webkit-linear-gradient(top, #f5f5f5, #eee);
+    background-image:    -moz-linear-gradient(top, #f5f5f5, #eee);
+    background-image:     -ms-linear-gradient(top, #f5f5f5, #eee);
+    background-image:      -o-linear-gradient(top, #f5f5f5, #eee); 
+    background-image:         linear-gradient(top, #f5f5f5, #eee);
+}
+
+.zebra th:first-child {
+    -moz-border-radius: 6px 0 0 0;
+    -webkit-border-radius: 6px 0 0 0;
+    border-radius: 6px 0 0 0;  
+}
+
+.zebra th:last-child {
+    -moz-border-radius: 0 6px 0 0;
+    -webkit-border-radius: 0 6px 0 0;
+    border-radius: 0 6px 0 0;
+}
+
+.zebra th:only-child{
+    -moz-border-radius: 6px 6px 0 0;
+    -webkit-border-radius: 6px 6px 0 0;
+    border-radius: 6px 6px 0 0;
+}
+
+.zebra tfoot td {
+    border-bottom: 0;
+    border-top: 1px solid #fff;
+    background-color: #f1f1f1;  
+}
+
+.zebra tfoot td:first-child {
+    -moz-border-radius: 0 0 0 6px;
+    -webkit-border-radius: 0 0 0 6px;
+    border-radius: 0 0 0 6px;
+}
+
+.zebra tfoot td:last-child {
+    -moz-border-radius: 0 0 6px 0;
+    -webkit-border-radius: 0 0 6px 0;
+    border-radius: 0 0 6px 0;
+}
+
+.zebra tfoot td:only-child{
+    -moz-border-radius: 0 0 6px 6px;
+    -webkit-border-radius: 0 0 6px 6px
+    border-radius: 0 0 6px 6px
+}
+  
+</style>
+</head>
+<apex:image url="{!URLFOR($Resource.NMIMS_CSSJS, 'images/logo.png')}" alt="logo" styleClass="img-responsive"/>
+<br/><br/>
+
+<table class="bordered">
+   <tr>
+    <td>
+      Center: 
+    </td>
+    <td>
+     <apex:outputField value="{!IC_Payment__c.Centers__c}"/>
+    </td>
+   </tr>
+   
+     <tr>
+    <td>
+       <apex:outputLabel value="From Date: " rendered="{!IF(selectedFilter=='MMYYYY',FALSE,TRUE)}"/>
+       <apex:outputLabel value="Payment Month: " rendered="{!IF(selectedFilter=='MMYYYY',TRUE,FALSE)}"/>
+    </td>
+    <td>
+     <apex:outputField value="{!IC_Payment__c.Payment_Due_Date__c}" rendered="{!IF(selectedFilter=='MMYYYY' && selectedFilter=='MonthYearRange',FALSE,TRUE)}"/>
+     <apex:outputText value="{!month}" rendered="{!IF(selectedFilter=='MMYYYY',TRUE,FALSE)}"/>
+     <apex:outputText value="{!fromMonthYearOnForm}" rendered="{!IF(selectedFilter=='MonthYearRange',True,FALSE)}"/>
+    </td>
+   </tr>
+
+
+   <tr>
+    <td>
+      <apex:outputLabel value="To Date: " rendered="{!IF(selectedFilter=='MMYYYY',FALSE,TRUE)}"/>
+       <apex:outputLabel value="Payment Year: " rendered="{!IF(selectedFilter=='MMYYYY',TRUE,FALSE)}"/> 
+    </td>
+    <td>
+     <apex:outputText value="{!year}" rendered="{!IF(selectedFilter=='MMYYYY',TRUE,FALSE)}"/>
+     <apex:outputField value="{!IC_Payment__c.toDate__c}" rendered="{!IF(selectedFilter=='MMYYYY' && selectedFilter=='MonthYearRange' ,FALSE,TRUE)}"/>
+     <apex:outputText value="{!toMonthYearOnForm}" rendered="{!IF(selectedFilter=='MonthYearRange',True,FALSE)}"/>
+    </td>
+   </tr>
+    <!--
+     <tr>
+         <td>
+            Total Amount: 
+         </td>
+         <td>
+            <apex:outputtext value="{!totalAmount}"/> INR/- 
+                        
+         </td>
+     </tr>
+
+
+        <tr>
+         <td>
+            Commission till 31st March: 
+         </td>
+         <td>
+            <apex:outputtext value="{!Creditbefore31}"/> INR/- 
+                        
+         </td>
+     </tr>
+     
+      <tr>
+         <td>
+           Commission: 
+         </td>
+         <td>
+            <apex:outputtext value="{!Creditafter31}"/> INR/- 
+                        
+         </td>
+     </tr>
+    <tr>
+         <td>
+            Gross Taxable Amount: 
+         </td>
+         <td>           
+               <apex:outputtext value="{!TotalAfterTax }"/> INR/-                       
+         </td>
+     </tr>
+      <tr>
+         <td>
+            GST (18%): 
+         </td>
+         <td>
+               <apex:outputtext value="{!ServiceAmount}"/> INR/-
+         </td>
+     </tr>
+     
+    <tr>
+         <td>
+            Swacch Bharat Tax (0.5%): 
+         </td>
+         <td>
+              <apex:outputtext value="{!SwachhBharat}"/> INR/-
+         </td>
+     </tr>
+     <tr>
+         <td>
+            Krishi Kalyan Tax (0.5%): 
+         </td>
+         <td>
+             <apex:outputtext value="{!KrishiKalyan }"/> INR/-
+         </td>
+     </tr>
+     
+      <tr>
+         <td>
+            Gross after Tax: 
+         </td>
+         <td>
+              <apex:outputtext value="{!GrossAmount}"/> INR/-    
+         </td>
+     </tr>
+      <tr>
+         <td>
+            TDS Amount : 
+         </td>
+         <td>           
+               <apex:outputtext value="{!TDSAmount }"/> INR/-                     
+         </td>
+     </tr>
+
+     <tr>
+         <td>
+           Postage Debit: 
+         </td>
+         <td>
+            <apex:outputtext value="{!DebitAmount}"/> INR/- 
+                        
+         </td>
+     </tr>
+  
+      <tr>
+         <td>
+            Net Amount : 
+         </td>
+         <td>           
+               <apex:outputtext value="{!NetAmount }"/> INR/-                     
+         </td>
+     </tr>
+  --> 
+    <tr>
+    <td>
+      Report Generation Date: 
+    </td>
+    <td>
+     <apex:outputText value="{!TODAY()}"/>
+    </td>
+   </tr>
+
+  </table>
+
+<br/><br/>
+<!--  Main table with values -->
+<apex:variable var="closingBalance" value="{!0}"/>
+<apex:variable var="srNo" value="{!0}"/>
+
+<table class="bordered">
+  <thead>
+     <tr>
+        <th>Date</th>
+        <th>Narration</th>
+        <th>Category</th>
+        <th>Student Number</th>
+        <th>Transaction Type</th>
+        <th>Credit</th>
+        <th>Debit</th>
+        <th>Closing Balance</th>
+     </tr>
+  </thead>
+  <apex:variable var="totalCredit" value="{!0}" />
+  <apex:variable var="totalDebit" value="{!0}" />
+  <apex:repeat value="{!reportResultList}" var="r">
+  <tr>
+  
+   <td><apex:outputText value="{!DAY(r.Date__c)}/{!MONTH(r.Date__c)}/{!YEAR(r.Date__c)}"/></td>
+   <td><apex:outputText value="{!r.Narration__c}"/></td>
+   <td><apex:outputText value="{!r.Transaction_Category__c}"/></td>
+   <td><apex:outputField value="{!r.Student_No__c}"/></td>
+   <td><apex:outputField value="{!r.Transaction_Type__c}"/></td>
+   <td><apex:outputField rendered="{!IF(CONTAINS(r.Transaction_Type__c,"Credit"),TRUE,FALSE)}" value="{!r.Amount__c}"/>
+    <apex:variable var="totalCredit" value="{!totalCredit + IF(CONTAINS(r.Transaction_Type__c, 'Credit'), r.Amount__c, 0)}"/>
+</td>
+
+   <td><apex:outputField rendered="{!IF(CONTAINS(r.Transaction_Type__c,"Debit"),TRUE,FALSE)}" value="{!r.Amount__c}"/>
+    <apex:variable var="totalDebit" value="{!totalDebit + IF(CONTAINS(r.Transaction_Type__c, 'Debit'), r.Amount__c, 0)}"/>
+</td>
+
+   <td><apex:variable rendered="{!IF(CONTAINS(r.Transaction_Type__c,"Credit"),TRUE,FALSE)}" var="closingBalance" value="{!closingBalance + r.Amount__c}"/>
+        <apex:variable rendered="{!IF(CONTAINS(r.Transaction_Type__c,"Debit"),TRUE,FALSE)}" var="closingBalance" value="{!closingBalance - r.Amount__c}"/>
+        <apex:outputText value="{!closingBalance}"/>
+   </td>
+   </tr>
+    </apex:repeat> 
+    <tr>
+        <td colspan="4"></td>
+        <td>Total</td>
+        <td><apex:outputText value="{!totalCredit}"/></td>
+        <td><apex:outputText value="{!totalDebit}"/></td>
+        <td></td>
+    </tr>
+   </table>
+  
+</apex:page>
