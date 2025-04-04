@@ -2,12 +2,12 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 02--04--2025
+  @last modified on  : 04--04--2025
   @last modified by  : @Ravi
 -->
 <apex:component controller="FormPageController" access="global" allowDML="true">
     <apex:attribute access="global" name="recordId" type="ID" description="Lead Record Id" assignTo="{!leadId}"/>
-    <!-- <apex:attribute access="global" name="allowSubmit" type="Boolean" description="To allow to Form Submit" assignTo="{!isEditFormConfirmation}"/> -->
+    <!-- <apex:attribute access="global"  name="allowSubmit" type="Boolean" description="To allow to Form Submit" assignTo="{!isEditFormConfirmation}"/> -->
     <apex:attribute access="global" name="formName" type="String" description="Load Form Section" assignTo="{!sectionName}"/>
     <script>
         
