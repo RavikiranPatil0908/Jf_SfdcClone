@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 07--12--2024
+ * @last modified on  : 14--04--2025
  * @last modified by  : @Ravi
 **/
 public without sharing class DocumentPageController {
@@ -396,7 +396,9 @@ public without sharing class DocumentPageController {
         Map<String,String> options = new Map<String,String>();
         if(isDocumentFetched) {
             for( DigilockerListDocumentWrapper.Documents document : objListDocuments.data.documents){
-                options.put(document.file_id,document.name);
+                if(document.file_id.startsWith('digilocker_file')){
+                 options.put(document.file_id,document.name);
+                }
             }
         }
         return !options.isEmpty() ? JSON.serialize(options) : '';
@@ -713,41 +715,73 @@ public without sharing class DocumentPageController {
     * @return Boolean 
     **/
     private Boolean updateDocumentLink(List<SelectedDocumentData> selectedDocuments) {
-        try {
-            List<nm_LinksForDocuments__c> lstAccountDocuments = new List<nm_LinksForDocuments__c>();
-            List<nm_LinksForDocumentsLead__c> lstLeadDocuments = new List<nm_LinksForDocumentsLead__c>();
-            for (SelectedDocumentData document : selectedDocuments) {
-                if(document.objType == 'Lead') {
-                    nm_LinksForDocumentsLead__c objDoc = new nm_LinksForDocumentsLead__c(
-                        id = document.recordId,
-                        nm_URLforDocuments__c = document.awsUrl,
-                        nm_Status__c = 'Submitted',
-                        Document_Upload_Mode__c = 'Upload via DigiLocker'
-                    );
-                    lstLeadDocuments.add(objDoc);
+       try {
+            Map<Id, SelectedDocumentData> leadDocMap = new Map<Id, SelectedDocumentData>();
+            Map<Id, SelectedDocumentData> accountDocMap = new Map<Id, SelectedDocumentData>();
+
+            for (SelectedDocumentData doc : selectedDocuments) {
+                if (doc.objType == 'Lead') {
+                    leadDocMap.put(doc.recordId, doc);
                 } else {
-                    nm_LinksForDocuments__c objDoc = new nm_LinksForDocuments__c(
-                        id = document.recordId,
-                        nm_URLforDocuments__c = document.awsUrl,
-                        nm_Status__c = 'Submitted',
+                    accountDocMap.put(doc.recordId, doc);
+                }
+            }
+            // Query existing Lead documents
+            Map<Id, nm_LinksForDocumentsLead__c> existingLeadDocs = new Map<Id, nm_LinksForDocumentsLead__c>(
+                [SELECT Id, nm_Status__c FROM nm_LinksForDocumentsLead__c WHERE Id IN :leadDocMap.keySet()]
+            );
+
+            // Query existing Account documents
+            Map<Id, nm_LinksForDocuments__c> existingAccountDocs = new Map<Id, nm_LinksForDocuments__c>(
+                [SELECT Id, nm_Status__c FROM nm_LinksForDocuments__c WHERE Id IN :accountDocMap.keySet()]
+            );
+
+            List<nm_LinksForDocumentsLead__c> lstLeadDocumentsToUpdate = new List<nm_LinksForDocumentsLead__c>();
+            List<nm_LinksForDocuments__c> lstAccountDocumentsToUpdate = new List<nm_LinksForDocuments__c>();
+
+            for (SelectedDocumentData doc : selectedDocuments) {
+                String newStatus = 'Submitted';
+
+                if (doc.objType == 'Lead') {
+                    String prevStatus = existingLeadDocs.containsKey(doc.recordId) ? existingLeadDocs.get(doc.recordId).nm_Status__c : null ;
+                    if (prevStatus == 'Documents incorrect') {
+                        newStatus = 'Re-Submited';
+                    }
+
+                    lstLeadDocumentsToUpdate.add(new nm_LinksForDocumentsLead__c(
+                        Id = doc.recordId,
+                        nm_URLforDocuments__c = doc.awsUrl,
+                        nm_Status__c = newStatus,
                         Document_Upload_Mode__c = 'Upload via DigiLocker'
-                    );
-                    lstAccountDocuments.add(objDoc);
+                    ));
+                } else {
+                    String prevStatus = existingAccountDocs.containsKey(doc.recordId) ? existingAccountDocs.get(doc.recordId).nm_Status__c : null;
+                    if (prevStatus == 'Documents incorrect') {
+                        newStatus = 'Re-Submited';
+                    }
+                    
+                    lstAccountDocumentsToUpdate.add(new nm_LinksForDocuments__c(
+                        Id = doc.recordId,
+                        nm_URLforDocuments__c = doc.awsUrl,
+                        nm_Status__c = newStatus,
+                        Document_Upload_Mode__c = 'Upload via DigiLocker'
+                    ));
                 }
             }
 
-            if(!lstAccountDocuments.isEmpty()) {
-                update lstAccountDocuments;
+            if (!lstAccountDocumentsToUpdate.isEmpty()) {
+                update lstAccountDocumentsToUpdate;
             }
-            if(!lstLeadDocuments.isEmpty()) {
-                update lstLeadDocuments;
+            if (!lstLeadDocumentsToUpdate.isEmpty()) {
+                update lstLeadDocumentsToUpdate;
             }
+
             return true;
         } catch (Exception error) {
-            System.debug('Error =>'+error.getMessage());
-            System.debug('Error =>'+error.getLineNumber());
+            System.debug('Error =>' + error.getMessage());
+            System.debug('Line =>' + error.getLineNumber());
+            return false;
         }
-        return false;
     }
 
     /**

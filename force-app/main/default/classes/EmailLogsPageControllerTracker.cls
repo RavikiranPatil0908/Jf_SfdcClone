@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @Ravi
  * @group             : 
- * @last modified on  : 10--03--2025
+ * @last modified on  : 08--04--2025
  * @last modified by  : @Ravi
 **/
 
@@ -19,7 +19,7 @@ public class EmailLogsPageControllerTracker {
     private class RestMock implements HttpCalloutMock {
         public HTTPResponse respond(HTTPRequest req) {
             String fullJson = '{"status": "success", "response": [' +
-                '{"registrationNumber": "12345","createdDate": "2024-11-13T15:39:57Z",' +
+                '{"registrationNumber": "123456789","createdDate": "2024-11-13T15:39:57Z",' +
                 '"subject": "TERM 1","fromEmailId": "donotreply.cdoe@nmims.edu",' +
                 '"mailId": "test@gmail.com.invalid","body": "<html><body><p>Test Email</p></body></html>"}]}';
 
@@ -86,6 +86,7 @@ public class EmailLogsPageControllerTracker {
     static void testAPIFailure() {
     Test.startTest();
     EmailLogsPageController.Responsedata responseData = new EmailLogsPageController.Responsedata();
+    responseData.registrationNumber='123456789';
     responseData.parentId = '001In000005G3Ka';
     responseData.createdDate = '2024-11-13T15:39:57Z';
     responseData.subject = 'Test Subject';

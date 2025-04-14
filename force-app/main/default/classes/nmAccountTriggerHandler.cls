@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : phalguni
  * @Group              : 
- * @Last Modified By   : @Ravi
- * @Last Modified On   : 29--03--2025
+ * @Last Modified By   : @Shailesh
+ * @Last Modified On   : 04-04-2025
  * @Modification Log   : 
  * Ver       Date            Author                 Modification
  * 1.0    21/1/2020   phalguni     Initial Version
@@ -45,6 +45,9 @@ public class nmAccountTriggerHandler
         
         //Method to transfer Cases from lead to account
         updateCase(triggerNew);
+
+        //Method to transfer Apirequest from lead to account
+        updateTranferApirequestfromLeadtoAcc(triggerNew);
 
         //Method to transfer Student Rating lead to account
         updateStudentRating(triggerNew);
@@ -1037,6 +1040,15 @@ public class nmAccountTriggerHandler
         if(!lstCaseToUpdate.isEmpty()) {
             update lstCaseToUpdate;
         }
+    }
+
+    /**
+    * @description 
+    * @author @Shailesh | 04-04-2025 
+    * @param List<Account> lstAccount 
+    **/
+    public void updateTranferApirequestfromLeadtoAcc(List<Account> lstAccount) { 
+        System.enqueueJob(new AsyncTransferApiRequest(lstAccount));
     }
 
     /**

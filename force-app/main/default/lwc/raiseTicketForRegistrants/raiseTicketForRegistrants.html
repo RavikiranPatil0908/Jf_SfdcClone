@@ -1,35 +1,42 @@
-<!-- sldsValidatorIgnore -->
 <!--
   @description       : 
-  @author            : @BK
+  @author            : @Ravi
   @group             : 
-  @last modified on  : 06-10-2023
-  @last modified by  : @BK
+  @last modified on  : 11--04--2025
+  @last modified by  : @Ravi 
+  Modifications Log
+  Ver   Date           Author   Modification
+  1.0   11--04--2025   @Ravi   Initial Version
 -->
 <template>
-	<div class="slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12 slds-align_absolute-center">
-
+	<div
+		class="form-container slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12 slds-align_absolute-center">
 		<lightning-card>
-			<h1> Raise a ticket </h1> <br /><br />
+			<h1>Raise a Ticket</h1>
+
 			<div class="slds-wrap slds-grid">
 				<lightning-formatted-rich-text value={error}></lightning-formatted-rich-text>
+
 				<template if:true={showToast}>
-					<div class="slds-col slds-size_1-of-1" style="background-color: #BA0517; color: white;"> Fill all
-						the mandatory details </div>
-					<br/>
+					<div class="slds-col slds-size_1-of-1 toast-error">
+						Fill all the mandatory details
+					</div>
 				</template>
+<!-- Radio Buttons -->
 				<div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
 					<fieldset class="slds-form-element">
 						<div class="slds-form-element__control slds-grid slds-wrap">
-							<span class="slds-radio slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-3">
-								<input type="radio" id="radio-123" value="regno" name="required" checked={defaultOptionValue} onchange={handleSelected}/>
+							<span class="slds-radio slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+								<input type="radio" id="radio-123" value="regno" name="required" checked={defaultOptionValue}
+									onchange={handleSelected} />
 								<label class="slds-radio__label" for="radio-123">
 									<span class="slds-radio_faux"></span>
 									<span class="slds-form-element__label">Registration No.</span>
 								</label>
 							</span>
-							<span class="slds-radio slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-3">
-								<input type="radio" id="radio-124" value="contact" name="required" checked={contactOptionValue} onchange={handleSelected}/>
+							<span class="slds-radio slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+								<input type="radio" id="radio-124" value="contact" name="required" checked={contactOptionValue}
+									onchange={handleSelected} />
 								<label class="slds-radio__label" for="radio-124">
 									<span class="slds-radio_faux"></span>
 									<span class="slds-form-element__label">Contact Details</span>
@@ -39,109 +46,109 @@
 					</fieldset>
 				</div>
 
+				<!-- Registration No -->
 				<template if:true={showReg}>
-					<div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3 slds-var-m-bottom_x-small">
+					<div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-var-m-bottom_x-small">
 						<lightning-input type="text" label="Registration No." value={regNo} onchange={handleNoChange}
-							required=true onkeypress={validateDigits} maxlength="15"
-							title="Please enter only digits (maximum 15)"></lightning-input>
+							required onkeypress={validateDigits} maxlength="15"></lightning-input>
 					</div>
 				</template>
+<!-- Email + Mobile -->
 				<template if:true={showContact}>
-					<div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3 slds-var-m-bottom_x-small">
+					<div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-var-m-bottom_x-small">
 						<lightning-input type="email" label="Email Id" value={email} onchange={handleEmailChange}
-							required=true> </lightning-input>
-						<div id="help-message-16"></div>
+							required></lightning-input>
 					</div>
-					<div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3 paddingLeft slds-var-m-bottom_x-small">
+					<div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-var-m-bottom_x-small">
 						<lightning-input type="tel" label="Mobile No" value={mobile} onchange={handleMobileChange}
-							required=true pattern="[0-9]{10}"> </lightning-input>
+							required pattern="[0-9]{10}"></lightning-input>
 					</div>
 				</template>
 
+				<!-- Query Type -->
 				<div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
 					<lightning-combobox label="Query Type" options={queryTypes} onchange={handlePurposeChange}
-						required="true"> </lightning-combobox>
+						required></lightning-combobox>
 				</div>
+<!-- Category -->
 				<div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
 					<lightning-combobox label="Category" options={categories} onchange={handleCategoryChange}
-						required="true"> </lightning-combobox>
+						required></lightning-combobox>
 				</div>
+<!-- Sub Category -->
 				<template if:true={enable}>
 					<div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
-						<c-search-box required="true" label="Sub Category" options={options} value={subCategory}
-							onchange={handleChange}></c-search-box>
+						<c-search-box label="Sub Category" options={options} value={subCategory} onchange={handleChange}
+							required></c-search-box>
 						<lightning-formatted-rich-text value={suberror}></lightning-formatted-rich-text>
 					</div>
 				</template>
+<!-- Subject -->
 				<div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
-					<lightning-input label="Subject" value={subject} onchange={handleSubjChange} required="true">
-					</lightning-input>
+					<lightning-input label="Subject" value={subject} onchange={handleSubjChange} required></lightning-input>
 				</div>
 
+				<!-- Description -->
 				<div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
-					<lightning-textarea label="Description" onchange={handleDescChange} required="true">
-					</lightning-textarea>
+					<lightning-textarea label="Description" onchange={handleDescChange} required></lightning-textarea>
 				</div>
-				<div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
-					<lightning-input type="checkbox" label="Do you want to attach related files/screenshots ?"
-						onchange={handleCheckChange} unchecked> </lightning-input>
+<!-- Attachment Checkbox -->
+<div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small checkbox-wrapper">
+	<lightning-input type="checkbox" label="Do you want to attach related files/screenshots?"
+		onchange={handleCheckChange}></lightning-input>
 				</div>
+<!-- File Upload -->
 				<template if:true={isUploadFile}>
 					<div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
-						<p> File size should be less than 5 MB (pdf, png, jpg, jpeg) </p>
-						<lightning-input type="file" class="text" label="Attachment" onchange={handleFileUploaded}
-							accept={acceptedFormats} variant="destructive-text" multiple>
-						</lightning-input>
+						<p>File size should be less than 5 MB (pdf, png, jpg, jpeg)</p>
+						<lightning-input type="file" label="Attachment" onchange={handleFileUploaded} accept={acceptedFormats}
+							multiple></lightning-input>
 						{uploadError}
 						<div class="container">
 							<template for:each={filesUploaded} for:item="file">
 								<lightning-pill key={file.Title} label={file.Title} data-fid={file.Title}
-									onremove={handleRemove} class="slds-text-body_small"></lightning-pill>
+									onremove={handleRemove}></lightning-pill>
 							</template>
 						</div>
 					</div>
 				</template>
-			</div>
-			<div class="slds-col slds-size_1-of-1">
-				<lightning-button class="slds-align_absolute-center" variant="destructive" label="Submit" type="submit"
-					onclick={handleSubmit}> </lightning-button>
+<!-- Submit Button -->
+<div class="slds-col slds-size_1-of-1 slds-align_absolute-center">
+	<lightning-button variant="destructive" label="Submit" onclick={handleSubmit}></lightning-button>
+				</div>
 			</div>
 		</lightning-card>
+<!-- OTP Modal -->
 		<template if:true={showOtp}>
 			<section role="dialog" tabindex="-1" aria-modal="true"
 				class="slds-modal slds-fade-in-open slds-modal_small">
 				<div class="slds-modal__container">
 					<lightning-button-icon class="slds-modal__close" title="Close" icon-name="utility:close"
 						icon-class="slds-button_icon-inverse" onclick={handleModalClose}></lightning-button-icon>
-					<!-- modal header start -->
+
 					<div class="slds-modal__header">
-						<h1 class="slds-modal__title slds-hyphenate">OTP Verification!</h1>
+						<h1 class="slds-modal__title">OTP Verification!</h1>
 					</div>
-					<!-- modal body start -->
-					<div class="slds-modal__content slds-p-around_medium ">
+<div class="slds-modal__content slds-p-around_medium">
 						{message}
-						<div class="slds-col slds-size_2-of-1">
-							<lightning-input label="Enter OTP" type="text" value={otp} required=true
-								onchange={handleOtpChange}></lightning-input>
+						<lightning-input label="Enter OTP" type="text" value={otp} required onchange={handleOtpChange}></lightning-input>
 						</div>
 
-					</div>
-					<footer class="slds-modal__footer slds-grid slds-wrap ">
-						<div class="slds-text-align_left slds-var-p-bottom_x-small" style="font-size: 15px;">If you haven't
-							received the OTP in {timeVal}, click resend</div>
+					<footer class="slds-modal__footer slds-grid slds-wrap">
+						<div class="slds-text-align_left slds-var-p-bottom_x-small" style="font-size: 15px;">
+							If you haven't received the OTP in {timeVal}, click resend
+						</div>
 						<lightning-button class="slds-col_bump-left slds-var-p-right_x-small" onclick={handleResendOtp} label="Resend OTP"
 							variant="brand" disabled={resend}></lightning-button>
-						<lightning-button class="" onclick={verification} variant="brand"
-							label="Confirm"></lightning-button>
+						<lightning-button onclick={verification} variant="brand" label="Confirm"></lightning-button>
 					</footer>
 				</div>
 			</section>
 			<div class="slds-backdrop slds-backdrop_open"></div>
 		</template>
-	</div>
-	<template if:true={showSpinner}>
-		<div>
+<!-- Spinner -->
+<template if:true={showSpinner}>
 			<lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
-		</div>
-	</template>
+		</template>
+	</div>
 </template>

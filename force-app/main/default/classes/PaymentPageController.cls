@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 03-17-2025
- * @last modified by  : @vickysahu
+ * @last modified on  : 07--04--2025
+ * @last modified by  : @Ravi
 **/
 public without sharing class PaymentPageController {
     public Id objectId;
@@ -141,6 +141,7 @@ public without sharing class PaymentPageController {
             findPaymentsMade();
             configurePaymentOption();
         }
+        System.debug('setOfPaymentOptionsAvailable---->' + setOfPaymentOptionsAvailable);
     }
 
     public String getObjectType() {
@@ -905,6 +906,7 @@ public without sharing class PaymentPageController {
         Set<String> setOfoptionsTONotChecked = new Set<String>{'Registration Fee', 'InitialAdmission'};
     
         // Loop through each applicable payment option and handle it
+      System.debug('setOfApplicablePaymentOptionForStudent===>'+setOfApplicablePaymentOptionForStudent);
         for (String paymentOption : setOfApplicablePaymentOptionForStudent) {
             if (!setOfoptionsTONotChecked.contains(paymentOption)) {
                 handlePaymentOption(paymentOption);
@@ -917,6 +919,7 @@ public without sharing class PaymentPageController {
         // If it's an Admission fee, calculate it based on the opportunity or lead
         String key = paymentOption == 'Admission' ? getAdmissionKey() : getProductKey(paymentOption);
         Decimal productPrice = productPricing(paymentOption, getmultiplicationFactor(paymentOption), key);
+         System.debug('productPrice===>'+productPrice+'paymentOption'+paymentOption+'objAdmissionAmount.admissionAmountPaid=='+objAdmissionAmount.admissionAmountPaid);
         if (productPrice > objAdmissionAmount.admissionAmountPaid) {
             setOfPaymentOptionsAvailable.add(paymentOption);
             mapOfProductAndAmount.put(paymentOption, productPrice - objAdmissionAmount.admissionAmountPaid);

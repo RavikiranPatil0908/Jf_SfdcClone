@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 02--04--2025
+ * @last modified on  : 08--04--2025
  * @last modified by  : @Ravi
 **/
 public without sharing class FormPageController {
@@ -867,15 +867,22 @@ public without sharing class FormPageController {
                     
                     if ((objstuProg.Certificate_Issue__c == null && (objstuProg.ProgramType__c == 'MBA (Distance) Programs' || objstuProg.nm_Program__r.nm_ProgramName__c == 'Diploma in Business Management'))) {
                         objLead.Sem__c = '3';
+                        objLead.nm_Semester__c ='3';
+                       
                     } else if (objstuProg.Certificate_Issue__c == null && objstuProg.nm_Program__r.nm_ProgramName__c == 'Certificate in Business Management') {
                         objLead.Sem__c = '2';
+                        objLead.nm_Semester__c ='2';
+                       
                     } else if (objSemMapping != null) {
                         objLead.Sem__c = objSemMapping.Future_Lateral_Sem__c;
+                        objLead.nm_Semester__c =objSemMapping.Future_Lateral_Sem__c;
+                      
                     } else {
                         setStudentAsNonLateral();
                         lateralMessage = 'You are not eligible for lateral admission.';
                         return;
                     }
+                    objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
                     program = objstuProg.Certificate_Issue__c == null ? objstuProg.nm_Program__r.nm_ProgramName__c : objstuProg.Certificate_Issue__r.nm_ProgramName__c;
                     yearOfPassing = objAcc.Passing_Year__c;
                     monthOfPassing = objAcc.Passing_Month__c;
@@ -892,6 +899,8 @@ public without sharing class FormPageController {
                         return;
                      } else if (objstuProg.Certificate_Issue__c != null && objSemMapping !=null) {
                         objLead.Sem__c = objSemMapping.Future_Lateral_Sem__c;
+                        objLead.nm_Semester__c =objSemMapping.Future_Lateral_Sem__c;
+                        objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
                         program = objstuProg.Certificate_Issue__r.nm_ProgramName__c;
                         yearOfPassing = objAcc.Passing_Year__c;
                         monthOfPassing = objAcc.Passing_Month__c;

@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : @BK
  * @Group              : 
- * @Last Modified By   : @vickysahu
- * @Last Modified On   : 03-21-2025
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 09--04--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author      		      Modification
@@ -34,7 +34,7 @@ public class nmSendNotificationTracker
     static testMethod void sendVerificationEmailToLead()
     {
         LoadData();
-        nmSendNotification.sendVerificationEmailToStudent('test@gmail.com','lc@gmail.com','test','lead','0ahhgvhgh');
+        nmSendNotification.sendVerificationEmailToStudent('test@gmail.com','lc@gmail.com','test','lead',objLead.Id);
         nmSendNotification.sendVerificationSMSToStudent('8888888888','PGDBFM','071116','Registration No.','Lead','ox00123');
         nmSendNotification.UpdateDateAndTimeOfRequest(objLead.id,'Success','Email Sent');  
         nmSendNotification.sendEmailOTPToStudent('test@gmail.com','Registration No.','fhdh gff');

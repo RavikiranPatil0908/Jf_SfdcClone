@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : @BK
  * @Group              : 
- * @Last Modified By   : @vickysahu
- * @Last Modified On   : 03-19-2025
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 09--04--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -23,19 +23,23 @@ global class nmSendNotification
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
         String[] toAddresses = new String[] {emailId};
         String[] toBCC = new String[]{};
-                              
+                        
         mail.setToAddresses(toAddresses);
-        if(System.Label.Allow_Bcc == 'Yes') {
-            toBCC = System.Label.setBccAdderess.split(',');
-            //mail.setBccAddresses(toBCC);
+        
+        Lead ObjLead; 
+        if (typeOfRecord == 'Lead') {
+            ObjLead = [SELECT Id,nm_InformationCenter__r.Name FROM Lead WHERE Id = :recordId];
         }
-        // to add LC in cc
-        if(String.isNotBlank(lcemailId)) {
-            // String[] toCCAddresses = new String[] {lcemailId};
-            // mail.setCcAddresses(toCCAddresses);
-            toBCC.add(lcemailId);
+
+        if (System.Label.Allow_Bcc == 'Yes') {
+            toBCC = System.Label.setBccAdderess.split(',');
             mail.setBccAddresses(toBCC);
         }
+        if (String.isNotBlank(lcemailId) && (typeOfRecord !='Lead' || (ObjLead != null && ObjLead.nm_InformationCenter__r.Name != 'Counsellor'))) {
+             String[] toCCAddresses = new String[] {lcemailId};
+             mail.setCcAddresses(toCCAddresses);
+        }
+   
         mail.setSubject('NMIMS Email Verification');
         mail.setOrgWideEmailAddressId(owe.id); 
         mail.setReplyTo(owe.Address); 

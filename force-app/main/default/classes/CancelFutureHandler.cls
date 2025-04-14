@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : shubhranshu
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 10-04-2024
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 10--04--2025
  * @Modification Log   : 
  * Ver       Date            Author                 Modification
  * 1.0    10/3/2019   shubhranshu     Initial Version
@@ -249,16 +249,23 @@ public class CancelFutureHandler{
          }catch(DmlException e){
            System.debug(e.getMessage());
          }
+      
          Set<String> setofAccountId = new Set<String>();
-         //Set<String> setOfLeadId = new Set<String>();
+         Set<String> setOfLeadId = new Set<String>();
          Map<String,String> mapOfAccountIdVsLeadId = new Map<String,String>();
          for (Lead objLead : ledInsert) {
            if (String.isNotBlank(objLead.OldAccount__c)) {
+               setOfLeadId.add(objLead.Id);
+           }
+         }
+        List<Lead> leadInsert= [SELECT Id, Name, OldAccount__c FROM Lead WHERE Id IN :setOfLeadId];
+     for (Lead objLead : leadInsert) {
+           if (String.isNotBlank(objLead.OldAccount__c)) {
                setofAccountId.add(objLead.OldAccount__c);
-               //setOfLeadId.add(objLead.Id);
                mapOfAccountIdVsLeadId.put(objLead.OldAccount__c,objLead.Id);
            }
          }
+
          mapOfAccountIdVsLeadId1.putAll(mapOfAccountIdVsLeadId);
          system.debug('setofAccountId --->'+setofAccountId +' mapOfAccountIdVsLeadId------->'+mapOfAccountIdVsLeadId);
          if(!setofAccountId.isEmpty() && !mapOfAccountIdVsLeadId.isEmpty()){

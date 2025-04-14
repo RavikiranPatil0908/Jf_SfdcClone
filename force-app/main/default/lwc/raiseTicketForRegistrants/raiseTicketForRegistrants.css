@@ -1,46 +1,122 @@
-h1{
-		font-size: 24px;
-		color: #032d60;
-		font-weight: bold;
-}
-
-lightning-card{		
-		--slds-c-card-color-border: white;
-		--slds-c-card-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
-		--slds-c-card-spacing-block-end: 2rem;
-		--slds-c-card-spacing-block-start: 2rem;		
-		--slds-c-card-spacing-inline-end: 2rem;
-		--slds-c-card-spacing-inline-start: 2rem;
-}
-
+/* Ensure the component uses the Poppins font and a clean background */
 :host {
-    font-family: 'Poppins', sans-serif;
+	display: block;
+	font-family: 'Poppins', sans-serif;
+	background-color: #f9f9f9;
+	padding: 1rem;
 }
 
-h1, label, p, span, div {
-    font-family: 'Poppins', sans-serif;
+/* Container for the card */
+.form-container {
+	margin: 2rem auto;
+	max-width: 800px;
 }
 
-lightning-formatted-rich-text {
-		color: #BA0517;
-		font-weight: bold;
-		font-size: 15px;
-}
-.slds-scope a, .slds-scope button{
-		color: #BA0517;		
-}
-
-.text {
-		color: #032d60;
-		font-weight: bold;
+/* Style the lightning-card with rounded corners and a light shadow */
+lightning-card {
+	border-radius: 16px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+	/* Ensure rounded corners clip children */
 }
 
-.highlight {
-		border-top: 2px solid #032d60;
+/* Title styling */
+lightning-card h1 {
+	font-size: 24px;
+	color: #032d60;
+	text-align: center;
+		margin: 1rem 0;
 }
 
-@media only screen and (min-width: 640px) {
-	.paddingLeft {
-		padding-left: 10px;
-	}
+/* Toast / error message styling */
+.toast-error {
+	background-color: #BA0517;
+	color: white;
+	text-align: center;
+	padding: 0.5rem;
+	border-radius: 4px;
+	margin-bottom: 1rem;
+}
+
+/* General Input, Textarea, and Select styling */
+.slds-form-element__control input,
+.slds-form-element__control textarea,
+.slds-form-element__control select,
+lightning-input input,
+lightning-textarea textarea {
+	width: 100%;
+	padding: 0.75rem;
+	font-size: 14px;
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	background-color: #fff;
+	transition: border-color 0.3s ease;
+}
+
+/* Focus state for better visibility */
+.slds-form-element__control input:focus,
+.slds-form-element__control textarea:focus,
+.slds-form-element__control select:focus {
+	border-color: #ff4a42;
+	outline: none;
+}
+
+/* Adjust labels for inputs if needed */
+.lightning-input label,
+.lightning-textarea label,
+.lightning-combobox label {
+	font-size: 14px;
+	font-weight: 500;
+	color: #444;
+	margin-bottom: 4px;
+}
+
+/* Checkbox wrapper spacing */
+.checkbox-wrapper {
+	margin: 1rem 0;
+}
+
+/* Button styling */
+.lightning-button,
+button.submit-btn {
+	background: linear-gradient(to right, #ff512f, #dd2476);
+	color: #fff;
+	border: none;
+	padding: 0.75rem 1.5rem;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+		transition: background 0.3s ease;
+}
+/* Button hover effect */
+.lightning-button:hover,
+button.submit-btn:hover {
+	background: linear-gradient(to right, #ff5c35, #ff5c35);
+}
+
+/* Styles for the OTP modal */
+.slds-modal__container {
+	border-radius: 10px;
+}
+
+.slds-modal__header h1 {
+	font-size: 20px;
+	font-weight: 600;
+	text-align: center;
+	color: #032d60;
+}
+
+.slds-modal__footer {
+	padding-top: 1rem;
+	border-top: 1px solid #ddd;
+}
+
+/* File upload container */
+.container {
+	margin-top: 1rem;
+}
+.lightning-pill {
+	margin-right: 5px;
+	margin-top: 5px;
 }

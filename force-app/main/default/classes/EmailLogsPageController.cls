@@ -2,7 +2,7 @@
  * @description       : Controller for fetching and paginating email logs for Leads, Accounts, and Cases.
  * @author            : @Ravi
  * @group             : 
- * @last modified on  : 11--03--2025
+ * @last modified on  : 08--04--2025
  * @last modified by  : @Ravi
  **/
 public without sharing class EmailLogsPageController {
@@ -151,7 +151,7 @@ public without sharing class EmailLogsPageController {
     public EmailWrapper getEmailLogs(String regNumber) {
         Map<String, String> mapOfRequestParam = new Map<String, String>();
         // mapOfRequestParam.put('registrationNumber', regNumber);
-        mapOfRequestParam.put('parentId', regNumber);
+        mapOfRequestParam.put('registrationNumber', regNumber);
         String jsonString = JSON.serialize(mapOfRequestParam);
         HttpRequest req = new HttpRequest();
         String EndPoint = System.Label.Student_Zone_Base_Url + 'salesforce-emailLogs/m/getSfdcEmailLog';

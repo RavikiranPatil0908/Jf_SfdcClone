@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @Ravi
  * @group             : 
- * @last modified on  : 27--03--2025
+ * @last modified on  : 08--04--2025
  * @last modified by  : @Ravi
 **/
 public without sharing class LateralDataAssigmentWrapper {
@@ -144,7 +144,7 @@ public without sharing class LateralDataAssigmentWrapper {
             'Duration_of_Program3__c' => AccRecord.Duration_of_Program3__c,
             'Graduation_Degree_Mode3__c' => AccRecord.Graduation_Degree_Mode3__c,
             // 'nm_StudentImageUrl__c' => AccRecord.nm_StudentImageUrl__c,
-            // 'nm_WorkExperience__c' => AccRecord.nm_WorkExperience__c,
+            'nm_WorkExperience__c' => AccRecord.nm_WorkExperience__c,
             // 'Total_Work_Experience__c' => AccRecord.Total_Work_Experience__c,
             'LinkedIn_URL__c' => AccRecord.LinkedIn_URL__c 
         };
@@ -264,7 +264,7 @@ public without sharing class LateralDataAssigmentWrapper {
             // 'nm_StudentImageUrl__c' => 'nm_StudentImageUrl__c',
             
             // Work Experience
-            // 'nm_WorkExperience__c' => 'nm_WorkExperience__c',
+           'nm_WorkExperience__c' => 'nm_WorkExperience__c',
             // 'Total_Work_Experience__c' => 'Total_Work_Experience__c',
             'LinkedIn_URL__c' => 'LinkedIn_URL__c'
         };

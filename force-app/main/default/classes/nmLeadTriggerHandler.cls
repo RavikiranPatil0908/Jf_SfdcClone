@@ -4,7 +4,7 @@
  * @Author             : @BK
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 28--03--2025
+ * @Last Modified On   : 09--04--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -412,7 +412,7 @@ public without sharing class nmLeadTriggerHandler {
         splitLeadName(triggerNew);
         
         // update Lead semester for Lateral Student Based upon Program Completed previously commented by Phalguni
-        UpdateLeadSemester(triggerNew,triggerOldMap);
+        // UpdateLeadSemester(triggerNew,triggerOldMap);
         
         // generate Registration Number on Lead
         generateRegistrationNoOnLead(triggerNew);
@@ -552,7 +552,7 @@ public without sharing class nmLeadTriggerHandler {
         Update_Session_Year(triggerNew);
         
         // update Lead semester for Lateral Student Based upon Program Completed previously commented by Phalguni
-        UpdateLeadSemester(triggerNew,triggerOldMap);
+        // UpdateLeadSemester(triggerNew,triggerOldMap);
         // trim Email & Mobile Number on Lead
         trimEmailAndMobile(triggerNew);
       

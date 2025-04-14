@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 11-30-2024
- * @last modified by  : @vickysahu
+ * @last modified on  : 08--04--2025
+ * @last modified by  : @Ravi
 **/
 public without sharing class HomePageController {
     public SessionUser objSessionUser { get; set; }
@@ -14,7 +14,6 @@ public without sharing class HomePageController {
     public String studentno {get;set;}
     public Boolean isInterviewEnabled {get;set;}
     public Id leadId{get; set;}  // GMT tracking 
-    public String studentStatus {get;set;}
 
     public HomePageController() {
         objSessionUser = new SessionUser();
@@ -35,7 +34,7 @@ public without sharing class HomePageController {
     * @return String 
     **/
     public String setPageBlock(String navigationParam) {
-        List<String> lstOfnavParams = new List<String>{'dashboard','payment','form','reviewForm','document','call','ticket','letter','interview'};
+        List<String> lstOfnavParams = new List<String>{'dashboard','payment','form','reviewForm','document','call','ticket','letter','interview','history'};
         if(String.isNotBlank(navigationParam) && lstOfnavParams.contains(navigationParam)) {
             redirectUrl = '?nav='+navigationParam;
             return navigationParam == 'form' ? 'form1' : navigationParam;
@@ -79,7 +78,6 @@ public without sharing class HomePageController {
             studentno = objAccount.nm_StudentNo__c;
             isConfirmed = objAccount.nm_StudentStatus__c == 'Confirmed' && String.isNotBlank(objAccount.nm_StudentNo__c) ? true : false;
             leadId = objAccount.nm_LeadId__c;  // GMT tracking 
-            studentStatus = objAccount.nm_StudentStatus__c;
         }
     }
 
