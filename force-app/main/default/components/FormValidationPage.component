@@ -2,7 +2,7 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 02--04--2025
+ @last modified on : 15--04--2025
   @last modified by  : @Ravi
 -->
 <apex:component access="global">
@@ -1317,6 +1317,7 @@
         $(id).find('.notnull').each(function () {
             if(!$(this).prop('disabled')) {
                 if($(this).val() !=null){
+                    console.log('Id Value --' + $(this).val());
                     if ($(this).val().trim().length == 0) {
                         flag = 1;
                         console.log('Id Required Value --'+$(this).attr('id'));
@@ -1328,7 +1329,7 @@
                         console.log('radio btn checked'+$("input[name='"+attrName+"']:checked").val());
                         if(!$("input[name='"+attrName+"']:checked").val()) {
                             flag = 1;
-                            console.log('Id Required Value --'+$(this).attr('id'));
+                            console.log('Id Required Value ---' + $(this).attr('id'));
                             $(this).focus();
                             $(this).siblings('span.error').remove();
                             $(this).siblings('label').after('<br/> <span class="error" style="color:red;font-size: 13px;">Please enter value.</span>');
@@ -1341,7 +1342,7 @@
                     }
                 }else{
                     flag = 1;
-                    console.log('Id Required Value --'+$(this).attr('id'));
+                    console.log('Id Required Value ----' + $(this).attr('id'));
                     $(this).focus();
                     $(this).closest('div.form-group').children('span.error').remove();
                     $(this).closest('div.form-group').append('<span class="error" style="color:red;font-style:bold">Please enter value.</span>');    
@@ -1574,6 +1575,7 @@
         $(`[id$=${picklistId}] option`).filter(function() {
             return this.text == 'Bachelor of Commerce'; 
         }).attr('selected', true);
+        console.log('method called===> ', $(`[id$=${picklistId}]`).val());
     }
 
     function reRenderProgramSection(isReRender) {

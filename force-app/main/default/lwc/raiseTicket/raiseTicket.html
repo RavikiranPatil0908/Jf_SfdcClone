@@ -2,23 +2,21 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 12-09-2023
-  @last modified by  : @BK
+  @last modified on  : 22--04--2025
+  @last modified by  : @Ravi
 -->
 <template>
-    <div class="slds-align_absolute-center slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12">
-        <lightning-card>
-            <h1>Raise a ticket</h1>
-            <br />
+    <div class="form-wrapper slds-align_absolute-center slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12">
+
+        <div class="card-body-wrapper">
+            <h2 class="form-title" >For Students</h2>
+            <div class="slds-wrap slds-grid">
+                <lightning-formatted-rich-text value={error}></lightning-formatted-rich-text>
             <template if:true={showToast}>
-                <br />
-                <div style="background-color: #ba0517; color: white">
+                <div class="slds-col slds-size_1-of-1 toast-error">
                     Fill all the mandatory details
                 </div>
-                <br />
             </template>
-            <div class="slds-wrap slds-grid">
-                {error}
                 <div class="slds-col slds-size_1-of-1">
                     <lightning-input
                         label="Sap Id"
@@ -81,15 +79,21 @@
                     </lightning-textarea>
                     <br />
                 </div>
-                <div class="slds-col slds-size_1-of-1">
-                    <lightning-input
-                        type="checkbox"
-                        label="Do you want to attach related files/screenshots ?"
-                        onchange={handleCheckChange}
-                        unchecked
-                    >
-                    </lightning-input>
-                    <br />
+
+                <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
+                    <div class="slds-grid slds-wrap ">
+                        <!-- Attachment Checkbox -->
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-3">
+                        <lightning-input type="checkbox" label="Do you want to attach related files/screenshots ?" onchange={handleCheckChange}
+                            unchecked>
+                        </lightning-input>
+                        </div>
+                
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-align_absolute-center">
+                            <button class="custom-submit-button" variant="destructive"  type="submit" onclick={handleSubmit}>SUBMIT
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <template if:true={isUploadFile}>
                     <div class="slds-col slds-size_1-of-1">
@@ -121,18 +125,8 @@
                         </div>
                     </div>
                 </template>
-            </div>
-            <div class="slds-col">
-                <lightning-button
-                    class="slds-align_absolute-center"
-                    variant="destructive"
-                    label="Submit"
-                    type="submit"
-                    onclick={handleSubmit}
-                >
-                </lightning-button>
-            </div>
-        </lightning-card>
+          </div>
+        </div>
         <template if:true={showOtp}>
             <section
                 role="dialog"
@@ -167,27 +161,17 @@
                             ></lightning-input>
                         </div>
                     </div>
-                    <footer class="slds-modal__footer">
-                        <div
-                            class="slds-col slds-size_2-of-1 slds-float_left"
-                            style="font-size: 15px"
-                        >
-                            If you haven't received the OTP in {timeVal}, click
-                            resend
+                    <footer class="slds-modal__footer slds-grid slds-wrap">
+                        <div class="slds-text-align_left slds-var-p-bottom_x-small" style="font-size: 15px;">
+                            If you haven't received the OTP in {timeVal}, click resend
                         </div>
-                        <lightning-button
-                            class="slds-m-around_small"
-                            onclick={handleResendOtp}
-                            label="Resend OTP"
-                            variant="brand"
-                            disabled={resend}
-                        ></lightning-button>
-                        <lightning-button
-                            class="slds-m-around_small"
-                            onclick={verification}
-                            variant="brand"
-                            label="Confirm"
-                        ></lightning-button>
+                        <!-- Resend OTP button -->
+                        <lightning-button class="slds-col_bump-left slds-var-p-right_x-small " label="Resend OTP" onclick={handleResendOtp}
+                            variant="brand" disabled={resend}>
+                        </lightning-button>
+                        <!-- Confirm button with spacing -->
+                        <button class="custom-otp-button slds-m-left_x-small" onclick={verification} variant="brand">Confirm
+                        </button>
                     </footer>
                 </div>
             </section>

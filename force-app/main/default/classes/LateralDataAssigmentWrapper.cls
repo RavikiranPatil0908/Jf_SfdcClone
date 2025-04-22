@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @Ravi
  * @group             : 
- * @last modified on  : 08--04--2025
+ * @last modified on  : 18--04--2025
  * @last modified by  : @Ravi
 **/
 public without sharing class LateralDataAssigmentWrapper {
@@ -317,8 +317,8 @@ public without sharing class LateralDataAssigmentWrapper {
     * @param AccId 
     **/
     public void populateApporovedDefaultDocs(Id AccId) {
-        List<String> documentList = new List<String>{'Photo ID proof','Aadhaar Card' };
-        List<nm_LinksForDocuments__c> docs = [SELECT Id, nm_DocumentName__c, nm_URLforDocuments__c, nm_Status__c, Document_Upload_Mode__c, nm_ReasonforDisapprove__c, Document_Query__c , nm_Old_URL_for_Documents__c FROM nm_LinksForDocuments__c WHERE nm_Account__c = :AccId AND nm_Status__c = 'Approved'];
+        List<String> documentList = new List<String>{'Photo ID proof','Aadhaar Card','10th Mark Sheet','12th Marksheet' };
+        List<nm_LinksForDocuments__c> docs = [SELECT Id, nm_DocumentName__c, nm_URLforDocuments__c, nm_Status__c, Document_Upload_Mode__c, nm_ReasonforDisapprove__c, Document_Query__c , nm_Old_URL_for_Documents__c FROM nm_LinksForDocuments__c WHERE nm_Account__c = :AccId AND nm_URLforDocuments__c !=null AND nm_Status__c = 'Approved'];
        if(docs.size() > 0){
         System.debug('Document Data ==>'+documentList); 
         for(nm_LinksForDocuments__c doc : docs){

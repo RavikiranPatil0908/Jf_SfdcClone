@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 07--04--2025
+ * @last modified on  : 18--04--2025
  * @last modified by  : @Ravi
 **/
 public without sharing class PaymentPageController {
@@ -152,6 +152,10 @@ public without sharing class PaymentPageController {
         this.objectType = objectType;
     }
 
+    public Boolean getIsFullFeeAvailable() {
+        return setOfPaymentOptionsAvailable.contains('FullFee');
+    }    
+
     /**
     * @description 
     * @author @BK | 06-08-2024 
@@ -273,6 +277,8 @@ public without sharing class PaymentPageController {
             }
             objCoursera.isCourseraAlreadyOpted = objLead.Coursera__c;
             objDetails.hasAvanseProgramCode = String.isNotBlank(objLead.nm_Program__r.AvanseAPICode__c) ? true : false;
+            //It is used to hide loan if making payment after closed won
+            objDetails.allowLoan = true;
         } else {
             System.debug('Account -->');
             List<Account> lstAccounts = DataBase.query(accountAdmissionQueryString);
@@ -364,6 +370,8 @@ public without sharing class PaymentPageController {
                     }
                     objCoursera.isCourseraAlreadyOpted = objOpportunity.Coursera__c;
                     // totalamountreceived = objOpportunity.Total_Amount_Received__c  ;
+                    //It is used to hide loan if making payment after closed won
+                    objDetails.allowLoan = String.isBlank(objOpportunity.Student_Number__c) ? true : false;
                     objDetails.programName = objOpportunity.ProgramFullName__c;
                     objDetails.programSpecialisaton = objOpportunity.nm_Program__r.Form_Specialisation__c;
                     objDetails.program = objOpportunity.nm_Program__r.Bachelor_Specialization__c;
@@ -389,7 +397,7 @@ public without sharing class PaymentPageController {
 
         //get Payment Form Configuration
         //String payConfigString = 'Session__c =:currentAdmissionSession AND Current_Admission_Year__c =:currentAdmissionYear AND Program_Category__c=:programCategory AND Payment_Type__c =:programType AND Program_Type__c=:programSpecialization';
-        String payConfigString = 'Session__c =:currentAdmissionSession and Current_Admission_Year__c =:currentAdmissionYear  and Program_Category__c=:programCategory and Payment_Type__c =:programType and Program_Type__c=:programSpecialization and Payment_Window_EndDate__c>=TODAY';
+        String payConfigString = 'Session__c =:currentAdmissionSession and Current_Admission_Year__c =:currentAdmissionYear  and Program_Category__c=:programCategory and Payment_Type__c =:programType and Program_Type__c=:programSpecialization';
         Set<String> setOfSemSpec = String.isNotBlank(System.Label.PayConfigSemSpecalisation) ? new Set<String>(System.Label.PayConfigSemSpecalisation.split(';')) : new set<String>();
         if (programType == 'Re-Registration' && String.isNotBlank(programSpecialization) && setOfSemSpec.contains(programSpecialization)) {
             payConfigString = payConfigString + ' AND Semester__c = :semester';
@@ -450,14 +458,15 @@ public without sharing class PaymentPageController {
 
             if(objPaymentFormConfiguration.Show_AnnualSemFee_Payment_Option__c &&  (objDetails.totalsem - Integer.valueOf(semester))>=1  && !objDetails.feeType.contains('-Considered') && (objDetails.totalsem - Integer.valueOf(semester))>0){
                 setOfApplicablePaymentOptionForStudent.add('AnnualFee');
-                system.debug('setOfApplicablePaymentOptionForStudent--->'+setOfApplicablePaymentOptionForStudent);
+                system.debug('setOfApplicablePaymentOptionForStudent--- AnnualFee>'+setOfApplicablePaymentOptionForStudent);
             }
             if(objPaymentFormConfiguration.Show_2TermFee_Payment_Option__c &&  (objDetails.totalsem - Integer.valueOf(semester))>=1  && !objDetails.feeType.contains('-Considered') && (objDetails.totalsem - Integer.valueOf(semester))>0){
                 setOfApplicablePaymentOptionForStudent.add('2TermFee');
-                system.debug('setOfApplicablePaymentOptionForStudent--->'+setOfApplicablePaymentOptionForStudent);
+                system.debug('setOfApplicablePaymentOptionForStudent---2TermFee>'+setOfApplicablePaymentOptionForStudent);
             }
             if(objPaymentFormConfiguration.Show_MultipleSemFee_Payment_Option__c && Integer.valueOf(semester) == 2 && !objDetails.feeType.contains('-Considered')){
                 setOfApplicablePaymentOptionForStudent.add('MultipleSemFee');
+                system.debug('setOfApplicablePaymentOptionForStudent---MultipleSemFee>'+setOfApplicablePaymentOptionForStudent);
             }
             if(objPaymentFormConfiguration.Show_3SemFee_Payment_Option__c &&  (objDetails.totalsem - Integer.valueOf(semester))==2 && !objDetails.feeType.contains('-Considered')){
                 setOfApplicablePaymentOptionForStudent.add('3SemFee');
@@ -906,9 +915,10 @@ public without sharing class PaymentPageController {
         Set<String> setOfoptionsTONotChecked = new Set<String>{'Registration Fee', 'InitialAdmission'};
     
         // Loop through each applicable payment option and handle it
-      System.debug('setOfApplicablePaymentOptionForStudent===>'+setOfApplicablePaymentOptionForStudent);
+           System.debug('setOfApplicablePaymentOptionForStudent==--> ' + setOfApplicablePaymentOptionForStudent);
         for (String paymentOption : setOfApplicablePaymentOptionForStudent) {
             if (!setOfoptionsTONotChecked.contains(paymentOption)) {
+
                 handlePaymentOption(paymentOption);
             }
         }
@@ -919,7 +929,10 @@ public without sharing class PaymentPageController {
         // If it's an Admission fee, calculate it based on the opportunity or lead
         String key = paymentOption == 'Admission' ? getAdmissionKey() : getProductKey(paymentOption);
         Decimal productPrice = productPricing(paymentOption, getmultiplicationFactor(paymentOption), key);
-         System.debug('productPrice===>'+productPrice+'paymentOption'+paymentOption+'objAdmissionAmount.admissionAmountPaid=='+objAdmissionAmount.admissionAmountPaid);
+        System.debug('handlePaymentOption---->' + productPrice +' '+ objAdmissionAmount.admissionAmountPaid);
+        Boolean isGreater = productPrice > objAdmissionAmount.admissionAmountPaid;
+        System.debug('Condition Result: ' + isGreater);
+        System.debug('paymentOption==' + paymentOption);
         if (productPrice > objAdmissionAmount.admissionAmountPaid) {
             setOfPaymentOptionsAvailable.add(paymentOption);
             mapOfProductAndAmount.put(paymentOption, productPrice - objAdmissionAmount.admissionAmountPaid);
@@ -1149,6 +1162,7 @@ public without sharing class PaymentPageController {
     
         // Ensure late fee amount is non-negative
         return Math.max(lateFeeAmount, 0);
+
     }
     
     /**
@@ -1189,7 +1203,7 @@ public without sharing class PaymentPageController {
               AND End_Date__c >= TODAY
         ];
     
-        if (lateFeeRecords.isEmpty()) {
+        if (lateFeeRecords.isEmpty() || String.isNotBlank(objOpportunity.Student_Number__c)) {
             return 0;
         }
     
@@ -1270,10 +1284,11 @@ public without sharing class PaymentPageController {
         if(objAdmissionAmount.isPendingPaymentRecordExists) {
             objAdmissionAmount.returnURL = 'nmAdditonalCharge?id=' + objAdmissionAmount.pendingPaymentRecordId;
             objAdmissionAmount.isRedirect = true;
-        } else if((objAdmissionAmount.isAdmissionAmountPaid || objLoanDetails.loanApproved) && (objAdmissionAmount.isLateFeePending || objAdmissionAmount.hasUnpaidLoanBalance)) {
+        } else if((objAdmissionAmount.isAdmissionAmountPaid || objLoanDetails.loanApproved) && (objAdmissionAmount.isLateFeePending || objAdmissionAmount.hasUnpaidLoanBalance) && String.isBlank(objOpportunity.Student_Number__c)) {
             objAdmissionAmount.returnURL = 'nmAdditonalCharge?id=' + opportunityId;
             objAdmissionAmount.isRedirect = true;
         }
+        System.debug('objAdmissionAmount.isRedirect---->' + objAdmissionAmount.isRedirect);
     }
 
     /**
@@ -1776,16 +1791,28 @@ public without sharing class PaymentPageController {
         if('Opportunity'.equalsIgnoreCase(typeOfObject)){
             if(objOpportunity.nm_Fee_Type__c!=null && objOpportunity.nm_Fee_Type__c!='' && objOpportunity.nm_Fee_Type__c != 'MBAallTermfee-Considered') {
                 System.debug('paymentFor in updateLoanDetailsForSubvention '+paymentFor);
-                if(String.isNotBlank(paymentFor) && paymentFor.contains('-')) {
+                /*if(String.isNotBlank(paymentFor) && paymentFor.contains('-')) {
                     String downPaymentPayFor = paymentFor.split('-')[1];
                     if(objOpportunity.nm_Fee_Type__c == 'MBAallTermfee' && downPaymentPayFor.equalsIgnoreCase('admission')){ // added due to fee type change from MBAallTermfee to admission
                         System.debug('can not update the fee type ');
-                    }else{
-                        objOpportunity.nm_Fee_Type__c = downPaymentPayFor;
-                    }
+                    } else{
+                        if('Master Programs'.equalsIgnoreCase(programCategory) && !IsReregistartion
+                            && ('MBA (WX)'.equalsIgnoreCase(programSpecialization)
+                            ||  'MBA (X)'.equalsIgnoreCase(programSpecialization) 
+                            ||  'MBA - X'.equalsIgnoreCase(programSpecialization) 
+                            ||  ('M.Sc. (AI & ML Ops)'.equalsIgnoreCase(programSpecialization) && downPaymentPayFor !='AnnualFee' && downPaymentPayFor !='FullFee') ) ){
+                                // objOpportunity.nm_Fee_Type__c = 'MBAallTermfee';
+                                objOpportunity.nm_Fee_Type__c = 'MBAallTermfee';
+                                System.debug('objOpportunity.nm_Fee_Type__c---->'+objOpportunity.nm_Fee_Type__c);
+                            }
+                            else {
+                                objOpportunity.nm_Fee_Type__c = downPaymentPayFor;
+                            }
+                        }
                 } else if(String.isNotBlank(paymentFor) && !paymentFor.contains('-')) {
                     objOpportunity.nm_Fee_Type__c = paymentFor;
-                }
+                }*/
+                objOpportunity.nm_Fee_Type__c = getFeeType(objOpportunity.nm_Fee_Type__c);
             }
             System.debug('objOpportunity.nm_Fee_Type__c ==>'+objOpportunity.nm_Fee_Type__c);
             objOpportunity.Down_Payment_Made__c = true;
@@ -1808,6 +1835,30 @@ public without sharing class PaymentPageController {
             }
         }
         else if('Lead'.equalsIgnoreCase(typeOfObject)){
+            
+            /*if(String.isNotBlank(paymentFor) && paymentFor.contains('-')) {
+                String downPaymentPayFor = paymentFor.split('-')[1];
+                if(objLead.nm_Fee_Type__c == 'MBAallTermfee' && downPaymentPayFor.equalsIgnoreCase('admission')){ // added due to fee type change from MBAallTermfee to admission
+                    System.debug('can not update the fee type ');
+                } else{
+                    if('Master Programs'.equalsIgnoreCase(programCategory) 
+                        && ('MBA (WX)'.equalsIgnoreCase(programSpecialization)
+                        ||  'MBA (X)'.equalsIgnoreCase(programSpecialization) 
+                        ||  'MBA - X'.equalsIgnoreCase(programSpecialization) 
+                        ||  ('M.Sc. (AI & ML Ops)'.equalsIgnoreCase(programSpecialization) && downPaymentPayFor !='AnnualFee' && downPaymentPayFor !='FullFee') ) ){
+                            // objOpportunity.nm_Fee_Type__c = 'MBAallTermfee';
+                            objLead.nm_Fee_Type__c = 'MBAallTermfee';
+                            System.debug('objOpportunity.nm_Fee_Type__c---->'+objOpportunity.nm_Fee_Type__c);
+                        }
+                        else {
+                            objOpportunity.nm_Fee_Type__c = downPaymentPayFor;
+                        }
+                    }
+            } else if(String.isNotBlank(paymentFor) && !paymentFor.contains('-')) {
+                objLead.nm_Fee_Type__c = paymentFor;
+            }*/
+            objLead.nm_Fee_Type__c = getFeeType(objLead.nm_Fee_Type__c);
+            
             objLead.Down_Payment_Made__c = true;
             objLead.Loan_Type__c = objLoanDetails.LoanType;
             objLead.EMI_Amount__c = objLoanDetails.EMI;
@@ -1824,6 +1875,32 @@ public without sharing class PaymentPageController {
                 update objLead;
             }
         }
+    }
+
+    public String getFeeType(String feeType) {
+        String newFeeType = feeType;
+        if(String.isNotBlank(paymentFor) && paymentFor.contains('-')) {
+            String downPaymentPayFor = paymentFor.split('-')[1];
+            if(feeType == 'MBAallTermfee' && downPaymentPayFor.equalsIgnoreCase('admission')){ // added due to fee type change from MBAallTermfee to admission
+                System.debug('can not update the fee type ');
+            } else{
+                if('Master Programs'.equalsIgnoreCase(programCategory) 
+                    && ('MBA (WX)'.equalsIgnoreCase(programSpecialization)
+                    ||  'MBA (X)'.equalsIgnoreCase(programSpecialization) 
+                    ||  'MBA - X'.equalsIgnoreCase(programSpecialization) 
+                    ||  ('M.Sc. (AI & ML Ops)'.equalsIgnoreCase(programSpecialization) && downPaymentPayFor !='AnnualFee' && downPaymentPayFor !='FullFee') ) ){
+                        // objOpportunity.nm_Fee_Type__c = 'MBAallTermfee';
+                        newFeeType = 'MBAallTermfee';
+                        System.debug('newFeeType---->'+newFeeType);
+                    }
+                    else {
+                        newFeeType = downPaymentPayFor;
+                    }
+                }
+        } else if(String.isNotBlank(paymentFor) && !paymentFor.contains('-')) {
+            newFeeType = paymentFor;
+        }
+        return newFeeType;
     }
 
     /**
@@ -2011,6 +2088,7 @@ public without sharing class PaymentPageController {
         public Boolean isPaymentMade {get;set;}
         public Decimal actualPeningAmount {get;set;}
         public Boolean hasAvanseProgramCode {get;set;}
+        public Boolean allowLoan {get;set;}
 
         public RequestWrapper() {
             this.DaysPendingforInitialPayment = 1;
@@ -2051,6 +2129,7 @@ public without sharing class PaymentPageController {
             this.semester = null;
             this.actualPeningAmount = 0;
             this.hasAvanseProgramCode = false;
+            this.allowLoan = false;
         }
     }
 

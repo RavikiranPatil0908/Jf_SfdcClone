@@ -4,7 +4,7 @@
  * @Author             : @BK
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 09--04--2025
+ * @Last Modified On   : 15--04--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -1944,198 +1944,198 @@ public without sharing class nmLeadTriggerHandler {
     }*/
     
        //update Lead semester for Lateral Student Based upon Program Completed previously
-    public void UpdateLeadSemester(List<Lead> lstLead , Map<Id,Lead> oldMap){
-        Map<String,Account> mapOfStudentNoVsProgramCompletedAccounts =  getMapOfStudentNoVsProgramCompletedAccounts(lstLead);
-       /* Map<String, String> mapOfCenterNameVsId = new Map<String, String>();
-        Set<String> setOfProfileIdAllowed = new set<String>();
-        for (nm_Centers__c objCen : [SELECT Id, Name FROM nm_Centers__c WHERE RecordType.Name = 'Learning Center']) {
-            mapOfCenterNameVsId.put(objCen.Name, objCen.Id);
-        }
-        Set<String> profileName = new Set<String>{'Information Center Partner Community User', 'pp profile'};
-        for (Profile objProfile : [SELECT Id, Name FROM Profile WHERE Name IN :profileName ]) {
-            setOfProfileIdAllowed.add(objProfile.Id);
-        }
-        List<Lead> lstLeadToTranserToLC = new List<Lead>();
-        Map<String,List<nm_UserMapping__c>> mapOfCenterIdVsCenterUserMapping = getMapOfCenterIdVsCenterUserMapping();*/
-        for(Lead objLead : lstLead){
-            if(objLead.Student_Number_Lateral__c !=null  && objLead.Is_Lateral__c 
-            ){ 
+    // public void UpdateLeadSemester(List<Lead> lstLead , Map<Id,Lead> oldMap){
+    //     Map<String,Account> mapOfStudentNoVsProgramCompletedAccounts =  getMapOfStudentNoVsProgramCompletedAccounts(lstLead);
+    //    /* Map<String, String> mapOfCenterNameVsId = new Map<String, String>();
+    //     Set<String> setOfProfileIdAllowed = new set<String>();
+    //     for (nm_Centers__c objCen : [SELECT Id, Name FROM nm_Centers__c WHERE RecordType.Name = 'Learning Center']) {
+    //         mapOfCenterNameVsId.put(objCen.Name, objCen.Id);
+    //     }
+    //     Set<String> profileName = new Set<String>{'Information Center Partner Community User', 'pp profile'};
+    //     for (Profile objProfile : [SELECT Id, Name FROM Profile WHERE Name IN :profileName ]) {
+    //         setOfProfileIdAllowed.add(objProfile.Id);
+    //     }
+    //     List<Lead> lstLeadToTranserToLC = new List<Lead>();
+    //     Map<String,List<nm_UserMapping__c>> mapOfCenterIdVsCenterUserMapping = getMapOfCenterIdVsCenterUserMapping();*/
+    //     for(Lead objLead : lstLead){
+    //         if(objLead.Student_Number_Lateral__c !=null  && objLead.Is_Lateral__c 
+    //         ){ 
             
-                if(mapOfStudentNoVsProgramCompletedAccounts.containsKey(objLead.Student_Number_Lateral__c)){
-                    Account objStudentProgram = mapOfStudentNoVsProgramCompletedAccounts.get(objLead.Student_Number_Lateral__c);
-                        system.debug('objStudentProgram.Current_semester__c--->'+objStudentProgram.Current_semester__c);
-                        system.debug('objStudentProgram.nm_Program__r.Name--->'+objStudentProgram.nm_Program__r.Name);
-                        system.debug('objLead.nm_Program__c--->'+objLead.nm_ProgramName__c);
+    //             if(mapOfStudentNoVsProgramCompletedAccounts.containsKey(objLead.Student_Number_Lateral__c)){
+    //                 Account objStudentProgram = mapOfStudentNoVsProgramCompletedAccounts.get(objLead.Student_Number_Lateral__c);
+    //                     system.debug('objStudentProgram.Current_semester__c--->'+objStudentProgram.Current_semester__c);
+    //                     system.debug('objStudentProgram.nm_Program__r.Name--->'+objStudentProgram.nm_Program__r.Name);
+    //                     system.debug('objLead.nm_Program__c--->'+objLead.nm_ProgramName__c);
 
-                    if(oldMap != null && objLead.nm_ChooseaProgram__c != oldMap.get(objLead.id).nm_ChooseaProgram__c ){
-                    System.debug('oldMap --->'+oldMap );
-                        if(objLead.nm_ChooseaProgram__c.startsWith('Diploma') && objStudentProgram.nm_ChooseaProgram__c == 'Diploma Programs'){
-                            objLead.nm_Semester__c = '2';
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }else if((objLead.nm_ChooseaProgram__c.startsWith('Diploma') || objLead.nm_ChooseaProgram__c.contains('MBA (Distance) Programs') || (objLead.nm_ChooseaProgram__c.contains('Master Programs') && objLead.Program_Type__c == 'MBA')) 
-                        && objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'CBM' && objStudentProgram.BatchStartD__c > date.newinstance(2019,01,01)){
-                            objLead.nm_Semester__c = '2';
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }
-                        else if((objLead.nm_ChooseaProgram__c.contains('MBA (Distance) Programs') || (objLead.nm_ChooseaProgram__c.contains('Master Programs') && objLead.Program_Type__c == 'MBA')) 
-                        && objLead.nm_ChooseaProgram__c != oldMap.get(objLead.id).nm_ChooseaProgram__c && objStudentProgram.nm_ChooseaProgram__c == 'Diploma Programs'){
-                            if(objStudentProgram.nm_Program__r.Name == 'DBM' && objStudentProgram.BatchStartD__c > date.newinstance(2019,01,01)) {
-                                system.debug('objStudentProgram.BatchStartD__c-->'+objStudentProgram.BatchStartD__c);
-                                objLead.nm_Semester__c = '3';
-                                objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                            }else{
-                                objLead.nm_Semester__c = '2';
-                                objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                            }
-                        }
-                        /*else if(objLead.nm_ChooseaProgram__c.contains('MBA (Distance) Programs') && objLead.nm_ChooseaProgram__c != oldMap.get(objLead.id).nm_ChooseaProgram__c && (objStudentProgram.nm_ChooseaProgram__c == 'Post Graduate Diploma Programs' || objStudentProgram.nm_Program__r.Name == 'DGM')){
-                            objLead.nm_Semester__c = '3';
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 2') || objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4'))&& (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 1')){
-                            objLead.nm_Semester__c = '2';
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4'))&& (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 2')){
-                            objLead.nm_Semester__c = '3';
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }else if(objLead.nm_ChooseaProgram__c.startsWith('Professional Programs') &&  objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 3')){
-                            objLead.nm_Semester__c = '4';
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }*/
-                        //PCDM to PDDM lateral Admission
-                        else if(objLead.nm_ChooseaProgram__c.startsWith('Professional Programs') && objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 3')){
-                            objLead.nm_Semester__c = String.valueof(Integer.valueof(objStudentProgram.Current_semester__c) + 1) ;
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }
-                        //C-SEM & SMM to PDDM,PCDM lateral Admission
-                        else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4')) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SEM & SMM')){
-                            objLead.nm_Semester__c = String.valueof(objStudentProgram.Current_semester__c+ 1) ;
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }
-                        //C-SEM & DMA to PDDM,PCDM lateral Admission, it will be default 2
-                        else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4')) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SEM & DMA')){
-                            objLead.nm_Semester__c = '2' ;
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }
-                        //C-SMM & DMA to PDDM,PCDM lateral Admission, it will be default 1
-                        else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4')) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SMM & DMA')){
-                            objLead.nm_Semester__c = '1' ;
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }
-                        //C-SEM to PDDM,PCDM, C-SEM lateral Admission, it will be default 2
-                        else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c.contains('Certificate in Search Engine Marketing') ) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SEM')){
-                            objLead.nm_Semester__c = '2' ;
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }
-                        //C-DMA to PDDM,PCDM, C-DMA lateral Admission, it will be default 1
-                        else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c.contains('Certificate in Digital Marketing Analytics') ) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-DMA')){
-                            objLead.nm_Semester__c = '1' ;
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }
-                        //C-SMM to PDDM,PCDM, C-SEM & SMM lateral Admission, it will be default 1
-                        else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c=='Certificate in Search Engine Marketing & Certificate in Social Media and Content Marketing') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SMM')){
-                            objLead.nm_Semester__c = '1' ;
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }
-                        //C-SMM to PDDM,PCDM, C-SMM & DMA lateral Admission, it will be default 2
-                        else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c=='Certificate in Social Media and Content Marketing & Certificate in Digital Marketing Analytics') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SMM')){
-                            objLead.nm_Semester__c = '2' ;
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }
-                        else {
-                            objLead.nm_Semester__c = '1';
-                            objLead.Lead_Lateral_Catogery__c = 'Admission';
-                        }
-                    }else{
-                        system.debug('objStudentProgram.nm_FeesPaidofSemester__c--->'+objStudentProgram.nm_ChooseaProgram__c);
-                        system.debug('objStudentProgram.nm_Program__r.Name--->'+objStudentProgram.nm_Program__r.Name);
-                        if(objLead.nm_ChooseaProgram__c.startsWith('Diploma') && objStudentProgram.nm_ChooseaProgram__c == 'Diploma Programs' ){
-                            objLead.nm_Semester__c = '2';
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }else if((objLead.nm_ChooseaProgram__c.startsWith('Diploma') || objLead.nm_ChooseaProgram__c.contains('MBA (Distance) Programs') || (objLead.nm_ChooseaProgram__c.contains('Master Programs') && objLead.Program_Type__c == 'MBA')) 
-                        && objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'CBM' && objStudentProgram.BatchStartD__c > date.newinstance(2019,01,01)){
-                            objLead.nm_Semester__c = '2';
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }
-                        else if((objLead.nm_ChooseaProgram__c.contains('MBA (Distance) Programs') || (objLead.nm_ChooseaProgram__c.contains('Master Programs') 
-                        && objLead.Program_Type__c == 'MBA')) && objStudentProgram.nm_ChooseaProgram__c == 'Diploma Programs' ){
-                            if(objStudentProgram.nm_Program__r.Name == 'DBM' && objStudentProgram.BatchStartD__c>date.newinstance(2019,01,01)) {
-                                system.debug('objStudentProgram.BatchStartD__c-->'+objStudentProgram.BatchStartD__c);
-                                objLead.nm_Semester__c = '3';
-                                objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                            }else{
-                                objLead.nm_Semester__c = '2';
-                                objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                            }
-                        }
-                        /*else if(objLead.nm_ChooseaProgram__c.startsWith('MBA (Distance) Programs') && (objStudentProgram.nm_ChooseaProgram__c == 'Post Graduate Diploma Programs' || objStudentProgram.nm_Program__r.Name == 'DGM')){
-                            objLead.nm_Semester__c = '3';
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs') )&& (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 2') || objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4'))&& (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 1')){
-                            objLead.nm_Semester__c = '2';
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4'))&& (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 2')){
-                            objLead.nm_Semester__c = '3';
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }else if(objLead.nm_ChooseaProgram__c.startsWith('Professional Programs') &&  objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 3')){
-                            objLead.nm_Semester__c = '4';
-                            objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                        }*/
-                            //PCDM to PDDM lateral Admission
-                        else if(objLead.nm_ChooseaProgram__c.startsWith('Professional Programs') && objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 3')){
-                                                 objLead.nm_Semester__c = String.valueof(Integer.valueof(objStudentProgram.Current_semester__c) + 1) ;
-                                                objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                                            }
-                       //C-SEM & SMM to PDDM,PCDM lateral Admission
-                        else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4')) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SEM & SMM')){
-                                                objLead.nm_Semester__c = String.valueof(Integer.valueof(objStudentProgram.Current_semester__c) + 1);
-                                                objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                                            }
-                       //C-SEM & DMA to PDDM,PCDM lateral Admission, it will be default 2
-                        else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4')) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SEM & DMA')){
-                                                objLead.nm_Semester__c = '2' ;
-                                                objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                                            }
-                       //C-SMM & DMA to PDDM,PCDM lateral Admission, it will be default 1
-                        else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4')) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SMM & DMA')){
-                                                objLead.nm_Semester__c = '1' ;
-                                                objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                                            }
-                        //C-SEM to PDDM,PCDM, C-SEM lateral Admission, it will be default 2
-                        else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c.contains('Certificate in Search Engine Marketing') ) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SEM')){
-                                                objLead.nm_Semester__c = '2' ;
-                                                objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                                            }
-                        //C-DMA to PDDM,PCDM, C-DMA lateral Admission, it will be default 1
-                        else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c.contains('Certificate in Digital Marketing Analytics') ) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-DMA')){
-                                                objLead.nm_Semester__c = '1' ;
-                                                objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                                            }
-                        //C-SMM to PDDM,PCDM, C-SEM & SMM lateral Admission, it will be default 1
-                        else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c=='Certificate in Search Engine Marketing & Certificate in Social Media and Content Marketing') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SMM')){
+    //                 if(oldMap != null && objLead.nm_ChooseaProgram__c != oldMap.get(objLead.id).nm_ChooseaProgram__c ){
+    //                 System.debug('oldMap --->'+oldMap );
+    //                     if(objLead.nm_ChooseaProgram__c.startsWith('Diploma') && objStudentProgram.nm_ChooseaProgram__c == 'Diploma Programs'){
+    //                         objLead.nm_Semester__c = '2';
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }else if((objLead.nm_ChooseaProgram__c.startsWith('Diploma') || objLead.nm_ChooseaProgram__c.contains('MBA (Distance) Programs') || (objLead.nm_ChooseaProgram__c.contains('Master Programs') && objLead.Program_Type__c == 'MBA')) 
+    //                     && objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'CBM' && objStudentProgram.BatchStartD__c > date.newinstance(2019,01,01)){
+    //                         objLead.nm_Semester__c = '2';
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }
+    //                     else if((objLead.nm_ChooseaProgram__c.contains('MBA (Distance) Programs') || (objLead.nm_ChooseaProgram__c.contains('Master Programs') && objLead.Program_Type__c == 'MBA')) 
+    //                     && objLead.nm_ChooseaProgram__c != oldMap.get(objLead.id).nm_ChooseaProgram__c && objStudentProgram.nm_ChooseaProgram__c == 'Diploma Programs'){
+    //                         if(objStudentProgram.nm_Program__r.Name == 'DBM' && objStudentProgram.BatchStartD__c > date.newinstance(2019,01,01)) {
+    //                             system.debug('objStudentProgram.BatchStartD__c-->'+objStudentProgram.BatchStartD__c);
+    //                             objLead.nm_Semester__c = '3';
+    //                             objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                         }else{
+    //                             objLead.nm_Semester__c = '2';
+    //                             objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                         }
+    //                     }
+    //                     /*else if(objLead.nm_ChooseaProgram__c.contains('MBA (Distance) Programs') && objLead.nm_ChooseaProgram__c != oldMap.get(objLead.id).nm_ChooseaProgram__c && (objStudentProgram.nm_ChooseaProgram__c == 'Post Graduate Diploma Programs' || objStudentProgram.nm_Program__r.Name == 'DGM')){
+    //                         objLead.nm_Semester__c = '3';
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 2') || objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4'))&& (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 1')){
+    //                         objLead.nm_Semester__c = '2';
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4'))&& (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 2')){
+    //                         objLead.nm_Semester__c = '3';
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }else if(objLead.nm_ChooseaProgram__c.startsWith('Professional Programs') &&  objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 3')){
+    //                         objLead.nm_Semester__c = '4';
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }*/
+    //                     //PCDM to PDDM lateral Admission
+    //                     else if(objLead.nm_ChooseaProgram__c.startsWith('Professional Programs') && objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 3')){
+    //                         objLead.nm_Semester__c = String.valueof(Integer.valueof(objStudentProgram.Current_semester__c) + 1) ;
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }
+    //                     //C-SEM & SMM to PDDM,PCDM lateral Admission
+    //                     else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4')) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SEM & SMM')){
+    //                         objLead.nm_Semester__c = String.valueof(objStudentProgram.Current_semester__c+ 1) ;
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }
+    //                     //C-SEM & DMA to PDDM,PCDM lateral Admission, it will be default 2
+    //                     else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4')) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SEM & DMA')){
+    //                         objLead.nm_Semester__c = '2' ;
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }
+    //                     //C-SMM & DMA to PDDM,PCDM lateral Admission, it will be default 1
+    //                     else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4')) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SMM & DMA')){
+    //                         objLead.nm_Semester__c = '1' ;
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }
+    //                     //C-SEM to PDDM,PCDM, C-SEM lateral Admission, it will be default 2
+    //                     else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c.contains('Certificate in Search Engine Marketing') ) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SEM')){
+    //                         objLead.nm_Semester__c = '2' ;
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }
+    //                     //C-DMA to PDDM,PCDM, C-DMA lateral Admission, it will be default 1
+    //                     else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c.contains('Certificate in Digital Marketing Analytics') ) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-DMA')){
+    //                         objLead.nm_Semester__c = '1' ;
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }
+    //                     //C-SMM to PDDM,PCDM, C-SEM & SMM lateral Admission, it will be default 1
+    //                     else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c=='Certificate in Search Engine Marketing & Certificate in Social Media and Content Marketing') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SMM')){
+    //                         objLead.nm_Semester__c = '1' ;
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }
+    //                     //C-SMM to PDDM,PCDM, C-SMM & DMA lateral Admission, it will be default 2
+    //                     else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c=='Certificate in Social Media and Content Marketing & Certificate in Digital Marketing Analytics') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SMM')){
+    //                         objLead.nm_Semester__c = '2' ;
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }
+    //                     else {
+    //                         objLead.nm_Semester__c = '1';
+    //                         objLead.Lead_Lateral_Catogery__c = 'Admission';
+    //                     }
+    //                 }else{
+    //                     system.debug('objStudentProgram.nm_FeesPaidofSemester__c--->'+objStudentProgram.nm_ChooseaProgram__c);
+    //                     system.debug('objStudentProgram.nm_Program__r.Name--->'+objStudentProgram.nm_Program__r.Name);
+    //                     if(objLead.nm_ChooseaProgram__c.startsWith('Diploma') && objStudentProgram.nm_ChooseaProgram__c == 'Diploma Programs' ){
+    //                         objLead.nm_Semester__c = '2';
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }else if((objLead.nm_ChooseaProgram__c.startsWith('Diploma') || objLead.nm_ChooseaProgram__c.contains('MBA (Distance) Programs') || (objLead.nm_ChooseaProgram__c.contains('Master Programs') && objLead.Program_Type__c == 'MBA')) 
+    //                     && objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'CBM' && objStudentProgram.BatchStartD__c > date.newinstance(2019,01,01)){
+    //                         objLead.nm_Semester__c = '2';
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }
+    //                     else if((objLead.nm_ChooseaProgram__c.contains('MBA (Distance) Programs') || (objLead.nm_ChooseaProgram__c.contains('Master Programs') 
+    //                     && objLead.Program_Type__c == 'MBA')) && objStudentProgram.nm_ChooseaProgram__c == 'Diploma Programs' ){
+    //                         if(objStudentProgram.nm_Program__r.Name == 'DBM' && objStudentProgram.BatchStartD__c>date.newinstance(2019,01,01)) {
+    //                             system.debug('objStudentProgram.BatchStartD__c-->'+objStudentProgram.BatchStartD__c);
+    //                             objLead.nm_Semester__c = '3';
+    //                             objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                         }else{
+    //                             objLead.nm_Semester__c = '2';
+    //                             objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                         }
+    //                     }
+    //                     /*else if(objLead.nm_ChooseaProgram__c.startsWith('MBA (Distance) Programs') && (objStudentProgram.nm_ChooseaProgram__c == 'Post Graduate Diploma Programs' || objStudentProgram.nm_Program__r.Name == 'DGM')){
+    //                         objLead.nm_Semester__c = '3';
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs') )&& (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 2') || objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4'))&& (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 1')){
+    //                         objLead.nm_Semester__c = '2';
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4'))&& (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 2')){
+    //                         objLead.nm_Semester__c = '3';
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }else if(objLead.nm_ChooseaProgram__c.startsWith('Professional Programs') &&  objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 3')){
+    //                         objLead.nm_Semester__c = '4';
+    //                         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                     }*/
+    //                         //PCDM to PDDM lateral Admission
+    //                     else if(objLead.nm_ChooseaProgram__c.startsWith('Professional Programs') && objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Specialisation__c == 'Certificate Term 3')){
+    //                                              objLead.nm_Semester__c = String.valueof(Integer.valueof(objStudentProgram.Current_semester__c) + 1) ;
+    //                                             objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                                         }
+    //                    //C-SEM & SMM to PDDM,PCDM lateral Admission
+    //                     else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4')) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SEM & SMM')){
+    //                                             objLead.nm_Semester__c = String.valueof(Integer.valueof(objStudentProgram.Current_semester__c) + 1);
+    //                                             objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                                         }
+    //                    //C-SEM & DMA to PDDM,PCDM lateral Admission, it will be default 2
+    //                     else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4')) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SEM & DMA')){
+    //                                             objLead.nm_Semester__c = '2' ;
+    //                                             objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                                         }
+    //                    //C-SMM & DMA to PDDM,PCDM lateral Admission, it will be default 1
+    //                     else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4')) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SMM & DMA')){
+    //                                             objLead.nm_Semester__c = '1' ;
+    //                                             objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                                         }
+    //                     //C-SEM to PDDM,PCDM, C-SEM lateral Admission, it will be default 2
+    //                     else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c.contains('Certificate in Search Engine Marketing') ) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SEM')){
+    //                                             objLead.nm_Semester__c = '2' ;
+    //                                             objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                                         }
+    //                     //C-DMA to PDDM,PCDM, C-DMA lateral Admission, it will be default 1
+    //                     else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c.contains('Certificate in Digital Marketing Analytics') ) && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-DMA')){
+    //                                             objLead.nm_Semester__c = '1' ;
+    //                                             objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                                         }
+    //                     //C-SMM to PDDM,PCDM, C-SEM & SMM lateral Admission, it will be default 1
+    //                     else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c=='Certificate in Search Engine Marketing & Certificate in Social Media and Content Marketing') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SMM')){
                                 
-                                                 objLead.nm_Semester__c = '1' ;
-                                                objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                                            }
-                        //C-SMM to PDDM,PCDM, C-SMM & DMA lateral Admission, it will be default 2
-                        else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c=='Certificate in Social Media and Content Marketing & Certificate in Digital Marketing Analytics') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SMM')){
+    //                                              objLead.nm_Semester__c = '1' ;
+    //                                             objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                                         }
+    //                     //C-SMM to PDDM,PCDM, C-SMM & DMA lateral Admission, it will be default 2
+    //                     else if((objLead.nm_ChooseaProgram__c.startsWith('Certificate Programs') || objLead.nm_ChooseaProgram__c.startsWith('Professional Programs')) && (objLead.Program_Type__c.equalsIgnoreCase('Certificate Term 3') || objLead.Program_Type__c.equalsIgnoreCase('Professional Diploma Term 4') || objLead.nm_ProgramName__c=='Certificate in Social Media and Content Marketing & Certificate in Digital Marketing Analytics') && (objStudentProgram.nm_ChooseaProgram__c == 'Certificate Programs' && objStudentProgram.nm_Program__r.Name == 'C-SMM')){
                                 
-                                                 objLead.nm_Semester__c = '2' ;
-                                                objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                                            }
+    //                                              objLead.nm_Semester__c = '2' ;
+    //                                             objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+    //                                         }
                         
-                        else{
-                            objLead.nm_Semester__c = '1';
-                            objLead.Lead_Lateral_Catogery__c = 'Admission';
-                        }
-                    }
-                }
-                else{
-                        objLead.nm_Semester__c = '1';
-                        objLead.Lead_Lateral_Catogery__c = 'Admission';
-                    }
-            }
-    }
-    }
+    //                     else{
+    //                         objLead.nm_Semester__c = '1';
+    //                         objLead.Lead_Lateral_Catogery__c = 'Admission';
+    //                     }
+    //                 }
+    //             }
+    //             else{
+    //                     objLead.nm_Semester__c = '1';
+    //                     objLead.Lead_Lateral_Catogery__c = 'Admission';
+    //                 }
+    //         }
+    // }
+    // }
 
     /**
     * @description 

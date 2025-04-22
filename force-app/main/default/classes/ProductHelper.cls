@@ -874,7 +874,7 @@ public class ProductHelper
         Opportunity objOpp = [select id,Account.AI_Component__c,isLiveLecture__c,IsTerm__c,nm_SelfLearningMaterial__c,Account.nm_Nationality__c,Dispatch_Order_For_Student__c,nm_Program__r.AI_Component__c,nm_Session__c,nm_Year__c,Down_Payment_Made__c,IC__c,nm_Future_Sems_Created__c,late_fee__c,CareerServiceFee__c,RegistrationFee__c,ActualAmountReceived__c,ConsumerType__c,Sem__c,Program_Structure__c,LiveLecturesType__c,CourseList__c,WaivedOffAmount__c,E_S_charge__c,Account.nm_Centers__c,ShareApplicable__c ,AdditionalAmountRecieved__c,Total_Amount_Received__c,Account.nm_Tagged_Pricebook__c,Career_Service__c,Account.Name,Choose_a_Program__c,ChooseProgram__c,ActualPendingAmount__c,Pending_For__c,Actual_Amount__c,
         Account.nm_ChooseaProgram__c,CloseDate,Processed__c,Accountid,nm_StudentProgram__c,nm_Payment_Approved__c,nm_Category__c,Account.nm_IsEmailVerified__c,Specialisation__c,
                              nm_StudentProgram__r.nm_Program__c,Term_Cleared__c,nm_Semester__c,nm_Program__c,nm_Fee_Type__c ,Account.Is_Mobile_Verified__c,Account.nm_Domicile__c,Account.DEBID__c,Account.Program_Type__c,Account.Interview_Status__c,
-                             Is_Re_Registration_Payment__c,StageName,Coursera__c,Account.is_Video_Call_Verified__c, Account.is_Deb_verified__c,
+                             Is_Re_Registration_Payment__c,Student_Number__c,StageName,Coursera__c,Account.is_Video_Call_Verified__c, Account.is_Deb_verified__c,
                              Account.nm_StudentStatus__c,(select id, nm_Amount__c from Opportunities__r 
                              where (nm_PaymentStatus__c='Payment Approved' OR nm_PaymentStatus__c='Waived Off' or nm_PaymentStatus__c = 'Payment Made')) 
                              from Opportunity where id =:OppsId];
@@ -895,7 +895,9 @@ public class ProductHelper
        system.debug('isOpportunityCloseWon--->'+isOpportunityCloseWon);
         decimal LateFeeAmount = 0;
         if(!objOpp.Processed__c) {
-            LateFeeAmount = CreateLateFeeProduct(objOpp,eventName);
+            if (objOpp.Is_Re_Registration_Payment__c || (!objOpp.Is_Re_Registration_Payment__c && String.isBlank(objOpp.Student_Number__c))) {
+                LateFeeAmount = CreateLateFeeProduct(objOpp,eventName);
+            }
         }
         if(objOpp.Career_Service__c!='')
         {

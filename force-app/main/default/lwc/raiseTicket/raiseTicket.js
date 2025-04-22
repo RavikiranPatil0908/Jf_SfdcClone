@@ -1,3 +1,13 @@
+/**
+ * @description       : 
+ * @author            : 
+ * @group             : 
+ * @last modified on  : 22--04--2025
+ * @last modified by  : @Ravi
+ * Modifications Log
+ * Ver   Date           Author   Modification
+
+**/
 import { LightningElement, track } from 'lwc';
 import uploadFiles from '@salesforce/apex/MyCasesController.uploadFiles';
 import createCase from '@salesforce/apex/MyCasesController.createCase';
@@ -194,6 +204,7 @@ export default class RaiseTicket extends LightningElement {
 								createCase({caseMap: this.caseMap}).then(result => {	
 									this.caseNumber = result.split(' ')[1];
 									this.caseId = result.split(' ')[0];
+									console.log('Case Id -->',this.caseId);
 									if(this.caseId != undefined){
 		
 											if(this.filesUploaded.length > 0){
@@ -293,5 +304,12 @@ export default class RaiseTicket extends LightningElement {
                 //this.showToastMessage('Error','Error uploading files', 'error');
             });
     }
+
+		handleRemove(event) {
+		let title = event.target.dataset.fid;
+		let index = this.filesUploaded.findIndex(obj => obj.Title === title);
+		console.log(index);
+		this.filesUploaded.splice(index, 1);
+	}
 
 }

@@ -4,7 +4,7 @@
  * @Author             : shubhranshu
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 05--03--2025
+ * @Last Modified On   : 22--04--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                Modification
@@ -272,7 +272,7 @@ public without sharing class nmLinksForDocumentStatusHandler{
     Map<String, List<nm_WorkExperience__c>> getMapAccIdVsWk = getMapAccIdVsWk(newAccounts);
     Set<String> mandatoryDocumentForCurrentCriteria = new Set<String>();
     try {   
-        for (Account acc : newAccounts) {
+        for (Account acc : newAccounts) {   
             Account oldAcc = oldAccountMap.get(acc.Id);
             if (acc.nm_StudentStatus__c == 'Confirmed' && acc.Provisional_With_Hold__c == true) {
                 //check mandatory Documents
@@ -651,10 +651,8 @@ public without sharing class nmLinksForDocumentStatusHandler{
                     objAccountToUpdate.nm_StudentStatus__c = 'Documents Re-submitted';
                 }else if(isvalidSubmiited){
                     System.debug('doc submitted');
-                    Boolean isDocSubmitted = false;  //This flag is added because when an incorrect documents  inserted as status "Submitted" then the submitted date needs to be updated at that time.
                     if(objAccount.nm_StudentStatus__c !='Documents Re-submitted'){
                         objAccountToUpdate.nm_StudentStatus__c = 'Admission form & documents submitted';
-                        isDocSubmitted=true;
                     }
                     System.debug('Student Status ==>'+objAccountToUpdate.nm_StudentStatus__c);
                     System.debug('Student Status ==>'+objAccount.nm_StudentStatus__c);
@@ -664,7 +662,7 @@ public without sharing class nmLinksForDocumentStatusHandler{
                         objAccountToUpdate.Documnet_submitted_date_on_Lead__c = null;
                     } 
                     // else if((objAccount.nm_StudentStatus__c=='Admission form & documents submitted' || objAccount.nm_StudentStatus__c=='Documents Re-submitted') && String.isNotBlank(objAccount.nm_StudentNo__c)) {
-                    else if (objAccount.nm_DocumentSubmittedDate__c == null || String.isNotBlank(objAccount.nm_StudentNo__c) || isDocSubmitted ) {
+                    else if (objAccount.nm_DocumentSubmittedDate__c == null || String.isNotBlank(objAccount.nm_StudentNo__c)) {
                         System.debug('triggered For Approved ==> 3');
                         objAccountToUpdate.nm_DocumentSubmittedDate__c = Datetime.now();
                         System.debug(objAccountToUpdate.nm_StudentStatus__c);
@@ -677,14 +675,14 @@ public without sharing class nmLinksForDocumentStatusHandler{
                 lstAccountToUpdate.add(objAccountToUpdate);
                 System.debug('Student Status to Update---->'+objAccountToUpdate.nm_StudentStatus__c);  
             }  
-            // else {
-            //     Integer TotalApprovedDoc = objWrap != null ? objWrap.setOfProvisionalDocuments.size() + objWrap.setOfApprovedDocuments.size() : 0;
+            else {
+                Integer TotalApprovedDoc = objWrap != null ? objWrap.setOfProvisionalDocuments.size() + objWrap.setOfApprovedDocuments.size() : 0;
                 
-            //     if(TotalApprovedDoc == TotalManadatoryDoc) {
-            //         objAccountToUpdate.Provisional_With_Hold__c = false;
-            //         lstAccountToUpdate.add(objAccountToUpdate);
-            //     }
-            // }
+                if(TotalApprovedDoc == TotalManadatoryDoc) {
+                    objAccountToUpdate.Provisional_With_Hold__c = false;
+                    lstAccountToUpdate.add(objAccountToUpdate);
+                }
+            }
         }
         return lstAccountToUpdate;
     }

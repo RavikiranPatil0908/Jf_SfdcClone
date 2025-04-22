@@ -1,7 +1,142 @@
-h1{
-		font-size: 24px;
-		color: #032d60;
-		font-weight: bold;
+body {
+	background-color: #ffffff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+}
+
+/* Make card body light gray */
+.card-body-wrapper {
+	background-color: #f5f5f5;
+	/* Light gray */
+	padding: 1rem;
+	border-radius: 0.5rem;
+}
+.card-body-wrapper .slds-modal__container {
+   max-width: 300px;
+}
+
+/* Title styling */
+.form-title {
+	font-size: 2rem;
+	font-weight: 600;
+	font-family: 'Poppins', sans-serif;
+	text-align: center;
+	/* margin-bottom: 1rem; */
+	color: #333;
+
+}
+
+/* Title styling */
+/* @media (min-width: 1199.99px) { */
+.form-wrapper h2 {
+		margin: -10px 0px 24px 0px;
+	}
+/* } */
+
+/* .form-wrapper h2{
+	font-size: calc(1.3rem + .6vw);
+} */
+
+/* Form Alligment */
+.form-wrapper {
+	max-width: 1350px;
+	font-family: 'Poppins', sans-serif;
+	max-height: fit-content;
+	background-color: #F5F5F5;
+	margin: 0rem auto;
+	padding: 2rem;
+	border-radius: 25px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+	width: 100%;
+}
+
+/* Label style */
+lightning-input,
+lightning-textarea,
+lightning-combobox,
+c-search-box {
+	--slds-c-label-color: #444;
+	--slds-c-input-color-border: #ccc;
+	--slds-c-input-radius-border: 5px;
+	margin-bottom: 0rem;
+	/* spacing between fields */
+}
+
+fieldset.slds-form-element {
+	background: #fff;
+	padding: 1rem;
+	border-radius: 8px;
+	border: 0px solid #ddd;
+}
+
+/* Input styling  */
+lightning-input input,
+lightning-textarea textarea,
+lightning-combobox lightning-base-combobox {
+	padding: 0.75rem;
+	border-radius: 8px;
+	background-color: #fff;
+	border: 0px solid #ccc;
+}
+
+/* Form field spacing */
+.slds-col {
+	padding: 1.5rem;
+	padding-block: unset;
+	margin-block: auto;
+}
+
+.custom-submit-button {
+	background: linear-gradient(97.96deg, #ff5c35 3.95%, #ff3935 56.14%);
+	/* background: linear-gradient(to right, #ff512f, #dd2476); */
+	color: #fff;
+	font-weight: bold;
+	padding: 0.75rem 3.6rem;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 1.2rem;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+	transition: all 0.3s ease;
+}
+
+.custom-submit-button:hover {
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	transform: translateY(-1px);
+}
+
+.custom-submit-button:active {
+	transform: scale(0.98);
+}
+
+.toast-error {
+	background: #ffdddd;
+	color: red;
+	padding: 0.75rem;
+	border-radius: 5px;
+	margin-bottom: 1rem;
+	font-weight: bold;
+	text-align: center;
+}
+
+/* Optional override if needed */
+.custom-otp-button {
+	background: linear-gradient(to right, #ff512f, #dd2476);
+	color: #fff;
+	font-weight: bold;
+	padding: 0.5rem 1.8rem;
+	border-radius: 6px;
+	font-size: 0.72rem;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+	transition: all 0.3s ease;
+	border: none;
+}
+
+.custom-otp-button :hover {
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	transform: translateY(-1px);
 }
 
 lightning-card{		
@@ -11,4 +146,22 @@ lightning-card{
 		--slds-c-card-spacing-block-start: 2rem;		
 		--slds-c-card-spacing-inline-end: 2rem;
 		--slds-c-card-spacing-inline-start: 2rem;
+}
+
+/* Responsive paddings */
+@media screen and (max-width: 768px) {
+	.lightning-card {
+		padding: 1rem;
+	}
+
+	.field-row {
+		flex-direction: column;
+	}
+}
+
+@media only screen and (max-width: 48em) {
+	.custom-submit-button {
+		width: 100%;
+		margin-top: 0.75rem;
+	}
 }
