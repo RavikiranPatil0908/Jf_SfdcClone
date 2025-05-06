@@ -2,8 +2,8 @@
   @description       : 
   @author            : @Ravi
   @group             : 
-  @last modified on  : 27-11-2024
-  @last modified by  : @BK
+  @last modified on  : 23--04--2025
+  @last modified by  : @Ravi
 -->
 <apex:component access="global" controller="MyCasesPageController"  allowDML="true">
     <apex:attribute access="global" name="recordId" type="ID" description="Record Id" assignTo="{!objectId}" />
@@ -167,7 +167,7 @@
                                                     </div>
                                                      <div>
                                                      <span style ="display : {! IF(ticket.escalateButtonVisibility ='none',IF(ticket.escalationLevel !='null','block','none'),'none')}">Escalated - L{! IF(ticket.escalationLevel ='null','0',ticket.escalationLevel)}</span>
-                                                     <button class="btn btn-secondary btn-sm" style ="display : {! IF(ticket.escalationLevel ='null',IF(ticket.escalateButtonVisibility ='none','block','none'),'none')};" href="javascript:void(0);" disabled="true">yes</button>
+                                                     <button class="btn btn-secondary btn-sm" style ="display : {! IF(ticket.escalationLevel ='null',IF(ticket.escalateButtonVisibility ='none','block','none'),'none')};" href="javascript:void(0);" disabled="true">YES</button>
                                                     </div>
                                                     </td>
                                                  <!--
@@ -272,7 +272,7 @@
                                         </div>
                                     </div>
                                 </div>
-        
+
                                 <!-- Category Dropdown -->
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <div class="form-group form-float">

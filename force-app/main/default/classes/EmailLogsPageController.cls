@@ -2,7 +2,7 @@
  * @description       : Controller for fetching and paginating email logs for Leads, Accounts, and Cases.
  * @author            : @Ravi
  * @group             : 
- * @last modified on  : 08--04--2025
+ * @last modified on  : 05--05--2025
  * @last modified by  : @Ravi
  **/
 public without sharing class EmailLogsPageController {

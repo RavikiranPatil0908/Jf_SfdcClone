@@ -158,8 +158,13 @@ export default class CreateCaseComp extends LightningElement {
             this.subject = '';
         }
         
+        const removeCategory = (list, value) => {
+        const index = list.findIndex(category => category.value === value);
+        if (index !== -1) list.splice(index, 1);
+       };
+
 		const learnerSupport = { label: 'Learner Support Center', value: 'Learner Support Center' };
-		const careerServices = { label: 'Career Services', value: 'Career Services' };
+		const careerServices = { label: 'Career Services', value: 'Career Services' };  //-- Ravi
 		let updatedCategories = [...this.categories];
 		
 		if (this.purpose === 'Enquiry' || this.purpose === 'Complaint') {
@@ -167,23 +172,18 @@ export default class CreateCaseComp extends LightningElement {
 			if (!updatedCategories.some(category => category.value === learnerSupport.value)) {
 				updatedCategories.splice(1, 0, learnerSupport);  
 			}
-			// Add Career Services if not already present
-			if (!updatedCategories.some(category => category.value === careerServices.value)) {
+			// Add Career Services if not already present and if purpose is Enquiry
+			if(this.purpose === 'Enquiry' &&  !updatedCategories.some(category => category.value === careerServices.value)) {
 				updatedCategories.splice(2, 0, careerServices);
-			}
-		} else {
-			// Remove Learner Support Center if it exists
-			const indexLearner = updatedCategories.findIndex(category => category.value === learnerSupport.value);
-			if (indexLearner !== -1) {
-				updatedCategories.splice(indexLearner, 1);
-			}
-		
-			// Remove Career Services if it exists
-			const indexCareer = updatedCategories.findIndex(category => category.value === careerServices.value);
-			if (indexCareer !== -1) {
-				updatedCategories.splice(indexCareer, 1);
-			}
-		}
+			}  else {
+            removeCategory(updatedCategories, careerServices.value);
+          }
+    } else {
+		//Add learner Supportif not already present
+        removeCategory(updatedCategories, learnerSupport.value);
+		//Add Career Services if not already present
+        removeCategory(updatedCategories, careerServices.value);
+    }
 		
 		// Sort categories alphabetically, except for 'Others'
 		updatedCategories = updatedCategories

@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : phalguni
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 15-01-2025
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 05--05--2025
  * @Modification Log   : 
  * Ver       Date            Author                 Modification
  * 1.0    3/2/2020   phalguni     Initial Version
@@ -33,7 +33,7 @@ public without sharing class nmPaymentTriggerHandler
         
         GenerateRegistrationReceiptNo(triggerNew,triggerOldMap,false);
         
-        calculateAmountReceived(triggerNew,triggerOldMap);
+        CaluclateAmountRecived(triggerNew,triggerOldMap);
         
      //   updatePaymentTransactionModeInOpp(triggerNew,false);
         updatePaymentStatus(triggerNew);
@@ -50,7 +50,7 @@ public without sharing class nmPaymentTriggerHandler
         
         GenerateRegistrationReceiptNo(triggerNew,triggerOldMap,true);
         
-        calculateAmountReceived(triggerNew,triggerOldMap);   
+        CaluclateAmountRecived(triggerNew,triggerOldMap);   
         
         UpdateCareerServiceStage(triggerNew,triggerOldMap);
 
@@ -80,7 +80,7 @@ public without sharing class nmPaymentTriggerHandler
     }
    /* public void afterDelete(list<nm_Payment__c> triggerOld){
         
-        calculateAmountReceived(triggerOld,null);  
+        CaluclateAmountRecived(triggerOld,null);  
         updatePaymentTransactionModeInOpp(triggerOld,true); 
       //  calculateBankCharges(triggerOld,'DELETE'); 
     }*/
@@ -94,29 +94,37 @@ public without sharing class nmPaymentTriggerHandler
     //         }
     //     }
     // }
-
-    public void beforeDelete(List<nm_Payment__c> triggerOld) {
-        String uId = UserInfo.getUserId();
-        System.debug('uId==>' + uId);
-
-        // Check if the current user is in the 'Head Office' role
-        Boolean isHeadOfc = [SELECT COUNT() FROM User WHERE Id = :uId AND UserRole.Name = 'Head Office'] > 0;
-        System.debug('isHeadOfc==>' + isHeadOfc);
-
-        if (!isHeadOfc) {
-            return;
-        }
-
-        for (nm_Payment__c ob : triggerOld) {
-            System.debug('triggerOld[0].nm_PaymentStatus__c' + ob.nm_PaymentStatus__c);
-            if (ob.nm_PaymentStatus__c != 'Pending Extra Fees') {
-                System.debug('inside b4Delete');
-                ob.addError('Insufficient Rights Can Not Delete');
+    public void beforeDelete(list<nm_Payment__c> triggerOld){
+         String uId=userinfo.getuserid();
+         system.debug('uId==>'+uId);
+        Boolean isHeadOfc=false;
+        List<User> uRList=[select id,Name from User where UserRole.Name='Head Office'];
+        for(User u:uRList)
+        {
+            if(u.Id==uId)
+            {
+             isHeadOfc=true;
+                break;
             }
         }
+        system.debug('isHeadOfc==>'+isHeadOfc);
+        system.debug('triggerOld[0].nm_PaymentStatus__c'+triggerOld[0].nm_PaymentStatus__c);
+        for(nm_Payment__c ob:triggerOld)
+        {
+            if(isHeadOfc==true && ob.nm_PaymentStatus__c!='Pending Extra Fees')
+            {
+                {
+            system.debug('inside b4Delete');
+            nm_Payment__c nmRecord = (nm_Payment__c)Trigger.oldMap.get(ob.Id); 
+            system.debug('nmRecord==>'+nmRecord);
+            nmRecord.addError('Insufficient Rights Can Not Delete');
+        }
+            }
+            
+        }
+        
     }
-
-    public void UpdateOpportunityStage(list<nm_Payment__c> lstPayment, map<id,nm_Payment__c> oldMapPayment,boolean isUpdate)
+     public void UpdateOpportunityStage(list<nm_Payment__c> lstPayment, map<id,nm_Payment__c> oldMapPayment,boolean isUpdate)
     {
         
         if(lstPayment != null && lstPayment.size() > 0)
@@ -705,64 +713,56 @@ public without sharing class nmPaymentTriggerHandler
     }
     
     //this method will Update AmountRecived On Opportunity
-    public void calculateAmountReceived(list<nm_Payment__c> lstPayment, map<id,nm_Payment__c> oldMapPayment) {
-        List<Opportunity> lstOppUpdate = new List<Opportunity>();
-        Set<String> setOfOppsId = getOpportunityIds(lstPayment);
-        System.debug('Set OppsId Size In Calculate--->'+setOfOppsId.size());
+     public void CaluclateAmountRecived(list<nm_Payment__c> lstPayment, map<id,nm_Payment__c> oldMapPayment)
+    {
+        list<Opportunity> lstOppUpdate = new list<Opportunity>();
+        set<String> setOfOppsId = new set<String>();
+          set<String> setOfPaymentIds = new set<String>();
+        System.debug('lst Payment Size In Calculate--->'+lstPayment);
+         for(nm_Payment__c objPay : lstPayment) {
+                  setOfPaymentIds.add(objPay.Id);
+         } 
+        List<nm_Payment__c> lstLeadPayments = [select id, nm_PaymentType__c ,nm_OpportunityNew__c from nm_Payment__c where id in: setOfPaymentIds];
+        if(lstLeadPayments.size()>0)
+        {
+            for(nm_Payment__c objPayment : lstLeadPayments)
+            {
+              if(objPayment.nm_OpportunityNew__c !=null)
+              {
+                 setOfOppsId.add(objPayment.nm_OpportunityNew__c);  
+              }
+            }
+            System.debug('Set OppsId Size In Calculate--->'+setOfOppsId.size());
+            if(!setOfOppsId.isEmpty()) {
 
-        if(!setOfOppsId.isEmpty()) {
-            Map<String,List<nm_Payment__c>> mapOfOppsIdVsPayments = productHelper.getOpportunityRelatedPayment(setOfOppsId);
-            Map<String,Decimal> mapOfOppsIdVsTotalRefundedAmount = productHelper.getTotalAmountRefunded(setOfOppsId, mapOfOppsIdVsPayments);
+                Map<String,List<nm_Payment__c>> mapOfOppsIdVsPayments = productHelper.getOpportunityRelatedPayment(setOfOppsId);
+                Map<String,Decimal> mapOfOppsIdVsTotalRefundedAmount = productHelper.getTotalAmountRefunded(setOfOppsId, mapOfOppsIdVsPayments);
 
-            for(String oppsId : setOfOppsId) {
-                lstOppUpdate.add(createOpportunityUpdate(oppsId, mapOfOppsIdVsPayments, mapOfOppsIdVsTotalRefundedAmount));
+                for(String OppsId : setOfOppsId) {
+                    Opportunity objOppUpdate = new Opportunity(id=OppsId);
+                    objOppUpdate.Total_Amount_Received__c = productHelper.getTotalAmountReceived(OppsId,mapOfOppsIdVsPayments);
+                    objOppUpdate.nm_TotalApprovedPayment__c = productHelper.getTotalApprovedAmount(OppsId,mapOfOppsIdVsPayments);
+                    objOppUpdate.WaivedOffAmount__c   = productHelper.getTotalAmountWaivedOff(OppsId,mapOfOppsIdVsPayments);
+                    Decimal totalRefundedAmount = mapOfOppsIdVsTotalRefundedAmount.containsKey(OppsId) ? mapOfOppsIdVsTotalRefundedAmount.get(OppsId) : 0;
+                    if(objOppUpdate.RefundInitiatedAmount__c!=null || objOppUpdate.RefundInitiatedAmount__c>0) {
+                        objOppUpdate.RefundInitiatedAmount__c = objOppUpdate.RefundInitiatedAmount__c + totalRefundedAmount;
+                    }
+                    else {
+                        objOppUpdate.RefundInitiatedAmount__c = totalRefundedAmount;
+                    }
+                    lstOppUpdate.add(objOppUpdate);
+                }
+            }
+            
+            if(lstOppUpdate.size()>0) {
+               System.debug('Enter In Opps Update Loop');
+                try {
+                    update lstOppUpdate;   
+                } catch (DMLException e) {
+                    System.debug('Error '+e.getMessage());
+                }
             }
         }
-        
-        if(!lstOppUpdate.isEmpty()) {
-            System.debug('Enter In Opps Update Loop');
-            try {
-                update lstOppUpdate;   
-            } catch (DMLException e) {
-                System.debug('Error '+e.getMessage());
-            }
-        }
-    }
-
-    /**
-    * @description 
-    * @author @BK | 15-01-2025 
-    * @param list<nm_Payment__c> lstPayment 
-    * @return Set<String> 
-    **/
-    private Set<String> getOpportunityIds(list<nm_Payment__c> lstPayment) {
-        Set<String> setOfOppsId = new set<String>();
-        for(nm_Payment__c objPayment : lstPayment) {
-            if(objPayment.nm_OpportunityNew__c !=null) {
-                setOfOppsId.add(objPayment.nm_OpportunityNew__c);  
-            }
-        }
-        return setOfOppsId;
-    }
-
-    /**
-    * @description 
-    * @author @BK | 15-01-2025 
-    * @param String oppsId 
-    * @param Map<String List<nm_Payment__c>> mapOfOppsIdVsPayments 
-    * @param Map<String Decimal> mapOfOppsIdVsTotalRefundedAmount 
-    * @return Opportunity 
-    **/
-    private Opportunity createOpportunityUpdate(String oppsId, Map<String,List<nm_Payment__c>> mapOfOppsIdVsPayments, Map<String,Decimal> mapOfOppsIdVsTotalRefundedAmount) {
-        Opportunity objOppUpdate = new Opportunity(id=oppsId);
-        objOppUpdate.Total_Amount_Received__c = productHelper.getTotalAmountReceived(oppsId,mapOfOppsIdVsPayments);
-        objOppUpdate.nm_TotalApprovedPayment__c = productHelper.getTotalApprovedAmount(oppsId,mapOfOppsIdVsPayments);
-        objOppUpdate.WaivedOffAmount__c = productHelper.getTotalAmountWaivedOff(oppsId,mapOfOppsIdVsPayments);
-        Decimal totalRefundedAmount = mapOfOppsIdVsTotalRefundedAmount.containsKey(oppsId) ? mapOfOppsIdVsTotalRefundedAmount.get(oppsId) : 0;
-        objOppUpdate.RefundInitiatedAmount__c = (objOppUpdate.RefundInitiatedAmount__c != null && objOppUpdate.RefundInitiatedAmount__c > 0) 
-                                                ? objOppUpdate.RefundInitiatedAmount__c + totalRefundedAmount 
-                                                : totalRefundedAmount;
-        return objOppUpdate;
     }
 
     public static void UpdateCareerServiceStage(list<nm_Payment__c> lstPayment, map<id,nm_Payment__c> oldMapPayment) {

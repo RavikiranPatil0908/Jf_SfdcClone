@@ -1,7 +1,7 @@
 /**
  * @description       : Case handler
  * @author            : @Ravi
- * @last modified on  : 08--11--2024
+ * @last modified on  : 23--04--2025
  * @last modified by  : @Ravi
 **/
 public without sharing class MyCasesPageController {
@@ -224,7 +224,10 @@ public without sharing class MyCasesPageController {
     public void createCase(Case c) {
         try {
             System.debug('objLead---' + objectId + ' query type' + caseWrapper.queryType + 'category' + caseWrapper.category);
+              DateTime dT = system.today();
+    	      Date d = date.newinstance(dT.year(), dT.month(), dT.day());
             if(caseWrapper.queryType == 'Feedback'){
+                c.Student_Status__c = 'Closed';
                 c.Status = 'Closed';
                 c.Tech_Issue__c = 'No';
                 c.Query_Type__c = caseWrapper.queryType;
@@ -242,7 +245,16 @@ public without sharing class MyCasesPageController {
                 c.Other_Category__c = caseWrapper.otherCategory;
                 c.Description = caseWrapper.description;
                 c.RecordTypeId = ticket;
-                c.Expected_Close_Date__c =  System.today().addDays(2);
+                // c.Expected_Close_Date__c =  System.today().addDays(2);
+                 Case__c mcs = Case__c.getValues(caseWrapper.category);
+                Integer tat = Integer.valueOF(mcs.TAT__c);
+                Integer diff = MyCasesController.getNumberOfDays(System.today(), d.addDays(tat));
+                if(diff < tat){
+                    Integer actualTat = tat + (tat-diff);
+                    c.Expected_Close_Date__c = d.addDays(actualTat);
+                }else{
+                    c.Expected_Close_Date__c = d.addDays(tat);
+                }
                 c.nm_Category__c = 'Learning Center';
             }   
 

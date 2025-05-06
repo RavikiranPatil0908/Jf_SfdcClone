@@ -3,5 +3,5 @@
     <apiVersion>63.0</apiVersion>
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <label>RaiseTicketRegistrants</label>
+    <label>CreateTicketForRegistrants</label>
 </ApexPage>

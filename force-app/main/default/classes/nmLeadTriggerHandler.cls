@@ -4,7 +4,7 @@
  * @Author             : @BK
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 15--04--2025
+ * @Last Modified On   : 28--04--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -453,7 +453,9 @@ public without sharing class nmLeadTriggerHandler {
                 isNeedToStartBatchClass= true;
             }
             System.debug('lead.nm_EligiblityCriteria__c '+lead.nm_EligiblityCriteria__c);
-            if(String.isNotBlank(lead.nm_EligiblityCriteria__c) && lead.nm_EligiblityCriteria__c != triggerOldMap.get(lead.id).nm_EligiblityCriteria__c){
+            System.debug('lead.nm_EligiblityCriteria__c ===>2'+ triggerOldMap.get(lead.id).nm_EligiblityCriteria__c);
+            // System.debug('lead.nm_EligiblityCriteria__c ===>3'+ lead.nm_EligiblityCriteria__c != triggerOldMap.get(lead.id).nm_EligiblityCriteria__c);
+            if(String.isNotBlank(lead.nm_EligiblityCriteria__c)) {
                 setOfEligiblityCriteria.add(lead.nm_EligiblityCriteria__c);
             }
         }
@@ -4393,7 +4395,7 @@ public without sharing class nmLeadTriggerHandler {
     
   /*  @future
     public static void ChangeDefaultOwnerAssignment(Set<String> setOfLeadId){
-        List<Lead> lstLead = [select id,OwnerId,nm_InformationCenter__c , nm_ChooseaProgram__c from Lead where id in :setOfLeadId and isdeleted =                   false and isconverted = false];
+        List<Lead> lstLead = [select id,OwnerId,nm_InformationCenter__c , nm_ChooseaProgram__c from Lead where id in :setOfLeadId and isdeleted =false and isconverted = false];
         if(lstLead !=null && lstLead.size() > 0){
             
             Map<String,List<nm_UserMapping__c>> mapOfCenterIdVsCenterUserMapping = new Map<String,List<nm_UserMapping__c>>();

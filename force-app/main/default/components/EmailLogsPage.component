@@ -2,7 +2,7 @@
   @description       : This component displays communication history on the Admission Lead Dashboard, fetching data from the portal for Leads, Accounts, and Cases before student confirmation.
   @author            : @Ravi
   @group             : 
-  @last modified on  : 10--03--2025
+  @last modified on  : 30--04--2025
   @last modified by  : @Ravi
 -->
 <apex:component controller="EmailLogsPageController" access="global" allowDML="true">
@@ -25,7 +25,13 @@
             //    console.log('Fetching email', JSON.stringify(email));
               handle();
               if (email) {
-                  let formattedBody = email.body.replace(/\n/g, '<br/>');
+                const body = email.body.trim();
+                let formattedBody;
+                if (!body.toLowerCase().startsWith("<!doctype html>")) {
+                     formattedBody = body.replace(/\n/g, '<br/>');
+                } else{
+                     formattedBody = body
+                }
                   updateEmailDetails(email, formattedBody);
               }
           }
@@ -33,7 +39,7 @@
           function updateEmailDetails(email, formattedBody) {
               $('[id$=emailBody]').html(formattedBody);
               $('[id$=messageDate]').html('<strong>Message Date :</strong> ' + email.createdDate);
-              $('[id$=createdDate]').html('<strong>Created Date :</strong> ' + email.createdDate);
+            //   $('[id$=createdDate]').html('<strong>Created Date :</strong> ' + email.createdDate);
               $('[id$=fromAddress]').html('<strong>From Address :</strong> ' + email.fromEmailId);
               $('[id$=toAddress]').html('<strong>To Address :</strong> ' + email.mailId);
               $('[id$=subject]').html('<strong> Subject :</strong> ' + email.subject);
@@ -194,9 +200,9 @@
                                                 <div class="col-12 col-md-6">
                                                     <p id="messageDate"></p>
                                                 </div>
-                                                <div class="col-12 col-md-6">
+                                                <!-- <div class="col-12 col-md-6">
                                                     <p id="createdDate"></p>
-                                                </div>
+                                                </div> -->
                                             </div>
                                         </div>
                                     </div>

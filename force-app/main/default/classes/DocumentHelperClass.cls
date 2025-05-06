@@ -4,7 +4,7 @@
  * @Author             : shubhranshu
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 18--03--2025
+ * @Last Modified On   : 28--04--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -888,6 +888,9 @@ public class DocumentHelperClass
                     if(!documentsWithNewCriteria.contains(DocumentName))
                     {   
                         if(String.isNotBlank(DocumentName) && (DocumentName =='Defence Document' || DocumentName =='Relationship Document') && DefenseNotOpted){
+                            lstDocumentsToDelete.add(oldDoc);
+                        }
+                        if(String.isNotBlank(DocumentName) && DocumentName == 'Caste Certificate Document' && castCertificate && oldDoc.nm_URLforDocuments__c == null){
                             lstDocumentsToDelete.add(oldDoc);
                         }
                         if(String.isNotBlank(DocumentName) && (DocumentName =='NMIMS Diploma Marksheet' || DocumentName =='NMIMS Diploma Certificate' || DocumentName =='NMIMS Certificate Program Completion Certificate' || DocumentName =='NMIMS Certificate Program Marksheet') && lateralNotOpted){                           
