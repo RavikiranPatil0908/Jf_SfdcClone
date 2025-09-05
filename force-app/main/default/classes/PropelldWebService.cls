@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : @BK
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 08-09-2021
+ * @Last Modified By   : @vickysahu
+ * @Last Modified On   : 07-23-2025
  * @Modification Log   : 
  * Ver       Date            Author      		    Modification
  * 1.0    1/4/2020   @BK     Initial Version
@@ -49,6 +49,7 @@ public without sharing class PropelldWebService {
         System.debug('propelldClientId ==>'+propelldClientId);
         System.debug('propelldClientSecret ==>'+propelldClientSecret);
         System.debug('courseFee ==>'+courseFee);
+        firstName = firstName.contains(' ') ? firstName.replaceAll('\\s', '.') : firstName;
 
         API_Request__c apiReq = new API_Request__c();
         // Geneartaing request
@@ -84,17 +85,17 @@ public without sharing class PropelldWebService {
             resp = http.send(req);
             Integer statusCode = resp.getStatusCode();
             System.debug('LoanApplications_API__c:statusCode = '+statusCode);
+            String result = resp.getBody();
+            System.debug('result ==>'+result);
+            apiReq.Response__c = result;
+            apiReq.API_Name__c = 'PropelldQuoteAPI';
+            apiReq.Type_of_Request__c = 'Propelld';
+            if(recordType == 'Lead'){
+                apiReq.Lead__c = recordId;
+            } else {
+                apiReq.Opportunity__c = recordId;
+            }
             if(statusCode == 200){
-                String result = resp.getBody();
-                System.debug('result ==>'+result);
-                apiReq.Response__c = result;
-                apiReq.API_Name__c = 'PropelldQuoteAPI';
-                apiReq.Type_of_Request__c = 'Propelld';
-                if(recordType == 'Lead'){
-                    apiReq.Lead__c = recordId;
-                } else {
-                    apiReq.Opportunity__c = recordId;
-                }
                 PropelledResponseWrapper responseWrapper = PropelledResponseWrapper.parse(result);
                 if(responseWrapper.Code == 0) {
                     apiReq.Success__c = true;
@@ -151,16 +152,24 @@ public without sharing class PropelldWebService {
             resp = http.send(req);
             Integer statusCode = resp.getStatusCode();
             System.debug('Cancellation_API__c:statusCode = '+statusCode);
+            apiReq.Response__c = resp.getBody();
+            apiReq.API_Name__c = 'PropelldApprovalAPI';
+            apiReq.Type_of_Request__c = 'Propelld';
+            if(recordType == 'Opportunity'){
+                apiReq.Opportunity__c = recordId;
+            }else if(recordType == 'Lead'){
+                apiReq.Lead__c = recordId;
+            }
             if(statusCode == 200){
                 System.debug('result ==>'+resp.getBody());
-                apiReq.Response__c = resp.getBody();
-                apiReq.API_Name__c = 'PropelldApprovalAPI';
-                apiReq.Type_of_Request__c = 'Propelld';
-                if(recordType == 'Opportunity'){
-                    apiReq.Opportunity__c = recordId;
-                }else if(recordType == 'Lead'){
-                    apiReq.Lead__c = recordId;
-                }
+                // apiReq.Response__c = resp.getBody();
+                // apiReq.API_Name__c = 'PropelldApprovalAPI';
+                // apiReq.Type_of_Request__c = 'Propelld';
+                // if(recordType == 'Opportunity'){
+                //     apiReq.Opportunity__c = recordId;
+                // }else if(recordType == 'Lead'){
+                //     apiReq.Lead__c = recordId;
+                // }
                 PropelledResponseWrapper responseWrapper = PropelledResponseWrapper.parse(resp.getBody());
                 if(responseWrapper.Code == 0 && responseWrapper.Payload.StatusUpdated) {
                     apiReq.Success__c = true;

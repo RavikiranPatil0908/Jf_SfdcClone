@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : @BK
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 28-06-2024
+ * @Last Modified By   : @vickysahu
+ * @Last Modified On   : 02-19-2025
  * @Modification Log   : 
  * Ver       Date            Author              Modification
  * 1.0    7/10/2019   @BK     Initial Version
@@ -47,7 +47,7 @@ public without sharing class nmAdditonalChargePaymentController{
     public String postPaymentPage {get;set;}
     public String validityExtensionId {get;set;}
     public String CareerServiceRecordId {get;set;}
-    public Map<String,nm_Program__c> mapOfProgramNameVsProgram {get;set;}
+    public Map<Id,nm_Program__c> mapOfProgramIdVsProgram {get;set;}
     public Map<Integer,String> licenseapplicable {get;set;}
     public String programSpecialization  {get;set;}
     public String displayName {get;set;}// kept for Registration No or Student No to show on Page 
@@ -89,7 +89,7 @@ public without sharing class nmAdditonalChargePaymentController{
         IsICForMakingPayment = false;
         paymentGatewayName = '';    
         productHelper = new ProductHelper();
-        mapOfProgramNameVsProgram = new Map<String,nm_Program__c>();
+        mapOfProgramIdVsProgram = new Map<Id,nm_Program__c>();
         licenseapplicable = new Map<Integer,String>();
         paymentClouserMessage = '';
         programSpecialization  ='';
@@ -274,7 +274,7 @@ public without sharing class nmAdditonalChargePaymentController{
     public void QueryPaymentOpportunityAndValidityExtensionDetails(){
         String manuallyCreatedAdditionalPaymentQuery  = getQueryAllFieldSql('nm_Payment__c', '(nm_PaymentType__c = \'Additional Charge\' or nm_PaymentType__c = \'Late Fees\') and (nm_PaymentStatus__c= \'Pending Late Fees\' or nm_PaymentStatus__c= \'Pending Extra Fees\') and  id=:recordId','nm_OpportunityNew__r.Account.nm_StudentNo__c,nm_OpportunityNew__r.Specialisation__c,nm_OpportunityNew__r.stageName,nm_OpportunityNew__r.Is_Re_Registration_Payment__c,nm_OpportunityNew__r.nm_Category__c,nm_OpportunityNew__r.Account.nm_RegistrationNumber__c,nm_OpportunityNew__r.Account.nm_Allowtomakepayment__c,nm_OpportunityNew__r.nm_StudentProgram__c,nm_OpportunityNew__r.Account.nm_Centers__r.id,nm_OpportunityNew__r.Account.nm_Centers__r.Name,nm_OpportunityNew__r.Account.nm_Centers__r.Address__c,nm_OpportunityNew__r.Account.nm_Centers__r.nm_City__c,nm_OpportunityNew__r.Account.PersonMobilePhone,nm_OpportunityNew__r.Account.PersonEmail,nm_OpportunityNew__r.Account.FirstName,nm_OpportunityNew__r.Account.LastName,nm_OpportunityNew__r.nm_Semester__c,nm_OpportunityNew__r.nm_Program__r.nm_Type__c,nm_OpportunityNew__r.Account.BillingStreet,nm_OpportunityNew__r.Account.BillingCity,nm_OpportunityNew__r.Account.BillingState,nm_OpportunityNew__r.Account.BillingPostalCode,nm_OpportunityNew__r.Account.BillingCountry,nm_OpportunityNew__r.Account.nm_ChooseaProgram__c,nm_OpportunityNew__r.nm_year__c,nm_OpportunityNew__r.nm_Session__c,nm_OpportunityNew__r.Account.Is_Lateral__c' );
         String opportunityQuery = getQueryAllFieldSql('Opportunity',' id=:recordId ','Account.nm_StudentNo__c,Account.nm_Centers__r.nm_City__c,Account.nm_RegistrationNumber__c,Account.nm_Allowtomakepayment__c,Account.nm_Centers__r.Name,Account.nm_Centers__r.Address__c,Account.PersonMobilePhone,Account.PersonEmail,Account.FirstName,nm_Program__r.nm_Type__c,Account.LastName,Account.BillingStreet,Account.BillingCity,Account.BillingState,Account.BillingPostalCode,Account.BillingCountry,Account.nm_ChooseaProgram__c,Account.nm_Centers__r.id,Account.Is_Lateral__c,Account.nm_DefencePersonnel__c');
-        String validityExtensionQuery = getQueryAllFieldSql('Validity_Extension__c','Related_Account__c =:recordId AND Payment_Approved__c = false','Related_Account__r.nm_Allowtomakepayment__c,Related_Account__r.nm_Centers__r.name,Related_Account__r.nm_Centers__r.nm_City__c,Related_Account__r.PersonEmail,Related_Account__r.PersonMobilePhone,Related_Account__r.FirstName,Related_Account__r.LastName, Related_Account__r.BillingStreet,Related_Account__r.BillingCity,Related_Account__r.BillingState,Related_Account__r.BillingPostalCode,Related_Account__r.BillingCountry,Related_Account__r.nm_Centers__r.id,Related_Account__r.nm_Tagged_Pricebook__c,Related_Account__r.nm_ChooseaProgram__c,Related_Account__r.nm_DefencePersonnel__c');
+        String validityExtensionQuery = getQueryAllFieldSql('Validity_Extension__c','Related_Account__c =:recordId','Related_Account__r.nm_Allowtomakepayment__c,Related_Account__r.nm_Centers__r.name,Related_Account__r.nm_Centers__r.nm_City__c,Related_Account__r.PersonEmail,Related_Account__r.PersonMobilePhone,Related_Account__r.FirstName,Related_Account__r.LastName, Related_Account__r.BillingStreet,Related_Account__r.BillingCity,Related_Account__r.BillingState,Related_Account__r.BillingPostalCode,Related_Account__r.BillingCountry,Related_Account__r.nm_Centers__r.id,Related_Account__r.nm_Tagged_Pricebook__c,Related_Account__r.nm_ChooseaProgram__c,Related_Account__r.nm_DefencePersonnel__c,Related_Account__r.nm_Program__c');
         String careerservicerecordquery = getQueryAllFieldSql('Career_Service_Program__c','id=:recordId','CareerServiceProgram__r.Package_Name__c,Account__r.nm_ChooseaProgram__c,Account__r.FirstName,Account__r.LastName,Account__r.PersonEmail,Account__r.PersonMobilePhone,Account__r.BillingStreet,Account__r.BillingCity,Account__r.BillingState,Account__r.BillingPostalCode,Account__r.BillingCountry,Account__r.nm_Tagged_Pricebook__c,Account__r.nm_Centers__r.id');
         String webinarquery = getQueryAllFieldSql('Referral__c','id =:recordId','Webinar__r.Id');
         String centerquery = getQueryAllFieldSql('nm_Centers__c','id =:recordId',null);
@@ -348,9 +348,9 @@ public without sharing class nmAdditonalChargePaymentController{
                 List<Validity_Extension__c> lstValidityExtension = DataBase.query(validityExtensionQuery);
                  System.debug('lstValidityExtension --->'+lstValidityExtension.size());
                 String priceBookEntryQuery = getQueryAllFieldSql('PriceBookEntry',' product2.nm_Program__c=:programId and product2.isActive=true and Pricebook2.id=:TagPriceBookId and product2.nm_Semester__c!=null',' product2.Name, product2.nm_Program__c, product2.nm_Program__r.id, product2.nm_Semester__c ');
-                String noOfValExt = '';
+                
                 if(lstValidityExtension.size() > 0){
-                    getMapOfProgramNameVsProgram();
+                    getMapOfProgramIdVsProgram();
                     for(Validity_Extension__c objValidityExtension : lstValidityExtension){
                         studentName = objValidityExtension.Related_Account__r.FirstName +' '+objValidityExtension.Related_Account__r.LastName;
                         studentEmail = objValidityExtension.Related_Account__r.PersonEmail;
@@ -366,17 +366,30 @@ public without sharing class nmAdditonalChargePaymentController{
 
                         validityExtensionId = objValidityExtension.id;
                         programCategory = objValidityExtension.Related_Account__r.nm_ChooseaProgram__c;
-                        noOfValExt = objValidityExtension.Number_of_validity_taken__c;
-                        system.debug('objValidityExtension.Student_Program_Validity__c--->'+objValidityExtension.Student_Program_Validity__c);
-                        if(mapOfProgramNameVsProgram.containsKey(objValidityExtension.Student_Program_Validity__c)){
-                            programId = mapOfProgramNameVsProgram.get(objValidityExtension.Student_Program_Validity__c).id;
+                        String accountProgramId = objValidityExtension.Related_Account__r.nm_Program__c;
+                        system.debug('objValidityExtension.Student_Program_Validity__c--->'+accountProgramId);
+                        if(mapOfProgramIdVsProgram.containsKey(accountProgramId)){
+                            programId = mapOfProgramIdVsProgram.get(accountProgramId).id;
                             system.debug('programId --->'+programId);
                         }
                     }
                     
                     if(programId !=null && programId !=''){
-                        decimal extensionFee = getValExtOf1Ext(TagPriceBookId, programId, programCategory, IsDefence, noOfValExt);
-                        if (extensionFee > 1) {
+                        List<PriceBookEntry> lstPriceBookEntry = DataBase.query(priceBookEntryQuery);
+                      // decimal  extensionFee =0;
+                        system.debug('lstPriceBookEntry -->'+lstPriceBookEntry );
+                        if(lstPriceBookEntry.size() > 0){
+                           decimal extensionFee = 0.5*(lstPriceBookEntry[0].UnitPrice); // calculate extension fee amount 50% of Admission fee
+                            if('Certificate Programs'.equalsIgnoreCase(programCategory) || 'Executive Programs'.equalsIgnoreCase(programCategory)){
+                                extensionFee += extensionFee * Decimal.valueOf(Label.Service_Tax);
+                                extensionFee = extensionFee.setScale(2);
+                            }else
+                            {
+                            
+                                 extensionFee = IsDefence ? (0.8*extensionFee).setScale(2) :extensionFee.setScale(2);
+                            
+                            }
+                           // extensionFee = extensionFee.setScale(2);
                             paymentFor = 'Validity Extension Fee';
                             mapOfProductAndAmount.put(paymentFor,extensionFee);
                             System.debug('paymentFor-----'+paymentFor+'------'+extensionFee);
@@ -928,7 +941,7 @@ public without sharing class nmAdditonalChargePaymentController{
                     system.debug('LateFeeProductPrice ------>'+LateFeeProductPrice );
                 }else if(objLineItem.Product_Name__c.contains('IC Change')){
                     ICChangeProductPrice += objLineItem.ActualSalePrice__c;
-                }else if(objLineItem.Product_Name__c.contains('Program Change')){
+                }else if(objLineItem.Product_Name__c.contains('Program Change') || objLineItem.Product_Name__c.contains('Program Change Fee')){
                     ProgramChangeProductPrice += objLineItem.ActualSalePrice__c;
                 }else if(objLineItem.Product_Name__c.contains('Student Kits')){
                     StudyKitProductPrice += objLineItem.ActualSalePrice__c;
@@ -983,8 +996,6 @@ public without sharing class nmAdditonalChargePaymentController{
             ProgramChangeProductPrice = 0;
             StudyKitProductPrice = 0;
         }
-
-
         
         if(ICChangeWithStudyKitFeeReceived > 0){
             ICChangeWithStudyKitFeeReceived = ICChangeWithStudyKitFeeReceived - (ICChangeProductPrice + StudyKitProductPrice);
@@ -1297,13 +1308,13 @@ public without sharing class nmAdditonalChargePaymentController{
         return (totalAmountPending - amountReceived);
     }
     
-    public void getMapOfProgramNameVsProgram(){
+    public void getMapOfProgramIdVsProgram(){
         String queryProgram = getQueryAllFieldSql('nm_Program__c',' nm_ProgramName__c !=null ',null);
         List<nm_Program__c> lstPrograms = DataBase.query(queryProgram);
         system.debug('lstPrograms -->'+lstPrograms);
         if(lstPrograms.size() > 0){
             for(nm_Program__c objProgram : lstPrograms){
-                mapOfProgramNameVsProgram.put(objProgram.nm_ProgramName__c,objProgram);
+                mapOfProgramIdVsProgram.put(objProgram.Id,objProgram);
             }
         }
     }
@@ -1334,7 +1345,7 @@ public without sharing class nmAdditonalChargePaymentController{
             objOnlinePayment.isCourseraOpted = isCourseraOpted;
             objOnlinePayment.studentNo = studentNo;
             system.debug('applicableLateFee-->'+applicableLateFee);
-            if(paymentFor == 'Late Fees'){  
+            if(paymentFor == 'Late Fees' && applicableLateFee > 0){  
                 objOnlinePayment.TranAmount = String.valueOf(applicableLateFee);
             }else{
                 objOnlinePayment.TranAmount = String.valueOf(mapOfProductAndAmount.get(paymentFor) + applicableLateFee);
@@ -2077,22 +2088,6 @@ public without sharing class nmAdditonalChargePaymentController{
         }
         return '';
         
-    }
-
-    public decimal getValExtOf1Ext(String TagPriceBookId, String programId,String programCategory, Boolean IsDefence, String noOfValExt) {
-        decimal extensionFee = 0;
-        String priceBookEntryQuery = getQueryAllFieldSql('PriceBookEntry',' product2.nm_Program__c=:programId and product2.isActive=true and Pricebook2.id=:TagPriceBookId and product2.nm_Semester__c!=null',' product2.Name, product2.nm_Program__c, product2.nm_Program__r.id, product2.nm_Semester__c ');
-        List<PriceBookEntry> lstPriceBookEntry = DataBase.query(priceBookEntryQuery);
-        if(lstPriceBookEntry.size() > 0){
-           extensionFee = 0.5*(lstPriceBookEntry[0].UnitPrice); // calculate extension fee amount 50% of Admission fee
-            if('Certificate Programs'.equalsIgnoreCase(programCategory) || 'Executive Programs'.equalsIgnoreCase(programCategory)){
-                extensionFee += extensionFee * Decimal.valueOf(Label.Service_Tax);
-                extensionFee = extensionFee.setScale(2);
-            }else{
-                extensionFee = IsDefence ? (0.8*extensionFee).setScale(2) :extensionFee.setScale(2);
-            }
-        }
-        return String.isNotBlank(noOfValExt) ? Integer.valueOf(noOfValExt) * extensionFee : extensionFee;
     }
    
     public class PaymentRequestParams {

@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : @Shailesh
+ * @group             : 
+ * @last modified on  : 16-05-2025
+ * @last modified by  : @Shailesh
+**/
 global class CancelAdmissionHeplerClass {
 
 
@@ -116,13 +123,13 @@ global class CancelAdmissionHeplerClass {
 
         ///program
         Set<String> progarmTypes = new Set<String>{
-            'Diploma Programs',
-            'Executive Programs',
-            'Post Graduate Diploma Programs',
-            'Professional Programs',
-            'Bachelor Programs',
-            'MBA (Distance) Programs',
-            'MBA (Online) Programs'
+            'Diploma Programs',  // pricebook program total fee  == annual ?
+            'Executive Programs',  //Semester I
+            'Post Graduate Diploma Programs', //Semester I
+            'Professional Programs',  //	Semester I
+            'Bachelor Programs',    // 	FullFee
+            'MBA (Distance) Programs',  //FullFee
+            'MBA (Online) Programs'   //FullFee
         };
 
         Set<String> studentStatusForRegistrationCancel = new Set<String>{
@@ -570,7 +577,7 @@ global class CancelAdmissionHeplerClass {
                                 lstRefundpayment.add(InsertRefundRecord(opp1,ModeofPaymentSem1,tutionFee,AccountStage,documentsApproved,cancellationdatesLst,nmPaymentConfigMap.get('Admission'),SemI,dispatchAmtfinal,liveLectureAmtfinal,latefeefinal,InstallmentdoneFlag,initalPaymentDone));
                                         
                                 }
-                                else if(opp1.StageName == 'Closed Won' && (opp1.nm_Fee_Type__c  == 'FullFee' || opp1.nm_Fee_Type__c  == 'FullFeeLoan')){
+                                else if(opp1.StageName == 'Closed Won' && (opp1.nm_Fee_Type__c  == 'FullFee')){
 
                                  
                                     Boolean annualfeeflag = false;
@@ -886,6 +893,8 @@ global class CancelAdmissionHeplerClass {
                 String ModeofPaymentSem1 = '';
                 Opportunity opp1 = new Opportunity();
 
+                 String pricebookKey = '';
+
                 for(Opportunity oppObj:opplst){
 
                     if(oppObj.nm_Semester__c == '1')// && oppObj.StageName == 'Registration Done'
@@ -898,7 +907,26 @@ global class CancelAdmissionHeplerClass {
                         Decimal yearData = oppObj.nm_Year__c;
                         typeData = oppObj.nm_Program__r.nm_Type__c;
                         specData = oppObj.nm_Program__r.Specialisation__c; 
+                        String feeType  = '';
+                        feeType = oppObj.nm_Fee_Type__c;
+                        pricebookKey = '';
+                        if(feeType == 'AnnualFee'){ //AnnualFee,admission,MultipleSemFee,registration,MBAallTermfee,FullFee
+                            pricebookKey = 'Annual';
+                        } else if(feeType == 'admission'){ 
+                        pricebookKey = 'Semester I';
+                        }
+                         else if(feeType == 'FullFee'){ 
+                            pricebookKey = 'FullFee';
+                        }
+                        // else if(feeType == 'MultipleSemFee'){ 
 
+                        // } else if(feeType == 'registration'){ 
+                            
+                        // }
+                        else if(feeType == 'MBAallTermfee'){
+                            pricebookKey = 'MBAallTermfee';
+                        }
+                       
                         for(NM_Payment_Form_Configuration__c paymentConfig : paymentConfiglst)
                         {  
                             if(paymentConfig.Program_Category__c == typeData && paymentConfig.Program_Type__c == specData && paymentConfig.Session__c == oppObj.nm_Session__c && paymentConfig.Current_Admission_Year__c == yearData+''){
@@ -951,7 +979,8 @@ global class CancelAdmissionHeplerClass {
                         }
                     }
                 }
-
+                System.debug('currAcc.nm_ProgramType__c '+currAcc.nm_ProgramType__c +'productPriceBook.get(FullFee)'+productPriceBook.get('FullFee'));
+                System.debug('tutionFee'+tutionFee+'tutionFeeTotal'+tutionFeeTotal+'liveLectures'+liveLectures+'registrationFee'+registrationFee+'initialPayment'+initialPayment+'installmentFee'+installmentFee+'lateFee'+lateFee+'downPaymentLoan'+downPaymentLoan);
                 Boolean isInterviewSlotDeduction = false;
                 Boolean isAdmissionformdocumentsApproved = false;
                 Boolean tutionFeeGreaterThaninitialLessFullfee = false;
@@ -990,21 +1019,21 @@ global class CancelAdmissionHeplerClass {
                     isAdmissionformdocumentsApproved =  true;
                 }
                 }
-                else if(tutionFee > initialPayment && tutionFee < productPriceBook.get('FullFee')){
+                 if(tutionFee > initialPayment && tutionFee < productPriceBook.get('Semester I')){   //Semester I
 
                     if(installmentFee > 0){
 
                         tutionFee -= (2500+(2500*gstPercetage));   
                         isInstallmentFee = true; 
 
-                    }else if(downPaymentLoan > 0){
+                    } else if(downPaymentLoan > 0){
 
                         tutionFee -= (1000+(1000*gstPercetage));   
                         isDownPaymentLoan = true; 
                     }
                     tutionFeeGreaterThaninitialLessFullfee = true;
                 }
-                else if(tutionFee >= productPriceBook.get('FullFee') || tutionFee >= productPriceBook.get('FullFeeLoan')){
+                if(tutionFee >= productPriceBook.get('FullFee')){
 
                     tutionFee -= (1000+(1000*gstPercetage));
                     tutionFeeGreaterThanFullfee = true;
@@ -1013,8 +1042,31 @@ global class CancelAdmissionHeplerClass {
                 }
                 else if(progarmTypes.contains(currAcc.nm_ProgramType__c)){ 
 
+                System.debug('In progarmTypes.contains(currAcc.nm_ProgramType__c)');
+                  /* 
+                        'Diploma Programs',  // pricebook program total fee  == annual ?
+                        'Executive Programs',  //Semester I
+                        'Post Graduate Diploma Programs', //Semester I
+                        'Professional Programs',  //	Semester I
+                        'Bachelor Programs',    // 	FullFee
+                        'MBA (Distance) Programs',  //FullFee/Semester I
+                        'MBA (Online) Programs'   //FullFee
+                 
+                  */
+                    // String pricebookKey = 'FullFee';
 
-                    if(tutionFee == initialPayment){
+                    // if(currAcc.nm_ProgramType__c == 'Diploma Programs'){
+                    //     pricebookKey = 'Annual';
+                    // }else if(currAcc.nm_ProgramType__c == 'Executive Programs' || currAcc.nm_ProgramType__c == 'Post Graduate Diploma Programs' ||currAcc.nm_ProgramType__c == 'Professional Programs' ){
+                    //     pricebookKey = 'Semester I';
+                    // }
+                    // else if(currAcc.nm_ProgramType__c == 'Bachelor Programs' || currAcc.nm_ProgramType__c == 'MBA (Distance) Programs' ||currAcc.nm_ProgramType__c == 'MBA (Online) Programs' ){
+                    //     pricebookKey = 'FullFee';
+                    // }
+
+                    System.debug('productPriceBook.get(pricebookKey) :  ' + productPriceBook.get(pricebookKey));
+
+                    if(tutionFee == initialPayment ){ // || payObj.nm_PaymentType__c.contains('-DownPayment') ? tutionFee == downPaymentLoan ? true : false : false
 
                         if(currAcc.nm_StudentStatus__c == 'Document/s marked incorrect' || currAcc.nm_StudentStatus__c == 'Documents Re-submitted' 
                         || currAcc.nm_StudentStatus__c == 'Admission form & documents Approved' || currAcc.nm_StudentStatus__c == 'Admission Form & Documents Provisional' 
@@ -1024,7 +1076,7 @@ global class CancelAdmissionHeplerClass {
                             isAdmissionformdocumentsApproved = true;
                         }
                     }
-                    else if(tutionFee > initialPayment && tutionFee < productPriceBook.get('FullFee')){
+                    if(tutionFee > initialPayment && tutionFee < productPriceBook.get(pricebookKey)){
     
                         if(installmentFee > 0){
     
@@ -1040,7 +1092,7 @@ global class CancelAdmissionHeplerClass {
                         tutionFeeGreaterThaninitialLessFullfee = true;
                         
                     }
-                    else if(tutionFee >= productPriceBook.get('FullFee') || tutionFee >= productPriceBook.get('FullFeeLoan')){
+                    if(tutionFee >= productPriceBook.get(pricebookKey)){
     
                         tutionFee -= (1000);
                         tutionFeeGreaterThanFullfee = true;
@@ -1222,7 +1274,7 @@ global class CancelAdmissionHeplerClass {
         Decimal gstPercetage = 0.18;
         nmRefund_Payment__c objRefundPayment=new nmRefund_Payment__c();
 
-        objRefundPayment.Total_Refund_Amount__c=totalAmountTorefund;
+        objRefundPayment.Total_Refund_Amount__c=totalAmountTorefund +lateFee ;
         objRefundPayment.nm_Payment_Status__c='Refund Initiated';
         objRefundPayment.Account__c=objOpps.Accountid; 
         objRefundPayment.Study_Kit__c= dispatchAmt > 0.00 ? true : false;//objOpps.Dispatch_Order_For_Student__c;

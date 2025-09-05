@@ -2,7 +2,7 @@
   @description       : 
   @author            : @BK
   @group             : 
- @last modified on : 15--04--2025
+ @last modified on : 04--06--2025
   @last modified by  : @Ravi
 -->
 <apex:component access="global">
@@ -1127,8 +1127,8 @@
     }
 
     function showModalIfIsLateralVerified() {
-      
         let result = '{!isOtpVerified}';
+        console.log('resulyt=====', result);
         if (result) {
             showHtmlMessageWithType('Important Message', 'Lateral student data fetched successfully.', 'success');
         }
@@ -1213,7 +1213,7 @@
         let ProgramFamily ='{!lateralAddmissionNotAllowProgramList}';
         let status ='{!LeadStatus}';
         var formBlocks = ['form1', 'form2', 'form3', 'form4', 'form5'];
-        let leadStatus =['Admission Fee Paid','Registration Fee Paid'];
+        let leadStatus =['Admission Fee Paid','Registration Fee Paid','Registration Form Filled'];
 
         formBlock = formBlock.includes('form') ? formBlock : 'form1';
         console.log('formBlock ==>'+formBlock);

@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : phalguni
  * @group             : 
- * @last modified on  : 03-17-2025
+ * @last modified on  : 07-04-2025
  * @last modified by  : @vickysahu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -130,7 +130,7 @@ global without sharing class GrayQuestWebhookAPI {
             opp.EduVanz_lead_id__c = applicationId;
         }
         
-        if (status.equalsIgnoreCase('emi.rejected')) {
+        if (status.equalsIgnoreCase('emi.rejected') || (status.equalsIgnoreCase('emi.backout'))) {
             handleRejectedLoan(opp, apiReq);
         } else if (status.equalsIgnoreCase('emi.disbursed')) {
             DisbursmentDetails obj = handleDisbursedLoan(opp, reqWrapper, apiReq);
@@ -253,7 +253,7 @@ global without sharing class GrayQuestWebhookAPI {
             ld.EduVanz_lead_id__c = applicationId;
         }
 
-        if (status.equalsIgnoreCase('emi.rejected')) {
+        if (status.equalsIgnoreCase('emi.rejected') || (status.equalsIgnoreCase('emi.backout'))) {
             handleRejectedLoan(ld, apiReq);
         } else if (status.equalsIgnoreCase('emi.disbursed')) {
             DisbursmentDetails obj = handleDisbursedLoan(ld, reqWrapper, apiReq);

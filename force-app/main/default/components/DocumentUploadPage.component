@@ -2,7 +2,7 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 07--12--2024
+  @last modified on  : 28--05--2025
   @last modified by  : @Ravi
 -->
 <apex:component access="global" controller="DocumentPageController" allowDML="true">
@@ -314,8 +314,13 @@
                         </li>                     
                     </ul>
                 </div>
-                <apex:outputPanel styleClass="body table-responsive docmentStatus" layout="block" rendered="{!isRecordExists}">
-                    <apex:actionRegion >
+                <apex:outputPanel styleClass="body table-responsive docmentStatus" layout="block" rendered="{!isRecordExists}" id="DocumentOutputPanel">
+                           <apex:actionFunction name="fetchDocumentsFromDigiLocker" action="{!fetchDocumentsFromDigiLocker}" rerender="DocumentOutputPanel,jsonFetchedMap" oncomplete="loadFetchedDocuments();" />        
+                    <apex:outputPanel id="jsonFetchedMap" layout="none">
+                        <input type="hidden" id="jsonFetchedMapValue" value="{!JsonMapOfFetchedFiles}" />
+                        <input type="hidden" value="{!isDocumentFetched}" id="hiddenIsFetched"/>
+                    </apex:outputPanel>
+                   <apex:actionRegion >
                         <table class="table table-hover">
                             <thead>
                                 <tr> 
@@ -358,7 +363,7 @@
                                             </apex:outputPanel>
 
                                             <apex:outputPanel layout="none" rendered="{!isDocumentFetched}">
-                                                <apex:outputPanel rendered="{!objdoc.selectedMode == 'Upload via DigiLocker'}" layout="none">
+                                                <apex:outputPanel rendered="{!objdoc.selectedMode == 'Upload via DigiLocker'}" layout="none" >
                                                     <td>
                                                         <select class="form-control mappedDocument {!IF(objdoc.name == 'Photo ID proof','photo-id-proof','')}" multiselect="false" size="1" style="width:99%;" 
                                                             data-name="{!objdoc.name}" data-type="{!objdoc.objType}" data-id="{!objdoc.recordId}">
@@ -487,6 +492,9 @@
 
     <script>
         $(document).ready(function (e) { 
+            
+            fetchDocumentsFromDigiLocker();
+  
             showUpload('{!formSubmitResponse.isFormSubmitted}');
 
             $('body').on('click','.showPreview', function() {
@@ -558,8 +566,8 @@
             if('{!msgHandler.message}' !== '') {
                 showHtmlMessage('{!msgHandler.status}','{!msgHandler.message}', '{!msgHandler.refreshPage}');
             }
-
-            loadFetchedDocuments();
+        // loadFetchedDocuments();
+           
         });
 
         function formatFormData() {
@@ -709,23 +717,34 @@
         }
 
         function loadFetchedDocuments() {
-            $('.table-columnHead').html('Mode Of Upload');
-            if('{!isDocumentFetched}' === 'true' && '{!JsonMapOfFetchedFiles}' !== '') {
-                $('.table-columnHead').html('Select DigiLocker Documents to Upload');
-                console.log('values fetched from API');
-                const mapOfFiles = JSON.parse('{!JsonMapOfFetchedFiles}');
-                for (var key in mapOfFiles) {
-                    const option = { 
-                        value: key,
-                        text : mapOfFiles[key]
+                $('.table-columnHead').html('Mode Of Upload');
+                //  if($('[id$=hiddenIsFetched]').val() === 'true' && '{!JsonMapOfFetchedFiles}'!== '') {
+                const fetched = $('[id$=hiddenIsFetched]').val();
+                const jsonMap = $('#jsonFetchedMapValue').val();
+                console.log('isDocumentFetched:', fetched);
+                // console.log('JsonMapOfFetchedFiles:', jsonMap);
+            if (fetched === 'true' && jsonMap !== '') {
+                    $('.table-columnHead').html('Select DigiLocker Documents to Upload');
+                    console.log('values fetched from API');
+                try {
+                    const mapOfFiles = JSON.parse(jsonMap);
+                    for (var key in mapOfFiles) {
+                        const option = { 
+                            value: key,
+                            text : mapOfFiles[key]
+                        };
+                        if (mapOfFiles[key] === 'PAN Verification Record') {
+                            $('body').find('.mappedDocument').not('.photo-id-proof').append($('<option>', option));
+                        } else {
+                            $('body').find('.mappedDocument').append($('<option>', option));
+                        }
                     }
-                    if(mapOfFiles[key] === 'PAN Verification Record') {
-                        $('body').find('.mappedDocument').not('.photo-id-proof').append($('<option>', option));
-                    } else {
-                        $('body').find('.mappedDocument').append($('<option>', option));
-                    }
+                } catch (e) {
+                        console.error('JSON parsing failed:', e);
+                        console.log('Raw jsonMap value:', jsonMap);
                 }
             }
+            showUpload('{!formSubmitResponse.isFormSubmitted}');
         } 
         
 
@@ -752,7 +771,9 @@
         }
 
         function showUpload(isFormSubmitted) {
+            console.log('docmentStatus1==>', isFormSubmitted);
             if(isFormSubmitted === 'true') {
+                console.log('docmentStatus==>',isFormSubmitted);
                 $('.docmentStatus').addClass('hidden');
                 $('#uploadPage').removeClass('hidden');
                 $('.instructions').addClass('hidden');

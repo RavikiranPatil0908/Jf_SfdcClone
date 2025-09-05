@@ -37,6 +37,9 @@ public class CheckLoanDetailsControllerTracker {
         objTenure.Choose_Program__c = 'Bachelor Programs';
         objTenure.Fee_Type__c = 'Admission';
         insert objTenure;
+
+        nmGenericTracker.CreateOpportunityLineItem(objopp);
+        nmGenericTracker.CreatePaymentRecordForOpportunity(objOpp,'Late Fees');
     }
 
     @isTest

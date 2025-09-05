@@ -4,7 +4,7 @@
  * @Author             : shubhranshu
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 22--04--2025
+ * @Last Modified On   : 31--07--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                Modification
@@ -17,6 +17,7 @@ public without sharing class nmLinksForDocumentStatusHandler{
     public static boolean IsAfterUpdateRunOnce = false;
     public static boolean IsBeforeInsertRunOnce = false;
     public static boolean IsBeforeUpdateRunOnce = false;
+    public static boolean IsAfterDeleteRunOnce =false;
     
 
     public nmLinksForDocumentStatusHandler(){
@@ -89,6 +90,17 @@ public without sharing class nmLinksForDocumentStatusHandler{
         excuteUpdateStudentStatus(triggerNew);
          //callFindabilityWebService(triggerNew,mapOfOldDoc);
      }
+     
+     public void AfterDelete(list<nm_LinksForDocuments__c> triggerOld){
+        System.debug('triggerNew '+triggerOld);
+        if(IsAfterDeleteRunOnce) {
+            return;
+        }
+        IsAfterDeleteRunOnce = true;
+        excuteDeleteDocStatus(triggerOld);
+     }
+
+
 
     /**
     * @description 
@@ -144,6 +156,42 @@ public without sharing class nmLinksForDocumentStatusHandler{
             }
         }
     }
+    
+    /**
+    * @description // Update Account status if any required document has been deleted.
+    * @author @Ravi | 30--07--2025 
+    * @param List<nm_LinksForDocuments__c> lstDoc 
+    **/
+    public void excuteDeleteDocStatus(List<nm_LinksForDocuments__c> lstDoc){
+        System.debug('lstDoc----->'+lstDoc);
+        List<Account> lstofNewAccount = new List<Account>();
+        List<Account> lstofNewAccounts = new List<Account>();
+        Set<Id> setOfAccIds = new Set<Id>();
+        set<Id> setOfAccountIds = new Set<Id>();
+        if(lstDoc.size() > 0){
+            // to allow Confirmed students to update the status.
+            Set<String> setOfStudentNoAllowUpdate = getSetOfStudentsAllowToUpdate(lstDoc);
+            for(nm_LinksForDocuments__c linksForDocuments: lstDoc) {
+                Id accId = linksForDocuments.nm_Account__c;
+                System.debug('accId '+accId);
+                System.debug('StudentStatus '+linksForDocuments.StudentStatus__c);
+                System.debug('Student_Number '+linksForDocuments.Student_Number__c);
+                System.debug('nm_URLforDocuments__c '+linksForDocuments.nm_URLforDocuments__c +'nm_URLforIncorrectDocuments__c '+linksForDocuments.nm_URLforIncorrectDocuments__c);
+                if(!linksForDocuments.StudentStatus__c.contains('Confirmed')
+                    && !linksForDocuments.StudentStatus__c.contains('Cancel') && !linksForDocuments.StudentStatus__c.contains('Closed') && !linksForDocuments.StudentStatus__c.contains('Rejected')
+                    && !linksForDocuments.StudentStatus__c.contains('De-Registered') && !linksForDocuments.Student_Inactive__c && (linksForDocuments.Student_Number__c == null || linksForDocuments.Student_Number__c == '' || 
+                    setOfStudentNoAllowUpdate.contains(linksForDocuments.Student_Number__c)) ) {
+                    setOfAccIds.add(accId);
+                }
+            }
+            if(setOfAccIds.size() > 0 ) {
+                String lstAccQuery = getQueryAllFieldSql('Account','Id IN: setOfAccIds',null);
+                lstofNewAccount = Database.query(lstAccQuery);
+                System.debug('lstofNewAccount '+lstofNewAccount);
+                UpdateDocumentSubmittedStatusOnAccount(lstofNewAccount);
+            }
+        }
+    }
       
     /**
     * @description
@@ -163,7 +211,7 @@ public without sharing class nmLinksForDocumentStatusHandler{
         Map<String, Boolean> MapOfAccountIdVsValidSubmittedDocs = new Map<String, Boolean>();
         List<Account> lstAccountToUpdate = new List<Account>();
         Map<String,List<nm_WorkExperience__c>> getMapAccIdVsWk = getMapAccIdVsWk(lstAccount);
-
+    
         for(Account objAccount : lstAccount) {
             if(objAccount.nm_StudentStatus__c != 'Confirmed') {
                 // put mandatory Document According to Criteria 
@@ -253,7 +301,7 @@ public without sharing class nmLinksForDocumentStatusHandler{
         objStatus.diplomaStatus = objAccount.Diploma_status__c;
         objStatus.isLateral = objAccount.Is_Lateral__c;
         objStatus.isIndian = objAccount.nm_Nationality__c == 'Indian' ? true : false;
-        objStatus.recordId = null;
+        objStatus.recordId =objAccount.Id ;
         objStatus.objectType = 'Account';
         objStatus.lstWk = lstWk;
         objStatus.castCertificateDocument = objAccount.nm_Category__c;
@@ -651,6 +699,7 @@ public without sharing class nmLinksForDocumentStatusHandler{
                     objAccountToUpdate.nm_StudentStatus__c = 'Documents Re-submitted';
                 }else if(isvalidSubmiited){
                     System.debug('doc submitted');
+                    Boolean isDocSubmitted = false;  //This flag is added because when an incorrect documents  inserted as status "Submitted" then the submitted date needs to be updated at that time.
                     if(objAccount.nm_StudentStatus__c !='Documents Re-submitted'){
                         objAccountToUpdate.nm_StudentStatus__c = 'Admission form & documents submitted';
                     }
@@ -675,14 +724,14 @@ public without sharing class nmLinksForDocumentStatusHandler{
                 lstAccountToUpdate.add(objAccountToUpdate);
                 System.debug('Student Status to Update---->'+objAccountToUpdate.nm_StudentStatus__c);  
             }  
-            else {
-                Integer TotalApprovedDoc = objWrap != null ? objWrap.setOfProvisionalDocuments.size() + objWrap.setOfApprovedDocuments.size() : 0;
+            // else {
+            //     Integer TotalApprovedDoc = objWrap != null ? objWrap.setOfProvisionalDocuments.size() + objWrap.setOfApprovedDocuments.size() : 0;
                 
-                if(TotalApprovedDoc == TotalManadatoryDoc) {
-                    objAccountToUpdate.Provisional_With_Hold__c = false;
-                    lstAccountToUpdate.add(objAccountToUpdate);
-                }
-            }
+            //     if(TotalApprovedDoc == TotalManadatoryDoc) {
+            //         objAccountToUpdate.Provisional_With_Hold__c = false;
+            //         lstAccountToUpdate.add(objAccountToUpdate);
+            //     }
+            // }
         }
         return lstAccountToUpdate;
     }
@@ -1070,6 +1119,8 @@ public without sharing class nmLinksForDocumentStatusHandler{
         List<nm_LinksForDocuments__c> lstDocuments = new List<nm_LinksForDocuments__c>();
         //Document to delete
         List<nm_LinksForDocuments__c> lstDocumentsToDelete = new List<nm_LinksForDocuments__c>();
+        Boolean deleteCastDocument =false;
+        Boolean deletedisabledDocument=false;
         set<String> programTypeOfLabel = new Set<String>(new List<String>(System.Label.WorkExpMandatory.split(',')));
         Map<String,Account> mapOfAccIdVsAccount = new Map<String, Account>();
         if (lstAccount.size() > 0) {
@@ -1148,6 +1199,8 @@ public without sharing class nmLinksForDocumentStatusHandler{
                             nm_LinksForDocuments__c objDoc = exceptionalDocumentNeedToInsert('Differently Abled Document', objAcc.id,true);
                             lstDocuments.add(objDoc);
                         }       
+                    } else {
+                        deletedisabledDocument=true;
                     }
 
                 //System.debug('PickListHelper.getPickListValuesForLeadCategory() :: '+PickListHelper.getPickListValuesForAccountCategory().toString());
@@ -1161,6 +1214,8 @@ public without sharing class nmLinksForDocumentStatusHandler{
                             nm_LinksForDocuments__c objDoc = exceptionalDocumentNeedToInsert('Caste Certificate Document', objAcc.id,true);
                             lstDocuments.add(objDoc);
                         }       
+                    } else if( String.isNotBlank(objAcc.nm_Category__c) && objAcc.nm_Category__c == 'General' && PickListHelper.getPickListValuesForAccountCategory().contains(objAcc.nm_Category__c)){
+                         deleteCastDocument=true;
                     }
                             
                     if(objAcc.nm_Relationship__c!=null && objAcc.nm_Relationship__c!='Self' && objAcc.nm_DefencePersonnel__c =='Yes')
@@ -1257,9 +1312,9 @@ public without sharing class nmLinksForDocumentStatusHandler{
                         // allowed to Insert Additional Documents
                         if(strDocumentName !=null && strDocumentName !='' && !strDocumentName.contains('Additional') && (String.IsBlank(oldDoc.nm_URLforDocuments__c) || oldDoc.nm_Status__c!='Approved'))
                         {
-                            if((oldDoc.nm_DocumentName__c == 'Caste Certificate Document' || oldDoc.nm_DocumentName__c == 'Differently Abled Document') && !String.IsBlank(oldDoc.nm_URLforDocuments__c))
+                            if(((oldDoc.nm_DocumentName__c == 'Caste Certificate Document' && deleteCastDocument==true) || (oldDoc.nm_DocumentName__c == 'Differently Abled Document' && deletedisabledDocument==true)) && !String.IsBlank(oldDoc.nm_URLforDocuments__c))
                             {
-                                
+                                lstDocumentsToDelete.add(oldDoc);
                             }else{
                                 lstDocumentsToDelete.add(oldDoc);
                             }

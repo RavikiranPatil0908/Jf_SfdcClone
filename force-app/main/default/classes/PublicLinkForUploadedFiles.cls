@@ -2,32 +2,33 @@
  * @description       : 
  * @author            : @vickysahu
  * @group             : 
- * @last modified on  : 02-04-2025
- * @last modified by  : @vickysahu
+ * @last modified on  : 09-07-2025
+ * @last modified by  : @Shailesh
 **/
 public class PublicLinkForUploadedFiles {
     @InvocableMethod(label='Create Public link' description='Public Link for uploaded Files' category='Case')
     public static void convertPrivateToPublic(List<FlowInputs> request) {
         if (!System.isFuture()) {
-            CallWebService(request[0].recordId);
+           // CallWebService(request[0].recordId);
+            CallWebService(request[0].recordId,request[0].contentDocumentIds);
         }
     }
 
     @future(callout=true)
-    public static void callWebService(String recordId) {
+    public static void callWebService(String recordId, List<String> contentDocumentIds) {
         List<ContentVersion> lstcv = new List<ContentVersion>();
         List<ContentDistribution> lstcd = new List<ContentDistribution>();
-        List<ContentDocumentLink> lstDocumentLinks = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recordId];
-        System.debug('lstDocumentLinks --->' + JSON.serialize(lstDocumentLinks));
+        // List<ContentDocumentLink> lstDocumentLinks = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recordId];
+         System.debug('contentDocumentIds --->' + JSON.serialize(contentDocumentIds));
 
-        Set<Id> contentDocumentIds = new Set<Id>();
-        if(lstDocumentLinks.size() > 0) {
-            for (ContentDocumentLink documentLink : lstDocumentLinks) {
-                contentDocumentIds.add(documentLink.ContentDocumentId);
-            }
-        }
+        // Set<Id> contentDocumentIds = new Set<Id>();
+        // if(lstDocumentLinks.size() > 0) {
+        //     for (ContentDocumentLink documentLink : lstDocumentLinks) {
+        //         contentDocumentIds.add(documentLink.ContentDocumentId);
+        //     }
+        // }
         //Get all content version of case whose ContentDistribution is not Created.
-        lstcv = [SELECT Id, Title, VersionData,ContentSize FROM ContentVersion WHERE ContentDocumentId IN :contentDocumentIds AND Id NOT IN (SELECT ContentVersionId FROM ContentDistribution)];
+        lstcv = [SELECT Id, Title, VersionData,ContentSize FROM ContentVersion WHERE ContentDocumentId IN :contentDocumentIds];
         if(lstcv.size() > 0) {
             for(ContentVersion objcv : lstcv) {
                 ContentDistribution objcd = new ContentDistribution();
@@ -58,5 +59,7 @@ public class PublicLinkForUploadedFiles {
     public class FlowInputs {
         @InvocableVariable(required=true)
         public String recordId;
+        @InvocableVariable(required=true)
+        public List<String> contentDocumentIds;
     }
 }

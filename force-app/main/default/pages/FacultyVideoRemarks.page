@@ -107,10 +107,15 @@
                         <h5>Previous Remarks for Version 1:</h5>
                         <apex:outputText value="{!existingRemarkV1}"  escape="false" />
                     </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(existingRemarkV2!=null && existingRemarkV2!='',true,false)}" style="padding-top: 10px;" styleClass="col-md-6" layout="block">
+                        
+                        <h5>Previous Remarks for Version 2:</h5>
+                        <apex:outputText value="{!existingRemarkV2}"  escape="false" />
+                    </apex:outputPanel>
                      
                 </div>
 
-                <apex:outputPanel rendered="{!IF((existingRemark!=null && existingRemark!='') || (existingRemarkV1!=null && existingRemarkV1!=''),true,false)}" layout="none">
+                <apex:outputPanel rendered="{!IF((existingRemark!=null && existingRemark!='') || (existingRemarkV1!=null && existingRemarkV1!='') || (existingRemarkV2!=null && existingRemarkV2!=''),true,false)}" layout="none">
                     <hr/>
                 </apex:outputPanel>
                 

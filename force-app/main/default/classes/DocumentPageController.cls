@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 14--04--2025
+ * @last modified on  : 16--07--2025
  * @last modified by  : @Ravi
 **/
 public without sharing class DocumentPageController {
@@ -29,6 +29,7 @@ public without sharing class DocumentPageController {
     public Boolean showOldDocument {get;set;} 
     public Integer countOfUploadedDocuments {get;set;}
     public Boolean hideSubmitButton {get;set;}
+    public String JsonMapOfFetchedFiles { get; set; }
     // public Boolean isDigiLockerSelected {get;set;}
 
     public DocumentPageController() {
@@ -48,7 +49,8 @@ public without sharing class DocumentPageController {
         hideSubmitButton=false;
         // isDigiLockerSelected = false;
         reIniatlize();
-        fetchDocumentsFromDigiLocker();
+        // fetchDocumentsFromDigiLocker();
+        
     }
 
     public void reIniatlize() {
@@ -83,6 +85,7 @@ public without sharing class DocumentPageController {
         if (this.objectType == 'Account') {
             mandatoryDocuments = setAccountDetails();
             countOfUploadedDocuments= 0;
+            System.Debug('mandatoryDocumentsall='+ mandatoryDocuments );
             processAccountDocuments(recordId, lstStatus, mandatoryDocuments);
         } else {
             mandatoryDocuments = setLeadData();
@@ -105,6 +108,7 @@ public without sharing class DocumentPageController {
         List<nm_LinksForDocuments__c> docs = [SELECT id, nm_DocumentName__c, nm_URLforDocuments__c, nm_Status__c, Document_Upload_Mode__c, nm_ReasonforDisapprove__c, Document_Query__c , nm_Old_URL_for_Documents__c FROM nm_LinksForDocuments__c WHERE nm_Account__c = :recordId];
         
         for (nm_LinksForDocuments__c objDoc : docs) {
+           System.Debug('mandatoryDocuments  ='+ objDoc );
             DocumentWrapper doc = createDocumentWrapper(objDoc, lstStatus, mandatoryDocuments);
             if(objDoc.nm_URLforDocuments__c != null ){
                 countOfUploadedDocuments=countOfUploadedDocuments+1;
@@ -130,11 +134,13 @@ public without sharing class DocumentPageController {
         List<nm_LinksForDocumentsLead__c> docs = [SELECT id, nm_DocumentName__c, nm_URLforDocuments__c, nm_Status__c, Document_Upload_Mode__c FROM nm_LinksForDocumentsLead__c WHERE Lead__c = :recordId];
         
         for (nm_LinksForDocumentsLead__c objDoc : docs) {
+            System.Debug('mandatoryDocuments==>'+mandatoryDocuments);
             DocumentWrapper doc = createDocumentWrapper(objDoc, lstStatus, mandatoryDocuments);
             if(objDoc.nm_URLforDocuments__c != null ){
                 countOfUploadedDocuments=countOfUploadedDocuments+1;
                 System.Debug('countOfUploadedDocuments'+countOfUploadedDocuments);
             }
+            System.Debug('doc===>'+doc);
             lstDocuments.add(doc);
         }
         if(countOfUploadedDocuments == docs.size()){
@@ -259,7 +265,7 @@ public without sharing class DocumentPageController {
 
     // Fetch Lead data based on objectId
     private List<Lead> fetchLeadData(Id leadId) {
-        return [SELECT id, nm_RegistrationNo__c, FirstName, LastName, Email, MobilePhone, nm_Eligibility_Criteria_Ref__c, HSC_status__c, 
+        return [SELECT id, nm_RegistrationNo__c, FirstName, LastName, Email, MobilePhone,Differently_abled__c, nm_Eligibility_Criteria_Ref__c, HSC_status__c, 
                 nm_Program__r.Form_Specialisation__c, Are_you_from_Defence__c, Relationship__c, nm_ProgramName__c,
                 Diploma_status__c, Is_Lateral__c, nm_Program__r.Bachelor_Specialization__c, nm_ChooseaProgram__c, nm_Nationality__c 
                 ,nm_Category__c FROM Lead WHERE id = :leadId];
@@ -267,7 +273,7 @@ public without sharing class DocumentPageController {
 
     // Fetch Account data based on objectId
     private List<Account> fetchAccountData(Id accountId) {
-        return [SELECT Id, nm_RegistrationNumber__c,Provisional_With_Hold__c , nm_StudentStatus__c, FirstName, LastName, PersonEmail, PersonMobilePhone, Eligibility_Criteria_Ref__c, 
+        return [SELECT Id, nm_RegistrationNumber__c,Provisional_With_Hold__c ,Differently_abled__c, nm_StudentStatus__c, FirstName, LastName, PersonEmail, PersonMobilePhone, Eligibility_Criteria_Ref__c, 
                 Program_Type__c, nm_DefencePersonnel__c, nm_Relationship__c, nmStudent_Program__c, HSC_status__c, Diploma_status__c, 
                 Is_Lateral__c, nm_Program__r.Bachelor_Specialization__c, nm_Program__r.Form_Specialisation__c, nm_Nationality__c 
                 ,nm_Category__c FROM Account WHERE id = :accountId];
@@ -324,6 +330,7 @@ public without sharing class DocumentPageController {
     private void populateStudentStatus(GetMandatoryDocuments.StudentStatus objStatus, Lead objLead, String objectType) {
         objStatus.chooseProgram = objLead.nm_ChooseaProgram__c;
         objStatus.eligibilityCriteria = objLead.nm_Eligibility_Criteria_Ref__c;
+        objStatus.isDifferentlyAbled = objLead.Differently_abled__c;
         objStatus.isDefencePersonnel = objLead.Are_you_from_Defence__c;
         objStatus.relationship = objLead.Relationship__c;
         objStatus.studentProgram = objLead.nm_ProgramName__c;
@@ -341,6 +348,7 @@ public without sharing class DocumentPageController {
         objStatus.chooseProgram = objAccount.Program_Type__c;
         objStatus.eligibilityCriteria = objAccount.Eligibility_Criteria_Ref__c;
         objStatus.isDefencePersonnel = objAccount.nm_DefencePersonnel__c;
+        objStatus.isDifferentlyAbled = objAccount.Differently_abled__c;
         objStatus.relationship = objAccount.nm_Relationship__c;
         objStatus.studentProgram = objAccount.nmStudent_Program__c;
         objStatus.hscStatus = objAccount.HSC_status__c;
@@ -392,11 +400,12 @@ public without sharing class DocumentPageController {
     * @author @BK | 09-02-2024 
     * @return String 
     **/
-    public String getJsonMapOfFetchedFiles(){
-        Map<String,String> options = new Map<String,String>();
+    public String getJsonMapOfDigiLockerFetchedFiles() {   //getJsonMapOfFetchedFiles
+       Map<String,String> options =new Map<String ,String>();
         if(isDocumentFetched) {
             for( DigilockerListDocumentWrapper.Documents document : objListDocuments.data.documents){
                 if(document.file_id.startsWith('digilocker_file')){
+                    System.debug('document.file_id==>'+document.name);
                  options.put(document.file_id,document.name);
                 }
             }
@@ -617,7 +626,6 @@ public without sharing class DocumentPageController {
             }
 
             if(generateAndUpdateLinks(selectedDocuments)) {
-
                 SessionManager obj = new SessionManager();
                 Map<String,String> mapOfParameters = obj.getSessionData();
                 formSubmitResponse.isFormSubmitted = mapOfParameters.containsKey('isOtherModeSelected') 
@@ -632,7 +640,11 @@ public without sharing class DocumentPageController {
         } catch (Exception error) {
             System.debug('Error ==>' + error.getMessage());
             System.debug('Error ==>' + error.getLineNumber());
-        }
+        } finally {
+            if (!Test.isRunningTest()) {
+                 APIRequestHandler.flushLogs();
+             } 
+         }
         showMsg('Internal error occured. Kindly contact our Support Team.', 'error', false);
         return null;
     }
@@ -641,23 +653,37 @@ public without sharing class DocumentPageController {
     * @description 
     * @author @BK | 09-02-2024 
     **/
-    public void fetchDocumentsFromDigiLocker() {
-        SessionManager obj = new SessionManager();
-        Map<String,String> mapOfParameters = obj.getSessionData();
-        if(!mapOfParameters.isEmpty() && mapOfParameters.containsKey('client_id')
-        && DigilockerWebService.getDigilockerOauthStatus(mapOfParameters.get('client_id'), getObjectId())) {
-            
-            clientId = mapOfParameters.get('client_id');
-            jsonDocumentModeList = mapOfParameters.get('jsonDocumentModeList');
-            objListDocuments = DigilockerWebService.getListOfDocument(clientId, getObjectId());
-
-            if(objListDocuments!=null && objListDocuments.success) {
-                isDocumentFetched = true;
-            } else {
-                clearDigiLockerSession();
+    public PageReference fetchDocumentsFromDigiLocker() {
+        try {
+            SessionManager obj = new SessionManager();
+            Map<String, String> options = new Map<String, String>();
+            Map<String,String> mapOfParameters = obj.getSessionData();
+            if (!mapOfParameters.isEmpty() 
+                && mapOfParameters.containsKey('client_id') 
+                && DigilockerWebService.getDigilockerOauthStatus(mapOfParameters.get('client_id'), getObjectId())) {
+                
+                clientId = mapOfParameters.get('client_id');
+                jsonDocumentModeList = mapOfParameters.get('jsonDocumentModeList');
+                objListDocuments = DigilockerWebService.getListOfDocument(clientId, getObjectId());
+    
+                if (objListDocuments != null && objListDocuments.success) {
+                    isDocumentFetched = true;
+                     JsonMapOfFetchedFiles = getJsonMapOfDigiLockerFetchedFiles();
+                } else {
+                    clearDigiLockerSession();
+                }
+            }
+        } catch (Exception error) {
+            System.debug('Error =>' + error.getMessage());
+            System.debug('Line =>' + error.getLineNumber());
+        } finally {
+            if (!Test.isRunningTest()) {
+                APIRequestHandler.flushLogs();
             }
         }
+        return null;
     }
+    
 
     /**
     * @description 
@@ -666,15 +692,20 @@ public without sharing class DocumentPageController {
     * @return String 
     **/
     private String fetchDocumentLinkFromDigiLocker(String fileId) {
-        if(String.isBlank(clientId) || String.isBlank(fileId)) {
+        try {
+            if(String.isBlank(clientId) || String.isBlank(fileId)) {
             return null;
-        }
-
+            }
         DigilockerDocumentDownloadWrapper response = DigilockerWebService.getDigilockerDownloadedDocument(clientId, fileId, getObjectId());
         if(!response.success) {
             return null;
         }
         return response.data.download_url;
+        } catch (Exception error) {
+            System.debug('error line ==>'+error.getLineNumber());
+            System.debug('error message ==>'+error.getMessage());
+            return null;
+        }
     }
 
     /**

@@ -2,7 +2,7 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 04--04--2025
+  @last modified on  : 03--09--2025
   @last modified by  : @Ravi
 -->
 <apex:component controller="FormPageController" access="global" allowDML="true">
@@ -229,10 +229,16 @@
                         console.log('Mode==>'+'{!JSENCODE(objOTP.isModeVerified)}');
                         if( $('[id$=LateralMessage]').val() != '' && $('[id$=LateralMessage]').val() != null ){
                             showHtmlMessage('Invalid Information',$('[id$=LateralMessage]').val());
+                            setTimeout(function () {
+                                window.location.href = '/EnrollmentForm?nav=form';
+                            }, 2000);
+                            // closeModalSelection();
+                            // location.reload();
+                        } else{
+                            $('[id$=LateralSelectionModal]').show();
                             closeModal();
                         }
-                        $('[id$=LateralSelectionModal]').show();
-                        closeModal();
+                      
                         // let msg = '{!JSENCODE(objOTP.isModeVerified)}' == 'E' ? 'Email Id has been verified' : 'Mobile Number has been verified';
                         // showNotificationMsg('alert-success', msg);
                         // $('[id$=IsLateralModal]').modal('hide');

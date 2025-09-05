@@ -2,7 +2,7 @@
   @description       : This component displays communication history on the Admission Lead Dashboard, fetching data from the portal for Leads, Accounts, and Cases before student confirmation.
   @author            : @Ravi
   @group             : 
-  @last modified on  : 30--04--2025
+  @last modified on  : 02--06--2025
   @last modified by  : @Ravi
 -->
 <apex:component controller="EmailLogsPageController" access="global" allowDML="true">
@@ -99,7 +99,7 @@
                     <div class="card">
                         <div class="align-center p-t-10">
                             <img src="/img/chatter/OpenRoad.svg" class="img-responsive illustration" />
-                            <h4>Records Not Found</h4>
+                            <h4>{!msg}</h4>
                         </div> 
                    </div>
                 </apex:outputPanel>

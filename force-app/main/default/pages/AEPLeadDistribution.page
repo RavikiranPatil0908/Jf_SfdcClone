@@ -1,0 +1,52 @@
+<apex:page showHeader="false" sidebar="false" cache="false" applyHtmlTag="false" applyBodyTag="false"
+docType="html-5.0"  lightningStylesheets="true">
+<html>
+    <apex:includeLightning />
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        </meta>
+
+        <style>
+            body {
+                background-color: light gray;
+            }
+
+            #auraErrorMessage {
+                display: none;
+            }
+        </style>
+    </head>
+
+    <apex:outputPanel rendered="true"> 
+        <header>
+            <nav class="headerNavigation">
+                <div class="container">
+                    <div class="logoImg">
+                        <a href="#">
+                            <apex:image url="{!URLFOR($Resource.ImageResource,'images/logo.png')}"
+                                styleClass="img-responsive" style="margin-left:3rem; margin-top:1rem;" />
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+    </apex:outputPanel>
+
+    <body>
+        <div id="LightningComponentid" />
+        <script>
+            $Lightning.use("c:aepPurchaseLicesneApp", function() {
+                $Lightning.createComponent("c:AepLeadDistributiontoCounsellor",{
+                   
+                },
+                "LightningComponentid",
+                function (cmp) {
+                    console.log('faculty component created successfully ...');
+                });
+            });
+        </script>
+    </body>
+
+    </html>
+</apex:page>

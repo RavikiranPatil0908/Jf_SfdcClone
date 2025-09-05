@@ -61,8 +61,8 @@ public class VideoCallPageControllerTracker {
         insert objSlot;
 
         //video Verification
-        VVC_Junction__c objVcc = new VVC_Junction__c(Schedule_Time_Slot__c = objSlot.Id, Call_Date__c = System.today().addDays(2), Time_Range__c = '9:00 AM - 10:00AM', Account__c = objAccount.Id, Status__c = 'In Progress',Schedule_Call_Time__c = System.now().addDays(2));
-        insert objVcc;
+        VVC_Junction__c objVVC = new VVC_Junction__c(Schedule_Time_Slot__c = objSlot.Id, Call_Date__c = System.today().addDays(2), Time_Range__c = '9:00 AM - 10:00AM', Account__c = objAccount.Id, Status__c = 'In Progress',Schedule_Call_Time__c = System.now().addDays(2));
+        insert objVVC;
 
 
         NM_Payment_Form_Configuration__c nmpay = nmGenericTracker.createPaymentFOrmConfiguration('Post Graduate Diploma Programs','Admission','1');        
@@ -77,27 +77,36 @@ public class VideoCallPageControllerTracker {
         objCancel.From_Date__c = System.today().addDays(-5);
         objCancel.To_Date__c = System.today().addDays(10);
         insert objCancel;
-       
+
+        VVC_Question__c objVVQ = new VVC_Question__c(Account__c = objAccount.Id,Question__c = 'Test',Display_to_Student__c = true,Answer__c='test',VVC_Junction__c = objVVC.Id);
+        insert objVVQ;
     }
 
     @isTest 
     static void testMethod1() {
-
+        VVC_Junction__c objVVC = [SELECT Id,Call_Date__c FROM VVC_Junction__c LIMIT 1];
         Account objAccount = [SELECT Id FROM Account LIMIT 1];
+        Schedule_Time_Slot__c objSTS = [SELECT Id,Time_Gap__c FROM Schedule_Time_Slot__c LIMIT 1];
         Test.startTest();
             VideoCallPageController objnmReg = new VideoCallPageController();
             VideoCallPageController.ObjWrapper wrapper = new VideoCallPageController.ObjWrapper();
 
             //objnmReg.getVideoCallTime = new List<SelectOption>();
             objnmReg.getVideoCallDate = new List<SelectOption>();
+            objnmReg.scheduleTimeSlotId = objSTS.Id;
 
             wrapper.meetingDate = String.valueOf(System.today().addDays(1));
-            wrapper.meetingTime = '6:00 PM - 7:00 PM';
+            wrapper.meetingTimeRange = '6:00 PM - 7:00 PM';
+            wrapper.meetingTime = '6:00 PM';
+            objnmReg.vvcJunctionId = objVVC.Id;
             objnmReg.setObjectId(objAccount.Id);
-        
+            objnmReg.getCallDateTime(objVVC,'6:00 PM');
             objnmReg.getVideoCallDate();
             objnmReg.getVideoCallTimeRange();
             objnmReg.getVideoCallTime();
+            objnmReg.getVVCQuestion();
+            objnmReg.getVideoTranscript();
+            
             objnmReg.SaveDetail();
         Test.stopTest();
     }
@@ -114,7 +123,8 @@ public class VideoCallPageControllerTracker {
             objnmReg.getVideoCallDate = new List<SelectOption>();
 
             wrapper.meetingDate = String.valueOf(System.today().addDays(1));
-            wrapper.meetingTime = '6:00 PM - 7:00 PM';
+            wrapper.meetingTimeRange = '6:00 PM - 7:00 PM';
+            wrapper.meetingTime = '6:00 PM';
             objnmReg.setObjectId(objAccount.Id);
             objnmReg.getVideoCallDate();
             objnmReg.getVideoCallTimeRange();

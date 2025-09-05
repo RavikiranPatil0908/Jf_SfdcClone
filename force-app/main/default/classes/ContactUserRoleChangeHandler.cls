@@ -67,6 +67,7 @@ public class ContactUserRoleChangeHandler {
                 {
                 Counsellor_Profile__c cp=[select id,MobilePhone__c from Counsellor_Profile__c where id=:objcont.Counselor_Profile__c];
                  cp.MobilePhone__c=firstNo;
+                 cp.Skip_Flow__c=true;
                  updateCP.add(cp);
                 }
                  User conUser = [select Id,ContactId,MobilePhone from user where ContactId=:objcont.Id];

@@ -1,8 +1,24 @@
+/**
+ * @description       : 
+ * @author            : @Shailesh
+ * @group             : 
+ * @last modified on  : 02-05-2025
+ * @last modified by  : @Shailesh
+**/
 public without sharing class AsyncShootJunctionController {
     public AsyncShootJunctionController() {
 
     }
     public  String jsonAsString { get; set; }
+    public  List<TOC__c> errortoctable { get; set; }
+    public  Map<Integer, String> errorexcel { get; set; }
+    public  String errorexceldataAsString { get; set; }
+    public void resetExportTOCTable(){
+        errortoctable =null;
+        errorexcel = null;
+        errorexceldataAsString = null;
+    }
+
     public  void importCSVFile() {
         
         System.debug( 'jsonAsString :: '+jsonAsString);
@@ -14,6 +30,12 @@ public without sharing class AsyncShootJunctionController {
         }
         AsyncShootandJunctionHelper asyncwrapper = new AsyncShootandJunctionHelper();
         Map<String, String> tocDataMap = asyncwrapper.getWrapper.getTocDataMap;
+        List<TOC__c> gettocList = asyncwrapper.getWrapper.gettocList;
+        Set<String> errormapkeyvalue = new Set<String>();
+        Map<Integer, String> errorexcelvalue = new Map<Integer, String> ();
+        errortoctable = new List<TOC__c> ();
+        List<AsyncObject> csvDataNotMapped = new List<AsyncObject>();
+        // List<Map<String,String>> MapJSONObject =  (List<Map<String,String>>)System.JSON.deserialize(jsonAsString, List<Map<String,String>>.class);
 
         List<AsyncObject> lstJSONObject =  (List<AsyncObject>)System.JSON.deserialize(jsonAsString, List<AsyncObject>.class);
 
@@ -36,15 +58,15 @@ public without sharing class AsyncShootJunctionController {
             
             
              String mapKey = (String)mapOfExcelData.Block_Name.trim(); 
-                    mapKey += '-'+ (String)mapOfExcelData.Subject.trim();
-                    mapKey += '-'+ (String)mapOfExcelData.Program.trim();
-                    mapKey += '-'+ (String)mapOfExcelData.Unit_Name.trim();
-                    mapKey += (String)mapOfExcelData.Topic_Name != null ? '-'+ mapOfExcelData.Topic_Name : '-'+ null;
-                    mapKey += (String)mapOfExcelData.SubTopic_Name != null ? '-'+ mapOfExcelData.SubTopic_Name : '-'+ null;
-                   // System.debug('mapKey123 ::'+mapKey);(Introduction to Operations Research-Operations Research-MBA-Basics of Operations ResearchLearning Objectivenull)
-        if(TOCDataMap.containsKey(mapKey)){
-
-           Async_Shoot_Post_Production__c  asyncShootData = new Async_Shoot_Post_Production__c();
+                    mapKey += '__&&__'+ (String)mapOfExcelData.Subject.trim();
+                    mapKey += '__&&__'+ (String)mapOfExcelData.Program.trim();
+                    mapKey += '__&&__'+ (String)mapOfExcelData.Unit_Name.trim();
+                    mapKey += (String)mapOfExcelData.Topic_Name != null ? '__&&__'+ mapOfExcelData.Topic_Name : '__&&__'+ null;
+                    mapKey += (String)mapOfExcelData.SubTopic_Name != null ? '__&&__'+ mapOfExcelData.SubTopic_Name : '__&&__'+ null;
+                   System.debug('mapKey123 ::'+mapKey);//(Introduction to Operations Research-Operations Research-MBA-Basics of Operations ResearchLearning Objectivenull)
+        
+            if(TOCDataMap.containsKey(mapKey)){
+            Async_Shoot_Post_Production__c  asyncShootData = new Async_Shoot_Post_Production__c();
 
             asyncShootData.put('Acads_Team_Remarks__c', mapOfExcelData.Acads_Team_Remarks);
             asyncShootData.put('Chapter_Name__c', mapOfExcelData.Chapter_Name);
@@ -108,17 +130,43 @@ public without sharing class AsyncShootJunctionController {
             asyncShootData.put('Video_Link_V1_Date_Time__c',  !(mapOfExcelData.Video_Link_V1_DateTime == null) && !mapOfExcelData.Video_Link_V1_DateTime.equalsignorecase('') ? Datetime.valueOf(mapOfExcelData.Video_Link_V1_DateTime.replace('/','-')) : null );
             asyncShootData.put('Video_Link_V2_Date_Time__c', !(mapOfExcelData.Video_Link_V2_DateTime == null) && !mapOfExcelData.Video_Link_V2_DateTime.equalsignorecase('') ? Datetime.valueOf(mapOfExcelData.Video_Link_V2_DateTime.replace('/','-')) : null );
             asyncShootData.put('MapKey__c',mapKey);
-
+        
             csvDataMap.add(asyncShootData);
             successMsg += columnId+',';
             columnId++;
         }else{
+            csvDataNotMapped.add(mapOfExcelData);
             lstColumnId.add(columnId+' - ('+mapKey+')');
             failMsg += columnId+',';
             columnId++;
+            errormapkeyvalue.add(mapKey);
+            errorexcelvalue.put(
+                    columnId,
+                     mapKey
+                    
+                );
+           
         }   
     } 
         }
+        errorexcel = errorexcelvalue;
+        Map<String,TOC__c> localcheck = new Map<String,TOC__c>();
+        for (String errorobj : errormapkeyvalue) {
+            System.debug('errorobj  ==>'+errorobj);
+            List<String> mapkeyvalue = errorobj.split('__&&__');
+            for(TOC__c  tocobj : gettocList){
+                System.debug('tocobj  ==>'+tocobj);
+                if(!localcheck.containsKey(tocobj.Id)){
+                    localcheck.put(tocobj.Id, tocobj);
+                    if(tocobj.Block_Name__c == mapkeyvalue[0] && tocobj.Subject__c == mapkeyvalue[1]) // && tocobj.Program__c == mapkeyvalue[2]
+                    {
+                        errortoctable.add(tocobj);
+                    }
+                }
+            }     
+        }
+        
+
         insert csvDataMap;
         List<AsyncTOCLink__c> asyncToLinkList = new List<AsyncTOCLink__c>();
         for(Async_Shoot_Post_Production__c mkey:csvDataMap)
@@ -137,10 +185,13 @@ public without sharing class AsyncShootJunctionController {
         ApexPages.addMessage(
             new ApexPages.Message(ApexPages.Severity.CONFIRM, +csvDataMap.size() +' records('+ successMsg +') uploaded Successfully.')
            );
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, ' records('+ failMsg +') not added. Details ::  '+errorMsg +' make sure that excel data matches with TOC table data(Block_Name-Subject-Program-Unit_Name-Topic_Name-SubTopic_Name)')
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, ' records('+ failMsg +') not added. Details ::  '+errorMsg +' make sure that excel data matches with TOC table data(Block_Name__&&__Subject__&&__Program__&&__Unit_Name__&&__Topic_Name__&&__SubTopic_Name)')
             );
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING, ' make sure that excel data matches with TOC table data(Block_Name-Subject-Program-Unit_Name-Topic_Name-SubTopic_Name) and Date format is as Planned_Date_for_Edited_Video and Shoot_Date :-  yyyy-mm-dd hh:mm:ss and Shoot_Start_Time , Shoot_End_Time , Video_Link_V1_DateTime and Video_Link_V2_DateTime :-  yyyy-mm-dd hh:mm:ss AM/PM')
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING, ' make sure that excel data matches with TOC table data(Block_Name__&&__Subject__&&__Program__&&__Unit_Name__&&__Topic_Name__&&__SubTopic_Name) and Date format is as Planned_Date_for_Edited_Video and Shoot_Date :-  yyyy-mm-dd hh:mm:ss and Shoot_Start_Time , Shoot_End_Time , Video_Link_V1_DateTime and Video_Link_V2_DateTime :-  yyyy-mm-dd hh:mm:ss AM/PM')
             );
+
+            exportContactData(csvDataNotMapped);
+
         } catch(Exception e) {
             system.debug('Error 1 is==>'+e.getMessage());
             system.debug('Error 2 is==>'+e.getLineNumber());
@@ -148,6 +199,7 @@ public without sharing class AsyncShootJunctionController {
             ApexPages.Message errorMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'An error has occurred while importing data into Salesforce. Please make sure input xlsx file is correct');
             ApexPages.addMessage(errorMessage);
         }
+        
     }
         // Define the refreshPage method to refresh the page
         public PageReference refreshPage() {
@@ -164,9 +216,124 @@ public without sharing class AsyncShootJunctionController {
             return pageRef;
         }
 
+        Map<String,String> excelColumnsMap = new  Map<String,String>{
+                'Acads_Team_Remarks' => 'Acads_Team_Remarks',
+                'Async_Shoot_Post_Production_Name' => 'Async_Shoot_Post_Production_Name'
+        };
+        
+        public void exportContactData(List<AsyncObject> csvDataNotMapped){
+            String doc = '';
+            doc = '<table>';
+            // Add styles for the table
+            doc += '<style>';
+            doc += 'table, th, td {';
+            doc += '    border: 1px solid black;';
+            doc += '    border-collapse: collapse;';
+            doc += ' font-weight: normal;';
+            // doc += ' font-family: Calibri;';
+            doc += '}';          
+            doc += '</style>';
+            Integer objcount = 0;
+            for(AsyncObject obj : csvDataNotMapped) {
+                Map<String, Object> mobj = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(obj));
+                
+                // Add all the Table Headers
+                if(objcount == 0){
+                    objcount++;
+                    doc += '<tr>';
+                         for(String key : mobj.keySet()) {
+                            //Object item = map.get(key);
+                            doc += '<th>'+ key +'</th>'  ;  
+                            
+                         } 
+                    // doc += '<th>'+ 'Acads_Team_Remarks' +'</th>'  ;         
+               
+                    doc += '</tr>';
+
+                        }
+
+                    // Add the data rows
+             
+                    doc += '<tr>';
+                    for(String key : mobj.keySet()) {
+                       // doc += '<th>'+ mobj.get(key) +'</th>'; 
+                        System.debug('mobj123:: '+mobj.get(key));
+                        if(mobj.get(key)!=null){
+                            doc += '<th>'+ mobj.get(key) +'</th>'; 
+                        }else{
+                            doc += '<th>'+ '' +'</th>'; 
+                        }
+                    }
+                     doc += '</tr>'; 
+ 
+                
+            }
+            doc += '</table>';
+          /**  List<Map<String, String>> mobj = (List<Map<String, String>>) JSON.deserializeUntyped(JSON.serialize(csvDataNotMapped));
+
+            // system.debug(mobj.values());
+            // system.debug(mobj.keyset());
+
+            // Prepare a html table
+            String doc = '<table>';
+            // Add styles for the table
+            doc += '<style>';
+            doc += 'table, th, td {';
+            doc += '    border: 1px solid black;';
+            doc += '    border-collapse: collapse;';
+            doc += '}';          
+            doc += '</style>';
+            // Add all the Table Headers
+            doc += '<tr>';
+                     for(String key : mobj[0].keySet()) {
+                        //Object item = map.get(key);
+                        doc += '<th>'+ mobj[0].get(key) +'</th>'  ;  
+                        
+                     } 
+                // doc += '<th>'+ 'Acads_Team_Remarks' +'</th>'  ;         
+           
+            doc += '</tr>';
+            // Add the data rows
+            for (Map<String, String> record : mobj) {
+                doc += '<tr>';
+                for(String key : record.keySet()) {
+                    //Object item = map.get(key);
+                   // if(record)
+                    doc += '<th>'+ record.get(key)+'</th>'; 
+                 }
+                 doc += '</tr>'; 
+                // doc += '<tr>';
+                // doc += '<th>'+ record.get('Acads_Team_Remarks__c')+'</th>'; 
+                // doc += '<th>'+record.get('Chapter_Name__c')+'</th>'; 
+                // doc += '<th>'+record.get('Block_Name')+'</th>'; 
+                // doc += '<th>'+record.get('Unit_Name')+'</th>'; 
+                // doc += '<th>'+record.get('Topic_Name')+'</th>'; 
+                // doc += '<th>'+record.get('Subject')+'</th>'; 
+                // doc += '<th>'+record.get('Program')+'</th>'; 
+                // doc += '<th>'+record.get('SubTopic_Name')+'</th>'; 
+                // doc += '<th>'+record.get('Faculty_Email')+'</th>'; 
+                // doc += '<th>'+record.LastName+'</th>';
+                // doc += '<th>'+record.Email+'</th>'; 
+                // doc += '</tr>';
+            }
+
+            doc += '</table>';
+
+             //<a href="/images/myw3schoolsimage.jpg" target = '_self' download="Contact Data.xls">
+            String element = 'data:application/vnd.ms-excel,' + EncodingUtil.urlEncode(doc, 'UTF-8');
+            // let downloadElement = document.createElement('a');
+            // downloadElement.href = element;
+            // downloadElement.target = '_self';
+            // use .csv as extension on below line if you want to export data as csv
+            // downloadElement.download = 'Contact Data.xls';
+            // document.body.appendChild(downloadElement);
+            // downloadElement.click();
+**/
+            errorexceldataAsString = doc; //.replace('null','')
+        }
+
 
         public class AsyncObject {
-
 
             public AsyncObject() {
 

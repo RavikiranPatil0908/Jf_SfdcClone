@@ -1,10 +1,28 @@
+/**
+ * @description       : 
+ * @author            : @Shailesh
+ * @group             : 
+ * @last modified on  : 17-06-2025
+ * @last modified by  : @Shailesh
+**/
 import { LightningElement, api, wire, track } from 'lwc';
 import getLeadEmailMobileInfo from '@salesforce/apex/LeadEmailMobileInfoController.getLeadEmailMobileInfo';
 import updateLeadInfo from '@salesforce/apex/LeadEmailMobileInfoController.updateLeadInfo';
+import insertEventMonitoring from '@salesforce/apex/EventMonitoringController.insertEventMonitoring';
+import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-
+import Id from '@salesforce/user/Id';
+import Name from '@salesforce/schema/User.Name';
+import RoleName from '@salesforce/schema/User.UserRole.Name';
+import ProfileName from '@salesforce/schema/User.Profile.Name';
+import { getRecord } from 'lightning/uiRecordApi';
 export default class LeadEmailMobileInfo extends LightningElement {
     @api recordId;
+    userId = Id;
+    userName;
+    userRoleName;
+    userProfileName;
+   // @track disableEditbtn = true;
     @track records = [];
     @track dataLoading = true;
     @track hasData = false;
@@ -18,6 +36,75 @@ export default class LeadEmailMobileInfo extends LightningElement {
     editedMobile;
     editedSecondaryEmail;
     editedPhone;
+
+    constructor() {
+        super();
+        document.addEventListener("keydown", this.handleNotificationCopy);
+        document.addEventListener("dragstart", this.handleNotificationDrag);
+       
+    }
+     connectedCallback() {
+         
+        insertEventMonitoring({
+            leadId: this.recordId,
+            userId: Id,
+            objectType: 'Lead',
+            event: 'View'
+        });
+
+     }
+    handleNotificationCopy = (event) => {
+        if (event.ctrlKey && event.key === 'c') {
+         //   console.log('Ctrl + C pressed');
+            insertEventMonitoring({
+            leadId: this.recordId,
+            userId: Id,
+            objectType: 'Lead',
+            event: 'Copy'
+        });
+        }
+    };
+    handleNotificationDrag = (event) => {
+       
+           // console.log('Draged');
+            insertEventMonitoring({
+            leadId: this.recordId,
+            userId: Id,
+            objectType: 'Lead',
+            event: 'Drag'
+        });
+        
+    };
+
+    // @wire(getRecord, { recordId: Id, fields: [Name, RoleName, ProfileName] })
+    // userDetails({ error, data }) {
+    //     if (error) {
+    //         this.error = error;
+    //     } else if (data) {
+    //         if (data.fields.Name.value != null) {
+    //             this.userName = data.fields.Name.value;
+    //         }
+    //         if (data.fields.UserRole.value != null) {
+    //             this.userRoleName = data.fields.UserRole.value.fields.Name.value;
+    //         }
+    //         if (data.fields.Profile.value != null) {
+    //             this.userProfileName = data.fields.Profile.value.fields.Name.value;
+    //             if(this.userProfileName != undefined && (this.userProfileName === 'Super Admin' || this.userProfileName === 'Head Office' || this.userProfileName === 'System Administrator')){
+    //                 if(this.userProfileName === 'Super Admin'){
+    //                     if(this.userName === 'marketing ngasce'){
+    //                         this.disableEditbtn =  false;
+    //                     } 
+    //                     }else{
+    //                         this.disableEditbtn = false;
+    //                     } 
+    //                 }
+    //         }
+    //         }
+    //         console.log('userProfileName:: '+this.userProfileName);
+    //         console.log('userRoleName:: '+this.userRoleName );
+    //         console.log('userName::'+this.userName);     
+    // }
+
 
     @wire(getLeadEmailMobileInfo, { recordId: '$recordId' })
     wiredLeadEmailMobileInfo({ error, data }) {
@@ -33,6 +120,7 @@ export default class LeadEmailMobileInfo extends LightningElement {
                 this.editedSecondaryEmail = data[0].secondaryEmail;
                 this.editedPhone = data[0].phone;
                 this.hasData = true;
+              
             } else {
                 this.hasData = false;
             }
@@ -43,13 +131,24 @@ export default class LeadEmailMobileInfo extends LightningElement {
         }
     }
 
+
     get isDisabled() {
         return !this.isEditing;
     }
+    logEventMonitoring(eventMsg ){
+
+    insertEventMonitoring({
+                    leadId: this.recordId,
+                    userId: Id,
+                    objectType: 'Lead',
+                    event: eventMsg
+                });
+
+    }
 
     handleEdit() {
-        this.isEditing = true;
-        this.showSaveButton = true;
+       this.isEditing = true;
+       this.showSaveButton = true;
     }
 
     handleEmailChange(event) {
@@ -116,4 +215,7 @@ export default class LeadEmailMobileInfo extends LightningElement {
             alert(`${title}: ${message}`);
         }
     }
+
+    
+   
 }

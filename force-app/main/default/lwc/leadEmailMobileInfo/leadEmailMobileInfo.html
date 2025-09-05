@@ -3,8 +3,8 @@
  * @description       : 
  * @author            : @Monikac
  * @group             : 
- * @last modified on  : 22-11-2024
- * @last modified by  : @BK
+ * @last modified on  : 17-06-2025
+ * @last modified by  : @Shailesh
 -->
 <template>
     <template if:true={dataLoading}>
@@ -28,6 +28,17 @@
                         <div class="slds-media__actions">
                             <lightning-button label="Edit" onclick={handleEdit} if:false={isEditing}></lightning-button>
                         </div>
+                        <!-- <template lwc:if={disableEditbtn}>
+                            <div class="slds-media__actions">
+                              
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="slds-media__actions">
+                                <lightning-button label="Edit" onclick={handleEdit} if:false={isEditing} disabled={disableEditbtn}></lightning-button>
+                            </div>    
+                        </template> -->
+                        
                     </header>
                 </div>
                 <div class="slds-card__body">

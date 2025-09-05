@@ -2,7 +2,7 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 30--04--2025
+  @last modified on  : 21--08--2025
   @last modified by  : @Ravi
 -->
 <apex:page showHeader="false" sidebar="false" standardStylesheets="false" cache="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" controller="HomePageController" action="{!validateSession}">
@@ -35,6 +35,18 @@
 
         <!-- AdminBSB Themes. Steel Blue Custom Theme -->
         <link href="{!URLFOR($Resource.AdminBSBMaterialDesign, 'AdminBSBMaterialDesign/css/themes/theme-steel-blue.css')}" rel="stylesheet" />
+
+        <!-- Bootstrap DatePicker Css -->
+        <!-- <link href="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}" rel="stylesheet" /> -->
+
+        <!-- Wait Me Css -->
+        <!-- <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/waitme/waitMe.css" rel="stylesheet" /> -->
+
+        <!-- Select2 Select Css -->
+        <!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> -->
+
+        <!-- Easy AutoComplete Css -->
+        <!-- <apex:stylesheet value="{!URLFOR($Resource.easyAutoCompleteCSS)}" /> -->
 
         <style>
             .row {
@@ -302,14 +314,14 @@
                             </a>
                         </li>
 
-                        <apex:outputPanel rendered="{!showPayment}" layout="none">
+                        <!-- <apex:outputPanel rendered="{!showPayment}" layout="none"> -->
                             <li class="nav-element payment-nav-element">
                                 <a href="/EnrollmentForm?nav=payment" class="navigate" data-navigate="payment">
                                     <i class="material-icons">payment</i>
                                     <span>Payments</span>
                                 </a>
                             </li>
-                        </apex:outputPanel>
+                        <!-- </apex:outputPanel> -->
 
                         <li class="nav-element document-nav-element">
                             <a href="javascript:void(0);" class="navigate Documents-Sub" data-navigate="document">
@@ -327,7 +339,7 @@
                             </li>
                         </apex:outputPanel>
 
-                        <apex:outputPanel rendered="{!IF(objSessionUser.objType == 'Account',true,false)}" layout="none">
+                        <apex:outputPanel rendered="{!IF(objSessionUser.objType == 'Account' && showVideoCall == true,true,false)}" layout="none">
                             <li class="nav-element call-nav-element">
                                 <a href="/EnrollmentForm?nav=call" class="navigate" data-navigate="call">
                                     <i class="material-icons">video_call</i>
@@ -346,11 +358,29 @@
                             </li>
                         </apex:outputPanel>
 
+                        <apex:outputPanel rendered="{!IF(showRereg == true, true, false)}" layout="none">
+                            <li class="nav-element reregister-nav-element">
+                                <a href="/EnrollmentForm?nav=reregister" class="navigate" data-navigate="reregister">
+                                    <i class="material-icons">how_to_reg</i>
+                                    <span>Re - Registration</span>
+                                </a>
+                            </li>
+                        </apex:outputPanel>
+
                         <apex:outputPanel rendered="{!IF(isConfirmed == true, false, true)}" layout="none">
                             <li class="nav-element history-nav-element">
                                 <a href="javascript:void(0);" class="navigate" data-navigate="history">
                                     <i class="material-icons">email</i>
                                     <span>Communication History</span>
+                                </a>
+                            </li>
+                        </apex:outputPanel>
+
+                        <apex:outputPanel rendered="{!IF(studentno == '', true, false)}" layout="none">
+                            <li class="nav-element updateemailmobile-nav-element">
+                                <a href="javascript:void(0);" class="navigate" data-navigate="updateemailmobile">
+                                    <i class="material-icons">email</i>
+                                    <span>Update Email/Mobile</span>
                                 </a>
                             </li>
                         </apex:outputPanel>
@@ -416,10 +446,14 @@
                     <!-- Interview Slot Booking Page -->
                     <c:InterviewFormPage recordId="{!objSessionUser.recordId}" objType="{!objSessionUser.objType}" rendered="{!IF(pageBlock == 'interview' && objSessionUser.objType == 'Account',true, false)}"/>
                     <!-- #END# Interview Slot Booking Page -->
-                     
+
                     <!-- Video Call Page -->
                     <c:VideoCallVerificationPage recordId="{!objSessionUser.recordId}" objType="{!objSessionUser.objType}" rendered="{!IF(pageBlock == 'call' && objSessionUser.objType == 'Account',true, false)}"/>
                     <!-- #END# Video Call Page -->
+
+                    <!-- Re-Registration Form Page -->
+                    <c:ReRegistrationFormComponent recordId="{!objSessionUser.recordId}" objType="{!objSessionUser.objType}" rendered="{!IF(pageBlock == 'reregister' && objSessionUser.objType == 'Account',true, false)}"/>
+                    <!-- #END# Re-Registration Form Page -->
 
                     <!-- Welcome Letter Page -->
                     <c:WelcomeLetterPage recordId="{!objSessionUser.recordId}" rendered="{!IF(pageBlock == 'letter' && objSessionUser.objType == 'Account',true, false)}"/>
@@ -431,7 +465,11 @@
 
                     <!-- Email Logs Page -->
                     <c:EmailLogsPage recId="{!objSessionUser.recordId}" objType="{!objSessionUser.objType}" rendered="{!IF(pageBlock == 'history',true, false)}" />
-                     <!-- #END# Email Logs Page -->
+                    <!-- #END# Email Logs Page -->
+
+                    <!-- Email Logs Page -->
+                    <c:EmailandMobileUpdatePage recId="{!objSessionUser.recordId}" objType="{!objSessionUser.objType}" rendered="{!IF(pageBlock == 'updateemailmobile',true, false)}" />
+                    <!-- #END# Email Logs Page -->
                   
                 </apex:outputPanel>
             </apex:form>
@@ -463,8 +501,8 @@
         <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/admin.js"></script>
 
         <!-- Apex Plugin Js -->
-        <script src="../../soap/ajax/55.0/connection.js" type="text/javascript"></script>
-        <script src="../../soap/ajax/55.0/apex.js" type="text/javascript"></script>
+        <script src="../../soap/ajax/64.0/connection.js" type="text/javascript"></script>
+        <script src="../../soap/ajax/64.0/apex.js" type="text/javascript"></script>
     
         <script>
             $(document).ready(function () { 

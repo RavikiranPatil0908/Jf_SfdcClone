@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : @Vicky
+ * @group             : 
+ * @last modified on  : 09--07--2025
+ * @last modified by  : @Ravi
+**/
 import { LightningElement, track, wire, api} from 'lwc';
 import createStudentRating from "@salesforce/apex/VideoVerificationFormController.createStudentRating";
 import getAccount from "@salesforce/apex/VideoVerificationFormController.getAccount";
@@ -22,6 +29,8 @@ export default class ShowVedioVerificationForm extends LightningElement {
     @track comments;
     @track specialCaseStudent;
     @track validityDate;
+    @track IsLateral;
+    @track durationOfProgram;
     userName;
 
     @api recordId;
@@ -63,9 +72,12 @@ export default class ShowVedioVerificationForm extends LightningElement {
             this.objAccount = data.acc;
             this.objOpp = data.opp;
             this.validityDate = data.validityDate;
+            this.durationOfProgram =data.durationOfProgram;
+            this.IsLateral =data.isLateral;
             if (this.objAccount.nm_ProgramType__c === 'Diploma Programs') {
                 this.questionLabel.question5 = 'Please note the examination fee is Rs‘800’ per subject per attempt. This is not part of tuition fees. Also note the first two assignment submissions are free however any submissions post that for the failed subject(s) will be Rs. 500/-.per submission per subject per examination';
             }
+            console.log('durationOfProgram--->' + this.durationOfProgram);
             console.log('validityDate--->' + this.validityDate);
             console.log('acc--->' + JSON.stringify(this.objAccount));
             console.log('opp--->' + JSON.stringify(this.objOpp));
@@ -127,10 +139,15 @@ export default class ShowVedioVerificationForm extends LightningElement {
 
     handleChange(event) {
         this.dataValue = event.currentTarget.dataset.value;
-        if (this.dataValue === 'Question2') {
+        if (this.dataValue === 'Question2' && !this.IsLateral) {
             this.dobVerification = event.target.value;
             this.questions[1].question2 = this.dobVerification === 'Yes, it is correct' ? true : false;
             this.questions[1].question2 === false ? this.hideQuestion() : true;
+        }
+        else if (this.dataValue === 'Question2' && this.IsLateral) {
+            this.dobVerification = event.target.value;
+            this.questions[2].question3 = this.dobVerification === 'Yes, it is correct' ? true : false;
+            this.questions[2].question3 === false ? this.hideQuestion() : true;
         }
         else if (this.dataValue === 'Question3') {
             this.enrollmentVerification = event.target.value;
@@ -296,7 +313,7 @@ export default class ShowVedioVerificationForm extends LightningElement {
 
     get durationLabel() {
         if (this.objAccount && this.objAccount.nm_Program__r.nm_ProgramDuration__c) {
-            return `Are you aware that the duration of the program is '${this.objAccount.nm_Program__r.nm_ProgramDuration__c}' year and mode of delivery is online? Do you want to continue?`;
+            return `Are you aware that the duration of the program is '${this.durationOfProgram}' year and mode of delivery is online? Do you want to continue?`;
         }
         return '';
     }
@@ -340,9 +357,9 @@ export default class ShowVedioVerificationForm extends LightningElement {
                 return `${day}${ordinalSuffix(day)} ${month} ${year}`;
             };
             if (this.objAccount.nm_ProgramType__c === 'Certificate Programs') {
-                return `Please note that if admission is cancelled by ${formatDate(this.mapOfCancelDate['Amount']?.To_Date__c)} processing fee of Rs. ${this.mapOfCancelDate['Amount']?.Amount__c}/- plus GST will be deducted. Post that deduction of ${this.mapOfCancelDate['PostDeduction10']?.Percentage__c}% plus GST is applicable till ${formatDate(this.mapOfCancelDate['PostDeduction10']?.To_Date__c)}, ${this.mapOfCancelDate['PostDeduction20']?.Percentage__c}% plus GST till ${formatDate(this.mapOfCancelDate['PostDeduction20']?.To_Date__c)}, ${this.mapOfCancelDate['PostDeduction50']?.Percentage__c}% plus GST till ${formatDate(this.mapOfCancelDate['PostDeduction50']?.To_Date__c)} and 100% will be deducted after ${formatDate(this.mapOfCancelDate['Admisssion']?.To_Date__c)}. Please note Registration fee of 1200/- is non-refundable.`;
+                return `Please note that if admission is cancelled by ${formatDate(this.mapOfCancelDate['NoDeduction']?.To_Date__c)}, no processing fee will be deducted. Post that deduction of ${this.mapOfCancelDate['PostDeduction10']?.Percentage__c}% plus GST is applicable till ${formatDate(this.mapOfCancelDate['PostDeduction10']?.To_Date__c)}, ${this.mapOfCancelDate['PostDeduction20']?.Percentage__c}% plus GST till ${formatDate(this.mapOfCancelDate['PostDeduction20']?.To_Date__c)}, ${this.mapOfCancelDate['PostDeduction50']?.Percentage__c}% plus GST till ${formatDate(this.mapOfCancelDate['PostDeduction50']?.To_Date__c)} and 100% will be deducted after ${formatDate(this.mapOfCancelDate['Admisssion']?.To_Date__c)}. Please note Registration fee of 1200/- is non-refundable.`;
             }
-            return `Please note that if admission is cancelled by ${formatDate(this.mapOfCancelDate['Amount']?.To_Date__c)} processing fee of Rs. ${this.mapOfCancelDate['Amount']?.Amount__c}/- will be deducted. Post that deduction of ${this.mapOfCancelDate['PostDeduction10']?.Percentage__c}% of semester fee is applicable till ${formatDate(this.mapOfCancelDate['PostDeduction10']?.To_Date__c)}, ${this.mapOfCancelDate['PostDeduction20']?.Percentage__c}% of semester fee till ${formatDate(this.mapOfCancelDate['PostDeduction20']?.To_Date__c)}, ${this.mapOfCancelDate['PostDeduction50']?.Percentage__c}% of semester fee till ${formatDate(this.mapOfCancelDate['PostDeduction50']?.To_Date__c)} and 100% of semester fee will be deducted till ${formatDate(this.mapOfCancelDate['Admisssion']?.To_Date__c)}. Please note Registration fee of 1200/- is non-refundable.`;
+            return `Please note that if admission is cancelled by ${formatDate(this.mapOfCancelDate['NoDeduction']?.To_Date__c)}, no processing fee will be deducted. Post that deduction of ${this.mapOfCancelDate['PostDeduction10']?.Percentage__c}% of semester fee is applicable till ${formatDate(this.mapOfCancelDate['PostDeduction10']?.To_Date__c)}, ${this.mapOfCancelDate['PostDeduction20']?.Percentage__c}% of semester fee till ${formatDate(this.mapOfCancelDate['PostDeduction20']?.To_Date__c)}, ${this.mapOfCancelDate['PostDeduction50']?.Percentage__c}% of semester fee till ${formatDate(this.mapOfCancelDate['PostDeduction50']?.To_Date__c)} and 100% of semester fee will be deducted till ${formatDate(this.mapOfCancelDate['Admisssion']?.To_Date__c)}. Please note Registration fee of 1200/- is non-refundable.`;
         }
         return '';
     }
@@ -353,7 +370,6 @@ export default class ShowVedioVerificationForm extends LightningElement {
     validate() {
         this.isNo = false;
         this.isFormFilled = false;
-
         if ((this.questions[0].question1 === true && !this.isNotBlank(this.dobVerification)) ||
               (this.questions[1].question2 === true && !this.isNotBlank(this.enrollmentVerification)) ||
               (this.questions[2].question3 === true && !this.isNotBlank(this.programDurationVerification)) ||
@@ -367,6 +383,8 @@ export default class ShowVedioVerificationForm extends LightningElement {
               (this.questions[10].question11 === true && !this.isNotBlank(this.engagementVerification)) ||
               (this.questions[11].question12 === true && !this.isNotBlank(this.cancellationDateVerification)) 
             ) {
+
+                console.log('validation--->' + this.questions[1].question2);
             this.handleShowToast('Error','Please fill all required field','error');
             this.isFormFilled = false;
             return;
@@ -395,7 +413,7 @@ export default class ShowVedioVerificationForm extends LightningElement {
 
         let verify = false;
         if (this.dobVerification !== 'No, it does not match (Re-verification needed)' && this.isNotBlank(this.dobVerification) &&
-            this.enrollmentVerification !== 'No, the student had the wrong information and does not agree' && this.isNotBlank(this.enrollmentVerification) &&
+            this.enrollmentVerification !== 'No, the student had the wrong information and does not agree' && (this.isNotBlank(this.enrollmentVerification) || this.IsLateral )  &&
             this.programDurationVerification !== 'No, the student is not aware and does not want to continue' && this.isNotBlank(this.programDurationVerification) &&
             this.examFeesVerification !== 'No, the student had the wrong information and does not agree' && this.isNotBlank(this.examFeesVerification) &&
             this.programValidityVerification !== 'No, the student had the wrong information and does not agree' && this.isNotBlank(this.programValidityVerification) &&

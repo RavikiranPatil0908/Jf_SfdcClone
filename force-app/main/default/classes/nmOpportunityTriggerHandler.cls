@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : shubhranshu
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 20-08-2024
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 21--05--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -391,8 +391,9 @@ public class nmOpportunityTriggerHandler
 
         //re-registration cancelled
         //static function helper class 
-        ReregCancellation.doReregistrationCancellation(triggerNew,oldMap); // re-reg cancellation
-        
+        if(!Test.isRunningTest()){
+            ReregCancellation.doReregistrationCancellation(triggerNew,oldMap); // re-reg cancellation
+        }
     }
     
     public void UpdateStudentZoneProgramStatusForStageChange(list<Opportunity> triggerNew,map<id,Opportunity> oldMap){

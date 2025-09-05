@@ -4,7 +4,7 @@
  * @Author             : @BK
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 28--04--2025
+ * @Last Modified On   : 08--08--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -1758,85 +1758,83 @@ public without sharing class nmLeadTriggerHandler {
           Map<Id,nm_Centers__c> mapOfCenterIdVsCenter = getMapOfCenterIdVsCenter();
           Map<id,Counsellor_Profile__c> mapOfCounseloridVsCounselorProfile = getMapAllCounsellor();
 
-      if(setofLeadid.size()>0) {
-      for(Lead objlead : lstlead){
-          if(oldMap !=null){
-              if(objLead.nm_InformationCenter__c != null && objLead.nm_InformationCenter__c != oldMap.get(objLead.id).nm_InformationCenter__c){
-                   objLead.CP_Change_Date__c=null;             
-                  lstALLUserMapping = mapOfCenterIdVsCenterUserMapping.get(objLead.nm_InformationCenter__c);
-                  
-                  if(objLead.Counselor_Profile__c != null
-                  && mapOfCounseloridVsCounselorProfile.containsKey(objLead.Counselor_Profile__c)
-                  && objLead.nm_InformationCenter__c == mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).AEP_Name__c
-                  && mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).UserIsActive__c
-                  && (mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).nm_ChooseaProgram__c!=null && mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).nm_ChooseaProgram__c.contains(objLead.nm_ChooseaProgram__c)))
-                  {
-                      System.debug('RE-assign counselor'+objLead.Counselor_Profile__c);
-                        objLead.OwnerId = mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).OwnerId;                        
-                  }                
-                  else if(objLead.Counselor_Profile__c != null
-                  && mapOfCounseloridVsCounselorProfile.containsKey(objLead.Counselor_Profile__c)
-                  && objLead.nm_InformationCenter__c == mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).AEP_Name__c
-                  && mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).UserIsActive__c)
-                  
-                  {
-                      System.debug('RE-assign counselor'+objLead.Counselor_Profile__c);
-                        objLead.OwnerId = mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).OwnerId;                        
-                  }                
-                  else if(lstALLUserMapping!=null && lstALLUserMapping.size()>1)
-                  {
-                       objLead.OwnerId = AssignUser(lstALLUserMapping,objLead.nm_ChooseaProgram__c );
-                  }else
-                  {
-                      objLead.OwnerId = mapOfCenterIdVsCenterUserMapping.get(objLead.nm_InformationCenter__c)[0].nm_user__c;
-                  }
-                                     
-                  objLead.AEP_email_id__c = mapOfCenterIdVsCenter.get(objLead.nm_InformationCenter__c).AEP_email_id__c; 
-                  system.debug('objLead.OwnerId--->'+objLead.OwnerId);
-                 objLead.Prior_Information_Center__c = mapOfCenterIdVsCenter.containskey(oldMap.get(objLead.id).nm_InformationCenter__c)?mapOfCenterIdVsCenter.get(oldMap.get(objLead.id).nm_InformationCenter__c).Name:'';
+        if(setofLeadid.size()>0) {
+            for(Lead objlead : lstlead){
+                if(oldMap !=null){
+                    if(objLead.nm_InformationCenter__c != null && objLead.nm_InformationCenter__c != oldMap.get(objLead.id).nm_InformationCenter__c){
+                        objLead.CP_Change_Date__c=null;             
+                        lstALLUserMapping = mapOfCenterIdVsCenterUserMapping.get(objLead.nm_InformationCenter__c);
+                        
+                        if(objLead.Counselor_Profile__c != null
+                        && mapOfCounseloridVsCounselorProfile.containsKey(objLead.Counselor_Profile__c)
+                        && objLead.nm_InformationCenter__c == mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).AEP_Name__c
+                        && mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).UserIsActive__c
+                        && (mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).nm_ChooseaProgram__c!=null && mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).nm_ChooseaProgram__c.contains(objLead.nm_ChooseaProgram__c)))
+                        {
+                            System.debug('RE-assign counselor'+objLead.Counselor_Profile__c);
+                                objLead.OwnerId = mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).OwnerId;                        
+                        }                
+                        else if(objLead.Counselor_Profile__c != null
+                        && mapOfCounseloridVsCounselorProfile.containsKey(objLead.Counselor_Profile__c)
+                        && objLead.nm_InformationCenter__c == mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).AEP_Name__c
+                        && mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).UserIsActive__c)
+                        
+                        {
+                            System.debug('RE-assign counselor'+objLead.Counselor_Profile__c);
+                                objLead.OwnerId = mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).OwnerId;                        
+                        }                
+                        else if(lstALLUserMapping!=null && lstALLUserMapping.size()>1)
+                        {
+                            objLead.OwnerId = AssignUser(lstALLUserMapping,objLead.nm_ChooseaProgram__c );
+                        }else
+                        {
+                            objLead.OwnerId = mapOfCenterIdVsCenterUserMapping.get(objLead.nm_InformationCenter__c)[0].nm_user__c;
+                        }
+                                            
+                        objLead.AEP_email_id__c = mapOfCenterIdVsCenter.get(objLead.nm_InformationCenter__c).AEP_email_id__c; 
+                        system.debug('objLead.OwnerId--->'+objLead.OwnerId);
+                        objLead.Prior_Information_Center__c = mapOfCenterIdVsCenter.containskey(oldMap.get(objLead.id).nm_InformationCenter__c)?mapOfCenterIdVsCenter.get(oldMap.get(objLead.id).nm_InformationCenter__c).Name:'';
 
-                  
-                  if(mapOfCenterIdVsCenter.containsKey(objLead.nm_InformationCenter__c)){
-                      String LearningCenterId = mapOfCenterIdVsCenter.get(objLead.nm_InformationCenter__c).nm_LearningCenter__c;
-                      if(!IsNullOrEmpty(LearningCenterId)){
-                          if(mapOfCenterIdVsCenterUserMapping.containsKey(LearningCenterId)){
-                              objLead.nm_LCEmailID__c = mapOfCenterIdVsCenterUserMapping.get(LearningCenterId)[0].nm_user__r.Email;
-                          }
-                      }else{
-                          objLead.nm_LCEmailID__c = mapOfCenterIdVsCenterUserMapping.get(objLead.nm_InformationCenter__c)[0].nm_user__r.Email;
-                      }
-                  }
-              }else if((objLead.Counselor_Profile__c != null && objLead.Counselor_Profile__c != oldMap.get(objLead.id).Counselor_Profile__c)
-               &&   objLead.nm_InformationCenter__c == mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).AEP_Name__c){
-                      objLead.OwnerId = mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).OwnerId;
-                         if(objLead.nm_InformationCenter__c ==oldMap.get(objLead.id).nm_InformationCenter__c)
-                   {
-                      objLead.CP_Change_Date__c=System.now();//added by swati on 2/12/22
-                   }
-                   
-                  
-              }
-               }else{
-                  if(objLead.nm_InformationCenter__c != null){
-                      if(mapOfCenterIdVsCenter.containsKey(objLead.nm_InformationCenter__c)){
-                         objLead.AEP_email_id__c = mapOfCenterIdVsCenter.get(objLead.nm_InformationCenter__c).AEP_email_id__c; 
-                          String LearningCenterId = mapOfCenterIdVsCenter.get(objLead.nm_InformationCenter__c).nm_LearningCenter__c;
-                          if(!IsNullOrEmpty(LearningCenterId)){
-                              if(mapOfCenterIdVsCenterUserMapping.containsKey(LearningCenterId)){
-                                  objLead.nm_LCEmailID__c = mapOfCenterIdVsCenterUserMapping.get(LearningCenterId)[0].nm_user__r.Email;
-                              }
-                          }else if(mapOfCenterIdVsCenterUserMapping.get(objLead.nm_InformationCenter__c) !=null){
-                              objLead.nm_LCEmailID__c = mapOfCenterIdVsCenterUserMapping.get(objLead.nm_InformationCenter__c)[0].nm_user__r.Email;
-                           }
-                           if(objLead.Counselor_Profile__c != null && objLead.nm_InformationCenter__c == mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).AEP_Name__c ){
+                        
+                        if(mapOfCenterIdVsCenter.containsKey(objLead.nm_InformationCenter__c)){
+                            String LearningCenterId = mapOfCenterIdVsCenter.get(objLead.nm_InformationCenter__c).nm_LearningCenter__c;
+                            if(!IsNullOrEmpty(LearningCenterId)){
+                                if(mapOfCenterIdVsCenterUserMappinghead.containsKey(Id.valueOf(LearningCenterId))){
+                                    objLead.nm_LCEmailID__c = mapOfCenterIdVsCenterUserMappinghead.get(Id.valueOf(LearningCenterId)).nm_user__r.Email;
+                                }
+                            }else{
+                                objLead.nm_LCEmailID__c = mapOfCenterIdVsCenterUserMappinghead.get(objLead.nm_InformationCenter__c).nm_user__r.Email;
+                            }
+                        }
+                    }else if((objLead.Counselor_Profile__c != null && objLead.Counselor_Profile__c != oldMap.get(objLead.id).Counselor_Profile__c)
+                        &&   objLead.nm_InformationCenter__c == mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).AEP_Name__c){
+                            objLead.OwnerId = mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).OwnerId;
+                                if(objLead.nm_InformationCenter__c ==oldMap.get(objLead.id).nm_InformationCenter__c)
+                        {
+                            objLead.CP_Change_Date__c=System.now();//added by swati on 2/12/22
+                        }
+                    }
+                }else{
+                    if(objLead.nm_InformationCenter__c != null){
+                        if(mapOfCenterIdVsCenter.containsKey(objLead.nm_InformationCenter__c)){
+                            objLead.AEP_email_id__c = mapOfCenterIdVsCenter.get(objLead.nm_InformationCenter__c).AEP_email_id__c; 
+                            String LearningCenterId = mapOfCenterIdVsCenter.get(objLead.nm_InformationCenter__c).nm_LearningCenter__c;
+                            if(!IsNullOrEmpty(LearningCenterId)){
+                                if(mapOfCenterIdVsCenterUserMappinghead.containsKey(Id.valueOf(LearningCenterId))){
+                                    objLead.nm_LCEmailID__c = mapOfCenterIdVsCenterUserMappinghead.get(LearningCenterId).nm_user__r.Email;
+                                }
+                            }else if(mapOfCenterIdVsCenterUserMappinghead.get(objLead.nm_InformationCenter__c) !=null){
+                                objLead.nm_LCEmailID__c = mapOfCenterIdVsCenterUserMappinghead.get(objLead.nm_InformationCenter__c).nm_user__r.Email;
+                            }
+                            if(objLead.Counselor_Profile__c != null && objLead.nm_InformationCenter__c == mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).AEP_Name__c ){
                                 objLead.OwnerId = mapOfCounseloridVsCounselorProfile.get(objLead.Counselor_Profile__c).OwnerId;
-       
+        
                                 system.debug('objLead.OwnerId--->'+objLead.OwnerId);
                             }
-                       }
-                   }
-               }
-           }
+                        }
+                    }
+                }
+            }
         }
          if(setofLeadidStatus.size()>0)
        {

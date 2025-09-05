@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @vickysahu
  * @group             : 
- * @last modified on  : 03-19-2024
- * @last modified by  : @vickysahu
+ * @last modified on  : 09-07-2025
+ * @last modified by  : @Shailesh
 **/
 @isTest(SeeAllData=false)
 public class PublicLinkForUploadedFilesTracker {
@@ -42,9 +42,10 @@ public class PublicLinkForUploadedFilesTracker {
     @isTest
     static void unitTest1() {
         Case objCase = [SELECT Id FROM Case LIMIT 1];
+        ContentDocumentLink objContentDoc = [SELECT ContentDocumentId FROM ContentDocumentLink  WHERE LinkedEntityId = :objCase.Id LIMIT 1];
         PublicLinkForUploadedFiles.FlowInputs testFlowInput = new PublicLinkForUploadedFiles.FlowInputs();
         testFlowInput.recordId = objCase.Id;
-
+        testFlowInput.contentDocumentIds = new List<String>{objContentDoc.ContentDocumentId};
         List<PublicLinkForUploadedFiles.FlowInputs> testFlowInputsList = new List<PublicLinkForUploadedFiles.FlowInputs>();
         testFlowInputsList.add(testFlowInput);
         Test.startTest();

@@ -4,7 +4,7 @@
  * @Author             : phalguni
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 05--05--2025
+ * @Last Modified On   : 15--05--2025
  * @Modification Log   : 
  * Ver       Date            Author                 Modification
  * 1.0    3/2/2020   phalguni     Initial Version
@@ -722,7 +722,7 @@ public without sharing class nmPaymentTriggerHandler
          for(nm_Payment__c objPay : lstPayment) {
                   setOfPaymentIds.add(objPay.Id);
          } 
-        List<nm_Payment__c> lstLeadPayments = [select id, nm_PaymentType__c ,nm_OpportunityNew__c from nm_Payment__c where id in: setOfPaymentIds];
+         List<nm_Payment__c> lstLeadPayments = [select id, nm_PaymentType__c ,nm_OpportunityNew__c from nm_Payment__c where id in: setOfPaymentIds];
         if(lstLeadPayments.size()>0)
         {
             for(nm_Payment__c objPayment : lstLeadPayments)

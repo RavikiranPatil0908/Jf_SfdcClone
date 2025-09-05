@@ -2,8 +2,8 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 28-03-2024
-  @last modified by  : @BK
+  @last modified on  : 06-05-2025
+  @last modified by  : @Shailesh
 -->
 <apex:page showHeader="true" standardStylesheets="true" sidebar="true" applyBodyTag="false" controller="AsyncShootJunctionController">
     <head>
@@ -13,6 +13,16 @@
             .slds-scope .slds-icon-text-default.bgWhiteColor {
                 fill: rgb(255, 255, 255);
             }
+            table, td, th {  
+            margin: 25px;
+            border: 1px solid #ddd;
+            text-align: left;
+            }
+            table {
+            border-collapse: collapse;
+            width: 100%;
+            }
+            .buttonStyle { text-align:center; padding:5px; margin:12px; }
         </style>
         
     </head>
@@ -94,11 +104,22 @@
                                 </div>
                                 <div class="slds-form-element slds-form-element_horizontal">
                                     <input type="file" id="file-selector" />
+                                    <!-- <apex:actionFunction action="" -->
                                     <apex:inputHidden id="exceldataId" value="{!jsonAsString}"/>
-                                    <apex:commandButton value="Reset" onclick="resetFile()" styleClass="slds-button slds-button_brand" />
+                                    <apex:commandButton value="Reset" onclick="resetFile()" action="{!resetExportTOCTable}" styleClass="slds-button slds-button_brand"  />
                                     <apex:commandButton value="Submit" action="{!importCSVFile}" styleClass="slds-button slds-button_brand" />
 
+                                    <apex:inputHidden id="errorexceldataId" value="{!errorexceldataAsString}"/>
+                                   
+
                                 </div>
+                                <div>
+                                    <apex:outputPanel rendered="{!errorexceldataAsString != null}"   layout="none">
+                                    <apex:commandButton value="Download error log" onclick="downloadVal()" styleClass="buttonStyle" />
+                                    </apex:outputPanel>
+                                </div>
+                                
+                                
                             </div>
                         </div>
                    <!---- </apex:outputPanel>--->
@@ -106,7 +127,67 @@
 
                     
                 </apex:form>
+                
             </div>
+            <input id="tableexcelData" type="hidden" value="{!errorexcel}"/>
+            <apex:outputPanel rendered="{!errorexcel != null}"   layout="none">
+            <div >
+                <div class="slds-text-heading_medium slds-var-p-vertical_small">Records not Uploaded. please check</div>
+                <table width="100%" class="table" >
+                    <thead>
+                        <tr>
+                            <th scope="col">Excel Rowno</th>
+                            <th scope="col" >Keyvalue(Block_Name  Subject  Program  Unit_Name  Topic_Name  SubTopic_Name)</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!errorexcel}" var="errorexcelobj">
+                            <tr>
+                                <td scope="row">{!errorexcelobj}</td>
+                                <td scope="row">{!errorexcel[errorexcelobj]}</td>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+                
+            </div>
+            </apex:outputPanel>
+  
+            <input id="tableData" type="hidden" value="{!errortoctable}"/>
+            <apex:outputPanel rendered="{!errortoctable.size != null}"   layout="none">
+            <div >
+                <div class="slds-text-heading_medium slds-var-p-vertical_small">Matching Records in TOC object. please refer</div>
+                <table width="100%" class="table" >
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col" >Program</th>
+                            <th scope="col">Subject</th>
+                            <th scope="col">Block</th>
+                            <th scope="col">Unit</th>
+                            <th scope="col">Topic</th>
+                            <th scope="col">Subtopic</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!errortoctable}" var="errortocobj">
+                            <tr>
+                                <td scope="row">{!errortocobj.Name}</td>
+                                <td scope="row">{!errortocobj.Program__c}</td>
+                                <td scope="row">{!errortocobj.Subject__c}</td>
+                                <td scope="row">{!errortocobj.Block_Name__c}</td>
+                                <td scope="row">{!errortocobj.Unit_Name__c}</td>
+                                <td scope="row">{!errortocobj.Topic_Name__c}</td>
+                                <td scope="row">{!errortocobj.Sub_Topic_Name__c}</td>
+                              
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+                
+            </div>
+            </apex:outputPanel>
 
             <footer class="slds-card__footer"></footer>
         </article>
@@ -123,8 +204,45 @@
                 // const file = document.querySelector('.file');
                 // file.value = '';
                 // file.filename = '';
+                // console.log('table===>',$('#tableData').val());
+                // // $('[id$=emailBody]').
+                //$('[id$=tableData]').val('');
                 document.getElementById("j_id0:mainForm:exceldataId").value = '';
+               // document.getElementById("j_id0:mainForm:errordataId").value = null;
             }
+
+            
+            function downloadVal() {
+                var addText = document.getElementById("j_id0:mainForm:errorexceldataId").value;
+                
+               // alert(addText);
+               console.log(addText);
+            try {
+
+                var element = document.createElement('a');
+
+                element.setAttribute('href', 'data:application/vnd.ms-excel,' + encodeURIComponent(addText));
+
+                element.setAttribute('download', 'errorlog');
+
+                element.style.display = 'none';
+
+                document.body.appendChild(element);
+
+                element.click();
+
+                //document.body.removeChild(element);
+
+            } catch(e) {
+
+                alert(e);
+            }
+            }
+
+
+
+
+
             // function validateCSVFile(input) {
             //     // Get the uploaded file
             //     let file = input.files[0];

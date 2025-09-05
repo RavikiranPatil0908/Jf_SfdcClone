@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : 
+ * @group             : 
+ * @last modified on  : 12--05--2025
+ * @last modified by  : @Ravi
+**/
 import { LightningElement, track } from 'lwc';
 import uploadFiles from '@salesforce/apex/MyCasesController.uploadFiles';
 import createCase from '@salesforce/apex/MyCasesController.createCase';
@@ -304,6 +311,7 @@ export default class RaiseTicketForRegistrants extends LightningElement {
 					this.showSpinner = false;
 				});
 			}
+			this.showSpinner = false;
 		}).catch(error => {
 			console.log(error);
 			this.showSpinner = false;
@@ -331,6 +339,22 @@ export default class RaiseTicketForRegistrants extends LightningElement {
 			this.resend = true;
 			this.OtpCode = result;
 			this.sentTime = new Date().getTime();
+			let now = new Date().getTime();
+			this.count = now + (2 * 60000);
+			this.timer = setInterval(() => {
+			let now = new Date().getTime();
+			let distance = this.count - now;
+			if (distance <= 0) {
+				clearInterval(this.timer);
+				this.resend = false;
+				this.timeVal = '0:00';
+			} else {
+				let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+				this.timeVal = minutes + ':' + (seconds < 10 ? '0' + seconds : seconds);
+			}
+		}, 1000);
+
 			console.log('Contact admin');
 		}).catch(error => {
 			console.log(error);

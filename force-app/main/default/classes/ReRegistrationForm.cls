@@ -4,7 +4,7 @@
  * @Author             : @BK
  * @Group              : 
  * @Last Modified By   : @vickysahu
- * @Last Modified On   : 02-25-2025
+ * @Last Modified On   : 07-30-2025
  * @Modification Log   : 
  * Ver       Date            Author                 Modification
  * 1.0    24/2/2020   @BK     Initial Version
@@ -250,6 +250,56 @@ public without sharing class ReRegistrationForm {
                                 AND AccountId=:strAccID
                                 AND Id = :oppPcId
                                 AND nm_StudentProgram__c=:objStudentProgram.id];
+            }
+
+            //Get Closed Won Opportunity if calender is active for program change and Payment
+            if (lstOpportunity.size() == 0) {
+                String studentProgramId = objStudentProgram.Id;
+                Decimal currentSem = objStudentProgram.nm_FeesPaidofSemester__c > 0 ? objStudentProgram.nm_FeesPaidofSemester__c - 1 : objStudentProgram.nm_FeesPaidofSemester__c;
+                String sem = getFutureSem(calendarSession, Integer.valueOf(calendarSessionYear) , objAccount.Student_Program__r[0].nm_Program__r.nm_Type__c, objAccount.Student_Program__r[0].nm_Program__r.Specialisation__c, currentSem);
+                if (String.isNotBlank(oppPcId)) {
+                    
+                }
+                // lstOpportunity = [SELECT id,Elective_Subject_Name__c,ActualPendingAmount__c, Program_Name__c,nm_Program__r.nm_ProgramName__c,nm_Program__r.Specialisation__c,Term_Cleared__c,Amount, Tuition_Fees__c,Dispatch_Order_For_Student__c,Account.nm_DefencePersonnel__c,nm_StudentProgram__c, nm_PendingAmount__c, PendingAmmount__c, nm_PaymentDone__c, nm_Semester__c,ConsumerType__c,ClosedWonDateTime__c,
+                //                 Accountid,nm_StudentProgram__r.nm_Program__c,nm_Session__c,nm_year__c,nm_SelfLearningMaterial__c,nm_program__r.name, nm_Fee_Type__c,StageName ,Program_Structure__c,Career_Service__c,CareerServiceProgram__c,Name,Form_Submission_History__c,LiveLecturesType__c,Sem__c,Account.nm_Tagged_Pricebook__c, Dispatch_Order_Number_For_Student__r.Status_Of_Dispatch__c, Dispatch_Order_Number_For_Student__c, Dispatch_Order_Number_For_Student__r.Stock_Keeping_Unit__c, Dispatch_Order_Number_For_Student__r.Stock_Keeping_Unit__r.Program__c
+                //                 FROM Opportunity
+                //                 WHERE nm_Semester__c =:sem
+                //                 AND nm_Session__c =:calendarSession 
+                //                 AND nm_year__c=:calendarSessionYear
+                //                 AND AccountId=:strAccID
+                //                 AND Id = :oppPcId
+                //                 AND nm_StudentProgram__c=:objStudentProgram.id];
+                String query = 'SELECT id, Elective_Subject_Name__c, ActualPendingAmount__c, Program_Name__c, ' +
+                'nm_Program__r.nm_ProgramName__c, nm_Program__r.Specialisation__c, Term_Cleared__c, Amount, ' +
+                'Tuition_Fees__c, Dispatch_Order_For_Student__c, Account.nm_DefencePersonnel__c, ' +
+                'nm_StudentProgram__c, nm_PendingAmount__c, PendingAmmount__c, nm_PaymentDone__c, ' +
+                'nm_Semester__c, ConsumerType__c, ClosedWonDateTime__c, Accountid, ' +
+                'nm_StudentProgram__r.nm_Program__c, nm_Session__c, nm_year__c, nm_SelfLearningMaterial__c, ' +
+                'nm_program__r.name, nm_Fee_Type__c, StageName, Program_Structure__c, Career_Service__c, ' +
+                'CareerServiceProgram__c, Name, Form_Submission_History__c, LiveLecturesType__c, Sem__c, ' +
+                'Account.nm_Tagged_Pricebook__c, Dispatch_Order_Number_For_Student__r.Status_Of_Dispatch__c, ' +
+                'Dispatch_Order_Number_For_Student__c, Dispatch_Order_Number_For_Student__r.Stock_Keeping_Unit__c, ' +
+                'Dispatch_Order_Number_For_Student__r.Stock_Keeping_Unit__r.Program__c ' +
+                'FROM Opportunity WHERE nm_Semester__c = :sem ' +
+                'AND nm_Session__c = :calendarSession ' +
+                'AND nm_year__c = :calendarSessionYear ' +
+                'AND AccountId = :strAccID ' +
+                'AND nm_StudentProgram__c = :studentProgramId';
+
+
+                if (oppPcId != null && !String.isBlank(oppPcId)) {
+                    query += ' AND Id = :oppPcId';
+                }
+
+                lstOpportunity = Database.query(query);
+
+                if (lstOpportunity.size() > 0 && lstOpportunity[0].ClosedWonDateTime__c != null) {
+                    semFuture = sem;
+                    strRegFor = String.isNotBlank(sem) ? Integer.valueOf(sem) : null;
+                }
+                else {
+                    lstOpportunity = new List<Opportunity>();
+                }
             }
   
             if(lstOpportunity.size() > 0) {
@@ -724,13 +774,13 @@ public without sharing class ReRegistrationForm {
         System.debug('objAccount.nm_EligiblityCriteria__c ==>'+objAccount.nm_EligiblityCriteria__c);
         // to update the selected elgiblity and update the Account status to selected elibility inorder to upload the documents and block payment
         if(String.isNotBlank(strSelectedEligiblity) && objAccount.nm_EligiblityCriteria__c!=strSelectedEligiblity 
-            && (chooseProgram=='Post Graduate Diploma Programs' || chooseProgram=='MBA (Distance) Programs') && chooseProgram!=objAccount.nm_ChooseaProgram__c) {
+            && (chooseProgram=='Post Graduate Diploma Programs' || chooseProgram=='MBA (Distance) Programs' || chooseProgram=='MBA (Online) Programs') && chooseProgram!=objAccount.nm_ChooseaProgram__c) {
                 objAcc.nm_EligiblityCriteria__c = strSelectedEligiblity;
                 objAcc.nm_StudentStatus__c = 'Registered';
                 requireDocumentUpload = true;
         } 
         else if(String.isNotBlank(strSelectedEligiblity) && objAccount.nm_EligiblityCriteria__c==strSelectedEligiblity 
-            && objAccount.nm_StudentStatus__c!='Confirmed'&& (chooseProgram=='Post Graduate Diploma Programs' || chooseProgram=='MBA (Distance) Programs')
+            && objAccount.nm_StudentStatus__c!='Confirmed'&& (chooseProgram=='Post Graduate Diploma Programs' || chooseProgram=='MBA (Distance) Programs' || chooseProgram=='MBA (Online) Programs')
             && chooseProgram!=objAccount.nm_ChooseaProgram__c) {
                 requireDocumentUpload = true;
         }
@@ -1306,9 +1356,9 @@ public without sharing class ReRegistrationForm {
         
         lstECOptions.add(new SelectOption('', 'Choose Eligiblity Criteria'));
         String prQuery = ' nm_Program__c=:chooseProgram ';
-        if (chooseProgram == 'MBA (Online) Programs') {
-            prQuery =  ' nm_Program__c=:chooseProgram AND Program_Type__c = \'MBA\'' ;
-        }
+        // if (chooseProgram == 'MBA (Online) Programs') {
+        //     prQuery =  ' nm_Program__c=:chooseProgram AND Program_Type__c = \'MBA\'' ;
+        // }
         String queryEligibilityCriteria = getQueryAllFieldSql('nm_EligiblityCriteria__c',prQuery,null);
         List<nm_EligiblityCriteria__c> lstElegibility = DataBase.query(queryEligibilityCriteria);
         if(lstElegibility.size() > 0 ){

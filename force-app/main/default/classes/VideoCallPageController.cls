@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 03-24-2025
+ * @last modified on  : 07-21-2025
  * @last modified by  : @vickysahu
 **/
 public without sharing class VideoCallPageController {
@@ -46,6 +46,7 @@ public without sharing class VideoCallPageController {
     public Map<String,List<String>> mapOfKeyVsTime {get;set;}
     public VideoCallWrapper objVideoCall {get;set;}
     public Boolean isVVCNotExpired {get;set;}
+    public Boolean allowVVCAfterLastDate {get;set;}
 
     public VideoCallPageController(){
         objAccount = null;
@@ -82,6 +83,7 @@ public without sharing class VideoCallPageController {
         mapOfKeyVsTime = new Map<String,List<String>>();
         objVideoCall = new VideoCallWrapper();
         isVVCNotExpired = false;
+        allowVVCAfterLastDate = false;
     }
 
 
@@ -146,22 +148,26 @@ public without sharing class VideoCallPageController {
     * @param recordId 
     **/
     public void queryRecordData(Id recordId){
-        List<Account> lstAccount = [SELECT Id, nm_DateOfBirth__c, nm_ChooseaProgram__c, nm_StudentStatus__c, nm_Program__r.nm_ProgramValidity__c, nm_Program__r.Specialisation__c, nm_Program__r.nm_ProgramDuration__c, nm_Program__r.nm_ProgramName__c, is_Video_Call_Verified__c, FirstName, LastName, nm_Program__r.Name, PersonMobilePhone, PersonEmail,nm_ProgramType__c,Specialization_Type__c,nm_Program2__r.nm_ProgramName__c,nm_Nationality__c,nm_Domicile__c,DEBID__c,OwnerId FROM Account WHERE Id=:recordId LIMIT 1];
-        List<Schedule_Time_Slot__c> lstScheduling = [SELECT Id,Start_time__c,End_time__c,Total_Counselors__c,Per_Call_Schedule_Minutes__c,Start_date__c,End_date__c,Recurrence__c,Custom_Schedule_Days__c FROM Schedule_Time_Slot__c WHERE RecordType.Name = 'Video Call' AND IsActive__c=true AND End_date__c>=TODAY];
+        List<Account> lstAccount = [SELECT Id, nm_RegistrationNumber__c,nm_DateOfBirth__c, nm_ChooseaProgram__c, nm_StudentStatus__c, nm_Program__r.nm_ProgramValidity__c, nm_Program__r.Specialisation__c, nm_Program__r.nm_ProgramDuration__c, nm_Program__r.nm_ProgramName__c, is_Video_Call_Verified__c, FirstName, LastName, nm_Program__r.Name, PersonMobilePhone, PersonEmail,nm_ProgramType__c,Specialization_Type__c,nm_Program2__r.nm_ProgramName__c,nm_Nationality__c,nm_Domicile__c,DEBID__c,OwnerId FROM Account WHERE Id=:recordId LIMIT 1];
+        List<Schedule_Time_Slot__c> lstScheduling = [SELECT Id,Start_time__c,End_time__c,Total_Counselors__c,Per_Call_Schedule_Minutes__c,Start_date__c,End_date__c,Recurrence__c,Custom_Schedule_Days__c,allowed_registration_nos__c FROM Schedule_Time_Slot__c WHERE RecordType.Name = 'Video Call' AND IsActive__c=true AND End_date__c>=TODAY ORDER BY End_date__c ASC];
         List<DEB_Detail__c> lstDebDetails = [SELECT Id, Is_Active__c FROM DEB_Detail__c WHERE Is_Active__c=true AND Account__c=:recordId ORDER BY CreatedDate DESC LIMIT 1];
         isSlotAvailable = lstScheduling.size() > 0 ? true : false;
         if(lstAccount.size() > 0){
             objAccount = lstAccount[0];
             isDebVerified = (lstDebDetails.size() > 0 && String.isNotBlank(objAccount.DEBID__c)) || (objAccount.nm_Nationality__c != 'Indian' && objAccount.nm_Nationality__c != 'India') ? true : false;
             wrapper = new ObjWrapper(objAccount);
-            List<Opportunity> lstOpp = [SELECT Id,Applied_For_Loan__c,Specialisation__c,Loan_Type__c,Tenure__c,Loan_Amount__c,Down_Payment_Made__c,Is_Re_Registration_Payment__c,nm_Session__c,nm_Year__c,nm_Semester__c,nm_Category__c,StageName FROM Opportunity WHERE AccountId=: objAccount.Id AND Is_Re_Registration_Payment__c=false AND (nm_Category__c='Admission' OR nm_Category__c='Lateral Admission') LIMIT 1];
+            List<Opportunity> lstOpp = [SELECT Id,Applied_For_Loan__c,Specialisation__c,Zest_Loan_Application_Request__c,Loan_Type__c,Tenure__c,Loan_Amount__c,Down_Payment_Made__c,Is_Re_Registration_Payment__c,nm_Session__c,nm_Year__c,nm_Semester__c,nm_Category__c,StageName FROM Opportunity WHERE AccountId=: objAccount.Id AND Is_Re_Registration_Payment__c=false AND (nm_Category__c='Admission' OR nm_Category__c='Lateral Admission') LIMIT 1];
             objOpp = lstOpp.size() > 0 ? lstOpp[0] : new Opportunity();
-            checkVVCLastDate();
+            checkVVCLastDate(lstScheduling);
             
+            // && (
+            //     (lstOpp[0].Loan_Type__c != 'LiquiLoans' && String.isNotBlank(lstOpp[0].Zest_Loan_Application_Request__c)) || 
+            //     (lstOpp[0].Loan_Type__c == 'LiquiLoans')
+            // )
             isDownPaymentMade= objOpp.Down_Payment_Made__c;
-            showBookingForm = (lstOpp.size() > 0 && isDownPaymentMade && isDebVerified ) ? true : (lstOpp.size() > 0 && !isDownPaymentMade && objOpp.StageName == 'Closed'  ); 
+            showBookingForm = (lstOpp.size() > 0 && isDownPaymentMade && isDebVerified && String.isNotBlank(lstOpp[0].Loan_Amount__c)) ? true : (lstOpp.size() > 0 && objOpp.StageName == 'Closed'); 
             validAccStatus= (objAccount.nm_StudentStatus__c == 'Admission form & documents Approved' || objAccount.nm_StudentStatus__c == 'Admission Form & Documents Provisional'); 
-           
+            
             isVideoVerificationEnabled = objOpp != null && validAccStatus && showBookingForm;
             isDataFetched = true;
             formStatus = objAccount.is_Video_Call_Verified__c ? 'Verified' : '';
@@ -203,10 +209,21 @@ public without sharing class VideoCallPageController {
         System.debug(wrapper);
     } 
 
-    public Void checkVVCLastDate() {
+    public Void checkVVCLastDate(List<Schedule_Time_Slot__c> lstScheduling) {
         List<NM_Payment_Form_Configuration__c> lstNMConfig = new List<NM_Payment_Form_Configuration__c>();
         lstNMConfig = [SELECT Id,Last_Date_For_Video_Verification__c FROM NM_Payment_Form_Configuration__c WHERE Session__c =: objOpp.nm_Session__c AND Current_Admission_Year__c =: String.valueOf(objOpp.nm_Year__c) AND Payment_Type__c = 'Admission' AND Program_Category__c =: objAccount.nm_ChooseaProgram__c AND Program_Type__c =: objOpp.Specialisation__c LIMIT 1];
         isVVCNotExpired  = lstNMConfig.size() > 0 && lstNMConfig[0].Last_Date_For_Video_Verification__c >= Date.today() ? true : false;
+        if(isVVCNotExpired == false){
+            if(lstScheduling.size() > 0 ){
+                for (Schedule_Time_Slot__c stslot : lstScheduling) {
+                    if(!String.isBlank(stslot.allowed_registration_nos__c) && stslot.allowed_registration_nos__c.split(',').contains(objAccount.nm_RegistrationNumber__c)){
+                        allowVVCAfterLastDate = stslot.allowed_registration_nos__c.split(',').contains(objAccount.nm_RegistrationNumber__c) ? true : false;
+                        break;
+                    }
+                }
+                
+            }
+        }  
     }
 
     public List<VVC_Junction__c> getScheduledVVC() {
@@ -421,15 +438,21 @@ public without sharing class VideoCallPageController {
     public Map<String,List<Map<String,String>>> getSchedulingList() {
         Map<String,List<Map<String,String>>> mapOfDateVsTimeRange = new Map<String, List<Map<String,String>>>();
         try {
-            List<Schedule_Time_Slot__c> lstScheduling = [SELECT Id,Start_time__c,End_time__c,Total_Counselors__c,Per_Call_Schedule_Minutes__c,Start_date__c,End_date__c,Recurrence__c,Custom_Schedule_Days__c,Zoom_Id__c,sameDayBookingDate__c,Time_Gap__c FROM Schedule_Time_Slot__c WHERE RecordType.Name = 'Video Call' AND IsActive__c=true AND End_date__c>=TODAY];
+            List<Schedule_Time_Slot__c> lstScheduling = [SELECT Id,Start_time__c,End_time__c,Total_Counselors__c,Per_Call_Schedule_Minutes__c,Start_date__c,End_date__c,Recurrence__c,Custom_Schedule_Days__c,Zoom_Id__c,sameDayBookingDate__c,Time_Gap__c FROM Schedule_Time_Slot__c WHERE RecordType.Name = 'Video Call' AND IsActive__c=true AND End_date__c>=TODAY ORDER BY End_date__c ASC];
             
             for (Schedule_Time_Slot__c objSlot : lstScheduling) {
                 Date startDate = objSlot.Start_date__c > System.today() ? objSlot.Start_date__c : System.today().addDays(1);
                 Date endDate = objSlot.End_date__c;
                 System.debug('objSlot.Start_date__c >= System.today()--->' + (objSlot.Start_date__c >= System.today()) +' '+ objSlot.Start_date__c +' '+ System.today());
                 System.debug('System.today() == objSlot.sameDayBookingDate__c--->' + (System.today() == Date.valueOf(objSlot.sameDayBookingDate__c)));
-                if (objSlot.Start_date__c <= System.today() && System.today() == objSlot.sameDayBookingDate__c) {
+                // if (objSlot.Start_date__c <= System.today() && System.today() == objSlot.sameDayBookingDate__c) {
+                //     startDate = System.today();
+                // }
+                if (objSlot.Start_date__c <= System.today() && objSlot.Time_Gap__c != null && Integer.valueOf(objSlot.Time_Gap__c) > 0) {
                     startDate = System.today();
+                }
+                if (startDate > endDate) {
+                    continue;
                 }
                 //Max allowed per time range according to councellor available in schedule time slot
                 Integer maxAllowedPerTimeRange = Integer.valueOf(objSlot.Total_Counselors__c * (60 / objSlot.Per_Call_Schedule_Minutes__c));
@@ -476,7 +499,8 @@ public without sharing class VideoCallPageController {
             Datetime startDateTime = Datetime.newInstance(startDate, objSlot.Start_time__c);
             System.debug('startDateTime---> ' + startDateTime);
             Datetime endDateTime = Datetime.newInstance(startDate, objSlot.End_time__c);
-            if (System.today() == objSlot.sameDayBookingDate__c) {
+            Integer timeGap = objSlot.Time_Gap__c != null ? Integer.valueOf(objSlot.Time_Gap__c) : 0;
+            if (timeGap > 0 && startDate == System.today()) {
                 Datetime currentTime = Datetime.now();
                 currentTime = Datetime.newInstance(
                     currentTime.year(), 
@@ -486,7 +510,7 @@ public without sharing class VideoCallPageController {
                     currentTime.minute(), 
                     0 // Set seconds to 0 (milliseconds are automatically 0)
                 );
-                Integer timeGap = Integer.valueOf(objSlot.Time_Gap__c);
+                
                 startDateTime =  currentTime.addMinutes(timeGap) > startDateTime ? currentTime.addMinutes(timeGap) : startDateTime;
                  // Ensure Per_Call_Schedule_Minutes__c is treated as an Integer
                 Integer scheduleMinutes = Integer.valueOf(objSlot.Per_Call_Schedule_Minutes__c);
@@ -499,7 +523,7 @@ public without sharing class VideoCallPageController {
                 System.debug('Adjusted Start Time for Same-Day Booking (Rounded to ' + scheduleMinutes + '-min interval): ' + startDateTime);
             }
             List<Map<String,String>> lstTimeRange = mapOfDateVsTimeRange.containsKey(String.valueOf(startDate)) ? mapOfDateVsTimeRange.get(String.valueOf(startDate)) : new List<Map<String,String>>();
-            while (startDateTime < endDateTime && startDate <= objSlot.End_date__c) {
+            while (startDateTime < endDateTime) {
                 Time rangeStartTime = startDateTime.time();
                 String timeRange = timeRangeFormat(startDateTime, startDateTime.addHours(+1));
                 //Time rangeEndTime = startDateTime.time().addHours(1);
@@ -523,12 +547,15 @@ public without sharing class VideoCallPageController {
                     || (objVideoCall.mapOfTimeRangeVsAssignedStudent.containsKey(mapKey) && maxAllowedPerTimeRange > objVideoCall.mapOfTimeRangeVsAssignedStudent.get(mapKey)
                     && zoomIdAvailable > objVideoCall.mapOfTimeRangeVsAssignedStudent.get(mapKey)))) {
 
-                    Map<String,String> mapOfTimeRangeAndId = new Map<String,String>();
-                    mapOfTimeRangeAndId.put('timeRange', timeRange);
-                    mapOfTimeRangeAndId.put('schedulingId', objSlot.Id);
-                    getSlotFromTimeRange(rangeStartTime,rangeEndTime,objSlot,mapkey,startDate);
-                    //mapOfKeyVsTime = mapOfKeyVsTime.containsKey(mapKey) ? mapOfKeyVsTime.get(mapKey) : new Map<String,List<String>>();
-                    lstTimeRange.add(mapOfTimeRangeAndId);
+                    Boolean isTimeSlotExist = getSlotFromTimeRange(rangeStartTime,rangeEndTime,objSlot,mapkey,startDate);
+                    if (isTimeSlotExist) {
+                        Map<String,String> mapOfTimeRangeAndId = new Map<String,String>();
+                        mapOfTimeRangeAndId.put('timeRange', timeRange);
+                        mapOfTimeRangeAndId.put('schedulingId', objSlot.Id);
+                        
+                        //mapOfKeyVsTime = mapOfKeyVsTime.containsKey(mapKey) ? mapOfKeyVsTime.get(mapKey) : new Map<String,List<String>>();
+                        lstTimeRange.add(mapOfTimeRangeAndId);
+                    }
                     System.debug('lstTimeRange ==================>');
                     System.debug(lstTimeRange);
                 }
@@ -548,7 +575,7 @@ public without sharing class VideoCallPageController {
         return mapOfDateVsTimeRange;
     }
 
-    public void getSlotFromTimeRange(Time rangeStartTime,Time rangeEndTime,Schedule_Time_Slot__c objSlot,String mapKey,Date startDate) {
+    public Boolean getSlotFromTimeRange(Time rangeStartTime,Time rangeEndTime,Schedule_Time_Slot__c objSlot,String mapKey,Date startDate) {
         List<String> lstOfTimeSlot = new List<String>();
         Time startTime = objSlot.Start_time__c;
         Time endtime = objSlot.End_time__c;
@@ -589,6 +616,7 @@ public without sharing class VideoCallPageController {
         mapOfKeyVsTime.put(mapKey,lstOfTimeSlot);
         System.debug('lstTimeSot--->' + JSON.serialize(lstOfTimeSlot));
         System.debug('mapOfKeyVsTime---->' + JSON.serialize(mapOfKeyVsTime));
+        return lstOfTimeSlot.size() > 0 ? true : false;
     }
 
     public Boolean checkTimeDifferenceIsValid(Time startTime,Time endTime,Time dayEndTime,Integer callMinutes) {
@@ -741,7 +769,7 @@ public without sharing class VideoCallPageController {
     public Boolean checkTimeGap(VVC_Junction__c objVVC) {
         List<Schedule_Time_Slot__c> lstSTS = new List<Schedule_Time_Slot__c>();
         lstSTS = [SELECT Id,Time_Gap__c FROM Schedule_Time_Slot__c WHERE Id=:scheduleTimeSlotId LIMIT 1];
-        Integer timeGap = Integer.valueOf(lstSTS[0].Time_Gap__c);
+        Integer timeGap = lstSTS.size() > 0 && lstSTS[0].Time_Gap__c != null ? Integer.valueOf(lstSTS[0].Time_Gap__c) : 0;
         getCallDateTime(objVVC,wrapper.meetingTime);
         //Datetime callDateTime = Datetime.newInstance(objVVC.Call_Date__c,time);
         if (timeGap == null || timeGap <= 0) {

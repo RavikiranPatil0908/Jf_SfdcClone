@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : shubhranshu
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 18-01-2025
+ * @Last Modified By   : @vickysahu
+ * @Last Modified On   : 07-11-2025
  * @Modification Log   : 
  * Ver       Date            Author                 Modification
  * 1.0    11/15/2019   shubhranshu     Initial Version
@@ -861,7 +861,7 @@ public class nmLogin_new
                     if(lstOpp.size() > 0){
                         for(Opportunity opp:lstOpp){
                             String stgaeName = opp.StageName;
-                                if(String.isNotBlank(stgaeName) && (stgaeName == 'Pending Payment - Loan' || stgaeName == 'Pending Payment - Instalment')){                                                      
+                            if(String.isNotBlank(stgaeName) && (stgaeName == 'Pending Payment - Loan' || stgaeName == 'Pending Payment - Instalment')){                                                      
                                 lstOpportunityToCheckPendingForLoanandInstallment.add(opp);
                             }else if(String.isNotBlank(stgaeName) && (stgaeName == 'Payment made' || stgaeName == 'Closed Won')){
                                 lstOpportunityClosedorPaid.add(opp);
@@ -1089,7 +1089,7 @@ public class nmLogin_new
                         system.debug('<---validyear -->'+validyear );
                         ValidityForStudentLogin checkStudent = new ValidityForStudentLogin();
                     
-                    // <-------------------------------------------------------------------------------------------------------->//            
+                        // <-------------------------------------------------------------------------------------------------------->//            
                         List<nm_StudentProgram__c> lstStudentProgram = [select id,nm_Student__c,nm_Program__r.nm_Type__c from nm_StudentProgram__c where nm_Student__c=:objAccount.id];
                         List<nm_StudentProgram__c> lstProgramForPostGrad = new List<nm_StudentProgram__c>();
                         List<nm_StudentProgram__c> lstProgramForDiploma = new List<nm_StudentProgram__c>();
@@ -1110,12 +1110,12 @@ public class nmLogin_new
                             }
                         }
 
-                    system.debug('<-- lstProgramForPostGrad-->'+ lstProgramForPostGrad.size()+'lstOpportunityValues------>'+'<-------------->');
-                    Integer driveYear = getDriveYear(objAccount.Batch__c);
-                    if(ReRegAllowed && (objAccount.Student_Program__r[0].nm_FeesPaidofSemester__c < objAccount.Student_Program__r[0].nm_Program__r.nm_TotalSemesters__c) 
-                        && (objAccount.Student_Program__r[0].nm_Program__r.nm_Type__c==objCalender.nm_Type__c)
-                        && (objCalender.Session_Start_Date__c<= date.today() && date.today() <= objCalender.Session_End_Date__c) 
-                        )
+                        system.debug('<-- lstProgramForPostGrad-->'+ lstProgramForPostGrad.size()+'lstOpportunityValues------>'+'<-------------->');
+                        Integer driveYear = getDriveYear(objAccount.Batch__c);
+                        if(ReRegAllowed && (objAccount.Student_Program__r[0].nm_FeesPaidofSemester__c < objAccount.Student_Program__r[0].nm_Program__r.nm_TotalSemesters__c) 
+                            && (objAccount.Student_Program__r[0].nm_Program__r.nm_Type__c==objCalender.nm_Type__c)
+                            && (objCalender.Session_Start_Date__c<= date.today() && date.today() <= objCalender.Session_End_Date__c) 
+                            )
                         {
                             System.debug('1'+objCalender.Session__c+'2'+calendarSessionYear+'3'+integer.valueOf(AccountBatchYear)+'4'+AccountBatchMonth+'5'+feesPaidSem);
                             validityStatus = checkStudent.checkValidityForPGforLogin(objCalender.Session__c,calendarSessionYear,validyear,validitymon,objAccount.Sem__c);
@@ -1157,7 +1157,6 @@ public class nmLogin_new
                             }
 
                         }
-                    
                         else
                         {
                             /* @BK 26-10-2019

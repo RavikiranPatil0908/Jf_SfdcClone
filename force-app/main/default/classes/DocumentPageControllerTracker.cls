@@ -2,7 +2,7 @@
  * @description       : Unit tests for the DocumentPageController class.
  * @author            : Ravi
  * @group             : Test
- * @last modified on  : 14--04--2025
+ * @last modified on  : 10-17-2024
  * @last modified by  : @Ravi
 **/
 @isTest(SeeAllData = false)
@@ -159,7 +159,7 @@ public with sharing class DocumentPageControllerTracker {
         objWrapper.data = objData;
         
         objDocument.objListDocuments = objWrapper;
-        objDocument.getJsonMapOfFetchedFiles();
+        objDocument.getJsonMapOfDigiLockerFetchedFiles();
         Test.stopTest();
     }
 

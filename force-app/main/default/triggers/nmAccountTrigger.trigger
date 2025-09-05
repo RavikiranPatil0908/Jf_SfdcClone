@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 29-06-2024
- * @last modified by  : @BK
+ * @last modified on  : 21--07--2025
+ * @last modified by  : @Ravi
 **/
 trigger nmAccountTrigger on Account (before insert, before update, after insert, after update) 
 {
@@ -46,6 +46,6 @@ trigger nmAccountTrigger on Account (before insert, before update, after insert,
         nmAccountTriggerHandler obj = new nmAccountTriggerHandler();
         obj.AfterUpdate(trigger.new, trigger.oldMap);
         
-        obj.ChkLateralFutureSemvs2(trigger.new, trigger.oldMap,'Update');
+        // obj.ChkLateralFutureSemvs2(trigger.new, trigger.oldMap,'Update');
     }
 }

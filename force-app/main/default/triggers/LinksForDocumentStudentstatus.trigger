@@ -3,13 +3,13 @@
  * @Description        : 
  * @Author             : @BK
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 29-06-2024
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 30--07--2025
  * @Modification Log   : 
  * Ver       Date            Author      		    Modification
  * 1.0    31/8/2019   @BK     Initial Version
 **/
-trigger LinksForDocumentStudentstatus on nm_LinksForDocuments__c (before insert, before update, after insert, after update) 
+trigger LinksForDocumentStudentstatus on nm_LinksForDocuments__c (before insert, before update, after insert, after update, after delete) 
 {
     //Getting the Process_Switches__c custom setting value that is relevant to our running 
         //user
@@ -19,7 +19,7 @@ trigger LinksForDocumentStudentstatus on nm_LinksForDocuments__c (before insert,
     if(processSwitches.Documents_Process_ByPass__c) {
         return;
     }
-
+    System.debug('trigger.======> '+trigger.isDelete);
     if(trigger.isAfter && trigger.isInsert)
     {
         nmLinksForDocumentStatusHandler obj = new nmLinksForDocumentStatusHandler();
@@ -42,5 +42,13 @@ trigger LinksForDocumentStudentstatus on nm_LinksForDocuments__c (before insert,
                
         nmLinksForDocumentStatusHandler obj = new nmLinksForDocumentStatusHandler();
         obj.AfterUpdate(trigger.new, trigger.oldMap);
+    }
+    
+    System.debug('trigger.==> '+trigger.isDelete);
+    if(trigger.isAfter && trigger.isDelete)
+    {
+        System.debug('trigger.isDelete==> '+trigger.isDelete);
+        nmLinksForDocumentStatusHandler obj = new nmLinksForDocumentStatusHandler();
+        obj.AfterDelete(trigger.old); 
     }
 }

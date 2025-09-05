@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : @Shailesh
+ * @group             : 
+ * @last modified on  : 05-04-2025
+ * @last modified by  : @Shailesh
+**/
 public with sharing class StudentPortalLoginHandler {
     public StudentPortalLoginHandler() {
 
@@ -69,7 +76,7 @@ public with sharing class StudentPortalLoginHandler {
         // }
         // else
          if(objtype == 'Opportunity'){
-            userOppor = [SELECT Id, Account.nm_StudentNo__c FROM Opportunity WHERE Opportunity.Id =:recordId AND Synced_With_StudentZone__c = true AND nm_Fee_Type__c IN ('AnnualFee','MultipleSemFee','FullFee','3SemFee','MBAallTermfee','admission')]; //AND Account.nm_StudentStatus__c = 'Confirmed' 
+            userOppor = [SELECT Id, Account.nm_StudentNo__c FROM Opportunity WHERE Opportunity.Id =:recordId AND Synced_With_StudentZone__c = true AND nm_Fee_Type__c IN ('AnnualFee','MultipleSemFee','FullFee','3SemFee','MBAallTermfee','admission','ReRegistrationPayment')]; //AND Account.nm_StudentStatus__c = 'Confirmed' 
             if(userOppor.size() > 0 ){
                 SapId = userOppor[0].Account.nm_StudentNo__c;
                 if(SapId != null && SapId != '')

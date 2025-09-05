@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : phalguni
  * @Group              : 
- * @Last Modified By   : @Shailesh
- * @Last Modified On   : 04-04-2025
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 21--07--2025
  * @Modification Log   : 
  * Ver       Date            Author                 Modification
  * 1.0    21/1/2020   phalguni     Initial Version
@@ -38,16 +38,18 @@ public class nmAccountTriggerHandler
      
     public void AfterInsert(List<Account> triggerNew, map<id, Account> mapAccountNewMap)
     {
+
+        //Method to transfer work experiance lead to account
+        updateWorkExperiance (triggerNew); 
+        
         // Method to insert document records as well as for transfer uploaded document from Lead to account
         nmDocHandler.DocumentCreationOnAccount(triggerNew);
-        //Method to transfer work experiance lead to account
-        updateWorkExperiance (triggerNew);
-        
+
         //Method to transfer Cases from lead to account
         updateCase(triggerNew);
 
         //Method to transfer Apirequest from lead to account
-        updateTranferApirequestfromLeadtoAcc(triggerNew);
+        //updateTranferApirequestfromLeadtoAcc(triggerNew);
 
         //Method to transfer Student Rating lead to account
         updateStudentRating(triggerNew);
@@ -56,7 +58,7 @@ public class nmAccountTriggerHandler
         updateAEPRequest(triggerNew);
         checkForLateralValidation(triggerNew, mapAccountNewMap,'Insert');
         
-         ChkLateralFutureSemvs2(triggerNew, mapAccountNewMap,'Insert');
+        // ChkLateralFutureSemvs2(triggerNew, mapAccountNewMap,'Insert');
 
         updateDEBDetails(triggerNew);
         // To update Account and opportunity Owner
@@ -87,7 +89,10 @@ public class nmAccountTriggerHandler
     } 
     
     public void AfterUpdate(List<Account> triggerNew, map<id, Account> mapAccountOldMap)
-    {
+    { 
+        //Changes made by- Ravi 
+        documentApproval(triggerNew,mapAccountOldMap); 
+        
         if(IsAfterUpdateRunOnce && triggerNew.size() < 25){
             return;
         }
@@ -104,7 +109,7 @@ public class nmAccountTriggerHandler
         UpdateTask(triggerNew,mapAccountOldMap);
        
         //Method to Change the Account owner when one changes the IC/LC
-        documentApproval(triggerNew,mapAccountOldMap);  
+        // documentApproval(triggerNew,mapAccountOldMap);  
        // NotAllowtowaiveOffStudent(triggerNew, mapAccountOldMap);
        
         //method to Send Mobile Number verification SMS and Verification Email  
@@ -304,7 +309,10 @@ public class nmAccountTriggerHandler
            }    
        }
     }
-    
+
+    //commented by - Ravi  
+    // Purpose: Implemented new logic for lateral admissions as per updated business logic //formpagecontroller
+
     //public void ChkLateralFutureSem(List<Account> lstAccount,Map<Id,Account> accountOldMap,String activity){
     /* public void ChkLateralFutureSem(List<Account> lstAccount){
     {
@@ -430,89 +438,89 @@ public class nmAccountTriggerHandler
     }
     }*/
     
-     public void ChkLateralFutureSemvs2(List<Account> lstAccount,map<id, Account> accountOldMap,String activity){
+    //  public void ChkLateralFutureSemvs2(List<Account> lstAccount,map<id, Account> accountOldMap,String activity){
       
-      if(lstAccount.size()>0 )
-      {
-          List<Account> listaccountTOupdate = new List<Account>();
-          List<LateralProgramSkipSem__c> ListLateralProgramss = new List<LateralProgramSkipSem__c>();
-          Set <id> setidsLateral = new Set<Id> ();
+    //   if(lstAccount.size()>0 )
+    //   {
+    //       List<Account> listaccountTOupdate = new List<Account>();
+    //       List<LateralProgramSkipSem__c> ListLateralProgramss = new List<LateralProgramSkipSem__c>();
+    //       Set <id> setidsLateral = new Set<Id> ();
 
 
-          if(activity=='Insert')
-          {
-            // Map<Id,List<LateralProgramSkipSem__c>> mapOfNewProgramVsList = getMapOfProgramNameVsProgram();
+    //       if(activity=='Insert')
+    //       {
+    //         // Map<Id,List<LateralProgramSkipSem__c>> mapOfNewProgramVsList = getMapOfProgramNameVsProgram();
              
-             for(Account objAccount : lstAccount )
-             {
-                 if(objAccount.Is_Lateral__c && objAccount.OldAccount__c!=null && objAccount.nm_Program__c !=null)
-                 {
-                     setidsLateral.add(objAccount.Id);
-                 }
-             }
+    //          for(Account objAccount : lstAccount )
+    //          {
+    //              if(objAccount.Is_Lateral__c && objAccount.OldAccount__c!=null && objAccount.nm_Program__c !=null)
+    //              {
+    //                  setidsLateral.add(objAccount.Id);
+    //              }
+    //          }
 
   
-          }
-          if(activity=='Update')
-          {
-          System.debug('Check lateral--->');
-             for(Account objAccount : lstAccount )
-             {
-                // Account oldAccount = Trigger.oldMap.get(objAccount.ID);
+    //       }
+    //       if(activity=='Update')
+    //       {
+    //       System.debug('Check lateral--->');
+    //          for(Account objAccount : lstAccount )
+    //          {
+    //             // Account oldAccount = Trigger.oldMap.get(objAccount.ID);
 
-             system.debug('objAccount.nm_Program__c--->'+objAccount.nm_Program__c);
-            system.debug('accountOldMap--->'+accountOldMap.get(objAccount.id).nm_Program__c);
+    //          system.debug('objAccount.nm_Program__c--->'+objAccount.nm_Program__c);
+    //         system.debug('accountOldMap--->'+accountOldMap.get(objAccount.id).nm_Program__c);
 
-                 if(objAccount.Is_Lateral__c && objAccount.OldAccount__c!=null && accountOldMap!=null 
-                 && objAccount.nm_Program__c !=null && objAccount.nm_Program__c!= accountOldMap.get(objAccount.id).nm_Program__c )
-                 {
-                     setidsLateral.add(objAccount.Id);
-                     system.debug('setidsLateral--->'+setidsLateral);
-                 }
-             }
-          }
-           if(setidsLateral.size()>0)
-             {
-                 Map<Id,List<LateralProgramSkipSem__c>> mapOfNewProgramVsList = getMapOfProgramNameVsProgram();
-                 List<Account> lstacc = [select id,Future_Sem_To_Skip__c,nm_Program__c,OldAccount__r.nm_Program__c,OldAccount__c  from Account where id=:setidsLateral];
-                           System.debug('Check lateral set--->'+setidsLateral);
+    //              if(objAccount.Is_Lateral__c && objAccount.OldAccount__c!=null && accountOldMap!=null 
+    //              && objAccount.nm_Program__c !=null && objAccount.nm_Program__c!= accountOldMap.get(objAccount.id).nm_Program__c )
+    //              {
+    //                  setidsLateral.add(objAccount.Id);
+    //                  system.debug('setidsLateral--->'+setidsLateral);
+    //              }
+    //          }
+    //       }
+    //        if(setidsLateral.size()>0)
+    //          {
+    //              Map<Id,List<LateralProgramSkipSem__c>> mapOfNewProgramVsList = getMapOfProgramNameVsProgram();
+    //              List<Account> lstacc = [select id,Future_Sem_To_Skip__c,nm_Program__c,OldAccount__r.nm_Program__c,OldAccount__c  from Account where id=:setidsLateral];
+    //                        System.debug('Check lateral set--->'+setidsLateral);
 
-                 if(lstacc.size()>0)
-                 {
-                     for(Account objacc:lstacc)
-                     {
-                         if(mapOfNewProgramVsList.containskey(objacc.nm_Program__c) )
+    //              if(lstacc.size()>0)
+    //              {
+    //                  for(Account objacc:lstacc)
+    //                  {
+    //                      if(mapOfNewProgramVsList.containskey(objacc.nm_Program__c) )
                             
-                         {
-                            // ListLateralProgramss = mapOfNewProgramVsList.get(objAccount.nm_Program__c);
+    //                      {
+    //                         // ListLateralProgramss = mapOfNewProgramVsList.get(objAccount.nm_Program__c);
                              
-                             if(lstAllProgram.size()>0)
-                             {
-                                 for (LateralProgramSkipSem__c objLateralSem : lstAllProgram)
-                                 {
-                                     if(objLateralSem.New_Program_opt__c == objacc.nm_Program__c 
-                                         && objLateralSem.OldProgram__c == objacc.OldAccount__r.nm_Program__c)
-                                         {
-                                             objacc.Future_Sem_To_Skip__c = String.valueof(objLateralSem.Future_Sem_Skip__c);
-                                             listaccountTOupdate.add(objacc);
-                                         }
-                                 }
-                             }
-                         }else if (objacc.Future_Sem_To_Skip__c!='' && !mapOfNewProgramVsList.containskey(objacc.nm_Program__c))
-                         {
-                               objacc.Future_Sem_To_Skip__c = '';
-                               listaccountTOupdate.add(objacc);
-                         }
-                     }
-                 }
-             }
-          if(listaccountTOupdate.size()>0)
-             {
-                 update listaccountTOupdate;
-             }
-      }
+    //                          if(lstAllProgram.size()>0)
+    //                          {
+    //                              for (LateralProgramSkipSem__c objLateralSem : lstAllProgram)
+    //                              {
+    //                                  if(objLateralSem.New_Program_opt__c == objacc.nm_Program__c 
+    //                                      && objLateralSem.OldProgram__c == objacc.OldAccount__r.nm_Program__c)
+    //                                      {
+    //                                          objacc.Future_Sem_To_Skip__c = String.valueof(objLateralSem.Future_Sem_Skip__c);
+    //                                          listaccountTOupdate.add(objacc);
+    //                                      }
+    //                              }
+    //                          }
+    //                      }else if (objacc.Future_Sem_To_Skip__c!='' && !mapOfNewProgramVsList.containskey(objacc.nm_Program__c))
+    //                      {
+    //                            objacc.Future_Sem_To_Skip__c = '';
+    //                            listaccountTOupdate.add(objacc);
+    //                      }
+    //                  }
+    //              }
+    //          }
+    //       if(listaccountTOupdate.size()>0)
+    //          {
+    //              update listaccountTOupdate;
+    //          }
+    //   }
       
-    }
+    // }
 
      public void checkForLateralValidation(List<Account> lstAccount,Map<Id,Account> accountOldMap,String activity){
         set<String> SetOFstudent = new set<String>();
@@ -1026,7 +1034,7 @@ public class nmAccountTriggerHandler
             }
         }
 
-        for(Case objCase : [SELECT id,AccountId,Lead__c FROM Case WHERE Lead__c IN : mapLeadAccountId.keyset() AND RecordType.Name IN ('Student Feedbacks','Ticketing Tool')]) {
+        for(Case objCase : [SELECT id,AccountId,Lead__c FROM Case WHERE Lead__c IN : mapLeadAccountId.keyset() AND RecordType.Name IN ('Student Feedbacks','Ticketing Tool','Web Case')]) {
             //updating id of account
             Id leadId = objCase.Lead__c; 
             objCase.AccountId = mapLeadAccountId.get(String.valueOf(leadId));
@@ -1204,7 +1212,6 @@ public class nmAccountTriggerHandler
             { 
                 system.debug('objAccount.nm_StudentStatus__c --> ' + objAccount.nm_StudentStatus__c);
                 lstDocToAddCoordinate.add(objAccount);
-
         }
 
             else if((objAccount.nm_StudentStatus__c=='Admission form & documents Approved' || objAccount.nm_StudentStatus__c=='Admission Form & Documents Provisional') && objAccount.nm_StudentStatus__c != oldMap.get(objAccount.id).nm_StudentStatus__c)

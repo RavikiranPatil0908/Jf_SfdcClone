@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : @BK
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 08-05-2024
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 14--05--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -125,6 +125,7 @@ public without sharing class RatingController{
         if(isValid == true) {
             objstdrating.Student__c = accountId;
             String AcctId=objstdrating.Student__c;
+            objstdrating.Interview_Meeting_Id__c =objAccount.Interview_Meeting_Id__c;
             objstdrating.Interview_Date__c = objAccount.Interview_Date__c;
             objstdrating.ownerId = objAccount.ownerId;
             System.debug('objstdrating.Student__c-->  '+ objstdrating.Student__c);

@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @vickysahu
  * @group             : 
- * @last modified on  : 03-24-2025
+ * @last modified on  : 01-30-2025
  * @last modified by  : @vickysahu
 **/
 public class VideoCallSchedulingHandler {
@@ -101,7 +101,7 @@ public class VideoCallSchedulingHandler {
     // }
 
     public void getExisitingCalls(VVC_Junction__c objVVC,String callTime) { 
-        lstOfScheduledCalls = [SELECT id,Time_Range__c,Zoom_User_Id__c,Student_Name__c,Schedule_Time_Slot__c,Account__c,Mobile_Number__c,Call_Date__c,Schedule_Time_Slot__r.Per_Call_Schedule_Minutes__c,Schedule_Time_Slot__r.Total_Counselors__c,Status__c,Schedule_Call_Time__c,Video_Call_Scheduled_Key__c,Schedule_Time_Slot__r.Selected_Counselors__c,Agent_Name__c FROM VVC_Junction__c WHERE  Call_Date__c=:objVVC.Call_Date__c AND Time_Range__c=:objVVC.Time_Range__c AND Schedule_Call_Time__c!=null AND Status__c = 'In Progress']; 
+        lstOfScheduledCalls = [SELECT id,Time_Range__c,Student_Name__c,Schedule_Time_Slot__c,Account__c,Mobile_Number__c,Call_Date__c,Schedule_Time_Slot__r.Per_Call_Schedule_Minutes__c,Schedule_Time_Slot__r.Total_Counselors__c,Status__c,Schedule_Call_Time__c,Video_Call_Scheduled_Key__c,Schedule_Time_Slot__r.Selected_Counselors__c,Agent_Name__c,Zoom_User_Id__c FROM VVC_Junction__c WHERE  Call_Date__c=:objVVC.Call_Date__c AND Time_Range__c=:objVVC.Time_Range__c AND Schedule_Call_Time__c!=null AND Status__c = 'In Progress']; 
         System.debug('lstOfScheduledCalls ==>'+lstOfScheduledCalls.size());
         List<String> lstCouncellorsInSTS = new List<String>();
         lstCouncellorsInSTS = String.isNotBlank(objScheduling.Selected_Counselors__c) ? objScheduling.Selected_Counselors__c.split(';') : new List<String>();

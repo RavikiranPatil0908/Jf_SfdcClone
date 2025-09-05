@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 18--04--2025
- * @last modified by  : @Ravi
+ * @last modified on  : 07-10-2025
+ * @last modified by  : @vickysahu
 **/
 public without sharing class PaymentPageController {
     public Id objectId;
@@ -29,6 +29,9 @@ public without sharing class PaymentPageController {
     public LiveLecturePayment objLiveLecturePayment {get;set;}
     public AdmissionAmount objAdmissionAmount {get;set;}
     // public PaymentMade objPaymentMade {get;set;}
+
+    // --------ReRegistration -------------------
+    public ReRegistration objReReg {get;set;}
 
     // need fields to be global
     public String currentAdmissionSession {get;set;}
@@ -65,6 +68,9 @@ public without sharing class PaymentPageController {
     public string errMessages { get; set; }
     public string strSecToShow { get; set; }
     public String returnUrl {get;set;}
+    public List<IC_Change_Request__c> lstProgchange {get;set;}
+
+    //public Boolean isReRegPayment {get;set;}
     
     public PaymentPageController() {
         initalizeVariables();
@@ -95,6 +101,7 @@ public without sharing class PaymentPageController {
         objLiveLecturePayment = new LiveLecturePayment();
         objAdmissionAmount = new AdmissionAmount();
         // objPaymentMade = new PaymentMade();
+        objReReg = new ReRegistration();
         isCalled=false;
         currentAdmissionSession = '';
         currentAdmissionYear = '';
@@ -125,6 +132,10 @@ public without sharing class PaymentPageController {
         errMessages = '';
         strSecToShow = 'main';
         returnUrl = '';
+
+        lstProgchange = new List<IC_Change_Request__c>();
+
+        //isReRegPayment = false;
     }
 
     public Id getObjectId() {
@@ -142,6 +153,7 @@ public without sharing class PaymentPageController {
             configurePaymentOption();
         }
         System.debug('setOfPaymentOptionsAvailable---->' + setOfPaymentOptionsAvailable);
+        System.debug('setOfApplicablePaymentOptionForStudent----->' + setOfApplicablePaymentOptionForStudent);
     }
 
     public String getObjectType() {
@@ -195,10 +207,17 @@ public without sharing class PaymentPageController {
             System.debug('Lead is converted==>'+ lstLead[0].ConvertedAccountId +' '+ lstLead[0].ConvertedOpportunityId);
             lstLead = new List<Lead>();
         }
+        if (String.isNotBlank(opportunityId) || lstLead.size() <= 0) {
+            System.debug('inside condition');
+            List<Opportunity> lstOpp2 = [SELECT Id FROM Opportunity WHERE AccountId=:recordId AND Is_Re_Registration_Payment__c=True AND ReRegCompleted__c=TRUE ORDER BY Sem__c DESC];
+            opportunityId = lstOpp2.size() > 0 ? lstOpp2[0].Id : opportunityId;
+            IsReregistartion = lstOpp2.size() > 0 ? true : false;
+        }
         String accountAdmissionQueryString = getQueryAllFieldSql('Account','Id=:recordId','nm_Centers__r.Contact_No_1__c,nm_Program__r.AvanseAPICode__c');
         System.debug('accountAdmissionQueryString ==>');
         System.debug(accountAdmissionQueryString);
         String centerAddressQueryString = getQueryAllFieldSql('nm_Centers__c',' Nm_Active__c = true ',null);
+        String opportunityProgramChangeReRegQuery= getQueryAllFieldSql('IC_Change_Request__c','Opportunity__c=:opportunityId  and Status__c = \'New\' and (New_Program__r.Name  =\'BBA-BA\' OR New_Program__r.Name  =\'BBA\') ','New_Program__r.Specialisation__c,New_Program__r.id,New_Program__r.Name,New_Program__r.nm_TotalSemesters__c');
         Map<String,String> mapOfCenterNameAndCenterAddress = new Map<String,String>();
         // create Map Of Center Name and Center Address
         List<nm_Centers__c> lstCenters = DataBase.query(centerAddressQueryString);
@@ -279,7 +298,7 @@ public without sharing class PaymentPageController {
             objDetails.hasAvanseProgramCode = String.isNotBlank(objLead.nm_Program__r.AvanseAPICode__c) ? true : false;
             //It is used to hide loan if making payment after closed won
             objDetails.allowLoan = true;
-        } else {
+        } else if(!IsReregistartion) {
             System.debug('Account -->');
             List<Account> lstAccounts = DataBase.query(accountAdmissionQueryString);
             nm_StudentProgram__c objStudentProgram = new nm_StudentProgram__c();
@@ -293,6 +312,13 @@ public without sharing class PaymentPageController {
                     List<Opportunity> lstOpp = [SELECT Id FROM Opportunity WHERE AccountId=:objAccount.Id AND Is_Re_Registration_Payment__c=FALSE ORDER BY Sem__c ASC LIMIT 1];
                     opportunityId = lstOpp.size() > 0 ? lstOpp[0].Id : 'NA';
                 }
+                System.debug('opportunityId----->' + opportunityId);
+                // if (String.isNotBlank(opportunityId)) {
+                //     System.debug('inside condition');
+                //     List<Opportunity> lstOpp2 = [SELECT Id FROM Opportunity WHERE AccountId=:objAccount.Id AND Is_Re_Registration_Payment__c=True AND ReRegCompleted__c=TRUE ORDER BY Sem__c DESC];
+                //     opportunityId = lstOpp2.size() > 0 ? lstOpp2[0].Id : opportunityId;
+                //     IsReregistartion = lstOpp2.size() > 0 ? true : false;
+                // }
                 objDetails.IsDefence = objAccount.nm_DefencePersonnel__c =='Yes'?true:false;
                 objDetails.IsLateral = objAccount.Is_Lateral__c;
                 objDetails.TagPriceBookId = objAccount.nm_Tagged_Pricebook__c;
@@ -350,7 +376,8 @@ public without sharing class PaymentPageController {
                     currentAdmissionYear = String.valueOf(objOpportunity.nm_year__c);
                     currentAdmissionSession = objOpportunity.nm_Session__c;
                     programCategory = objAccount.nm_ChooseaProgram__c;
-                    programType = 'Admission';
+                    //programType = !isReRegPayment ? 'Admission' : 'Re-Registration';
+                    programType = !IsReregistartion ? 'Admission' : 'Re-Registration';
                     objDetails.feeType = objOpportunity.nm_Fee_Type__c;
                     objDetails.liveLecType = objOpportunity.LiveLecturesType__c;
                     objDetails.courseList = objOpportunity.CourseList__c;
@@ -371,7 +398,7 @@ public without sharing class PaymentPageController {
                     objCoursera.isCourseraAlreadyOpted = objOpportunity.Coursera__c;
                     // totalamountreceived = objOpportunity.Total_Amount_Received__c  ;
                     //It is used to hide loan if making payment after closed won
-                    objDetails.allowLoan = String.isBlank(objOpportunity.Student_Number__c) ? true : false;
+                    objDetails.allowLoan = objOpportunity.ClosedWonDateTime__c == null ? true : false;
                     objDetails.programName = objOpportunity.ProgramFullName__c;
                     objDetails.programSpecialisaton = objOpportunity.nm_Program__r.Form_Specialisation__c;
                     objDetails.program = objOpportunity.nm_Program__r.Bachelor_Specialization__c;
@@ -393,6 +420,110 @@ public without sharing class PaymentPageController {
                 }
             }
             System.debug('showEMIOption --'+objLoanDetails.showEMIOption );
+        } else if (IsReregistartion) {
+            List<Account> lstAccounts = DataBase.query(accountAdmissionQueryString);
+            nm_StudentProgram__c objStudentProgram = new nm_StudentProgram__c();
+            if(lstAccounts.size()>0){
+                objAccount =  lstAccounts[0];
+                //leadId = objAccount.nm_LeadId__c;
+                objDetails.IsDefence = objAccount.nm_DefencePersonnel__c =='Yes'?true:false;
+                objDetails.IsLateral = objAccount.Is_Lateral__c;
+                objDetails.TagPriceBookId = objAccount.nm_Tagged_Pricebook__c;
+                objDetails.LateralStudentNo = String.valueOf(objAccount.Student_Number_Lateral__c);
+                objDetails.centerAddressForDD = mapOfCenterNameAndCenterAddress.get(objAccount.nm_Centers__c);
+                objDetails.ICName = objAccount.IC_Name_1__c;
+                objDetails.ICContact = objAccount.nm_Centers__r.Contact_No_1__c;
+                objDetails.hasAvanseProgramCode = String.isNotBlank(objAccount.nm_Program__r.AvanseAPICode__c) ? true : false;
+
+                //objDetails.stagename = objAccount.nmCaptureOpportuntiyStage__c;
+                programSpecialization  = objAccount.Program_Type__c;
+                objDetails.subventionPrograms = checkSubventionSchemePrograms(programSpecialization);
+                programCategory = objAccount.nm_ChooseaProgram__c;
+
+                //  Student Details
+                objStudentDetails.studentNo = objAccount.nm_StudentNo__c;
+                objStudentDetails.studentName = objAccount.FirstName +' '+objAccount.LastName;
+                objStudentDetails.firstName = objAccount.FirstName;
+                objStudentDetails.lastName =  objAccount.LastName;
+                objStudentDetails.studentNumber = objAccount.nm_StudentNo__c;
+                objStudentDetails.studentEmail = objAccount.PersonEmail;
+                objStudentDetails.studentMobileNo = objAccount.PersonMobilePhone;
+                //objStudentDetails.eligibility = objAccount.Eligibility_Criteria_Ref__c;
+                objStudentDetails.studentAddress = objAccount.nm_HouseNumber__c + ',' +objAccount.BillingStreet +','+objAccount.BillingCity+','+objAccount.BillingState+','+objAccount.BillingPostalCode+','+objAccount.BillingCountry;
+                objStudentDetails.studentCity = objAccount.BillingCity;
+                objStudentDetails.studentCountry = objAccount.BillingCountry;
+                objStudentDetails.studentPincode = objAccount.BillingPostalCode;
+                String locality = '';
+                if(String.isNotBlank(objAccount.Locality_Name_Shipping__c)) {
+                    locality = objAccount.Locality_Name_Shipping__c + ',';
+                }
+                objStudentDetails.studentShippingAddress = objAccount.House_No_Name_Shipping_Account__c+','+objAccount.Shipping_Street__c+','+locality+objAccount.City_Shipping_Account__c +','+objAccount.State_Province_Shipping__c+','+objAccount.Zip_Postal_Code_Shipping__c+','+objAccount.Country_Shipping__c;
+                Id accId = objAccount.id;
+                String studentProgramQueryString = getQueryAllFieldSql('nm_StudentProgram__c',' nm_Student__c=:accId  limit 1 ',null);
+                List<nm_StudentProgram__c> lstStudentProgram = DataBase.query(studentProgramQueryString);
+                System.debug('lstStudentProgram --->'+lstStudentProgram );
+                if(lstStudentProgram.size() >0 ){
+                    objStudentProgram = lstStudentProgram[0];
+                    // studentProgramId = objStudentProgram.id;
+                    // feePaidSemester = String.valueOf(objStudentProgram.nm_FeesPaidofSemester__c);
+                }
+            }
+            if(String.isNotBlank(opportunityId) && opportunityId != 'NA'){
+                String opportunityAdmissionQuerString = getQueryAllFieldSql('Opportunity','id=:opportunityId and nm_Program__c != null and nm_Program__r.nm_TotalSemesters__c != null','nm_Program__r.nm_TotalSemesters__c,nm_Program__r.IsTerm__c,nm_Program__r.Form_Specialisation__c,nm_Program__r.Bachelor_Specialization__c');
+                List<Opportunity> lstOpportunity = DataBase.query(opportunityAdmissionQuerString);
+                objOpportunity =  lstOpportunity[0];
+                objDetails.oppExist = true;
+                System.debug('objOpportunity----'+objOpportunity);
+                opportunityId = objOpportunity.id;
+                lstProgchange = DataBase.query(opportunityProgramChangeReRegQuery);
+                system.debug('lstProgchange--->'+lstProgchange.size()); 
+                objDetails.intTotalInstallmentOptionAvaliable = Integer.valueOf(objOpportunity.No_Of_Installment_Allowed__c);
+                currentAdmissionYear = String.valueOf(objOpportunity.nm_year__c);
+                currentAdmissionSession = objOpportunity.nm_Session__c;
+                programCategory = objAccount.nm_ChooseaProgram__c;
+                programType = 'Re-Registration';
+                objDetails.feeType = objOpportunity.nm_Fee_Type__c;
+                objDetails.liveLecType = objOpportunity.LiveLecturesType__c;
+                objDetails.courseList = objOpportunity.CourseList__c;
+                objDetails.backlogList = objOpportunity.BacklogList__c;
+                objStudentDetails.studentNumber = objOpportunity.Student_Number__c;
+                objDetails.consumerType = objOpportunity.ConsumerType__c;
+                semester = objOpportunity.nm_Semester__c;
+                //objDetails.programId = objOpportunity.nm_Program__c;
+                objDetails.programId = lstProgchange.size()>0? lstProgchange[0].New_Program__r.id :objOpportunity.nm_Program__c;
+                objDetails.stagename = objOpportunity.StageName;
+                objLoanDetails.LoanType = objOpportunity.Loan_Type__c;
+                //objDetails.totalsem = objOpportunity.nm_Program__r.nm_TotalSemesters__c;
+                objDetails.totalsem = lstProgchange.size()>0? lstProgchange[0].New_Program__r.nm_TotalSemesters__c : objOpportunity.nm_Program__r.nm_TotalSemesters__c;
+                //programSpecialization  = objOpportunity.Specialisation__c;
+                programSpecialization = lstProgchange.size()>0? lstProgchange[0].New_Program__r.Specialisation__c : objOpportunity.Specialisation__c;
+                objDetails.isOpportunityProcessed = objOpportunity.Processed__c;
+                objDetails.subventionPrograms = checkSubventionSchemePrograms(programSpecialization);
+                if(String.isNotBlank(objOpportunity.Career_Service__c)) {
+                    objDetails.CareerServicePackage = true;
+                }
+                objCoursera.isCourseraAlreadyOpted = objOpportunity.Coursera__c;
+                //It is used to hide loan if making payment after closed won
+                objDetails.allowLoan = objOpportunity.ClosedWonDateTime__c == null ? true : false;
+                //objDetails.programName = objOpportunity.ProgramFullName__c;
+                objDetails.programName = lstProgchange.size()>0? lstProgchange[0].New_Program__r.Name : objOpportunity.ProgramFullName__c;
+                objDetails.programSpecialisaton = objOpportunity.nm_Program__r.Form_Specialisation__c;
+                objDetails.program = objOpportunity.nm_Program__r.Bachelor_Specialization__c;
+                objDetails.programStructure =  objOpportunity.Program_Structure__c;
+                objDetails.actualPeningAmount = objOpportunity.ActualPendingAmount__c;
+                if(objOpportunity.Down_Payment_Made__c){ // down payment done then only show EMI Option for Loan Types
+                    objLoanDetails.EMI = objOpportunity.EMI_Amount__c;
+                    objLoanDetails.showEMIOption = true;
+                    objLoanDetails.processingFee = objOpportunity.Capital_Float_Processing_Fee__c;
+                    objLoanDetails.EMIFeeType = objOpportunity.nm_Fee_Type__c;
+                    objLoanDetails.EMI_Processing_Fee = objOpportunity.EMI_Processing_Fee_Capital_Float__c;
+                    objLoanDetails.isLoanOpted = true;
+                    objLoanDetails.loanSanctioned = objOpportunity.Loan_Sanctioned__c;
+                    //objLoanDetails.loanApproved = objOpportunity.Loan_Approved__c;
+                    objLoanDetails.loanApproved = objOpportunity.Loan_Approved__c || objOpportunity.Loan_Order_Status__c == 'Ready To Disbursed' || objOpportunity.Loan_Order_Status__c == 'DISBURSAL_REQUESTED' || objOpportunity.Loan_Order_Status__c == 'emi.process.completed' ? true : false;                        
+                    objLoanDetails.loanAmount = String.isNotBlank(objOpportunity.Loan_Amount__c) ? Decimal.valueOf(objOpportunity.Loan_Amount__c) : 0;                    
+                }
+            }
         }
 
         //get Payment Form Configuration
@@ -443,6 +574,12 @@ public without sharing class PaymentPageController {
             if(objDetails.RegistrationFee <= 0) {
                 objfee.AlreadyPaidRegistrationFee = true;
             }
+            // if (isReRegPayment) {
+            //     objfee.AlreadyPaidRegistrationFee = true;
+            // }
+            if (IsReregistartion) {
+                objfee.AlreadyPaidRegistrationFee = true;
+            }
             objDetails.feeType = String.isBlank(objDetails.feeType) ? 'Admission': objDetails.feeType; 
             
             objDetails.intTotalInstallmentApplicable = Integer.valueOf(objPaymentFormConfiguration.No_Of_Applicable_Installment__c);
@@ -450,6 +587,7 @@ public without sharing class PaymentPageController {
                 setOfApplicablePaymentOptionForStudent.add('Registration Fee');
             }
             if(objPaymentFormConfiguration.Show_Admission_Payment_Option__c){
+                System.debug('payment list');
                 setOfApplicablePaymentOptionForStudent.add('Admission');
             }
             if(objPaymentFormConfiguration.ShowInitialAdmissionPayment__c ){
@@ -458,15 +596,14 @@ public without sharing class PaymentPageController {
 
             if(objPaymentFormConfiguration.Show_AnnualSemFee_Payment_Option__c &&  (objDetails.totalsem - Integer.valueOf(semester))>=1  && !objDetails.feeType.contains('-Considered') && (objDetails.totalsem - Integer.valueOf(semester))>0){
                 setOfApplicablePaymentOptionForStudent.add('AnnualFee');
-                system.debug('setOfApplicablePaymentOptionForStudent--- AnnualFee>'+setOfApplicablePaymentOptionForStudent);
+                system.debug('setOfApplicablePaymentOptionForStudent--->'+setOfApplicablePaymentOptionForStudent);
             }
             if(objPaymentFormConfiguration.Show_2TermFee_Payment_Option__c &&  (objDetails.totalsem - Integer.valueOf(semester))>=1  && !objDetails.feeType.contains('-Considered') && (objDetails.totalsem - Integer.valueOf(semester))>0){
                 setOfApplicablePaymentOptionForStudent.add('2TermFee');
-                system.debug('setOfApplicablePaymentOptionForStudent---2TermFee>'+setOfApplicablePaymentOptionForStudent);
+                system.debug('setOfApplicablePaymentOptionForStudent--->'+setOfApplicablePaymentOptionForStudent);
             }
             if(objPaymentFormConfiguration.Show_MultipleSemFee_Payment_Option__c && Integer.valueOf(semester) == 2 && !objDetails.feeType.contains('-Considered')){
                 setOfApplicablePaymentOptionForStudent.add('MultipleSemFee');
-                system.debug('setOfApplicablePaymentOptionForStudent---MultipleSemFee>'+setOfApplicablePaymentOptionForStudent);
             }
             if(objPaymentFormConfiguration.Show_3SemFee_Payment_Option__c &&  (objDetails.totalsem - Integer.valueOf(semester))==2 && !objDetails.feeType.contains('-Considered')){
                 setOfApplicablePaymentOptionForStudent.add('3SemFee');
@@ -665,10 +802,27 @@ public without sharing class PaymentPageController {
             resetPaymentOptions();
             return;
         }
+
+        // for ReReg Cases 
+        if(String.isNotBlank(opportunityId) && opportunityId != 'NA' && !objReReg.isReRegistrationAmountChecked){
+            List<OpportunityLineItem> lstOpportunityLineItem =  [select id,OpportunityId ,Product_Name__c,PriceBookEntryId ,UnitPrice from OpportunityLineItem where OpportunityId =:opportunityId];
+            if(lstOpportunityLineItem.size() > 0){
+                for(OpportunityLineItem objLineItem : lstOpportunityLineItem){
+                    if(objLineItem.Product_Name__c.contains('Change Fee') || objLineItem.Product_Name__c.contains('Student Kits') ){
+                        objReReg.ReRegistrationAmount = objReReg.ReRegistrationAmount + objLineItem.UnitPrice;
+                    }
+                    objReReg.isReRegistrationAmountChecked = true;
+                }
+            }
+        }
     
         // Fetch Price Book entries and configure payment amounts
         mapOfPricebook = productHelper.getMapOfProductVsPriceBookEntry(objDetails.TagPriceBookId);
         configurePaymentAmount();
+
+        if(IsReregistartion){
+            getReRegistrationAmountForAdmssion();// PGALlSemFee Consider Cases
+        }
     
         jsonMapOfProductAndAmount = JSON.serialize(mapOfProductAndAmount);
     
@@ -683,6 +837,14 @@ public without sharing class PaymentPageController {
 
         // handle Additional charge
         setUpAdditionalChargeRedirect();
+    }
+
+    public void getReRegistrationAmountForAdmssion(){
+        if(objOpportunity.nm_Fee_Type__c !=null && objOpportunity.nm_Fee_Type__c !=''){
+            if(objOpportunity.nm_Fee_Type__c.contains('-Considered')){// for PGALLSEM,Annual,Multiple Fee Consider take Semester Amount zero as he has already paid
+                mapOfProductAndAmount.put('Admission',objReReg.ReRegistrationAmount);
+            }
+        }
     }
     
     /**
@@ -913,14 +1075,19 @@ public without sharing class PaymentPageController {
     private void handleAdditionalPaymentOptions() {
         // Define a set of payment options that shouldn't be added to the available options
         Set<String> setOfoptionsTONotChecked = new Set<String>{'Registration Fee', 'InitialAdmission'};
-    
+        System.debug('setOfApplicablePaymentOptionForStudent ----->' + JSON.serialize(setOfApplicablePaymentOptionForStudent));
         // Loop through each applicable payment option and handle it
-           System.debug('setOfApplicablePaymentOptionForStudent==--> ' + setOfApplicablePaymentOptionForStudent);
         for (String paymentOption : setOfApplicablePaymentOptionForStudent) {
             if (!setOfoptionsTONotChecked.contains(paymentOption)) {
-
                 handlePaymentOption(paymentOption);
             }
+        }
+        System.debug('mapOfProductAndAmount.containsKey---->' + JSON.serialize(mapOfProductAndAmount));
+        System.debug('check condition--->' + mapOfProductAndAmount.containsKey('FullFee'));
+        System.debug('setOfPaymentOptionsAvailable---->' + JSON.serialize(setOfPaymentOptionsAvailable));
+        if (mapOfProductAndAmount != null && setOfPaymentOptionsAvailable != null && !setOfPaymentOptionsAvailable.contains('FullFee') && setOfPaymentOptionsAvailable.contains('FullFeeLoan')) {
+            System.debug('inside map condition');
+            setOfPaymentOptionsAvailable.remove('FullFeeLoan');
         }
     }
     
@@ -932,7 +1099,6 @@ public without sharing class PaymentPageController {
         System.debug('handlePaymentOption---->' + productPrice +' '+ objAdmissionAmount.admissionAmountPaid);
         Boolean isGreater = productPrice > objAdmissionAmount.admissionAmountPaid;
         System.debug('Condition Result: ' + isGreater);
-        System.debug('paymentOption==' + paymentOption);
         if (productPrice > objAdmissionAmount.admissionAmountPaid) {
             setOfPaymentOptionsAvailable.add(paymentOption);
             mapOfProductAndAmount.put(paymentOption, productPrice - objAdmissionAmount.admissionAmountPaid);
@@ -1092,6 +1258,8 @@ public without sharing class PaymentPageController {
             amount = amount * 0.8;
         }
 
+        amount = amount+objReReg.ReRegistrationAmount;
+
         // service Tax for Certificate Program 
         if('Certificate Programs'.equalsIgnoreCase(programCategory) || 'Executive Programs'.equalsIgnoreCase(programCategory)){
             amount += amount * Decimal.valueOf(System.Label.Service_Tax).setScale(2);
@@ -1203,7 +1371,11 @@ public without sharing class PaymentPageController {
               AND End_Date__c >= TODAY
         ];
     
-        if (lateFeeRecords.isEmpty() || String.isNotBlank(objOpportunity.Student_Number__c)) {
+        // if (lateFeeRecords.isEmpty() || objOpportunity.ClosedWonDateTime__c != null) {
+        //     return 0;
+        // }
+
+        if (lateFeeRecords.isEmpty() || !checkForLateFee()) {
             return 0;
         }
     
@@ -1281,14 +1453,33 @@ public without sharing class PaymentPageController {
     public void setUpAdditionalChargeRedirect() {
         objAdmissionAmount.returnURL = '';
         objAdmissionAmount.isRedirect = false;
+        Boolean isLateFeeAllow;
+        isLateFeeAllow = checkForLateFee();
         if(objAdmissionAmount.isPendingPaymentRecordExists) {
             objAdmissionAmount.returnURL = 'nmAdditonalCharge?id=' + objAdmissionAmount.pendingPaymentRecordId;
             objAdmissionAmount.isRedirect = true;
-        } else if((objAdmissionAmount.isAdmissionAmountPaid || objLoanDetails.loanApproved) && (objAdmissionAmount.isLateFeePending || objAdmissionAmount.hasUnpaidLoanBalance) && String.isBlank(objOpportunity.Student_Number__c)) {
+        } 
+        else if((objAdmissionAmount.isAdmissionAmountPaid || objLoanDetails.loanApproved) && (objAdmissionAmount.isLateFeePending || objAdmissionAmount.hasUnpaidLoanBalance) && isLateFeeAllow) {
             objAdmissionAmount.returnURL = 'nmAdditonalCharge?id=' + opportunityId;
             objAdmissionAmount.isRedirect = true;
         }
+        // else if((objAdmissionAmount.isAdmissionAmountPaid || objLoanDetails.loanApproved) && (objAdmissionAmount.isLateFeePending || objAdmissionAmount.hasUnpaidLoanBalance) && objOpportunity.ClosedWonDateTime__c == null) {
+        //     objAdmissionAmount.returnURL = 'nmAdditonalCharge?id=' + opportunityId;
+        //     objAdmissionAmount.isRedirect = true;
+        // }
         System.debug('objAdmissionAmount.isRedirect---->' + objAdmissionAmount.isRedirect);
+    }
+
+    public Boolean checkForLateFee() {
+        Boolean allowLateFee = false;
+        Set<String> setOfStage = new Set<String>{'Payment made','Closed Won','Closed'};
+        if(!objOpportunity.Is_Re_Registration_Payment__c) {
+            allowLateFee = String.isBlank(objOpportunity.Student_Number__c) ? true : false;
+        }
+        else if (objOpportunity.Is_Re_Registration_Payment__c) {
+            allowLateFee = objAccount.nm_StudentStatus__c != 'Confirmed' || (!setOfStage.contains(objOpportunity.StageName) && objOpportunity.ClosedWonDateTime__c == null) ? true : false;
+        }
+        return allowLateFee;
     }
 
     /**
@@ -1338,7 +1529,7 @@ public without sharing class PaymentPageController {
                     objOnlinePayment.strName = objStudentDetails.studentName;
                     objOnlinePayment.strEmailId = objStudentDetails.studentEmail;
                     objOnlinePayment.strMobileNumber = objStudentDetails.studentMobileNo;
-                    objOnlinePayment.recordId = leadId;
+                    objOnlinePayment.recordId = !IsReregistartion ? leadId : objectId;
                     objOnlinePayment.opportunityId = opportunityId;
                     objOnlinePayment.InstallmentAmount = String.valueOf(depositAmount);
                     objOnlinePayment.strPaymentType = paymentFor;
@@ -1812,7 +2003,7 @@ public without sharing class PaymentPageController {
                 } else if(String.isNotBlank(paymentFor) && !paymentFor.contains('-')) {
                     objOpportunity.nm_Fee_Type__c = paymentFor;
                 }*/
-                objOpportunity.nm_Fee_Type__c = getFeeType(objOpportunity.nm_Fee_Type__c);
+                objOpportunity.nm_Fee_Type__c = getFeeType(objOpportunity.nm_Fee_Type__c,typeOfObject);
             }
             System.debug('objOpportunity.nm_Fee_Type__c ==>'+objOpportunity.nm_Fee_Type__c);
             objOpportunity.Down_Payment_Made__c = true;
@@ -1857,7 +2048,7 @@ public without sharing class PaymentPageController {
             } else if(String.isNotBlank(paymentFor) && !paymentFor.contains('-')) {
                 objLead.nm_Fee_Type__c = paymentFor;
             }*/
-            objLead.nm_Fee_Type__c = getFeeType(objLead.nm_Fee_Type__c);
+            objLead.nm_Fee_Type__c = getFeeType(objLead.nm_Fee_Type__c,typeOfObject);
             
             objLead.Down_Payment_Made__c = true;
             objLead.Loan_Type__c = objLoanDetails.LoanType;
@@ -1877,14 +2068,14 @@ public without sharing class PaymentPageController {
         }
     }
 
-    public String getFeeType(String feeType) {
+    public String getFeeType(String feeType,String typeOfObject) {
         String newFeeType = feeType;
         if(String.isNotBlank(paymentFor) && paymentFor.contains('-')) {
             String downPaymentPayFor = paymentFor.split('-')[1];
             if(feeType == 'MBAallTermfee' && downPaymentPayFor.equalsIgnoreCase('admission')){ // added due to fee type change from MBAallTermfee to admission
                 System.debug('can not update the fee type ');
             } else{
-                if('Master Programs'.equalsIgnoreCase(programCategory) 
+                if('Master Programs'.equalsIgnoreCase(programCategory) && (!IsReregistartion || 'Lead'.equalsIgnoreCase(typeOfObject))
                     && ('MBA (WX)'.equalsIgnoreCase(programSpecialization)
                     ||  'MBA (X)'.equalsIgnoreCase(programSpecialization) 
                     ||  'MBA - X'.equalsIgnoreCase(programSpecialization) 
@@ -2180,6 +2371,15 @@ public without sharing class PaymentPageController {
             this.AlreadyPaidLiveLectureFeeAmount = 0;
             this.LiveLectureTypeOpted = LiveLectureTypeOpted;
             this.CourseList = CourseList;
+        }
+    }
+
+    public class ReRegistration {
+        public Decimal ReRegistrationAmount {get;set;}
+        public Boolean isReRegistrationAmountChecked {get;set;}
+        public ReRegistration() {
+            this.ReRegistrationAmount = 0;
+            this.isReRegistrationAmountChecked = false;
         }
     }
 

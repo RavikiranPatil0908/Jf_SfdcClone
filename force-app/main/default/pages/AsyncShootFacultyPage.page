@@ -69,10 +69,10 @@
                 <apex:column headerValue="Record Name">
                     <apex:outputPanel layout="block">
                         
-                       <apex:outputLink value="{$Label.Site_Url}apex/FacultyVideoRemarks?recordId={!record.Id}&remark={!IF(NOT(ISBLANK(record.Video_Link_Version_2__c)),'2', '1')}" rendered="{!record.Post_Production_Status__c = 'Sent For Faculty Review'}">
+                       <apex:outputLink value="FacultyVideoRemarks?recordId={!record.Id}&remark={!record.Video_Link_Version_Number__c}" rendered="{! OR(record.Post_Production_Status__c ='Sent For Faculty Review',record.Post_Production_Status__c ='Faculty Comments Fixed by Production')}">
                             {!record.Name}
                         </apex:outputLink>
-                        <apex:outputText value="{!record.Name}" rendered="{!record.Post_Production_Status__c !='Sent For Faculty Review'}" />
+                        <apex:outputText value="{!record.Name}" rendered="{! AND(record.Post_Production_Status__c !='Sent For Faculty Review',record.Post_Production_Status__c !='Faculty Comments Fixed by Production')}" />
                         </apex:outputPanel>
                 </apex:column>
                 <apex:column value="{!record.Post_Production_Status__c}" headerValue="Status"/>

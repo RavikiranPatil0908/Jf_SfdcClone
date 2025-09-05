@@ -210,7 +210,8 @@
                                                 </div>
                                             </apex:outputpanel>
 
-                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'AnnualFeeLoan')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                            <!-- <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'AnnualFeeLoan')} && {!objDetails.allowLoan}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block"> -->
+                                                <apex:outputpanel rendered="{!IF(CONTAINS(setOfPaymentOption,'AnnualFeeLoan') && objDetails.allowLoan, true, false)}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
                                                 <div class="form-group form-group-lg m-b-0 rm-m-b">
                                                     <div class="" >
                                                         <input name="group1" type="radio" class="with-gap form-control" id="radio_5"  data-mode="1" data-value="AnnualFeeLoan" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} AnnualFeeLoan {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}"/>
@@ -273,7 +274,9 @@
                                                 </div>
                                             </apex:outputpanel>
             
-                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'FullFee')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                            <!-- <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'FullFee')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block"> -->
+                                            <!-- <apex:outputpanel rendered="{!CONTAINS(',' & setOfPaymentOption & ',', ',FullFee,')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block"> -->
+                                            <apex:outputpanel rendered="{!isFullFeeAvailable}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
                                                 <div class="form-group form-group-lg m-b-0 rm-m-b">
                                                     <div class="" >
                                                         <input name="group1" type="radio" class="with-gap form-control" id="radio_12"  data-mode="1" data-value="FullFee" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} FullFee {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}"/>
@@ -282,7 +285,7 @@
                                                 </div>
                                             </apex:outputpanel>
             
-                                            <apex:outputpanel rendered="{!CONTAINS(setOfPaymentOption,'FullFeeLoan')}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
+                                            <apex:outputpanel rendered="{!IF(CONTAINS(setOfPaymentOption,'FullFeeLoan') && objDetails.allowLoan, true, false)}" styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12" layout="block">
                                                 <div class="form-group form-group-lg m-b-0 rm-m-b">
                                                     <div class="" >
                                                         <input name="group1" type="radio" class="with-gap form-control" id="radio_13"  data-mode="1" data-value="FullFeeLoan" data-label="{!IF(objfee.AlreadyPaidRegistrationFee,'','Registration + ')} FullFeeLoan {!IF(objDetails.CareerServiceOpted,' + Career Services','')} {!IF(objCoursera.checkCourseraOpted,' + Coursera','')} {!IF(objDetails.applicableLateFee > 0,' + Late Fee' ,'')}"/>
@@ -761,7 +764,7 @@
                                         </div>
                                     </apex:outputPanel>
             
-                                    <apex:outputPanel rendered="{!!objDetails.loanWindowClosed}" layout="block" 
+                                    <apex:outputPanel rendered="{!IF(!objDetails.loanWindowClosed && objDetails.allowLoan,true,false)}" layout="block" 
                                         id="LoanRadionButton" style="display:none;" styleClass="col-xs-12 col-sm-12 col-md-4 col-lg-4 m-b-0 rm-m-b">
                                         <div class="form-group form-group-lg">
                                             <div class="">
@@ -835,32 +838,33 @@
                                 </div>
                                 <!--======================================================== #END# of Demand Draft Section ================================================-->
 
-            
-                                <div class="row clearfix">
-                                    <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions PayBtn">
-                                        <a href="javascript:void(0);" class="btn btn-primary btn-block btn-lg btn-custom waves-effect" id="PayBtn" onclick="return GoToPayment();">Make Payment</a>
+                                <apex:outputPanel rendered="{!!objDetails.paymentWindowClosed}">
+                                    <div class="row clearfix">
+                                        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions PayBtn">
+                                            <a href="javascript:void(0);" class="btn btn-primary btn-block btn-lg btn-custom waves-effect" id="PayBtn" onclick="return GoToPayment();">Make Payment</a>
+                                        </div>
+                
+                                        <!-- <apex:outputPanel styleClass="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions PayBtndd" rendered="{!IsICForMakingPayment}" layout="block">
+                                            <apex:commandButton value="Save DD Details" styleClass="btn btn-block btn-primary btn-lg btn-custom waves-effect" id="PayBtndd" action="{!SaveDD}" />
+                                        </apex:outputPanel> 
+                                        
+                                        <apex:outputPanel rendered="{!IsHOForMakingPayment && false}" styleClass="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions PayBtnNEFT" layout="block">
+                                            <apex:commandButton value="Save NEFT Details" styleClass="btn btn-block btn-primary btn-lg btn-custom waves-effect" id="PayBtnNEFT" action="{!SaveDD}" />
+                                        </apex:OutPutPanel> -->
+                
+                                        <apex:outputPanel style="display:none;" layout="block" styleClass="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions proceedToLoan">
+                                            <a href="javascript:void(0);" id="proceedToLoan" class="btn btn-block btn-primary btn-lg btn-custom waves-effect">Proceed</a>
+                                        </apex:outPutPanel>
+                
+                                        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions InstallmentPaymentButton" id="InstallmentPaymentButton" style="display:none;">
+                                            <a href="javascript:void(0);" id="PayBtnInstallment" class="btn btn-block btn-primary btn-lg btn-custom waves-effect">Installment</a>
+                                        </div>
+                
+                                        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2 showBackToHomeButton"  style="display:none;">
+                                            <a href="javascript:void(0);" onclick="backToPaymentSection();" id="showBackToHomeButton" class="btn btn-block btn-primary btn-lg btn-custom waves-effect">Back</a>
+                                        </div>
                                     </div>
-            
-                                    <!-- <apex:outputPanel styleClass="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions PayBtndd" rendered="{!IsICForMakingPayment}" layout="block">
-                                        <apex:commandButton value="Save DD Details" styleClass="btn btn-block btn-primary btn-lg btn-custom waves-effect" id="PayBtndd" action="{!SaveDD}" />
-                                    </apex:outputPanel> 
-                                    
-                                    <apex:outputPanel rendered="{!IsHOForMakingPayment && false}" styleClass="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions PayBtnNEFT" layout="block">
-                                        <apex:commandButton value="Save NEFT Details" styleClass="btn btn-block btn-primary btn-lg btn-custom waves-effect" id="PayBtnNEFT" action="{!SaveDD}" />
-                                    </apex:OutPutPanel> -->
-            
-                                    <apex:outputPanel style="display:none;" layout="block" styleClass="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions proceedToLoan">
-                                        <a href="javascript:void(0);" id="proceedToLoan" class="btn btn-block btn-primary btn-lg btn-custom waves-effect">Proceed</a>
-                                    </apex:outPutPanel>
-            
-                                    <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2 paymentOptions InstallmentPaymentButton" id="InstallmentPaymentButton" style="display:none;">
-                                        <a href="javascript:void(0);" id="PayBtnInstallment" class="btn btn-block btn-primary btn-lg btn-custom waves-effect">Installment</a>
-                                    </div>
-            
-                                    <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2 showBackToHomeButton"  style="display:none;">
-                                        <a href="javascript:void(0);" onclick="backToPaymentSection();" id="showBackToHomeButton" class="btn btn-block btn-primary btn-lg btn-custom waves-effect">Back</a>
-                                    </div>
-                                </div>
+                                </apex:outputPanel>
                                 
                                 <p class="font-italic" style="color: #777;"><span class="font-bold">Note:</span> Admission Processing (Registration) Fee is non-refundable.</p>
                                 <!-- <p class="font-italic" style="color: #777;">July 2024 Batch admissions are closed. January 2025 Batch details will be updated shortly.</p> -->

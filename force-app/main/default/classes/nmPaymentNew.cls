@@ -3,8 +3,8 @@
 * @Description        : 
  * @Author             : shubhranshu
 * @Group              : 
- * @Last Modified By   : @Ravi
-* @Last Modified On   : 14--11--2024
+ * @Last Modified By   : @vickysahu
+* @Last Modified On   : 07-11-2025
 * @Modification Log   : 
  *==============================================================================
 * Ver         Date                     Author                    Modification
@@ -408,7 +408,8 @@ public without sharing class nmPaymentNew{
         String accountAdmissionQueryString = getQueryAllFieldSql('Account',' nm_LeadId__c=:recordId','nm_Centers__r.Contact_No_1__c,nm_Program__r.AvanseAPICode__c');
         String accountReRegQueryString = getQueryAllFieldSql('Account',' id=:recordId and nm_Centers__c != null','nm_Program__r.AvanseAPICode__c');
         String opportunityAdmissionQuerString = getQueryAllFieldSql('Opportunity','id=:opportunityId and nm_Program__c != null and nm_Program__r.nm_TotalSemesters__c != null','nm_Program__r.nm_TotalSemesters__c,nm_Program__r.IsTerm__c');
-        String opportunityReRegQuerString = getQueryAllFieldSql('Opportunity',' nm_Semester__c =: feePaidSemester and ( StageName = \'Pending Payment - Instalment\' or StageName = \'Pending Payment\' or StageName = \'Pending Payment - Loan\' or StageName = \'Registration Done\' or StageName = \'Closed Won - Re-registration Pending\') and nm_StudentProgram__c =:studentProgramId','nm_Program__r.nm_TotalSemesters__c,nm_Program__r.IsTerm__c');
+        //String opportunityReRegQuerString = getQueryAllFieldSql('Opportunity',' nm_Semester__c =: feePaidSemester and ( StageName = \'Pending Payment - Instalment\' or StageName = \'Pending Payment\' or StageName = \'Pending Payment - Loan\' or StageName = \'Registration Done\' or StageName = \'Closed Won - Re-registration Pending\') and nm_StudentProgram__c =:studentProgramId','nm_Program__r.nm_TotalSemesters__c,nm_Program__r.IsTerm__c');
+        String opportunityReRegQuerString = getQueryAllFieldSql('Opportunity','Id=:opportunityId and nm_StudentProgram__c =:studentProgramId','nm_Program__r.nm_TotalSemesters__c,nm_Program__r.IsTerm__c');
         //String studentProgramQueryString = getQueryAllFieldSql('nm_StudentProgram__c',' nm_Student__c=:recordId limit 1 ');
         String centerAddressQueryString = getQueryAllFieldSql('nm_Centers__c',' Nm_Active__c = true ',null);
         String opportunityProgramChangeReRegQuery= getQueryAllFieldSql('IC_Change_Request__c','Opportunity__c=:opportunityId  and Status__c = \'New\' and (New_Program__r.Name  =\'BBA-BA\' OR New_Program__r.Name  =\'BBA\') ','New_Program__r.Specialisation__c,New_Program__r.id,New_Program__r.Name,New_Program__r.nm_TotalSemesters__c');
@@ -627,7 +628,24 @@ public without sharing class nmPaymentNew{
             }
             feePaidSemester = String.valueOf(Integer.valueOf(feePaidSemester) + additionalSem);
             System.debug('---feePaidSemester--'+feePaidSemester+'---'+studentProgramId);
-            list<Opportunity> lstOpportunity = DataBase.query(opportunityReRegQuerString);
+            System.debug('opportunityReRegQuerString---->' + opportunityReRegQuerString);
+            List<Opportunity> lstOpportunity = new List<Opportunity>();
+            // list<Opportunity> lstOpportunity = DataBase.query(opportunityReRegQuerString);
+            // List<Opportunity> storeLstOpportunity = lstOpportunity;
+            // if (lstOpportunity.size() > 0) {
+            //     lstOpportunity = lstOpportunity[0].Id == opportunityId ? lstOpportunity : new List<Opportunity>();
+            // }
+            if (lstOpportunity.size() == 0 && String.isNotBlank(opportunityId)) {
+                //opportunityReRegQuerString = getQueryAllFieldSql('Opportunity','Id=:opportunityId and nm_StudentProgram__c =:studentProgramId','nm_Program__r.nm_TotalSemesters__c,nm_Program__r.IsTerm__c');
+                lstOpportunity = DataBase.query(opportunityReRegQuerString);
+                System.debug('fee type---->' + lstOpportunity[0].StageName);
+                feePaidSemester = lstOpportunity.size() > 0 && lstOpportunity[0].nm_Semester__c == String.valueOf(Integer.valueOf(objStudentProgram.nm_FeesPaidofSemester__c)) ? String.valueOf(objStudentProgram.nm_FeesPaidofSemester__c) : feePaidSemester;
+                // lstOpportunity = lstOpportunity.size() > 0 ? lstOpportunity : storeLstOpportunity;
+            }
+            if (lstOpportunity.size() == 0) {
+                opportunityReRegQuerString = getQueryAllFieldSql('Opportunity',' nm_Semester__c =: feePaidSemester and ( StageName = \'Pending Payment - Instalment\' or StageName = \'Pending Payment\' or StageName = \'Pending Payment - Loan\' or StageName = \'Registration Done\' or StageName = \'Closed Won - Re-registration Pending\') and nm_StudentProgram__c =:studentProgramId','nm_Program__r.nm_TotalSemesters__c,nm_Program__r.IsTerm__c');
+                lstOpportunity = DataBase.query(opportunityReRegQuerString);
+            }
             if( lstOpportunity != null && lstOpportunity.size() > 0 ){
                            
                 objOpportunity =  lstOpportunity[0];
@@ -2011,6 +2029,8 @@ public without sharing class nmPaymentNew{
             //--------- List of payments to insert in System -------------
             list<nm_Payment_Initiated__c> lstPaymentInitaitedToUpdate = new list<nm_Payment_Initiated__c>();
             list<nm_Payment__c> lstPaymentToInsert = new list<nm_Payment__c>();
+            Boolean needToConvertDownpayment = false;
+            Boolean hasDownPayment  = false;
             lstPaymentInitaitedToUpdate = [SELECT Id,nm_PaymentStatus__c,nm_PaymentType__c,payment_Transaction_Mode__c,
                 nm_Amount__c,nm_ActualPaymentAmmount__c,nm_Lead__c,nm_PaymentGatewayName__c,nm_ModeOfPayment__c,
                 nm_TransactionDate__c,nm_TransactionID__c,nm_Merchant_Track_Id__c,Online_Payment_Id__c,
@@ -2072,6 +2092,14 @@ public without sharing class nmPaymentNew{
                 // admissionTranscationDate = objpay.nm_TransactionDate__c;
                 objpay.Gateway_Detailed_Response__c = objResponse.detailedGatewayResponse;
                 lstPaymentToInsert.add(CreatePaymentRecordV2(objpay,objResponse));
+                if (paymentFor.contains('DownPayment') && objpay.nm_PaymentType__c.contains('DownPayment')) {
+                    hasDownPayment = true;
+                }
+                System.debug('objpay.nm_Amount__c--->' + objpay.nm_Amount__c);
+            }
+
+            if (!hasDownPayment && paymentFor.contains('DownPayment')) {
+                needToConvertDownpayment = true;
             }
     
             Decimal totalAmountToCreate = 0;
@@ -2099,15 +2127,14 @@ public without sharing class nmPaymentNew{
                     System.debug('Opportunity update ==>'+opportunityId);
                     updateOpportunityFeesType(opportunityId,feeType,applicableCareerServiceFee);
                     /// add for account/opportunity
-                    ChangeToDownPayment('Opportunity', opportunityId, feeType, paymentFor);
+                    ChangeToDownPayment('Opportunity', opportunityId, feeType, paymentFor, needToConvertDownpayment);
                     
                 } else if(paymentMade){
                     System.debug('Lead update ==>'+recordId);
                     updateLeadFeeType(recordId,feeType);
 
                     /// add here for lead
-                    ChangeToDownPayment('Lead', recordId, feeType, paymentFor);
-                    
+                    ChangeToDownPayment('Lead', recordId, feeType, paymentFor, needToConvertDownpayment);   
                 }
             }
             
@@ -2157,7 +2184,7 @@ public without sharing class nmPaymentNew{
     }
 
 
-    public void ChangeToDownPayment(String objtype , String recordId, String feeType, String paymentFor){
+    public void ChangeToDownPayment(String objtype , String recordId, String feeType, String paymentFor,Boolean needToConvertDownpayment){
 
         
         //'Pending Payment - Loan'
@@ -2166,23 +2193,38 @@ public without sharing class nmPaymentNew{
             List<nm_Payment__c> lstPaymentforupdate = new List<nm_Payment__c>();
             String paymenttypeLocal = '';
             String InstallmentPaymentRef = '';
+            Boolean isDownPaymentDone = false;
+            Map<String,nm_Payment__c> mapOfKeyAndPayment = new Map<String,nm_Payment__c>();
         
             if(objtype == 'Lead'){
                 paymenttypeLocal =  objLead.Loan_Type__c+'-DownPayment'; 
-                InstallmentPaymentRef =	'DownPayment-'+feeType;
-                lstPayment = [SELECT Id,nm_PaymentType__c, nm_Installment_Payment_Ref__c FROM nm_Payment__c where  nm_Lead__c =: recordId AND nm_PaymentType__c In ('Installment','Initial Payment') AND nm_PaymentStatus__c In ('Payment Approved', 'Payment Made')];
+                InstallmentPaymentRef = 'DownPayment-'+feeType;
+                lstPayment = [SELECT Id,nm_PaymentType__c, nm_Installment_Payment_Ref__c FROM nm_Payment__c where  nm_Lead__c =: recordId AND (nm_PaymentType__c In ('Installment','Initial Payment') OR nm_PaymentType__c LIKE '%DownPayment%') AND nm_PaymentStatus__c In ('Payment Approved', 'Payment Made')];
             }
             else if(objtype == 'Opportunity'){
                 paymenttypeLocal = objOpportunity.Loan_Type__c+'-DownPayment'; 
-                InstallmentPaymentRef =	'DownPayment-'+feeType;
-                lstPayment = [SELECT Id,nm_PaymentType__c, nm_Installment_Payment_Ref__c FROM nm_Payment__c where  nm_OpportunityNew__c =: recordId AND nm_PaymentType__c In ('Installment','Initial Payment') AND nm_PaymentStatus__c In ('Payment Approved', 'Payment Made')];
+                InstallmentPaymentRef = 'DownPayment-'+feeType;
+                lstPayment = [SELECT Id,nm_PaymentType__c, nm_Installment_Payment_Ref__c FROM nm_Payment__c where  nm_OpportunityNew__c =: recordId AND (nm_PaymentType__c In ('Installment','Initial Payment') OR nm_PaymentType__c LIKE '%DownPayment%') AND nm_PaymentStatus__c In ('Payment Approved', 'Payment Made')];
             }
 
             if(lstPayment.size() > 0){
                 for(nm_Payment__c payobj : lstPayment){
-                    payobj.nm_PaymentType__c = paymenttypeLocal;
-                    payobj.nm_Installment_Payment_Ref__c = InstallmentPaymentRef;
-                    lstPaymentforupdate.add(payobj);
+                    mapOfKeyAndPayment.put(payobj.nm_PaymentType__c,payobj);
+                    // payobj.nm_PaymentType__c = paymenttypeLocal;
+                    // payobj.nm_Installment_Payment_Ref__c = InstallmentPaymentRef;
+                    // lstPaymentforupdate.add(payobj);
+                }
+            }
+
+            if (mapOfKeyAndPayment != null) {
+                nm_Payment__c objPayment = new nm_Payment__c();
+                if (!mapOfKeyAndPayment.containsKey(paymenttypeLocal) && needToConvertDownpayment) {
+                    objPayment = mapOfKeyAndPayment.containsKey('Initial Payment') ? mapOfKeyAndPayment.get('Initial Payment') : mapOfKeyAndPayment.containsKey('Installment') ? mapOfKeyAndPayment.get('Installment') : new nm_Payment__c();
+                    if (objPayment != null) {
+                        objPayment.nm_PaymentType__c = paymenttypeLocal;
+                        objPayment.nm_Installment_Payment_Ref__c = InstallmentPaymentRef;
+                        lstPaymentforupdate.add(objPayment);
+                    }
                 }
             }
 
@@ -3055,6 +3097,7 @@ public without sharing class nmPaymentNew{
         }
         objOpportunity.nm_Fee_Type__c = oppFeetype; 
         System.debug('objOpportunity.nm_Fee_Type__c final '+objOpportunity.nm_Fee_Type__c);
+        System.debug('objOpportunity---->' + JSON.serialize(objOpportunity));
         update objOpportunity;
         System.debug('objOpportunity----'+objOpportunity);
     }
@@ -3065,7 +3108,18 @@ public without sharing class nmPaymentNew{
         if(lead.nm_Fee_Type__c == 'AnnualFee' && feesType == 'registration'){
             System.debug('You can not update the fee type ');
         }else{
+            if('Master Programs'.equalsIgnoreCase(programCategory)
+            && (('MBA (WX)'.equalsIgnoreCase(programSpecialization) && feesType == 'admission')
+            ||  'MBA (X)'.equalsIgnoreCase(programSpecialization) 
+            ||  'MBA - X'.equalsIgnoreCase(programSpecialization) 
+            ||  ('M.Sc. (AI & ML Ops)'.equalsIgnoreCase(programSpecialization) && feesType !='AnnualFee' && feesType !='FullFee') ) ){
+                // objOpportunity.nm_Fee_Type__c = 'MBAallTermfee';
+                lead.nm_Fee_Type__c = 'MBAallTermfee';
+                System.debug('lead.nm_Fee_Type__c---->'+lead.nm_Fee_Type__c);
+            }
+            else {
             lead.nm_Fee_Type__c = feesType;
+            }
         }
         if(objCoursera.checkCourseraOpted) {
             lead.Coursera__c = objCoursera.checkCourseraOpted;

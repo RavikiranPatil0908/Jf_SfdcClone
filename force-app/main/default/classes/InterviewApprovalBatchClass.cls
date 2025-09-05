@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 02-27-2025
+ * @last modified on  : 04-21-2025
  * @last modified by  : @vickysahu
 **/
 public with sharing class InterviewApprovalBatchClass implements Database.Batchable<sObject>, Database.AllowsCallouts, Schedulable, Database.Stateful{

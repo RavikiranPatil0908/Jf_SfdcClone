@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 05-12-2024
- * @last modified by  : @BK
+ * @last modified on  : 24-05-2025
+ * @last modified by  : @Shailesh
 **/
 public without sharing class SendEmailToPortal {
 
@@ -189,7 +189,6 @@ public without sharing class SendEmailToPortal {
         } else {
             emailBody = HtmlMinifier.minifyHtml(emailBody);
         }
-
         return new EmailDetails(emailBody, email.getSubject());
     }
 
@@ -202,4 +201,25 @@ public without sharing class SendEmailToPortal {
             this.emailSubject = emailSubject;
         }
     }
+
+    public static void callBatchWebServiceConfirmAccount(List<SendEmailToPortalConfirmedAccount.FlowInputs> request){
+
+        for(SendEmailToPortalConfirmedAccount.FlowInputs requestObj: request){
+            System.debug('request: ' + request);  
+            callWebServiceConfirmAccount(requestObj.templateName, requestObj.recordId,requestObj.type,requestObj.parentId, requestObj.mailId, requestObj.fromEmailId,requestObj.registrationNumber);
+        }
+    }
+    public static void callbatchWebServiceSaveLog(List<SendEmailToPortalSaveLog.FlowInputs> request){
+
+        for(SendEmailToPortalSaveLog.FlowInputs requestObj: request){
+            System.debug('request: ' + request); 
+            SaveMailLogWrapper mailLogWrapper = new SaveMailLogWrapper(
+            requestObj.templateId, requestObj.type, requestObj.recordId,
+            requestObj.parentId, requestObj.mailId, requestObj.fromEmailId,
+            requestObj.mailBody, requestObj.mailBodytype, requestObj.mailSubject,requestObj.registrationNumber
+        );
+            callWebServiceSaveLog(mailLogWrapper);
+        }
+    }
+
 }

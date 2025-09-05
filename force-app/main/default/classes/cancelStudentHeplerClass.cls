@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : shubhranshu
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 20-03-2023
+ * @Last Modified By   : @Shailesh
+ * @Last Modified On   : 22-07-2025
  * @Modification Log   : 
  * Ver       Date            Author                 Modification
  * 1.0    9/17/2019   shubhranshu     Initial Version
@@ -243,7 +243,7 @@ public without sharing class cancelStudentHeplerClass {
                         }
                     }
                 }
-
+                 System.debug('lstAppOpportuniyties[0].StageName'+lstAppOpportuniyties[0].StageName);
                 if(lstrefund.size() == 0 && appendedStudentStatus!='Rusticated')
                 {
                     if(lstAppOpportuniyties[0].StageName=='Closed Won'){
@@ -259,7 +259,7 @@ public without sharing class cancelStudentHeplerClass {
                             System.debug('intLatefees'+intLatefees);
                     }
 
-                    if(lstAppOpportuniyties[0].StageName.contains('Pending Payment' ) && ( Installmentdone || downpaymentdone || initalformaster)){
+                    if((lstAppOpportuniyties[0].StageName.contains('Pending Payment') || lstAppOpportuniyties[0].StageName.contains('Registration Done')) && ( Installmentdone || downpaymentdone || initalformaster)){  ///changes done  || lstAppOpportuniyties[0].StageName.contains('Registration Done')
                             if(AccountStage == 'Registration Cancelled'){
                                 lstRefundpayment.add(InsertRefundRecord(lstAppOpportuniyties[0],ModeofPaymentSem1,(intTotalMountTorefund+intLatefees),Dispatchcreated,'Registration Cancellation',Installmentdone,strEmailid,documentsApproved,initalPaymentDone));
                             }else{

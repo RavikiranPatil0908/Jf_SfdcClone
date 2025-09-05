@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 03-19-2025
+ * @last modified on  : 07-30-2025
  * @last modified by  : @vickysahu
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -1683,6 +1683,7 @@ public class PostPaymentController
         // mapOfPricebook = getMapOfPriceBookIdProductVsPriceBookEntry.get(TagPriceBookId);
         String programKey = programId+'-'+semester;
         System.debug('product Name--'+productName);
+        System.debug('mapOfPricebook---->' + JSON.serialize(mapOfPricebook));
         if(mapOfPricebook != null && !mapOfPricebook.isEmpty()){
             Integer multiplicationFactor = 1;
             if('Admission'.equalsIgnoreCase(productName)){
@@ -1969,13 +1970,17 @@ public class PostPaymentController
                     amount =  mapOfPricebook.get(programKey).UnitPrice;
                     system.debug('amount---->'+amount);                              
                 }
-               else if(!'MBA (WX)'.equalsIgnoreCase(programSpecialization) && !'MBA (X)'.equalsIgnoreCase(programSpecialization) && !'MBA - X'.equalsIgnoreCase(programSpecialization) && !'M.Sc. (AI & ML Ops)'.equalsIgnoreCase(programSpecialization) && !'M.Sc. (AI)'.equalsIgnoreCase(programSpecialization) ){   
-                    for(Integer i = sem ;i<=(sem + multiplicationFactor - 1);i++)
-                    {
-                        System.debug('--multiplicationFactor---'+i+'-----'+programId);                
-                        amount += mapOfPricebook.containsKey(programId+'-'+i) ? mapOfPricebook.get(programId+'-'+i).UnitPrice:0;
-                        system.debug('amount---->'+amount);        
-                    }                         
+                
+                else if(!'MBA (WX)'.equalsIgnoreCase(programSpecialization) && !'MBA (X)'.equalsIgnoreCase(programSpecialization) && !'MBA - X'.equalsIgnoreCase(programSpecialization) && !'M.Sc. (AI & ML Ops)'.equalsIgnoreCase(programSpecialization) && !'M.Sc. (AI)'.equalsIgnoreCase(programSpecialization) ){   
+                    // for(Integer i = sem ;i<=(sem + multiplicationFactor - 1);i++)
+                    // {
+                    //     System.debug('--multiplicationFactor---'+i+'-----'+programId);                
+                    //     amount += mapOfPricebook.containsKey(programId+'-'+i) ? mapOfPricebook.get(programId+'-'+i).UnitPrice:0;
+                    //     system.debug('amount---->'+amount);
+                    //     System.debug('EntriesID---->' + mapOfPricebook.get(programId+'-'+i).Id);        
+                    // } 
+                    amount =  mapOfPricebook.get(programKey).UnitPrice;
+                    system.debug('amount---->'+amount);
                 } 
                 else{
 
@@ -2249,9 +2254,9 @@ public class PostPaymentController
                 }
                
                 String redirectURL = System.Label.Site_Url+'EnrollmentForm';
-                if(feeType.endsWithIgnoreCase('ReRegistrationPayment')) {
-                    redirectURL = System.Label.Site_Url+'nmlogin_new?dob='+dateofBirth.format('dd/MM/yyyy')+'&type=reregistration&studentNo='+studentNo;
-                }
+                // if(feeType.endsWithIgnoreCase('ReRegistrationPayment')) {
+                //     redirectURL = System.Label.Site_Url+'nmlogin_new?dob='+dateofBirth.format('dd/MM/yyyy')+'&type=reregistration&studentNo='+studentNo;
+                // }
                 // objSessionManager.destroySession();
                 System.debug('redirectURL--'+redirectURL);
                 PageReference pg = new PageReference(redirectURL);

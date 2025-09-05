@@ -4,7 +4,7 @@
  * @Author             : shubhranshu
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 10--04--2025
+ * @Last Modified On   : 21--05--2025
  * @Modification Log   : 
  * Ver       Date            Author                 Modification
  * 1.0    10/3/2019   shubhranshu     Initial Version
@@ -239,7 +239,6 @@ public class CancelFutureHandler{
            System.debug(e.getMessage());
          }
      }
- 
      System.debug('ledInsert '+ledInsert);
      if(ledInsert.size()>0){
  
@@ -302,39 +301,43 @@ public class CancelFutureHandler{
      **/
      public static void insertLinkForDocument(Set<String> setOfAccountId,Map<String,String> mapOfAccountIdVsLeadId) {
        List<nm_LinksForDocuments__c> lstlinkfordocument = [SELECT id,Name,nm_DocumentName__c,nm_Account__c,nm_URLforDocuments__c,nm_Status__c FROM nm_LinksForDocuments__c WHERE nm_Account__c IN :setOfAccountId AND (NOT Name LIKE '%WE-%' )];
-       List<nm_LinksForDocumentsLead__c> lstDocumentLeadToInsert = new  List<nm_LinksForDocumentsLead__c>();
+      Set<String> leadIds = new Set<String>(mapOfAccountIdVsLeadId.values());
+      List<nm_LinksForDocumentsLead__c> lstlinkfordocumentLead = [SELECT id,Name,nm_DocumentName__c,Lead__c,nm_URLforDocuments__c,nm_Status__c FROM nm_LinksForDocumentsLead__c WHERE Lead__c IN :leadIds];
+        // Step 3: Index existing lead docs by LeadId+DocName
+      Map<String, nm_LinksForDocumentsLead__c> mapExistingDocs = new Map<String, nm_LinksForDocumentsLead__c>();
+      for (nm_LinksForDocumentsLead__c doc : lstlinkfordocumentLead) {
+          String key = doc.Lead__c + '-' + doc.nm_DocumentName__c;
+          mapExistingDocs.put(key, doc);
+      }
+      
+      List<nm_LinksForDocumentsLead__c> lstDocumentLeadToUpdate = new  List<nm_LinksForDocumentsLead__c>();
         
        if(lstlinkfordocument.size()>0 && mapOfAccountIdVsLeadId.size() > 0) {
          Boolean checkLinkExists = false;
          for (nm_LinksForDocuments__c objDoc : lstlinkfordocument)
          {
+          System.debug('lstlinkfordocument==>'+lstlinkfordocument);
+          String leadId = mapOfAccountIdVsLeadId.get(objDoc.nm_Account__c);
+          String key = leadId + '-' + objDoc.nm_DocumentName__c;
+          System.debug('key==>'+key);
            nm_LinksForDocumentsLead__c objLeadDoc = new nm_LinksForDocumentsLead__c ();
-           if(objDoc.nm_DocumentName__c == 'Photo ID proof' || objDoc.nm_DocumentName__c == 'Student Photograph') {
-             objLeadDoc.nm_URLforDocuments__c = '';
-             objLeadDoc.nm_Status__c = '';
-           } else {
-             objLeadDoc.nm_URLforDocuments__c = objDoc.nm_URLforDocuments__c;
-             objLeadDoc.nm_Status__c = objDoc.nm_Status__c;
+          if(objDoc.nm_DocumentName__c != 'Photo ID proof' && objDoc.nm_DocumentName__c != 'Student Photograph') {
+            if(mapExistingDocs.containsKey(key) && objDoc.nm_URLforDocuments__c != null) {
+              objLeadDoc.Id = mapExistingDocs.get(key).Id;
+              objLeadDoc.nm_URLforDocuments__c = objDoc.nm_URLforDocuments__c;
+              objLeadDoc.nm_Status__c = objDoc.nm_Status__c;
+              lstDocumentLeadToUpdate.add(objLeadDoc);
+            }
            }
-           objLeadDoc.nm_DocumentName__c = objDoc.nm_DocumentName__c;
-           objLeadDoc.Name = objDoc.Name;
-           objLeadDoc.Lead__c = mapOfAccountIdVsLeadId.get(objDoc.nm_Account__c);
-           lstDocumentLeadToInsert.add(objLeadDoc);
-           checkLinkExists = objDoc.nm_URLforDocuments__c != null ? true : checkLinkExists;
          }
-         if(checkLinkExists) {
-           System.debug(lstDocumentLeadToInsert);
-           if(lstDocumentLeadToInsert.size()>0) {
+           System.debug(lstDocumentLeadToUpdate);
+          if(lstDocumentLeadToUpdate.size()>0) {
              try{
-               insert lstDocumentLeadToInsert;
+              update lstDocumentLeadToUpdate;
              }catch(DmlException e){
                System.debug(e.getMessage());
              }
-           }
-         } else {
-           callInsertLinkFutureJob(setOfAccountId,mapOfAccountIdVsLeadId);
-         }
-         
+         } 
        } else {
          callInsertLinkFutureJob(setOfAccountId,mapOfAccountIdVsLeadId);
        }

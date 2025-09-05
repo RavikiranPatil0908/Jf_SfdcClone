@@ -3,8 +3,8 @@
   @Description        : 
   @Author             : @BK
   @Group              : 
-  @Last Modified By   : @BK
-  @Last Modified On   : 28-01-2025
+  @Last Modified By   : @vickysahu
+  @Last Modified On   : 06-23-2025
   @Modification Log   : 
   Ver       Date            Author                  Modification
   1.0    28/2/2020   @BK     Initial Version
@@ -528,7 +528,7 @@
 
                                 <!-- ------------------------------------ Program Change Section Begins Here-------------------------------------------- -->
                                 <apex:outputPanel layout="none" rendered="{!IF((feePaidSem < 3 && NOT(CONTAINS(objAccount.Batch__c,'_OFFline_')) && (objAccount.Program_Type__c!='M.Sc.' && objAccount.Program_Type__c!='Professional Diploma' && objAccount.Program_Type__c!='BBA' && objAccount.Program_Type__c!='BCom') || 
-                                    ( NOT(CONTAINS(objAccount.Batch__c, '_OFFline_')) &&  (( objAccount.Program_Type__c=='BBA' || objAccount.Program_Type__c=='BA') && strRegFor <=2) )),true,false)}"> 
+                                    ( NOT(CONTAINS(objAccount.Batch__c, '_OFFline_')) &&  (( objAccount.Program_Type__c=='BBA' || objAccount.Program_Type__c=='BA') && strRegFor <=3) )),true,false)}"> 
                                     <div class="row">
                                         <div class="col-md-12 form-group">
                                             <div class="message-box text-center">Want to change program</div>

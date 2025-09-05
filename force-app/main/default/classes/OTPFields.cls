@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 13-06-2024
- * @last modified by  : @BK
+ * @last modified on  : 13--08--2025
+ * @last modified by  : @Ravi
 **/
 public class OTPFields {
     public String otpStatus {get;set;}
@@ -27,6 +27,7 @@ public class OTPFields {
     public Boolean isOTPSent {get;set;}
     public Boolean isSuccess {get;set;}
     public String isModeVerified {get;set;}
+    public Boolean isEmailMobileChange {get;set;}
 
     public OTPFields() {
         this.otpStatus = '';
@@ -50,5 +51,6 @@ public class OTPFields {
         this.isOTPSent = false;
         this.isSuccess = false;
         this.isModeVerified = '';
+        this.isEmailMobileChange = false;
     }
 }

@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : @BK
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 25-05-2023
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 21--07--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                Modification
@@ -185,7 +185,7 @@ public without sharing class RefundRequestController{
     public void QueryAccountData(){
         
         System.debug('enter in Query nmRefund_Payment__c Data');
-        String query = getQueryAllFieldSql('nmRefund_Payment__c','id =:refundId','Opportunity__r.nm_Session__c,Opportunity__r.nm_Year__c,Opportunity__r.ChooseProgram__c,Account__r.nmStudent_Program__c,Account__r.Name,Account__r.PersonMobilePhone,Account__r.PersonEmail,Account__r.nm_Centers__r.Name,Account__r.Account_Confirm_Date__c,Account__r.CreatedDate,Account__r.nm_StudentStatus__c,Account__r.Program_Type__c,Account__r.FirstName,Account__r.LastName,Account__r.Father_First_Name__c	,Account__r.Mother_First_Name__c,Account__r.nm_SpouseName__c, Account__r.Father_Name__c, Account__r.Mother_Name__c ');
+        String query = getQueryAllFieldSql('nmRefund_Payment__c','id =:refundId','Opportunity__r.nm_Session__c,Opportunity__r.nm_Year__c,Opportunity__r.ChooseProgram__c,Account__r.nmStudent_Program__c,Account__r.Name,Account__r.PersonMobilePhone,Account__r.PersonEmail,Account__r.nm_Centers__r.Name,Account__r.Account_Confirm_Date__c,Account__r.CreatedDate,Account__r.nm_StudentStatus__c,Account__r.Program_Type__c,Account__r.FirstName,Account__r.LastName,Account__r.Father_First_Name__c  ,Account__r.Mother_First_Name__c,Account__r.nm_SpouseName__c, Account__r.Father_Name__c, Account__r.Mother_Name__c ');
         System.debug('query-->'+query);
         List<nmRefund_Payment__c> lst = (List<nmRefund_Payment__c>) DataBase.query(query);
         System.debug('lst-->'+lst);
@@ -641,8 +641,12 @@ public without sharing class RefundRequestController{
         return null;
     }
 
-    public void closePopup() {      
-            displayPopup = false;   
+    public PageReference closePopup() {      
+            displayPopup = false;
+            String url = URL.getSalesforceBaseUrl().toExternalForm() + '/' + counselor.id;
+            PageReference pg = new PageReference(url);
+            pg.setRedirect(true);
+            return pg;   
     }   
     
     public void showPopup() {  

@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @vickysahu
  * @group             : 
- * @last modified on  : 29-11-2024
- * @last modified by  : @BK
+ * @last modified on  : 04-21-2025
+ * @last modified by  : @vickysahu
 **/
 public class AvanseRequestWrapper{
     public data data;
@@ -23,8 +23,8 @@ public class AvanseRequestWrapper{
     }
     public class data{
         public String loan_plan_title;
-        public Integer subvention_fee;
-        public Integer processing_fee;
+        public Decimal subvention_fee;
+        public Decimal processing_fee;
         public String student_session;
         public String mode_of_course;
         public Long admission_number;
@@ -44,7 +44,7 @@ public class AvanseRequestWrapper{
         public String partner_application_number;
         public Integer fees;
         public String ops_under_approval_timestamp;
-        public Integer roi;
+        public Decimal roi;
         public String credit_under_approval_timestamp;
         public Integer emi;
     }

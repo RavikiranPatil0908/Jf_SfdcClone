@@ -3,8 +3,8 @@
     @Description        : 
     @Author             : Balakrishnan
     @Group              : 
-    @Last Modified By   : @BK
-    @Last Modified On   : 16-01-2025
+    @Last Modified By   : @Ravi
+    @Last Modified On   : 07--05--2025
     @Modification Log   : 
     ==============================================================================
     Ver         Date                     Author                 Modification
@@ -834,30 +834,30 @@
 
               }
               function GoTo() {
-                  var $captcha = $('#recaptcha'),
-                      response = grecaptcha.getResponse();
-                  if (response.length === 0) {
-                      $('.msg-error').text("reCAPTCHA is mandatory");
-                      if (!$captcha.hasClass("error")) {
-                          $captcha.addClass("error");
-                      }
-                  } else {
-                      $('.msg-error').text('');
-                      $captcha.removeClass("error");
-                      // alert( 'reCAPTCHA marked' );
-                      initSessionCookie($('[id$=studentNo]').val());
-                      let showCoursera = {!showCoursera};
-                  if (showCoursera) {
-                      callToCoursera();
-                  } else {
+                //   var $captcha = $('#recaptcha'),
+                //       response = grecaptcha.getResponse();
+                //   if (response.length === 0) {
+                //       $('.msg-error').text("reCAPTCHA is mandatory");
+                //       if (!$captcha.hasClass("error")) {
+                //           $captcha.addClass("error");
+                //       }
+                //   } else {
+                //       $('.msg-error').text('');
+                //       $captcha.removeClass("error");
+                //       // alert( 'reCAPTCHA marked' );
+                //       initSessionCookie($('[id$=studentNo]').val());
+                //       let showCoursera = {!showCoursera};
+                //   if (showCoursera) {
+                //       callToCoursera();
+                //   } else {
                     // if({!objOTP.checkToAllowOTP}) {
                     //     $('[id$=AlertPopUpForOTPMode]').show();
                     // } else {
                         initSessionCookie($('[id$=studentNo]').val());
                         callTo();
                     // }
-                  }
-              }
+            //       }
+            //   }
                       }
               function callpayment() {
                   callmakepayment();

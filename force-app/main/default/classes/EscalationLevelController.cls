@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : Ravi
  * @group             : 
- * @last modified on  : 29-11-2024
- * @last modified by  : @BK
+ * @last modified on  : 05--08--2025
+ * @last modified by  : @Ravi
 **/
 global class EscalationLevelController {
 
@@ -59,8 +59,7 @@ global class EscalationLevelController {
                 'Logistics' => new WrapperUserClass('Deepali Shetty', 'Deepali Shetty', 'Rajiv Shah', ''),
                 'Student Support' => new WrapperUserClass('Sangeeta Shetty', 'Sangeeta Shetty', 'Rajiv Shah', ''),
                 'AEP Request' =>  new WrapperUserClass('Admission Dept.', 'Admission Dept.', 'Rajiv Shah', ''),
-                'LC' => new WrapperUserClass('', 'Binoy Nair', 'Amit Deshmukh', 'Rajiv Shah')
-                
+                'LC' => new WrapperUserClass('', 'Anurag Nath', 'Amit Deshmukh', 'Rajiv Shah')      
             };
 
             if (lstCase.size() > 0) {

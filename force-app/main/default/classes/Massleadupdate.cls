@@ -269,7 +269,7 @@ public with sharing class Massleadupdate {
                 //    currentMsg = new ApexPages.Message(ApexPages.severity.INFO, 'Updated ' + sr.getId()+ ' Records');
                 //    ApexPages.addMessage(currentMsg );
                     System.debug('Successfully updated Lead. Lead ID: ' + sr.getId());
-                    url = 'https://nga-sce.force.com/'+sr.getId();
+                    url = 'https://ngasce.my.site.com/'+sr.getId();
                     urlSuccessSet.add(url);
                   }
                   else                                   
@@ -463,11 +463,13 @@ public with sharing class Massleadupdate {
       
         }
         else{
-              if(userid=='00590000002cMwh')
+        
+              if(userDetails.UserRole.Name=='Learning Center Bangalore')
                     {
+                    system.debug('LC Banglore login');
                   lstCenter =[select id, Name, nm_Active__c,  
     RecordType.Name,nm_LearningCenter__r.Contact_No_1__c 
-    from nm_Centers__c where nm_Active__c =true and RegistrationClosed__c=false and OwnerId in('00590000002cMwh','0052j0000013124') order by name asc];
+    from nm_Centers__c where nm_Active__c =true and RegistrationClosed__c=false and Owner.Name in ('LC Bangalore','LC Chennai')  order by name asc];
                      }
                      else{
      lstCenter =[select id, Name, nm_Active__c,  

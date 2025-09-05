@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : shubhranshu
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 13-09-2024
+ * @Last Modified By   : @Shailesh
+ * @Last Modified On   : 25-06-2025
  * @Modification Log   : 
  * Ver       Date            Author      		    Modification
  * 1.0    26/3/2020   shubhranshu     Initial Version
@@ -421,14 +421,14 @@ public without sharing class lightningButtonController {
 
             Account upAccount = new Account();
             upAccount.Id = AccountId;
-            approve =  approve == 'Rejected' ? 'On Hold-Rejected' : approve;
+            //approve =  approve == 'Rejected' ? 'On Hold-Rejected' : approve;
             upAccount.Interview_Status__c = approve;
             if(approve != 'On Hold-Rejected') {
                 upAccount.nm_ReasonForICChange__c = String.isNotBlank(InterviewComment) ? 
                     InterviewComment + '\n ' + UserInfo.getName() +' : '+ comment + ' : ' + Datetime.now().format('MMM dd, yyyy hh:mm a') : + UserInfo.getName() +' : '+ comment + ' : ' + Datetime.now().format('MMM dd, yyyy hh:mm a');
             }
             update upAccount;
-            if(approve == 'On Hold-Rejected') {
+            if(approve == 'Rejected') { //approve == 'On Hold-Rejected'
                 String linkOfStudent = URL.getSalesforceBaseUrl().toExternalForm() + '/'  + objAccount.Id;
                 sendEmailForRejection(objAccount.Name, linkOfStudent);
             }
@@ -541,12 +541,12 @@ public without sharing class lightningButtonController {
         Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
         String[] sendingToAddress = new List<String>();
         if(System.Label.Environment == 'Sandbox') {
-            sendingToAddress.add('suyog.deshmukh.ext@nmims.edu');
-            sendingToAddress.add('dsuyog2013@gmail.com');
+            sendingToAddress.add('vicky.sahu.EXT@nmims.edu');
+            sendingToAddress.add('shailesh.maurya.EXT@nmims.edu');
         } else if(System.Label.Environment == 'Production') {
             sendingToAddress.add('manasvi.malve@nmims.edu');
         }
-        string[] bccAddress = new List<String>{'suyog.deshmukh.ext@nmims.edu'};
+        string[] bccAddress = new List<String>{'vicky.sahu.EXT@nmims.edu'};
         email.setBccAddresses(bccAddress);
         System.debug('bccAddress '+bccAddress);
         

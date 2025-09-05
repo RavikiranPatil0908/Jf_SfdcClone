@@ -333,12 +333,14 @@ public class VVCAssignmentBatch implements Database.Batchable<SObject>, Schedula
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
         OrgWideEmailAddress owe = [SELECT id,Address,DisplayName FROM OrgWideEmailAddress WHERE DisplayName = 'NMIMS CDOE' LIMIT 1];
         String[] ccAddress = System.Label.setBccAdderess.split(',');
+        ccAddress.remove(0);
         String[] sendingToAddress = new List<String>{
-            'khushboo.thakkar@nmims.edu',
-            'sangeeta.shetty@nmims.edu',
-            'farah.shaikh@nmims.edu',
-            'neeta.vichare@nmims.edu',
-            'hemal.doshi@nmims.edu'
+            // 'khushboo.thakkar@nmims.edu',
+            // 'sangeeta.shetty@nmims.edu',
+            // 'farah.shaikh@nmims.edu',
+            // 'neeta.vichare@nmims.edu',
+            // 'hemal.doshi@nmims.edu',
+            'ncdoesupervisors@nmims.edu'
         };
         mail.setCcAddresses(ccAddress);
         mail.setToAddresses(sendingToAddress);

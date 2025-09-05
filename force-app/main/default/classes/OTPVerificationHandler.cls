@@ -2,13 +2,14 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 28--03--2025
+ * @last modified on  : 03--09--2025
  * @last modified by  : @Ravi
 **/
 public without sharing class OTPVerificationHandler {
 
     public OTPFields sendOTP(OTPFields objOTP) {
         try {
+            
             objOTP.errorMsg = '';
             System.debug('OtpMode --> ' + objOTP.OtpMode);
             if (objOTP.OtpMode == 'E') {
@@ -23,13 +24,20 @@ public without sharing class OTPVerificationHandler {
                 System.debug('mobile No-->'+objOTP.mobileNo.left(10));
                 sendSMS sendSMS = new sendSMS(objOTP.mobileNo.left(10),smsMessage);
                 // enqueue the job for processing
-                Id jobID = System.enqueueJob(sendSMS);
-                System.debug('jobID -->'+jobID);
-                
+                // Id jobID = System.enqueueJob(sendSMS);
+                // System.debug('jobID -->'+jobID);
                 objOTP.alertMsg = '******'+objOTP.mobileNo.right(4);
                 objOTP.otpStatus = 'OTP Sent';
-                System.debug('otpStatus-->'+objOTP.otpStatus);
+                System.debug('otpStatus-->'+objOTP.otpStatus); 
                 objOTP.isOTPSent = true;
+                if(objOTP.otpStatus == 'OTP Sent' && objOTP.recordObject == 'Lead') {
+                    Lead objLead = new Lead(id=objOTP.recordId, Mobile_Verification_Token__c= objOTP.OtpCode);
+                    update objLead;
+                }
+                if(objOTP.otpStatus == 'OTP Sent' && objOTP.recordObject == 'Account') {
+                    Account objAccount = new Account(id=objOTP.recordId, Mobile_Verification_Token__c= objOTP.OtpCode);
+                    update objAccount;
+                }
             } else {
                 objOTP.OtpMode = 'N';
                 System.debug('otpStatus-->'+objOTP.otpStatus);
@@ -138,7 +146,13 @@ public without sharing class OTPVerificationHandler {
                 mailRecordId = objOTP.PersonContactId;
                 mailTemplateId = emailTemplate.Id;
             }
-            SendEmailForOTP.callEmailAlertFlow(mailRecordId, mailTemplateId);
+            
+            if(objOTP.isEmailMobileChange){
+                 SendEmailForEmailMobileChangeOTP.callEmailAlertFlowUpdateEmail(mailRecordId, mailTemplateId,objOTP.EmailId);
+            } else{
+                SendEmailForOTP.callEmailAlertFlow(mailRecordId, mailTemplateId);
+            }
+        
             String s2 = objOTP.EmailId.substringBefore('@');
             String s1 = '';
             Integer count = s2.length() - 4;
@@ -168,18 +182,35 @@ public without sharing class OTPVerificationHandler {
 
     public OTPFields verifyOTP(OTPFields objOTP) {
         objOTP.errorMsg = '';
+        String storedOtpCode = '';
+        System.debug('objOTP.Otp==>'+objOTP.Otp);
         if(String.isNotBlank(objOTP.Otp)) {
             Long otpEnteredTime = DateTime.now().getTime();
             Long milliseconds = otpEnteredTime - objOTP.otpSentTime;
             Long seconds = milliseconds / 1000;
-            if( (System.Label.Environment == 'Sandbox' && (objOTP.Otp== '11111')) || (objOTP.OtpCode == objOTP.Otp && seconds <= 180)){
+            if(objOTP.recordObject == 'Lead'){
+                Lead lead =[SELECT id , Email_Verification_Token__c, Mobile_Verification_Token__c FROM Lead WHERE id = :objOTP.recordId LIMIT 1];
+                if (objOTP.OtpMode == 'E') {
+                    storedOtpCode = lead.Email_Verification_Token__c;
+                } else if (objOTP.OtpMode == 'M') {
+                    storedOtpCode = lead.Mobile_Verification_Token__c;
+                }
+            }else if(objOTP.recordObject == 'Account') {
+                Account acc =[SELECT id , Email_Verification_Token__c,Mobile_Verification_Token__c FROM Account WHERE id = :objOTP.recordId LIMIT 1];
+                if (objOTP.OtpMode == 'E') {
+                    storedOtpCode = acc.Email_Verification_Token__c;
+                } else if (objOTP.OtpMode == 'M') {
+                    storedOtpCode = acc.Mobile_Verification_Token__c;
+                }
+            }
+            if( (System.Label.Environment == 'Sandbox' && (objOTP.Otp== '11111')) || (storedOtpCode == objOTP.Otp && seconds <= 180)){
                 objOTP.otpStatus = 'OTP Verified';
                 objOTP = verifyEmailAndMobile(objOTP);
                 if(!objOTP.isSuccess) {
                     objOTP.errorMsg = 'Something went wrong, Kindly try again later.';
                     return objOTP;
                 }
-            }else if(objOTP.OtpCode != objOTP.Otp) {
+            }else if(storedOtpCode != objOTP.Otp) {
                 objOTP.otpStatus = '903';
                 objOTP.errorMsg = 'Incorrect OTP Entered, kindly try again.';
             }else if(seconds > 180){
@@ -190,7 +221,7 @@ public without sharing class OTPVerificationHandler {
                 objOTP.errorMsg = 'OTP Verification has been failed, kindly try again';
                 
             }
-        }
+        } 
         objOTP.Otp = '';
         return objOTP;
     }

@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : @Shailesh
+ * @group             : 
+ * @last modified on  : 24-05-2025
+ * @last modified by  : @Shailesh
+**/
 public without sharing class SendEmailToPortalSaveLog {
     public static HttpCalloutMock mock = null; 
     private static Boolean isJobQueued = false;
@@ -7,13 +14,16 @@ public without sharing class SendEmailToPortalSaveLog {
         // if (!System.isFuture()) {
         //     CallWebService(request[0].templateId, request[0].recordId, request[0].type, request[0].parentId, request[0].mailId, request[0].fromEmailId, request[0].mailBody, request[0].mailBodytype,request[0].mailSubject,request[0].registrationNumber);
         // }
+        System.debug('request1234: ' + request);
+ 
         SaveMailLogWrapper mailLogWrapper = new SaveMailLogWrapper(
             request[0].templateId, request[0].type, request[0].recordId,
             request[0].parentId, request[0].mailId, request[0].fromEmailId,
             request[0].mailBody, request[0].mailBodytype, request[0].mailSubject,request[0].registrationNumber
         );
         if (!isJobQueued) {
-            System.enqueueJob(new SaveEmailToPortalLogQueueable(mailLogWrapper));
+            //System.enqueueJob(new SaveEmailToPortalLogQueueable(mailLogWrapper));
+            System.enqueueJob(new SaveEmailToPortalLogQueueableBatch(request));
             isJobQueued = true;
         }
     }

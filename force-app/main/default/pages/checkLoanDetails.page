@@ -2,13 +2,13 @@
   @description       : 
   @author            : @vickysahu
   @group             : 
-  @last modified on  : 02-17-2025
-  @last modified by  : @vickysahu
+  @last modified on  : 13--05--2025
+  @last modified by  : @Ravi
 -->
 <apex:page controller="CheckLoanDetailsController">
     <!-- Add Bootstrap CSS -->
-    <apex:includeScript value="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"/>
-    <apex:stylesheet value="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+    <apex:includeScript value="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" />
+    <apex:stylesheet value="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <apex:outputPanel >
         <div class="body table-responsive">
             <br/>
@@ -21,18 +21,19 @@
             <apex:outputPanel rendered="{!IF(!objWrapper.isEligiableForloan && !objOpp.Loan_Approved__c,true,false)}">
                 <h4 style="color: #FFBF00;">Student is not Eligible for Loan Approval</h4>
             </apex:outputPanel>
-            <br/><br/>
+            <br/>
+            <br/>
             <table class="table table-bordered text-center" style="width:70%">
                 <thead>
                     <tr>
-                    <th style="width:60%">Approval Stage Name</th>
-                    <th>Field Name</th>
-                    <th>Value</th>
-                    <th>Link</th>
+                        <th style="width:60%">Approval Stage Name</th>
+                        <th>Field Name</th>
+                        <th>Value</th>
+                        <th>Link</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <apex:repeat value="{!lstDocument}" var="objDoc" >
+                    <apex:repeat value="{!lstDocument}" var="objDoc">
                         <tr>
                             <td>
                                 <apex:outputPanel rendered="{!IF(objDoc.nm_Status__c == 'Approved' || objDoc.nm_Status__c == 'Admission Form & Documents Provisional',true,false)}">
@@ -47,13 +48,13 @@
                             </td>
                             <td>
                                 <p>{!objDoc.nm_Status__c}</p>
-                            </td> 
+                            </td>
                             <td>
-                                <a href="/{!objDoc.Id}" target="_blank">Click here</a> 
-                            </td>                                                    
+                                <a href="/{!objDoc.Id}" target="_blank">Click here</a>
+                            </td>
                         </tr>
                     </apex:repeat>
-                    
+
                     <!-- <apex:outputPanel rendered="{!!objWrapper.isDocumentApproved}">
                         <apex:repeat value="{!lstDocumentNotApproved}" var="objDoc" >
                             <tr>
@@ -72,7 +73,7 @@
                             </tr>
                         </apex:repeat>
                     </apex:outputPanel> -->
-                    
+
                     <apex:outputPanel rendered="{!objWrapper.isInterviewApplicable}">
                         <tr>
                             <td>
@@ -95,26 +96,28 @@
                         </tr>
                     </apex:outputPanel>
 
-                    <tr>
-                        <td>
-                            <apex:outputPanel rendered="{!objOpp.Account.is_Video_Call_Verified__c}">
-                                <p style="color: green;">Video Verification</p>
-                            </apex:outputPanel>
-                            <apex:outputPanel rendered="{!!objOpp.Account.is_Video_Call_Verified__c}">
-                                <p style="color: #FFBF00;">Video Verification</p>
-                            </apex:outputPanel>
-                        </td>
-                        <td>
-                            <P>is Video Call Verified</P>
-                        </td>
-                        <td>
-                            <p>{!objOpp.Account.is_Video_Call_Verified__c}</p>
-                        </td>
-                        <td>
-                            <a href="/{!objOpp.AccountId}" target="_blank">Click here</a>
-                        </td>
-                    </tr>
-                    
+                    <apex:outputPanel rendered="{!objWrapper.isVVCApplicable}">
+                        <tr>
+                            <td>
+                                <apex:outputPanel rendered="{!objOpp.Account.is_Video_Call_Verified__c}">
+                                    <p style="color: green;">Video Verification</p>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!!objOpp.Account.is_Video_Call_Verified__c}">
+                                    <p style="color: #FFBF00;">Video Verification</p>
+                                </apex:outputPanel>
+                            </td>
+                            <td>
+                                <P>is Video Call Verified</P>
+                            </td>
+                            <td>
+                                <p>{!objOpp.Account.is_Video_Call_Verified__c}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.AccountId}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+
                     <apex:outputPanel rendered="{!objWrapper.isDEBApplicable}">
                         <tr>
                             <td>
@@ -136,7 +139,7 @@
                             </td>
                         </tr>
                     </apex:outputPanel>
-                    
+
                     <tr>
                         <td>
                             <apex:outputPanel rendered="{!objOpp.Account.nm_IsEmailVerified__c}">
@@ -326,7 +329,116 @@
                             <td>Not Found</td>
                         </apex:outputPanel>
                     </tr>
-                    
+
+                    <tr>
+                        <apex:outputPanel rendered="{!!objWrapper.isLateFeeApplicable}">
+                            <td>
+                                <p style="color: green;">Late Fees is Applicable</p>
+                            </td>
+                            <td>
+                                <p>No</p>
+                            </td>
+                            <td>
+                                <p>{!objWrapper.lateFeeApplicableAmount}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                            </td>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!objWrapper.isLateFeeApplicable}">
+                            <td>
+                                <p style="color: green;">Late Fees is Applicable</p>
+                            </td>
+                            <td>
+                                <p>Yes</p>
+                            </td>
+                            <td>
+                                <p>{!objWrapper.lateFeeApplicableAmount}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                            </td>
+                        </apex:outputPanel>
+                    </tr>
+
+                    <apex:outputPanel rendered="{!objWrapper.isLateFeeApplicable}">
+                        <tr>
+                            <apex:outputPanel rendered="{!objWrapper.isLateFeePending}">
+                                <td>
+                                    <p style="color: #FFBF00;">Late Fee Paid Amount</p>
+                                </td>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!objWrapper.isLateFeePending}">
+                                <td>
+                                    <p style="color: green;">Late Fee Paid Amount</p>
+                                </td>
+                            </apex:outputPanel>
+                            <td>
+                                <p>Amount</p>
+                            </td>
+                            <td>
+                                <p>{!objWrapper.totalAmount}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+
+                    <!-- <apex:outputPanel rendered="{!!objWrapper.isLateFeePending}">
+                            <td>
+                                <p style="color: green;">Late Fee Paid Amount</p>
+                            </td>
+                            <td>
+                                <p>Amount</p>
+                            </td>
+                            <td>
+                                <p>{!objWrapper.totalAmount}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                            </td>
+                        </apex:outputPanel>
+                    </tr> -->
+
+                    <apex:outputPanel rendered="{!objWrapper.isLateFeeApplicable}">
+                        <tr>
+                            <apex:outputPanel rendered="{!objWrapper.isProductAdded}">
+                                <td>
+                                    <p style="color: green;">Late Fee Product Amount</p>
+                                </td>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!objWrapper.isProductAdded}">
+                                <td>
+                                    <p style="color: #FFBF00;">Late Fee Product Amount</p>
+                                </td>
+                            </apex:outputPanel>
+                            <td>
+                                <p>Amount</p>
+                            </td>
+                            <td>
+                                <p>{!objWrapper.productLateFee}</p>
+                            </td>
+                            <td>
+                                <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    <!-- <apex:outputPanel rendered="{!!objWrapper.isProductAdded}">
+                                <td>
+                                    <p style="color: #FFBF00;">Late Fee Product Amount</p>
+                                </td>
+                                <td>Amount</td>
+                                <td>
+                                    <p></p>
+                                </td>
+                                <td>
+                                    <a href="/{!objOpp.Id}" target="_blank">Click here</a>
+                                </td>
+                            </apex:outputPanel>
+                        </tr>
+                    </apex:outputPanel> -->
+
                 </tbody>
             </table>
         </div>
@@ -565,5 +677,5 @@
             </table>
         </div>
     </apex:outputPanel> -->
-    <apex:includeScript value="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/pages/ui/notifications.js"/>
+    <apex:includeScript value="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/pages/ui/notifications.js" />
 </apex:page>

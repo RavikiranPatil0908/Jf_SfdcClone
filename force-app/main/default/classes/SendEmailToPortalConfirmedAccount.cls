@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : @Shailesh
+ * @group             : 
+ * @last modified on  : 24-05-2025
+ * @last modified by  : @Shailesh
+**/
 public class SendEmailToPortalConfirmedAccount {
 
     public static HttpCalloutMock mock = null; 
@@ -8,10 +15,24 @@ public class SendEmailToPortalConfirmedAccount {
         // if (!System.isFuture()) {
         //     CallWebService(request[0].templateName, request[0].recordId, request[0].type, request[0].parentId, request[0].mailId, request[0].fromEmailId, request[0].registrationNumber);
         // }
+        // for(FlowInputs requestObj: request){
+        //     System.debug('request: ' + request);  
+        //     System.enqueueJob(new SendEmailToPortalQueueable(requestObj.templateName, requestObj.recordId,requestObj.type, requestObj.parentId, requestObj.mailId, requestObj.fromEmailId,requestObj.registrationNumber));
+        // }
+
+        if (!isJobQueued) {
+            System.enqueueJob(new SendEmailToPortalQueueableBatch(request));
+            isJobQueued = true;
+        }
+
+     
+        /** 
         if (!isJobQueued) {
             System.enqueueJob(new SendEmailToPortalQueueable(request[0].templateName, request[0].recordId, request[0].type, request[0].parentId, request[0].mailId, request[0].fromEmailId,request[0].registrationNumber));
             isJobQueued = true;
         }
+
+        */
     }
 
     // @future(callout=true)

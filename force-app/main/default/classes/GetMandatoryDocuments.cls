@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 28-09-2024
- * @last modified by  : @BK
+ * @last modified on  : 23--07--2025
+ * @last modified by  : @Ravi
 **/
 public without sharing class GetMandatoryDocuments {
 
@@ -36,7 +36,7 @@ public without sharing class GetMandatoryDocuments {
         addProfessionalDocumentsIfApplicable(objStatus, mandatoryDocuments);
         addDefenceDocumentsIfApplicable(objStatus, mandatoryDocuments);
         addDifferentlyAbledDocumentsIfApplicable(objStatus, mandatoryDocuments);
-        // addCastCertificateDocumentsIfApplicable(objStatus, mandatoryDocuments);
+        addCastCertificateDocumentsIfApplicable(objStatus, mandatoryDocuments);
         addLateralDocumentsIfApplicable(objStatus, mandatoryDocuments);
         addMasterDegreeMarkSheetIfApplicable(objStatus, mandatoryDocuments);
         addAadharCardDocumentsIfApplicable(objStatus, mandatoryDocuments);
@@ -240,12 +240,12 @@ public without sharing class GetMandatoryDocuments {
         }
     }
     
-    // // Helper method to add CastCertificate documents if applicable
-    // private void addCastCertificateDocumentsIfApplicable(StudentStatus objStatus, Set<String> documents) {
-    //     if (String.isNotBlank(objStatus.castCertificateDocument) && objStatus.castCertificateDocument != 'General' && PickListHelper.getPickListValuesForLeadCategory().contains(objStatus.castCertificateDocument) ) {
-    //         documents.add('Caste Certificate Document');
-    //     }
-    // }
+    // Helper method to add CastCertificate documents if applicable
+    private void addCastCertificateDocumentsIfApplicable(StudentStatus objStatus, Set<String> documents) {
+        if (String.isNotBlank(objStatus.castCertificateDocument) && objStatus.castCertificateDocument != 'General' && PickListHelper.getPickListValuesForLeadCategory().contains(objStatus.castCertificateDocument) ) {
+            documents.add('Caste Certificate Document');
+        }
+    }
     
     // Helper method to add Lateral documents if applicable
     private void addLateralDocumentsIfApplicable(StudentStatus objStatus, Set<String> documents) {

@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : shubhranshu
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 30-04-2024
+ * @Last Modified By   : @vickysahu
+ * @Last Modified On   : 04-08-2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -180,6 +180,9 @@ public class nmPaymentNewTracker {
             nm_Payment_Initiated__c objPaymentInitation = [select id,nm_Merchant_Track_Id__c from nm_Payment_Initiated__c  limit 1];
             controller.MakePaymentAfterResponse(paymentResponse(objPaymentInitation.nm_Merchant_Track_Id__c,'DownPayment-Admission_00QO0000009ybqKMAQ_0_PostPaymentPage_false_NA_cs_false_cs_1SemLecturesFee_null_false'+objLead.id,'CAPTURED'));
           //  controller.MakePaymentAfterResponse('1234','CC',objPaymentInitation.nm_Merchant_Track_Id__c ,'123456','CAPTURED',null,null,'EMI-Admission_00QO0000009ybqKMAQ_0_PostPaymentPage_false_NA_cs_false_cs_1SemLecturesFee_null'+objLead.id,'ABDCTest','cs_1SemLecturesFee_null',null,0,0);
+            controller.paymentFor ='DownPayment-Admission';
+            controller.ChangeToDownPayment('Lead',objLead.Id,'Admission','DownPayment-Admission',true);
+
         Test.stopTest();
     }
 

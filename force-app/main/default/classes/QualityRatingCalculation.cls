@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 28-01-2025
- * @last modified by  : @BK
+ * @last modified on  : 30--06--2025
+ * @last modified by  : @Ravi
 **/
 public without sharing class QualityRatingCalculation {
 
@@ -125,6 +125,7 @@ public without sharing class QualityRatingCalculation {
             'Anjali'=>'anjali.mishra@nmims.edu',
             'Aradhana'=>'aradhana.waghela@nmims.edu',
             'Bradley'=>'bradley.fernandes@nmims.edu',
+            'Blessy'=>'blessy.nadar@nmims.edu',
             'Devika'=>'devika.salvi@nmims.edu',
             'Diksha'=>'diksha.goswami@nmims.edu',
             'Grace'=>'grace.john@nmims.edu',
@@ -145,7 +146,6 @@ public without sharing class QualityRatingCalculation {
             'Smita'=>'smita.bhutak@nmims.edu',
             'Supriya'=>'supriya.dubey@nmims.edu',
             'Vidhi'=>'vidhi.waghela@nmims.edu',
-            'Vishal'=>'vishal.bal@nmims.edu',
             'Yoshua'=>'yoshua.nethala@nmims.edu',
             'Farah'=>'farah.shaikh@nmims.edu',
             'Khushboo'=>'khushboo.thakkar@nmims.edu',

@@ -1,0 +1,81 @@
+<!--
+  @description       : 
+  @author            : @Shailesh
+  @group             : 
+  @last modified on  : 28-07-2025
+  @last modified by  : @Shailesh
+-->
+<template>
+  
+  <div style="margin-left: 50px; margin-right: 50px;">
+    <div >
+      <span style="font-size: 24px;  font-weight: bold; margin-left: 10px; font-family: sans-serif, Arial, Helvetica;">AEP Efficiency Report</span>
+      
+      <lightning-button variant="brand" label="Refresh" title="Primary action" style ="float: right;  margin-right: 50px;  margin-bottom: 50px;" onclick={handleRefreshbtn} class="slds-m-left_x-small"></lightning-button>
+    <div onkeyup={handleKeyUp}  style ="float: right;  margin-right: 80px;  margin-bottom: 50px;">
+          <lightning-input
+              name="enter-search"
+              label="Search"
+              type="search"
+          ></lightning-input>
+      </div>
+      
+  </div>
+  <!-- <a href="location.reload();" class="ui-btn ui-icon-refresh ui-btn-icon-left">Refresh</a> -->
+   <!-- <a href="javascript: location.reload();"  style ="float: right;">Refresh</a> -->
+  <div class="slds-col slds-size_1-of-1 slds-no-space forceListViewManagerPrimaryDisplayManager" style ="float: right;  margin-top: 50px;  margin-bottom: 50px;">
+   <div class="hideSelection forceListViewManagerGrid" style="height: 650px;">
+        <lightning-datatable
+                key-field="id"
+                data={data}
+                columns={columns}
+                sorted-by={sortBy}
+                sorted-direction={sortDirection} 
+                onsort={handleSortdata} 
+               >
+        </lightning-datatable>
+    </div>
+    </div>
+  <!-- <table style="border: 1px solid; border-collapse: collapse;">
+  <tr style="border: 1px solid; border-collapse: collapse;">
+    <th style="border: 1px solid; border-collapse: collapse; padding: 15px; text-align: left;">LC Name</th>
+    <th style="border: 1px solid; border-collapse: collapse; padding: 15px; text-align: left;">AEP Name</th>
+    <th style="border: 1px solid; border-collapse: collapse; padding: 15px; text-align: left;"># of Active Councellors</th>
+    <th style="border: 1px solid; border-collapse: collapse; padding: 15px; text-align: left;">
+         {drive1} Sem1 Admissions
+    </th>
+    <th style="border: 1px solid; border-collapse: collapse; padding: 15px; text-align: left;">
+         {drive2} Sem1 Admissions
+    </th>
+    <th style="border: 1px solid; border-collapse: collapse; padding: 15px; text-align: left;">
+      {drive1} Performance
+    </th>
+    <th style="border: 1px solid; border-collapse: collapse; padding: 15px; text-align: left;">
+      {drive2} Performance
+    </th>
+  </tr>
+  
+
+<template for:each={listData} for:item="listVariable">
+
+    <tr key={listVariable.aepName}>
+    <td style="border: 1px solid; border-collapse: collapse; padding: 15px; text-align: left;">{listVariable.lcName}</td>
+    <td style="border: 1px solid; border-collapse: collapse; padding: 15px; text-align: left;">{listVariable.aepName}</td>
+    <td style="border: 1px solid; border-collapse: collapse; padding: 15px; text-align: left;">{listVariable.activeCounsellorCount}</td>
+    <td style="border: 1px solid; border-collapse: collapse; padding: 15px; text-align: left;">{listVariable.semCountValue}</td>
+    <td style="border: 1px solid; border-collapse: collapse; padding: 15px; text-align: left;">{listVariable.semCountValue1}</td>
+    <td style="border: 1px solid; border-collapse: collapse; padding: 15px; text-align: left;">{listVariable.peformanceValue}</td>
+    <td style="border: 1px solid; border-collapse: collapse; padding: 15px; text-align: left;">{listVariable.peformanceValue1}</td>
+  </tr>
+    
+    
+    
+    
+    
+  
+ 
+ </template>
+   </table> -->
+</div>
+
+</template>

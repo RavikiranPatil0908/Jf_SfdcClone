@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : @Shailesh
+ * @group             : 
+ * @last modified on  : 05-04-2025
+ * @last modified by  : @Shailesh
+**/
 @istest (SeeAllData=false)
 public with sharing class StudentPortalLoginHandlerTracker {
     public StudentPortalLoginHandlerTracker() {
@@ -24,6 +31,8 @@ public with sharing class StudentPortalLoginHandlerTracker {
         // acc1.Synced_With_LDAP__c = true;
         // update acc1;
         Opportunity opp1 = nmGenericTracker.CreateOpportunityWithAccountAndProgram('Closed Won','1','Bachelor Programs',acc1,'AnnualFee');
+        opp1.Synced_With_StudentZone__c =true;
+        update opp1;
         nm_Payment__c pay1 = CreatePaymentRecords(opp1.Id,'Admission','Opportunity','installmentRef123','Payment Approved');
 
         // Account acc2 = nmGenericTracker.CreateAccountWithCenterAndECForGivenDefenceAndLateralAndStatusvs2('No',false,'Confirmed');

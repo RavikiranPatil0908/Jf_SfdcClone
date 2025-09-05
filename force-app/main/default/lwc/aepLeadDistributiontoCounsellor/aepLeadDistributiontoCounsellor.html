@@ -1,0 +1,77 @@
+<!--
+  @description       : 
+  @author            : @Shailesh
+  @group             : 
+  @last modified on  : 11-06-2025
+  @last modified by  : @Shailesh
+-->
+<template>
+    <div class="main-div" style="margin-left: 50px; margin-right: 50px;">
+        
+            <lightning-card  title="Please select Counsellors">
+                <div class="main-div" style="margin-left: 50px;">
+                <lightning-checkbox-group name="Checkbox Group"
+                    label="Counsellors"
+                    options={options}
+                    value={counsellors}
+                    onchange={handleChange}>
+                </lightning-checkbox-group>
+        <!-- <p>Selected Values are: {counsellors}</p> -->
+                </div>
+            </lightning-card>
+    </div>
+    <div class="other-div" style="margin-left: 50px; margin-right: 50px;">
+           
+    <lightning-card  title="Please select lead details">
+        <div class="main-div" style="margin-left: 50px;">
+            <div class="slds-form__item" role="listitem">
+            <lightning-select
+                name="leadstatusName"
+                label="Select Lead status"
+                options={LeadStatusOptions}
+                onchange={handlestatuschange}
+                data-element="lead" 
+                required >
+            </lightning-select>
+        </div>
+        <div class="slds-form__item" role="listitem">
+            <lightning-select
+                name="leadSourceName"
+                label="Select leadSource"
+                options={leadSourceOptions}
+                onchange={handleleadSourcechange}
+                data-element="leadSource"
+                required >
+            </lightning-select>
+        </div>
+        <div class="slds-form__item" role="listitem">
+            <lightning-select
+                name="SessionName"
+                label="Select Session"
+                options={SessionOptions}
+                onchange={handlesessionchange}
+                data-element="session"
+                required >
+            </lightning-select>
+        </div>
+        <div class="slds-form__item" role="listitem">
+            <lightning-select
+                name="yearName"
+                label="Select Year"
+                options={YearOptions}
+                onchange={handleYearchange}
+                data-element="year"
+                required >
+            </lightning-select>
+        </div>
+        <div class="slds-form__item" role="listitem" style="margin: 20px;">
+         <lightning-button variant="brand" label="Distribute" title="Primary action" onclick={handleClickbtn} class="slds-m-left_x-small"></lightning-button>
+         </div>
+         </div>
+        </lightning-card>
+        
+
+    </div>
+     
+ 
+</template>

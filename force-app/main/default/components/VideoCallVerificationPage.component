@@ -2,8 +2,8 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 03-10-2025
-  @last modified by  : @vickysahu
+  @last modified on  : 28-05-2025
+  @last modified by  : @Shailesh
 -->
 <apex:component access="global" controller="VideoCallPageController" allowDML="true">
     <apex:attribute access="global" name="recordId" type="ID" description="Record Id" assignTo="{!objectId}"/>
@@ -148,12 +148,12 @@
                         </apex:outPutPanel>
 
 
-                        <apex:actionFunction name="reRenderFormPageBlock" reRender="VideoCallModule,callLogs,panelstatus,panelHeader,msgBlock" oncomplete="checkErrorMsg();">
+                        <apex:actionFunction name="reRenderFormPageBlock" reRender="VideoCallModule,callLogs,panelstatus,panelHeader,msgBlock,errorLog" oncomplete="checkErrorMsg();">
                         </apex:actionFunction>
                         <!---------------------------------------- for ------------------------------------------>
                         <apex:outputPanel styleClass="row clearfix" id="VideoCallModule" rendered="{!IF(isVideoVerificationEnabled, true, false)}">
 
-                            <apex:outputPanel rendered="{!IF((formStatus == 'Pending' || formStatus == 'Pending (Needs Re-booking)') && isSlotAvailable && showBookingForm && isVVCNotExpired, true, false)}" id="panelpending" styleClass="panelpending">
+                            <apex:outputPanel rendered="{!IF((formStatus == 'Pending' || formStatus == 'Pending (Needs Re-booking)') && isSlotAvailable && showBookingForm && (isVVCNotExpired || allowVVCAfterLastDate), true, false)}" id="panelpending" styleClass="panelpending">
                                    <!-- Action Function -->
                                    <apex:actionFunction name="callHandelDateChange" action="{!getVideoCallTimeRange}" rerender="chooseVenuePanel1,chooseVenuePanel2" oncomplete="hideLoader();"/> 
                                    <apex:actionFunction name="callHandelDateTimeRangeChange" action="{!getVideoCallTime}" rerender="chooseVenuePanel2" oncomplete="hideLoader();"/> 
@@ -350,7 +350,7 @@
                         </apex:outputPanel>
                     </div>
                      <!-- render if no active slot or payment not approved and document not approved -->
-                    <apex:outputPanel rendered="{!IF(formStatus != 'Verified' && formStatus != 'Slot Booked' , true, false)}" layout="none">
+                    <apex:outputPanel id="errorLog" rendered="{!IF(formStatus != 'Verified' && formStatus != 'Slot Booked' , true, false)}" layout="none">
                         <!-- <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" > -->
                             <!-- <div class="card">
                                 <div class="header p-b-0 b-b-n p-t-0 p-l-0 p-r-0">
@@ -385,15 +385,19 @@
                                         <apex:outputPanel rendered="{!IF(isVideoVerificationEnabled && !isSlotAvailable ,true,false)}">
                                             <h4>There are currently no active slots available. Thank you!</h4>
                                         </apex:outputPanel>
+
+                                        <apex:outputPanel rendered="{!IF(isDownPaymentMade && validAccStatus && isDebVerified && !showBookingForm ,true,false)}">
+                                            <h4>Please complete the loan process for video verification at your earliest convenience</h4>
+                                        </apex:outputPanel>
                                     </apex:outputPanel>
                                     
-                                    <apex:outputPanel rendered="{!!isVVCNotExpired}"> 
+                                    <apex:outputPanel rendered="{! IF(!isVVCNotExpired && !allowVVCAfterLastDate,true,false)}"> 
                                         <img src="/img/chatter/OpenRoad.svg" class="img-responsive" style="display: block;
                                         margin-left: auto;
                                         margin-right: auto;
                                         width: 50%"/>
                                         
-                                        <h4>The video verification deadline has passed.</h4>
+                                        <h4>Video verification has been Closed.</h4>
                                     </apex:outputPanel>           
                                 </div>
                             <!-- </div> -->

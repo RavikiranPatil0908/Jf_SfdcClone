@@ -4,7 +4,7 @@
   @Author             : shubhranshu
   @Group              : 
   @Last Modified By   : @vickysahu
-  @Last Modified On   : 03-06-2025
+  @Last Modified On   : 05-30-2025
   @Modification Log   : 
   ==============================================================================
   Ver         Date                     Author                 Modification
@@ -63,7 +63,7 @@
                 border: 2px solid #c00 !important;
             }
     
-            .overlay {
+            /* .overlay {
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -71,7 +71,7 @@
                 height: 100%;
                 z-index: 10;
                 background-color: rgba(0, 0, 0, 0.5);
-            }
+            } */
     
             .poup {
                 position: fixed;
@@ -99,6 +99,100 @@
                 margin-right: 4%;
                 font-style: italic;
             }
+
+            .transparent-background {
+              content: '';
+              display: block;
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-color: rgba(0, 0, 0, 0.5);
+              z-index: 999;
+            }
+    
+            .loader-center {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                display: block;
+                -webkit-transform: translate(-50%, -50%);
+                -ms-transform: translate(-50%, -50%);
+                transform: translate(-50%, -50%);
+            }
+    
+            .loader {
+                color: #ffffff;
+                font-size: 20px;
+                margin: 100px auto;
+                width: 1em;
+                height: 1em;
+                border-radius: 50%;
+                position: relative;
+                text-indent: -9999em;
+                -webkit-animation: load4 1.3s infinite linear;
+                animation: load4 1.3s infinite linear;
+                -webkit-transform: translateZ(0);
+                -ms-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+
+            @-webkit-keyframes load4 {
+              0%,
+              100% {
+                  box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+              }
+              12.5% {
+                  box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+              }
+              25% {
+                  box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+              }
+              37.5% {
+                  box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+              }
+              50% {
+                  box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+              }
+              62.5% {
+                  box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+              }
+              75% {
+                  box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+              }
+              87.5% {
+                  box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+              }
+          }
+  
+          @keyframes load4 {
+              0%,
+              100% {
+                  box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+              }
+              12.5% {
+                  box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+              }
+              25% {
+                  box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+              }
+              37.5% {
+                  box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+              }
+              50% {
+                  box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+              }
+              62.5% {
+                  box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+              }
+              75% {
+                  box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+              }
+              87.5% {
+                  box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+              }
+          }
         </style>
         <!-- Google Tag Manager -->
         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -113,6 +207,12 @@
         <!-- Header Begins Here -->
         <c:HeaderPage BannerText="{!IF(!IsReRegistration,'Registration','Re-Registration')}" ActiveBadge="Payment" />
         <!-- Header Ends Here -->
+
+        <div class="transparent-background loaderPanel" style="display:none;">
+            <div class="loader-center">
+                <div class="loader">Loading...</div>
+            </div>
+        </div>
 
         <!-- Payment -->
         <apex:form >
@@ -180,7 +280,8 @@
                                                 </script>
                                             </apex:outputPanel>
                                         </apex:outputlabel>
-                                        <apex:outputlabel rendered="{!isApplicant}">
+                                        <!-- <apex:outputlabel rendered="{!isApplicant}"> -->
+                                        <apex:outputlabel >
                                             <a href="/EnrollmentForm" target="_self" class="btn btn-primary btn-lg btn-custom">Access Application Status</a>
                                         </apex:outputlabel>
                                     </div>
@@ -246,7 +347,7 @@
                     </div>
                 </div>
             </div>
-            <div class="overlay"></div>
+            <!-- <div class="overlay"></div> -->
         </div>
         <!--All java script  -->
         <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/jquery-1.11.2.min.js')}" />
@@ -261,6 +362,8 @@
         <script>
         
             function redirectToSamePage() {
+                console.log('loan completed');
+                $('.loaderPanel').hide();
                 window.location.href = `/ResTrackId=${paymentTrackId}`;
             }
 
@@ -274,12 +377,22 @@
                     return false;
                 }
             }
-            
-            
 
+            // function showLoader() {
+            //     $('.loader-overlay').removeClass('hidden');
+            //     $('body').addClass('no-scroll'); // Disable scrolling and interactions
+            // }
+
+            // function hideLoader() {
+            //     $('.loader-overlay').addClass('hidden');
+            //     $('body').removeClass('no-scroll'); // Re-enable scrolling and interactions
+            // }
+            
+            
             $(document).ready(function () { 
                 $('.ProceedToLoanBtn').click(function() {
                     $(this).attr("disabled", true);
+                    $('.loaderPanel').show();
                 });
                 $('body').on('click', '.disclaimerBtn', function () {
                     $('[id$=AddDisclaimer]').css("display", "none");

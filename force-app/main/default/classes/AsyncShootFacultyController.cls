@@ -6,6 +6,7 @@ public class AsyncShootFacultyController {
     public List<Async_Shoot_Post_Production__c> records { get; set; }
     public String videoLink { get; set; }
     public Boolean showMsg  { get; set; }
+    public Integer RemarkV  { get; set; }
     
     // Pagination Variables
     public Integer pageSize { get; set; }
@@ -62,10 +63,11 @@ public class AsyncShootFacultyController {
                 system.debug('totalPages==>'+totalPages);
                 
                 records = [
-                    SELECT Id, Name, Faculty_Email__c,Faculty_Name__c, Chapter_Name__c,Current_Download_Link__c,Subject__c,Post_Production_Status__c,Status_Sort__c,Video_Link_Version_2__c,Video_Link_Version_1__c FROM Async_Shoot_Post_Production__c
-                    WHERE Faculty_Email__c = :facultyEmail  ORDER BY Status_Sort__c ASC,Post_Production_Status__c DESC LIMIT :pageSize OFFSET :((pageNumber - 1) * pageSize)];
+                    SELECT Id, Name, Faculty_Email__c,Faculty_Name__c, Chapter_Name__c,Current_Download_Link__c,Subject__c,Post_Production_Status__c,Status_Sort__c,Video_Link_Version_2__c,Video_Link_Version_1__c,Video_Link_Version_3__c,Video_Link_Version_Number__c FROM Async_Shoot_Post_Production__c
+                    WHERE Faculty_Email__c = :facultyEmail and Post_Production_Status__c in ('Sent For Faculty Review','Faculty Comments Fixed by Production') ORDER BY Status_Sort__c ASC,Post_Production_Status__c DESC LIMIT :pageSize OFFSET :((pageNumber - 1) * pageSize)];
                 //ORDER BY Status_Sort__c ASC,Post_Production_Status__c DESC
                 facultyName=records[0].Faculty_Name__c;
+                system.debug('records.Video_Link_Version_3__c==>'+ records[0].Video_Link_Version_3__c);
                 system.debug('records.size()==>'+records.size());
                 If(records.size()==0)
                 {

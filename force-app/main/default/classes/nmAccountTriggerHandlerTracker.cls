@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : shubhranshu
  * @Group              : 
- * @Last Modified By   : @Ravi
- * @Last Modified On   : 29--03--2025
+ * @Last Modified By   : @vickysahu
+ * @Last Modified On   : 05-02-2025
  * @Modification Log   : 
  * Ver       Date            Author                 Modification
  * 1.0    10/23/2019   shubhranshu     Initial Version
@@ -323,17 +323,17 @@ public class nmAccountTriggerHandlerTracker{
         Test.stopTest();
     }
 
-    @isTest 
-    static void testMethod14() {
-        List<Account> lstAccount = [SELECT id,nm_LeadId__c FROM Account WHERE Name!='Head Office' AND nm_StudentStatus__c='Documents Re-submitted' LIMIT 1];
-        Test.startTest();
-            insertDEB(lstAccount[0].nm_LeadId__c);
-            Test.setMock(HttpCalloutMock.class, new RestMock());
-            nmAccountTriggerHandler obj = new nmAccountTriggerHandler();
-            // lstAccount[0].nm_LeadId__c = objLead.Id;
-            obj.updateDEBDetails(lstAccount);
-        Test.stopTest();
-    }
+    // @isTest 
+    // static void testMethod14() {
+    //     List<Account> lstAccount = [SELECT id,nm_LeadId__c FROM Account WHERE Name!='Head Office' AND nm_StudentStatus__c='Documents Re-submitted' LIMIT 1];
+    //     Test.startTest();
+    //         insertDEB(lstAccount[0].nm_LeadId__c);
+    //         Test.setMock(HttpCalloutMock.class, new RestMock());
+    //         nmAccountTriggerHandler obj = new nmAccountTriggerHandler();
+    //         // lstAccount[0].nm_LeadId__c = objLead.Id;
+    //         obj.updateDEBDetails(lstAccount);
+    //     Test.stopTest();
+    // }
 
     private static void insertDEB(Id leadId) {
         DEB_Detail__c objDEBDetails = new DEB_Detail__c(

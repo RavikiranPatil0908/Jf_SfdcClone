@@ -2,14 +2,14 @@
  * @description       : DigilockerWebService class to handle API interactions with DigiLocker.
  * @author            : @test
  * @group             : 
- * @last modified on  : 11-09-2024
- * @last modified by  : @BK
+ * @last modified on  : 27--07--2025
+ * @last modified by  : @Ravi
 **/
 public class DigilockerWebService {
     
     // Constants for the API endpoints
     private static final String PRODUCTION_URL = 'https://kyc-api.surepass.io';
-    private static final String SANDBOX_URL = 'https://sandbox.surepass.io';
+    private static final String SANDBOX_URL = 'https://kyc-api.surepass.io';
 
     /**
      * @description Generates a DigiLocker OAuth URL where the end user can complete the DigiLocker OAuth process.
@@ -29,24 +29,51 @@ public class DigilockerWebService {
         req.setHeader('authorization', 'Bearer ' + System.Label.DigiLockerToken);
         req.setHeader('content-type', 'application/json');
 
-        // Constructing the JSON body for the POST request
-        String jsonBody = '{"data":{' +
-                                '"prefill_options":{' +
-                                    '"full_name": "' + String.escapeSingleQuotes(fullName) + '",' +
-                                    '"mobile_number": "' + String.escapeSingleQuotes(mobile) + '",' +
-                                    '"user_email": "' + String.escapeSingleQuotes(userEmail) + '"' +
-                                '},' +
-                                '"expiry_minutes":20,' +
-                                '"send_sms":false,' +
-                                '"send_email":false,' +
-                                '"verify_phone":false,' +
-                                '"verify_email":false,' +
-                                '"signup_flow":false,' +
-                                '"redirect_url": "'+ String.escapeSingleQuotes(System.Label.Site_Url) + 'EnrollmentForm?nav=document",' +
-                                '"state":"test"' +
-                            '}}';
-        System.debug(jsonBody);
+        //Commented By -Ravi
+        // // Constructing the JSON body for the POST request
+        // String jsonBody = '{"data":{' +
+        //                         '"prefill_options":{' +
+        //                             '"full_name": "' +String.escapeSingleQuotes(fullName)+ '",' +
+        //                             '"mobile_number": "' + String.escapeSingleQuotes(mobile) + '",' +
+        //                             '"user_email": "' + String.escapeSingleQuotes(userEmail) + '"' +
+        //                         '},' +
+        //                         '"expiry_minutes":20,' +
+        //                         '"send_sms":false,' +
+        //                         '"send_email":false,' +
+        //                         '"verify_phone":false,' +
+        //                         '"verify_email":false,' +
+        //                         '"signup_flow":false,' +
+        //                         '"redirect_url": "'+ String.escapeSingleQuotes(System.Label.Site_Url) + 'EnrollmentForm?nav=document",' +
+        //                         '"state":"test"' +
+        //                     '}}';
+        // req.setBody(jsonBody);
+      
+        // request payload using Maps
+        Map<String, Object> prefillOptions = new Map<String, Object>{
+            'full_name' => fullName,
+            'mobile_number' => mobile,
+            'user_email' => userEmail
+        };
+        //map of jasonBody
+        Map<String, Object> dataMap = new Map<String, Object>{
+            'prefill_options' => prefillOptions,
+            'expiry_minutes' => 20,
+            'send_sms' => false,
+            'send_email' => false,
+            'verify_phone' => false,
+            'verify_email' => false,
+            'signup_flow' => false,
+            'redirect_url' => System.Label.Site_Url + 'EnrollmentForm?nav=document',
+            'state' => 'test'
+        };
+
+        Map<String, Object> bodyWrapper = new Map<String, Object>{
+            'data' => dataMap
+        };
+
+        String jsonBody = JSON.serialize(bodyWrapper);
         req.setBody(jsonBody);
+        System.debug(jsonBody);
 
         // Handling the API response
         return handleDigilockerInitialize(req, 'InitializeDigilockerAPI', recordId);
@@ -130,14 +157,14 @@ public class DigilockerWebService {
             resp = http.send(req);
             if (resp.getStatusCode() == 200) {
                 response = DigilockerInitializeWrapper.parse(resp.getBody());
-                insertAPIRequest(req.getBody(), resp.getBody(), apiName, true, recordId, sObjName);
+                insertAPIRequest2(req.getBody(), resp.getBody(), apiName, true, recordId, sObjName);
                 return response;
             } else {
-                insertAPIRequest(req.getBody(), resp.getBody(), apiName, false, recordId, sObjName);
+                insertAPIRequest2(req.getBody(), resp.getBody(), apiName, true, recordId, sObjName);
             }
         } catch (Exception e) {
             System.debug(e.getMessage() + ' -- ' + e.getLineNumber());
-            insertAPIRequest(req.getBody(), e.getMessage() + ' -- ' + e.getLineNumber(), apiName, false, recordId, sObjName);
+            insertAPIRequest2(req.getBody(), e.getMessage() + ' -- ' + e.getLineNumber(), apiName, false, recordId, sObjName);
         }
         return null;
     }
@@ -211,15 +238,16 @@ public class DigilockerWebService {
 
         try {
             resp = http.send(req);
+          System.debug('status==?'+resp.getStatusCode());
             if (resp.getStatusCode() == 200) {
                 response = DigilockerDocumentDownloadWrapper.parse(resp.getBody());
-                // insertAPIRequest(req.getEndpoint(), resp.getBody(), apiName, true, recordId, sObjName);
+                insertAPIRequest(req.getEndpoint(), resp.getBody(), apiName, true, recordId, sObjName);
                 return response;
             } else {
                 // insertAPIRequest(req.getEndpoint(), resp.getBody(), apiName, false, recordId, sObjName);
             }
         } catch (Exception e) {
-            // insertAPIRequest(req.getEndpoint(), e.getMessage() + ' -- ' + e.getLineNumber(), apiName, false, recordId, sObjName);
+            insertAPIRequest(req.getEndpoint(), e.getMessage() + ' -- ' + e.getLineNumber(), apiName, false, recordId, sObjName);
         }
         return null;
     }
@@ -233,6 +261,7 @@ public class DigilockerWebService {
     }
 
     /**
+     * 
      * @description Logs API requests and responses into a custom Salesforce object for auditing purposes.
      * @param req The request body or endpoint.
      * @param res The response body or status code.
@@ -242,9 +271,13 @@ public class DigilockerWebService {
      * @param sObjName The Salesforce object name derived from the record ID.
      */
     private static void insertAPIRequest(String req, String res, String apiName, Boolean isSuccess, Id recordId, String sObjName) {
+            APIRequestHandler.queueAPIRequest(req, res, apiName, isSuccess, recordId, sObjName, 'Digilocker');
+    }
+
+    private static void insertAPIRequest2(String req, String res, String apiName, Boolean isSuccess, Id recordId, String sObjName) {
         if(!Test.isRunningTest()) {
             APIRequestHandler.insertAPIRequest(req, res, apiName, isSuccess, recordId, sObjName, 'Digilocker');
-        }
+        } 
     }
 
 }

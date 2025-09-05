@@ -130,5 +130,12 @@ public class FacultyVideoReviewControllerTracker {
             FacultyVideoReviewController.updateTocWithAsync(lstTOC[0].Id,lstPP[0].Id,true);
         Test.stopTest();
     }
+    @isTest
+    static void unitTest7() {
+        Test.startTest();
+        FacultyVideoReviewController.callDelTOCfromPortal('tocid123', 'A-1234');
+        Test.stopTest();
+        
+    }
 
 }

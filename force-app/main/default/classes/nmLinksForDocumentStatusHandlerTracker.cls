@@ -4,7 +4,7 @@
  * @Author             : shubhranshu
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 10-21-2024
+ * @Last Modified On   : 31--07--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author      		      Modification
@@ -252,4 +252,17 @@ static void testUpdateLinksForDocumentsProvisionalWithHoldAccount() {
     Test.stopTest();
 }
 
+@isTest
+static void testDeleteDocuments() {
+   Account acc = [select Id , nm_StudentStatus__c , nm_EligiblityCriteria__c from Account limit 1];
+       nm_LinksForDocuments__c nmlinkDoc = [select Id ,Student_Inactive__c, nm_Account__c , nm_URLforDocuments__c , nm_URLforIncorrectDocuments__c , StudentStatus__c , Student_Number__c  from nm_LinksForDocuments__c  limit 1];
+       delete nmlinkDoc;
+       List<nm_LinksForDocuments__c> lstofDocs = new List<nm_LinksForDocuments__c>();
+       lstofDocs.add(nmlinkDoc);
+       Test.setMock(HttpCalloutMock.class, new RestMock());
+       Test.startTest();
+       nmLinksForDocumentStatusHandler obj = new nmLinksForDocumentStatusHandler();
+       obj.AfterDelete(lstofDocs);
+       Test.stopTest();
+}
 }

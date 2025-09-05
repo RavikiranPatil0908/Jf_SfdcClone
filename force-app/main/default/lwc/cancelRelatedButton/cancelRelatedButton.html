@@ -1,0 +1,58 @@
+<!--
+  @description       : 
+  @author            : @Ravi
+  @group             : 
+  @last modified on  : 20--08--2025
+  @last modified by  : @Ravi
+  Modifications Log
+  Ver   Date           Author   Modification
+  1.0   20--08--2025   @Ravi   Initial Version
+-->
+<template>
+    <template if:false={deRegister}>
+        <lightning-card>
+            <div class="slds-modal__header">
+                <h1 class="slds-modal__title slds-hyphenate">Cancel</h1>
+            </div>
+            <div class="slds-modal__content slds-p-around_medium">
+                <span>Request to Cancel student</span>
+                <div class="slds-col slds-size_2-of-1">
+                    <lightning-combobox label="Select action :" value={cancelType} options={cancelOptions}
+                        onchange={handleChange} required="true"></lightning-combobox>
+                </div>
+            </div>
+            <footer class="slds-modal__footer">
+                <lightning-button class="slds-m-around_small" label="Update Record" onclick={handleSave}
+                    variant="brand"></lightning-button>
+                <lightning-button class="slds-m-around_small" label="Cancel" onclick={handleCancel}
+                    variant="brand"></lightning-button>
+            </footer>
+        </lightning-card>
+    </template>
+
+    <template if:true={deRegister}>
+        <lightning-card>
+            <div class="slds-modal__header">
+                <h1 class="slds-modal__title slds-hyphenate">De-Registered Account</h1>
+            </div>
+            <div class="slds-modal__content slds-p-around_medium">
+                <span>Request to De-Register student</span>
+                <div class="slds-col slds-size_2-of-1">
+
+                    <lightning-combobox label="Select whether certificate issued or not:" options={certificateOptions}
+                        value={certificateValue} onchange={handleCertificateChange}
+                        required="true"></lightning-combobox>
+
+                    <lightning-combobox label="Select Program:" options={programOptions} value={programValue}
+                        required="true" onchange={handleProgramChange}></lightning-combobox>
+                </div>
+            </div>
+            <footer class="slds-modal__footer">
+                <lightning-button label="Update Record" onclick={handleUpdateRecord} class="slds-m-around_small"
+                    variant="brand"></lightning-button>
+                <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-around_small"
+                    variant="brand"></lightning-button>
+            </footer>
+        </lightning-card>
+    </template>
+</template>

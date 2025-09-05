@@ -2,7 +2,7 @@
  * @description       : Controller for fetching and paginating email logs for Leads, Accounts, and Cases.
  * @author            : @Ravi
  * @group             : 
- * @last modified on  : 05--05--2025
+ * @last modified on  : 02--06--2025
  * @last modified by  : @Ravi
  **/
 public without sharing class EmailLogsPageController {
@@ -25,6 +25,7 @@ public without sharing class EmailLogsPageController {
     public Integer currentPage { get; set; }
     public Integer counter { get; set; }
     public String regNo { get; set; }
+    public String msg {get;set;}
 
     public EmailLogsPageController() {
         pageNumber = 1;
@@ -40,6 +41,7 @@ public without sharing class EmailLogsPageController {
         isRecordQueried = false;
         mapData = '';
         regNo = '';
+        msg = 'Records Not found';
     }
 
     /**
@@ -88,13 +90,14 @@ public without sharing class EmailLogsPageController {
         }
         if (String.isNotBlank(regNo) && !this.isRecordQueried) {
             lstOfEmails = getEmailLogs(regNo).response;
-            totalRecords = lstOfEmails.size();
-            totalPages = (Integer) Math.ceil(totalRecords / (Decimal) pageSize);
-            mapOfkeyVsEmailRecords.clear();
-            applyPagination();
-            this.isRecordQueried=true;
-            //mapData=JSON.serialize(mapOfkeyVsEmailRecords);
-            System.debug('email List ==> Response' + mapData);
+            if (lstOfEmails != null) {
+                totalRecords = lstOfEmails.size();
+                totalPages = (Integer) Math.ceil(totalRecords / (Decimal) pageSize);
+                mapOfkeyVsEmailRecords.clear();
+                applyPagination();
+                this.isRecordQueried = true;
+                System.debug('email List ==> Response' + mapData);
+            }
         }
     }
 
@@ -166,6 +169,10 @@ public without sharing class EmailLogsPageController {
             resp = http.send(req);
             if (resp.getStatusCode() == 200) {
                 return wrapper.parse(resp.getBody());
+            } else if(resp.getStatusCode() == 503) {
+                msg='Service Unavailable';
+            } else {
+                msg='Something went wrong, please try again';
             }
         } catch (Exception e) {
             System.debug(e.getMessage());

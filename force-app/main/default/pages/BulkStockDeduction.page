@@ -1,0 +1,27 @@
+<apex:page controller="BulkStockDeductionController" sidebar="false" showHeader="true">
+    <h1>Bulk Stock Deduction</h1>
+    
+    <apex:form enctype="multipart/form-data">
+        <apex:pageBlock title="Upload CSV File">
+            
+            <apex:pageBlockSection >
+                <apex:outputLabel value="Select CSV File (SKU Name, Quantity, Centre Name)"/>
+                <apex:inputFile value="{!fileBody}" filename="{!fileName}" />
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockButtons >
+            <apex:actionRegion >
+                <apex:commandButton value="Upload and Process" action="{!processFile}" />
+                </apex:actionRegion>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        
+        <apex:pageBlock id="resultBlock">
+            <apex:outputPanel rendered="{!NOT(ISNULL(result))}">
+                <h3>Result:</h3>
+                <apex:outputText value="{!result}" escape="false"/>
+            </apex:outputPanel>
+        </apex:pageBlock>
+        
+    </apex:form>
+</apex:page>

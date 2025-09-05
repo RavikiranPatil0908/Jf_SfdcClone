@@ -16,6 +16,7 @@ public without sharing class FacultyVideoRemarksController {
     public Boolean showSuccess {get;set;}
     public String existingRemark {get; set;}
     public String existingRemarkV1 {get; set;}
+    public String existingRemarkV2 {get; set;}
     public String learnOC {get; set;}
     public String learnOb {get; set;}
     public String topics {get; set;}
@@ -35,6 +36,7 @@ public without sharing class FacultyVideoRemarksController {
         showSuccess = false;
         existingRemark = '';
         existingRemarkV1 = '';
+        existingRemarkV2 = '';
         String url = reviewLink();
         generatedEmbeddedLink = getId(url);
         errorMsg = '';
@@ -57,15 +59,20 @@ public without sharing class FacultyVideoRemarksController {
     }
 
     public String reviewLink() {
-        List<Async_Shoot_Post_Production__c> lstAsyncShoot = [SELECT Id,Name,Post_Production_Status__c,Internal_Video_Remarks__c,Topics_Covered__c,SubTopics__c,Learning_Objectives__c,Learning_Outcomes__c,Video_Link_Version_1__c,Faculty_Remarks_for_Edit_Version_1__c,Video_Link_Version_2__c,Faculty_Remarks_for_Edit_Version_2__c,Video_Link_Version_3__c,Subject__c,Program__c,Mapping_Status__c FROM Async_Shoot_Post_Production__c WHERE Id = :recordId];
+        List<Async_Shoot_Post_Production__c> lstAsyncShoot = [SELECT Id,Name,Post_Production_Status__c,Internal_Video_Remarks__c,Topics_Covered__c,SubTopics__c,Learning_Objectives__c,Learning_Outcomes__c,Video_Link_Version_1__c,Faculty_Remarks_for_Edit_Version_1__c,Video_Link_Version_2__c,Faculty_Remarks_for_Edit_Version_2__c,Video_Link_Version_3__c,Faculty_Remarks_for_Edit_Version_3__c,Subject__c,Program__c,Mapping_Status__c FROM Async_Shoot_Post_Production__c WHERE Id = :recordId];
         if(lstAsyncShoot.size() > 0) {
             asyncShootPostObject = lstAsyncShoot[0];
-            String videoLink = remark == '1' ? asyncShootPostObject.Video_Link_Version_1__c : remark == '2' ? asyncShootPostObject.Video_Link_Version_2__c : 'error';
+            //String videoLink = remark == '1' ? asyncShootPostObject.Video_Link_Version_1__c : remark == '2' ? asyncShootPostObject.Video_Link_Version_2__c : 'error';
+            String videoLink = remark == '1' ? asyncShootPostObject.Video_Link_Version_1__c : remark == '2' ? asyncShootPostObject.Video_Link_Version_2__c : remark == '3' ? asyncShootPostObject.Video_Link_Version_3__c : 'error';
             if(String.isNotBlank(videoLink) && videoLink != 'error') {
                 String fieldKey = 'Faculty_Remarks_for_Edit_Version_'+remark+'__c';
                 existingRemark = (String)asyncShootPostObject.get(fieldKey);
                 if(remark == '2') {
                     existingRemarkV1 = asyncShootPostObject.Faculty_Remarks_for_Edit_Version_1__c;
+                }
+                if(remark == '3') {
+                    existingRemarkV1 = asyncShootPostObject.Faculty_Remarks_for_Edit_Version_1__c;
+                    existingRemarkV2 = asyncShootPostObject.Faculty_Remarks_for_Edit_Version_2__c;
                 }
                 learnOb = asyncShootPostObject.Learning_Objectives__c;
                 learnOc = asyncShootPostObject.Learning_Outcomes__c;

@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 10-25-2024
- * @last modified by  : @vickysahu
+ * @last modified on  : 26--08--2025
+ * @last modified by  : @Ravi
 **/
 public without sharing class DashboardPageController {
 
@@ -43,6 +43,8 @@ public without sharing class DashboardPageController {
 
     private void queryRecordData(Id recordId) {
         objOTP.recordId = recordId;
+        System.debug('recordId'+recordId);
+        System.debug('this.objectType'+this.objectType);
         if (this.objectType == 'Account') {
             List<Account> lstAccount = [SELECT id,is_Video_Call_Verified__c,nm_DateOfBirth__c,nm_Nationality__c,nm_StudentStatus__c,Name,PersonMobilePhone,nm_Program__r.Bachelor_Specialization__c,nm_Program__r.nm_ProgramName__c,PersonEmail,PersonContactId,Is_Mobile_Verified__c,nm_IsEmailVerified__c,City_Shipping_Account__c,nm_Program__r.Form_Specialisation__c,nm_RegistrationNumber__c,nm_ProgramType__c,Program_Name__c,OwnerId FROM Account WHERE id=:recordId LIMIT 1];
             objRecord.name = lstAccount[0].Name;
@@ -87,9 +89,9 @@ public without sharing class DashboardPageController {
             objRecord.specialization = lstLead[0].nm_Program__r.Form_Specialisation__c;
             objRecord.isEmailVerified = lstLead[0].nm_IsEmailVerified__c;
             objRecord.isMobileVerified = lstLead[0].Is_Mobile_Verified__c;
-            objRecord.isLateral = String.isNotBlank(lstLead[0].Student_Number_Lateral__c) ? true : false;
-            objRecord.oldStudentNo = lstLead[0].Student_Number_Lateral__c;
-            objRecord.isLateralVerified = String.isNotBlank(lstLead[0].Year_Of_Passing_Lateral__c) ? true : false;
+           // objRecord.isLateral = String.isNotBlank(lstLead[0].Student_Number_Lateral__c) ? true : false;
+           // objRecord.oldStudentNo = lstLead[0].Student_Number_Lateral__c;
+          //  objRecord.isLateralVerified = String.isNotBlank(lstLead[0].Year_Of_Passing_Lateral__c) ? true : false;
             // OTP
             objOTP.isEmailVerified = lstLead[0].nm_IsEmailVerified__c;
             objOTP.isMobileVerified = lstLead[0].Is_Mobile_Verified__c;
@@ -182,7 +184,7 @@ public without sharing class DashboardPageController {
         System.debug('isSuccess ==>'+objResponse.isSuccess);
         objDEBRequest.errorMsg = 'error';
         if(objResponse.isSuccess) {
-            if(!objResponse.isDEBMatched) {
+            if(!objResponse.isDebMatched) {
                 objDEBRequest.errorMsg = 'mismatch-deb';
                 return;
             }
@@ -192,7 +194,6 @@ public without sharing class DashboardPageController {
                 return;
             }
 
-            
             objDEBRequest.errorMsg = 'success';
             objRecord.isDebVerificationPending = false;
             if(objRequest.objType == 'Account') {
@@ -240,9 +241,9 @@ public without sharing class DashboardPageController {
         public String specialization {get;set;}
         public Boolean isEmailVerified {get;set;}
         public Boolean isMobileVerified {get;set;}
-        public Boolean isLateral {get;set;}
-        public String oldStudentNo {get;set;}
-        public Boolean isLateralVerified {get;set;}
+        // public Boolean isLateral {get;set;}
+        // public String oldStudentNo {get;set;}
+        // public Boolean isLateralVerified {get;set;}
         public String currentStage {get;set;}
         public Boolean isVideoCallVerified {get;set;}
         public Map<String,Boolean> mapOfActionVsStatus {get;set;}

@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @vickysahu
  * @group             : 
- * @last modified on  : 02-14-2025
- * @last modified by  : @vickysahu
+ * @last modified on  : 20--06--2025
+ * @last modified by  : @Ravi
 **/
 public class VideoVerificationFormController {
     
@@ -22,10 +22,12 @@ public class VideoVerificationFormController {
             //wrapper.cancelDate = '';
             wrapper.validityDate = '';
             // wrapper.cancelDate2 = '';
-            List<Account> lstAccount = [SELECT Id, Differently_abled__c, nm_StudentImageUrl__c, nm_Program__r.nm_ProgramValidity__c, nm_Program__r.Specialisation__c, nm_Program__r.nm_ProgramDuration__c, nm_Program__r.nm_ProgramName__c, is_Video_Call_Verified__c, Salutation, FirstName, nm_DateOfBirth__c, LastName, nm_RegistrationNumber__c, nm_Program__r.Name, IC_Name__c, PersonMobilePhone, PersonEmail,nm_ProgramType__c,nm_Gender__c,Specialization_Type__c,nm_Program2__r.nm_ProgramName__c,OwnerId FROM Account WHERE Id=:recordId LIMIT 1];
+            List<Account> lstAccount = [SELECT Id, Differently_abled__c, nm_StudentImageUrl__c, nm_Program__r.nm_ProgramValidity__c, nm_Program__r.Specialisation__c, nm_Program__r.nm_ProgramDuration__c, nm_Program__r.nm_ProgramName__c,Is_Lateral__c,Sem__c,is_Video_Call_Verified__c, Salutation, FirstName, nm_DateOfBirth__c, LastName, nm_RegistrationNumber__c, nm_Program__r.Name, IC_Name__c, PersonMobilePhone, PersonEmail,nm_ProgramType__c,nm_Gender__c,Specialization_Type__c,nm_Program2__r.nm_ProgramName__c,OwnerId FROM Account WHERE Id=:recordId LIMIT 1];
             if (lstAccount.size() > 0) {
                 lstOpp = [SELECT Id,Applied_For_Loan__c,Loan_Type__c,Tenure__c,Loan_Amount__c,Is_Re_Registration_Payment__c,nm_Session__c,nm_Year__c,nm_Semester__c,nm_Category__c,Loan_Order_Status__c,Loan_Approved__c,Down_Payment_Made__c FROM Opportunity WHERE AccountId=: recordId AND Is_Re_Registration_Payment__c=false AND (nm_Category__c='Admission' OR nm_Category__c='Lateral Admission') LIMIT 1];
                 wrapper.acc = lstAccount[0];
+                wrapper.isLateral =lstAccount[0].Is_Lateral__c;
+                
                 if (lstOpp.size() > 0) {
                     //Calender__c obj = new Calender__c();
                     /*List<Calender__c> lstCalender = [SELECT Id,Last_Date_for_Cancellation__c,Session__c,Year__c,Category__c,nm_Type__c,Specialisation__c FROM Calender__c WHERE Category__c='Admission' AND Session_Start_Date__c <= Today AND Session_End_Date__c >= Today];
@@ -82,14 +84,18 @@ public class VideoVerificationFormController {
                         else if (objCancelDate.Percentage__c != null) {
                             mapOfCancelDate.put('PostDeduction' + objCancelDate.Percentage__c,objCancelDate);
                         }
+                        else if ((objCancelDate.Amount__c == 0 || objCancelDate.Amount__c == null) && objCancelDate.Percentage__c == null && !objCancelDate.Admission_Fee__c) {
+                            mapOfCancelDate.put('NoDeduction',objCancelDate);
+                        }
                     }
 
                     List<String> months = new List<String>{
                         'January', 'February', 'March', 'April', 'May', 'June', 
                         'July', 'August', 'September', 'October', 'November', 'December'
                     };
-
-                    Integer validityYear = Integer.valueOf(lstOpp[0].nm_Year__c) + Integer.valueOf(lstAccount[0].nm_Program__r.nm_ProgramValidity__c);
+                    
+                    wrapper.durationOfProgram = lstAccount[0].Is_Lateral__c != true ? lstAccount[0].nm_Program__r.nm_ProgramDuration__c : (Decimal.valueOf((Integer.valueOf(lstAccount[0].nm_Program__r.nm_ProgramValidity__c) -  Integer.valueOf(lstOpp[0].nm_Semester__c)) + 1) / 2); 
+                    Integer validityYear = lstAccount[0].Is_Lateral__c != true ? Integer.valueOf(lstOpp[0].nm_Year__c) + Integer.valueOf(lstAccount[0].nm_Program__r.nm_ProgramValidity__c) : Integer.valueOf(lstOpp[0].nm_Year__c) + (Integer.valueOf(lstAccount[0].nm_Program__r.nm_ProgramValidity__c) - Integer.valueOf(lstOpp[0].nm_Semester__c)) + 1;
                     validityYear = months.indexOf(lstOpp[0].nm_Session__c) == 0 ? validityYear - 1 : validityYear;
                     Integer month = months.indexOf(lstOpp[0].nm_Session__c) == 0 ? 12 : months.indexOf(lstOpp[0].nm_Session__c);
                     Integer numberOfDays = Date.daysInMonth(validityYear, month);
@@ -97,7 +103,7 @@ public class VideoVerificationFormController {
                     
                     //wrapper.cancelDate2 = lstnmPayment.size() > 0 && String.isNotBlank(lstnmPayment[0].Cancellation_to_date_2__c) ? lstnmPayment[0].Cancellation_to_date_2__c.replace('.','/') : '';
                     wrapper.opp = lstOpp[0];
-                    System.debug('cancel date');
+                    System.debug('wrapper.durationOfProgram'+ wrapper.durationOfProgram);
                     wrapper.mapOfConditionVsCancellationDate = mapOfCancelDate;
                     //wrapper.calender = objCalender;
                 }
@@ -233,9 +239,14 @@ public class VideoVerificationFormController {
 
         // @AuraEnabled
         // public String cancelDate2 {get;set;}
+        @AuraEnabled
+        public Boolean isLateral {get;set;}
 
         @AuraEnabled
         public String validityDate {get;set;}
+
+        @AuraEnabled
+        public Decimal durationOfProgram {get;set;}
 
         @AuraEnabled
         public String msg {get;set;}

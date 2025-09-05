@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 16-07-2024
- * @last modified by  : @BK
+ * @last modified on  : 22-04-2025
+ * @last modified by  : @Shailesh
 **/
 public without sharing class FacultyVideoReviewController {
 
@@ -132,10 +132,14 @@ public without sharing class FacultyVideoReviewController {
                 throw new AuraHandledException('Parameter missing');
             }
 
-            List<AsyncTOCLink__c> lstLinks = [SELECT id FROM AsyncTOCLink__c WHERE TOC__c=:tocId AND Async_Shoot_Post_Production__c=:asyncId];
+            List<AsyncTOCLink__c> lstLinks = [SELECT id ,Async_Shoot_Post_Production__r.Name,Async_Shoot_Post_Production__r.File_Name_Revised__c,TOC__r.Id__c FROM AsyncTOCLink__c WHERE TOC__c=:tocId AND Async_Shoot_Post_Production__c=:asyncId];
             if(lstLinks.size() > 0) {
                 delete lstLinks;
                 updateAsync(asyncId);
+                // for(AsyncTOCLink__c  lstlink : lstLinks){
+                //     callDelTOCfromPortal(String.valueof(lstlink.TOC__r.Id__c), lstlink.Async_Shoot_Post_Production__r.Name);
+                // }
+                callDelTOCfromPortal(String.valueof(lstLinks[0].TOC__r.Id__c), lstLinks[0].Async_Shoot_Post_Production__r.File_Name_Revised__c);
                 return true;
             }
 
@@ -169,6 +173,60 @@ public without sharing class FacultyVideoReviewController {
         }
         update objAsync;
     }
+  //  https://studentzone-ngasce.nmims.edu/acads/m/admin/unlinkAsyncShootProductionWithTocSFDC
+   @future (callout=true)
+    Public static void callDelTOCfromPortal(String tocId, String fileName)
+    { //System.Label.Student_Portal +
+       String baseURL =  System.Label.Student_Zone_Base_Url +'acads/m/admin/unlinkAsyncShootProductionWithTocSFDC';
+    try {
+       
+       HttpRequest req = new HttpRequest();
+       req.setEndpoint(baseURL);
+       req.setMethod('POST');
+       req.setHeader('Content-Type', 'application/json');
+       Map<String, Object> requestBodyMap = new Map<String, Object>();
+       requestBodyMap.put('tocId', tocId);
+       requestBodyMap.put('fileName', fileName);
+
+       String requestBody = JSON.serialize(requestBodyMap);
+       req.setBody(requestBody);
+       System.debug('callDelTOCfromPortal requestBody :: '+requestBody);
+       
+       Http http = new Http();
+       HttpResponse response = new HttpResponse();
+       if(system.label.Environment == 'Production'){
+           response = http.send(req);
+       }
+       if (Test.isRunningTest() || response.getStatusCode() == 200) {
+           // API call was successful
+           System.debug('response.getBody() :: '+response.getBody());
+           insertAPIRequest(requestBody, response.getBody(), 'callDelTOCfromPortal', true, null, '', 'PortalAPI');
+       } else {
+           // API call failed
+           insertAPIRequest(requestBody, response.getBody(), 'callDelTOCfromPortal', false, null, '', 'PortalAPI');
+           System.debug('Error: ' + response.getStatusCode() + ' - ' + response.getStatus());
+       }
+    } catch (Exception error) {
+        System.debug('callDelTOCfromPortal API Request Error');
+        System.debug(error.getMessage());
+    }
+    }
+    public static void insertAPIRequest(String req, String res, String apiName, Boolean isSuccess, Id recordId, String sObjName, String typeOfRequest) {
+       try {
+           API_Request__c apiReq = new API_Request__c();
+           apiReq.API_Name__c = apiName;
+           apiReq.Request__c = req;
+           apiReq.Response__c = res;
+           apiReq.Success__c = isSuccess;
+           apiReq.Type_of_Request__c = typeOfRequest;
+           apiReq.Lead__c = sObjName == 'Lead' ? recordId : null;
+           apiReq.Account__c = sObjName == 'Account' ? recordId : null;
+           insert apiReq;
+       } catch (Exception error) {
+           System.debug('Insert API Request Error');
+           System.debug(error.getMessage());
+       }
+   }
 
 
     public class FilterWrapper {
