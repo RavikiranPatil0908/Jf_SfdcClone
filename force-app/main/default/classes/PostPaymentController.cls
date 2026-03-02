@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : shubhranshu
  * @group             : 
- * @last modified on  : 07-30-2025
- * @last modified by  : @vickysahu
+ * @last modified on  : 20--02--2026
+ * @last modified by  : @Ravi
  * Modifications Log 
  * Ver   Date         Author        Modification
  * 1.0   10-07-2020   shubhranshu   Initial Version
@@ -24,11 +24,13 @@ public class PostPaymentController
     public String semester {get;set;}
     public String recordId {get;set;}
     public Lead objLead {get;set;}
+    public String feeType {get;set;}
     public Career_Service_Program__c objcareer {get;set;}
     public String paymentType {get;set;}
     public boolean IsRegistrationPayment {get;set;}
     public boolean documentAvailable {get;set;}
     public String trackingLeadId {get;set;}
+
 
     public Opportunity objOpportunity {get;set;}
     public String studentNo {get;set;}
@@ -55,6 +57,7 @@ public class PostPaymentController
     public String lastName {get;set;}
     public String fatherName {get;set;}
     public String City {get;set;}
+    public Datetime dateofBirth {get;set;}
     public String AddressLine1 {get;set;}
     public String AddressLine2 {get;set;}
     public String MobileNumber {get;set;}
@@ -137,12 +140,154 @@ public class PostPaymentController
     public Boolean isApplicant {get;set;}
     // check Record Type (Lead / opportunity)
     public String recordType {get;set;}
+
+    public Boolean isLoanTermAgreed {get;set;}
     // Session management
     // public Map<String,String> mapOfURLParameters { get;set; }
     // public SessionManager objSessionManager {get;set;}
     // public SessionManager.SessionUser objSessionUser {get;set;}
    
     public PostPaymentController()
+    {
+        productAmount = '0';
+        downPaymentAmount = 0;
+        downPaymentAmountOptional = 0;
+        initialPayment = 0;
+        cspackageid='';
+        paymentmessage='';
+        productHelper = new ProductHelper();
+        LateFeeAmount  = 0;
+        LateFeeAppliedAmount=0;
+        balanceAmount = 0;
+        totalsem = 0;
+        OrderId = '';
+        paymentstatus='';
+        careerservice='';
+        webinarRegid='';
+        feeType='';
+        zestLaonApplicationCancellationsCount = 0;
+        zestLaonApplicationRequest = '';
+        zestLoanApplicationRequestCancelled = false;
+        zestDownPaymentDone = false;
+
+        registrationNumber = '';
+
+        // For Eduvanz Loan Application
+        EduVanzLaonApplicationCancellationsCount = 0;
+        EduVanzLoanApplicationRequestCancelled = false;
+        EduVanzDownPaymentDone = false;
+       
+        // For Liquiloans Loan Application
+        liquiLoansLaonApplicationCancellationsCount = 0;
+        liquiLoanApplicationRequestCancelled = false;
+        liquiLoansDownPaymentDone = false;
+
+        // For EzCred Loan Application
+        ezcredLaonApplicationCancellationsCount = 0;
+        ezcredApplicationRequestCancelled = false;
+        ezcredDownPaymentDone = false;
+
+        // For GrayQuest Loan application 
+        grayQuestApplicationRequestCancelled =false;
+        grayQuestDownPaymentDone = false;
+        grayQuestLoanApplicationCancellationsCount =0;
+        grayQuestLoanRejectionDate = null;
+
+        tenure ='';
+        interestRate = '';
+
+        // For Liquiloans Loan Application
+        propelldApplicationCourseFee = 0;
+
+        StudDob =  null;
+        StudGender ='';
+        StudMarital_status ='';
+        ic_Name ='';
+        lc_Name ='';
+        prog_name ='';
+
+        DeliveryPostCode = '';
+        EmailAddress = '';
+        FullName = '';
+        firstName = '';
+        lastName = '';
+        fatherName='';
+        validityExtensionId = '';
+        City = '';
+        dateofBirth =null;
+        TagPriceBookId = null;
+        AddressLine1 = '';
+        AddressLine2 = '';
+        MobileNumber = '';
+        CallbackUrlBase = System.Label.Site_Url+'ZestMoneyThankYou';
+        CustomerHasPriorPurchase  = false;
+        Description  = '';
+        Quantity = '1';
+        TotalPrice = 0;
+        Category = '';
+        errMessages ='';
+        studentNo = '';
+        IsRegistrationPayment = false;
+        LeadId = '';
+        setOfEmailReceiver = new List<String>();
+        paymentType = '';
+        semester = '';
+        recordId = '';
+        paymentId = '';
+        LoanType = '';
+        opportunityId = '';
+        AccountId  = '';
+        IsReRegistration = false;
+        paymentSuccessInstructions = '';
+        paymentErrorInstructions = '';
+        objLead = new Lead();
+        objOpportunity = new Opportunity();
+        ICProgramChangeAmount = 0;
+        StudyKitAmount =0;
+        ICName = '';
+        IsDefence = false;
+        programId = '';
+        productName = '';
+        programSpecialization  = '';
+        programName = '';
+        programStructure ='';
+        consumerType='';
+        liveLecType='';
+        mapOfPricebook = new Map<String,PriceBookEntry>();
+        recordType = '';
+        paymentTrackId = ApexPages.currentPage().getParameters().get('ResTrackId');
+        loanSanctioned = false;
+        loanApproved = false;
+        documentAvailable = false;
+        isApplicant = true;
+        trackingLeadId = '';
+        isLoanTermAgreed = true;
+        // validate sessions
+        // objSessionManager = new SessionManager();
+        // objSessionUser = new SessionManager.SessionUser();
+        // mapOfURLParameters = new Map<String,String>();
+        // objSessionUser = objSessionManager.validateSession();
+        // System.debug('objSessionjUser2 ==>'+objSessionUser);
+        // if(objSessionUser.sessionVerified) { 
+        //     mapOfURLParameters = objSessionUser.mapOfURLParameters;
+        //     paymentTrackId = mapOfURLParameters.containsKey('ResTrackId') ? mapOfURLParameters.get('ResTrackId') : null;
+        //     System.debug('paymentTrackId ==>'+paymentTrackId);
+        // } else {
+        //     errMessages = 'Session Expired, please Sign-In again to continue..';
+        //     // String type = IsRegistrationPayment ? 'reregistration' : 'registration';
+        //     // returnUrl ='/nmLogin_new?type='+type;
+        // }
+
+        if(String.isNotBlank(paymentTrackId))
+        {
+            GetPaymentDetails();
+        }else{
+            errMessages = 'Transaction Failed:No Track ID found in Request';
+        }
+    }
+   
+
+    public PostPaymentController(String inputTrackId)
     {
         productAmount = '0';
         downPaymentAmount = 0;
@@ -248,28 +393,13 @@ public class PostPaymentController
         liveLecType='';
         mapOfPricebook = new Map<String,PriceBookEntry>();
         recordType = '';
-        paymentTrackId = ApexPages.currentPage().getParameters().get('ResTrackId');
+        paymentTrackId = inputTrackId;
         loanSanctioned = false;
         loanApproved = false;
         documentAvailable = false;
         isApplicant = true;
         trackingLeadId = '';
-        // validate sessions
-        // objSessionManager = new SessionManager();
-        // objSessionUser = new SessionManager.SessionUser();
-        // mapOfURLParameters = new Map<String,String>();
-        // objSessionUser = objSessionManager.validateSession();
-        // System.debug('objSessionjUser2 ==>'+objSessionUser);
-        // if(objSessionUser.sessionVerified) { 
-        //     mapOfURLParameters = objSessionUser.mapOfURLParameters;
-        //     paymentTrackId = mapOfURLParameters.containsKey('ResTrackId') ? mapOfURLParameters.get('ResTrackId') : null;
-        //     System.debug('paymentTrackId ==>'+paymentTrackId);
-        // } else {
-        //     errMessages = 'Session Expired, please Sign-In again to continue..';
-        //     // String type = IsRegistrationPayment ? 'reregistration' : 'registration';
-        //     // returnUrl ='/nmLogin_new?type='+type;
-        // }
-
+        isLoanTermAgreed = true;
         if(String.isNotBlank(paymentTrackId))
         {
             GetPaymentDetails();
@@ -277,7 +407,7 @@ public class PostPaymentController
             errMessages = 'Transaction Failed:No Track ID found in Request';
         }
     }
-   
+
     /**
     * @description 
     * @author @BK | 16-11-2024 
@@ -784,10 +914,14 @@ public class PostPaymentController
     public PageReference ZestLoanApplicationRequest(){
         String newOrderId = null;
         String LoanId = null;
+        if (!isLoanTermAgreed) {
+            return null;
+        }
         // redirect student to same Zest Laon Application request if Already Zest Request Created .
         // studentConsentLoan(String.isNotBlank(LeadId) ? LeadId : null, String.isNotBlank(opportunityId) ? opportunityId : null);
         if(String.isNotBlank(zestLaonApplicationRequest) && !zestLoanApplicationRequestCancelled){
             System.debug('Entered inside the Loan redirection');
+            updateLoanTerms();
             PageReference pg = new PageReference(zestLaonApplicationRequest);
             pg.setRedirect(true);
             return pg;
@@ -839,7 +973,7 @@ public class PostPaymentController
                 objLead.EduVanz_lead_id__c = LoanId;
                 objLead.Student_Consent_Loan__c = true;
                 objLead.Student_Consent_Loan_Date__c = DateTime.now();
-
+                objLead.Agreed_To_Loan_Terms__c = isLoanTermAgreed;
                 update objLead;
             }else if(opportunityId !='' && opportunityId !=null){
                 objOpportunity.Zest_Loan_Application_Request__c = responseString;
@@ -854,6 +988,7 @@ public class PostPaymentController
                 }
                 objOpportunity.Student_Consent_Loan__c = true;
                 objOpportunity.Student_Consent_Loan_Date__c = DateTime.now();
+                objOpportunity.Agreed_To_Loan_Terms__c = isLoanTermAgreed;
                 update objOpportunity;
             }
            
@@ -865,16 +1000,44 @@ public class PostPaymentController
     }
 
     public PageReference propelldApplicationReqest() {
+        if (!isLoanTermAgreed) {
+            return null;
+        }
+        // studentConsentLoan(String.isNotBlank(LeadId) ? LeadId : null, String.isNotBlank(opportunityId) ? opportunityId : null);
+        if(String.isNotBlank(zestLaonApplicationRequest) && !zestLoanApplicationRequestCancelled){
+            updateLoanTerms();
+            PageReference pg = new PageReference(zestLaonApplicationRequest);
+            pg.setRedirect(true);
+            return pg;
+        } 
+         String responseString = propelldApplicationRequestProcess();
+            PageReference pg = new PageReference(responseString);
+            pg.setRedirect(true);
+            return pg;
+        }
+
+    /**
+    * @description 
+    * @author @Ravi | 27--10--2025 
+    * @return String 
+    **/
+    public String propelldApplicationReqestFromMobile() {
+        if (!isLoanTermAgreed) {
+            return null;
+        }
+        if(String.isNotBlank(zestLaonApplicationRequest) && !zestLoanApplicationRequestCancelled){
+            updateLoanTerms();
+            return zestLaonApplicationRequest;
+        } 
+           String responseString = propelldApplicationRequestProcess();
+       return responseString;
+    }
+
+    public String propelldApplicationRequestProcess() {
         String newOrderId = null;
         String recordId = LeadId;
         String objType = '';
         Double subventionValue = 0.0;
-        // studentConsentLoan(String.isNotBlank(LeadId) ? LeadId : null, String.isNotBlank(opportunityId) ? opportunityId : null);
-        if(String.isNotBlank(zestLaonApplicationRequest) && !zestLoanApplicationRequestCancelled){
-            PageReference pg = new PageReference(zestLaonApplicationRequest);
-            pg.setRedirect(true);
-            return pg;
-        }
 
         //if Loan Application request Cancelled then allowed him to Re-create New Fresh Request with New Order Id
         if(zestLoanApplicationRequestCancelled && zestDownPaymentDone){
@@ -935,6 +1098,8 @@ public class PostPaymentController
                 objLead.Subvention_Value__c = subventionValue;
                 objLead.Student_Consent_Loan__c = true;
                 objLead.Student_Consent_Loan_Date__c = DateTime.now();
+                objLead.Agreed_To_Loan_Terms__c = isLoanTermAgreed;
+                objLead.Loan_Application_Cancelled__c = false;
                 update objLead;
             }else if(opportunityId !='' && opportunityId !=null){
                 objOpportunity.Zest_Loan_Application_Request__c = responseString;
@@ -946,23 +1111,55 @@ public class PostPaymentController
                     objOpportunity.Loan_Application_Cancellations_Count__c = zestLaonApplicationCancellationsCount;
                     objOpportunity.Loan_Order_Status__c = null;
                     objOpportunity.Loan_Cancellation_Reason__c = null;
-                    
                 }
                 objOpportunity.Student_Consent_Loan__c = true;
                 objOpportunity.Student_Consent_Loan_Date__c = DateTime.now();
                 objOpportunity.Subvention_Value__c = subventionValue;
+                objOpportunity.Agreed_To_Loan_Terms__c = isLoanTermAgreed;
                 update objOpportunity;
             }
-           
-            PageReference pg = new PageReference(responseString);
+        }
+        return responseString;
+    }
+
+    public PageReference avanseApplicationReqest() {
+        System.debug('isLoanTermAgreed---->' + isLoanTermAgreed);
+        if (!isLoanTermAgreed) {
+            return null;
+        }
+        // studentConsentLoan(String.isNotBlank(LeadId) ? LeadId : null, String.isNotBlank(opportunityId) ? opportunityId : null);
+        if(String.isNotBlank(zestLaonApplicationRequest) && !zestLoanApplicationRequestCancelled){
+            updateLoanTerms();
+            PageReference pg = new PageReference(zestLaonApplicationRequest);
+            pg.setRedirect(true);
+            return pg;
+        }
+        AvanseResponseWrapper wrapper = avanseApplicationRequestProcess();
+        if(wrapper != null){
+            PageReference pg = new PageReference(wrapper.data.link);
             pg.setRedirect(true);
             return pg;
         }
         return null;
     }
 
-    public PageReference avanseApplicationReqest() {
-        System.debug('Avanse');
+    public String avanseApplicationRequestFromMobile() {
+        System.debug('isLoanTermAgreed----->' + isLoanTermAgreed);
+        if (!isLoanTermAgreed) {
+            return null;
+        }
+        if(String.isNotBlank(zestLaonApplicationRequest) && !zestLoanApplicationRequestCancelled){
+            updateLoanTerms();
+            return zestLaonApplicationRequest;
+        } 
+        AvanseResponseWrapper wrapper = avanseApplicationRequestProcess();
+        if(wrapper != null){
+            return wrapper.data.link;
+        }
+        return null;
+    }
+
+    public AvanseResponseWrapper avanseApplicationRequestProcess() {
         String newOrderId = null;
         String recordId = LeadId;
         String objType = '';
@@ -974,13 +1171,6 @@ public class PostPaymentController
         String centerId = '';
         List<AvanseTenureScheme__mdt> lstAvanseScheme = new list<AvanseTenureScheme__mdt>();
         nm_Centers__c objCenter = new nm_Centers__c();
-        // studentConsentLoan(String.isNotBlank(LeadId) ? LeadId : null, String.isNotBlank(opportunityId) ? opportunityId : null);
-        if(String.isNotBlank(zestLaonApplicationRequest) && !zestLoanApplicationRequestCancelled){
-            PageReference pg = new PageReference(zestLaonApplicationRequest);
-            pg.setRedirect(true);
-            return pg;
-        }
-
         //if Loan Application request Cancelled then allowed him to Re-create New Fresh Request with New Order Id
         if(zestLoanApplicationRequestCancelled && zestDownPaymentDone){
             //create New Loan Order Id
@@ -1024,7 +1214,7 @@ public class PostPaymentController
             aepMobile = objOpportunity.Account.nm_Centers__r.Contact_No_1__c;
             aepName = objOpportunity.Account.nm_Centers__r.Name;
             centerId = objOpportunity.Account.nm_Centers__c;
-            aepMobile = String.isNotBlank(aepMobile) && aepMobile.startsWith('+91')	? aepMobile.replaceFirst('\\+91\\s*', '') : aepMobile;
+            aepMobile = String.isNotBlank(aepMobile) && aepMobile.startsWith('+91')  ? aepMobile.replaceFirst('\\+91\\s*', '') : aepMobile;
             
             System.debug('Formatted Mobile Number: ' + aepMobile);
             // programName = objOpportunity.nm_Program__r.nm_ProgramName__c;
@@ -1037,6 +1227,7 @@ public class PostPaymentController
         // prog_name = getProgramCode(mapOfResponseParameters,programName);
         //get Loan Plan code
         String loanPlanCode = '';
+        System.debug('interestRate: ' + interestRate+'-'+tenure);
         lstAvanseScheme = [SELECT MasterLabel,Tenure__c,LoanPlanCode__c,InterestRate__c FROM AvanseTenureScheme__mdt WHERE InterestRate__c=:interestRate AND Tenure__c=:tenure LIMIT 1];
         if (lstAvanseScheme.size() > 0) {
             loanPlanCode = lstAvanseScheme[0].LoanPlanCode__c;
@@ -1070,6 +1261,8 @@ public class PostPaymentController
                 objLead.Subvention_Value__c = subventionValue;
                 objLead.Student_Consent_Loan__c = true;
                 objLead.Student_Consent_Loan_Date__c = DateTime.now();
+                objLead.Agreed_To_Loan_Terms__c = isLoanTermAgreed;
+                objLead.Loan_Application_Cancelled__c = false;
                 update objLead;
             }else if(opportunityId !='' && opportunityId !=null){
                 objOpportunity.Zest_Loan_Application_Request__c = wrapper.data.link;
@@ -1085,15 +1278,13 @@ public class PostPaymentController
                 objOpportunity.Student_Consent_Loan__c = true;
                 objOpportunity.Student_Consent_Loan_Date__c = DateTime.now();
                 objOpportunity.Subvention_Value__c = subventionValue;
+                objOpportunity.Agreed_To_Loan_Terms__c = isLoanTermAgreed;
                 update objOpportunity;
             }
             if (String.isNotBlank(objCenter.Id)) {
                 update objCenter;
             }
-           
-            PageReference pg = new PageReference(wrapper.data.link);
-            pg.setRedirect(true);
-            return pg;
+            return wrapper;
         }
         return null;
     }
@@ -1123,6 +1314,9 @@ public class PostPaymentController
     }*/
 
     public PageReference ezcredApplicationReqest() {
+        if (!isLoanTermAgreed) {
+            return null;
+        }
         String newOrderId = null;
         String recordId = LeadId;
         String objType = '';
@@ -1131,6 +1325,7 @@ public class PostPaymentController
         
         // to avoid fields creaion for same logic used zest field
         if(String.isNotBlank(zestLaonApplicationRequest) && !ezcredApplicationRequestCancelled){
+            updateLoanTerms();
             PageReference pg = new PageReference(zestLaonApplicationRequest);
             pg.setRedirect(true);
             return pg;
@@ -1223,6 +1418,7 @@ public class PostPaymentController
                 objLead.EduVanz_lead_id__c = lead_number;
                 objLead.Student_Consent_Loan__c = true;
                 objLead.Student_Consent_Loan_Date__c = DateTime.now();
+                objLead.Agreed_To_Loan_Terms__c = isLoanTermAgreed;
                 update objLead;
             }else if(opportunityId !='' && opportunityId !=null){
                 objOpportunity.Zest_Loan_Application_Request__c = responseString;
@@ -1237,6 +1433,7 @@ public class PostPaymentController
                 }
                 objOpportunity.Student_Consent_Loan__c = true;
                 objOpportunity.Student_Consent_Loan_Date__c = DateTime.now();
+                objOpportunity.Agreed_To_Loan_Terms__c = isLoanTermAgreed;
                 update objOpportunity;
             }
             System.debug('responseString '+responseString);
@@ -1248,6 +1445,9 @@ public class PostPaymentController
     }
 
     public PageReference EduVanzLoanApplicationRequest(){
+        if (!isLoanTermAgreed) {
+            return null;
+        }
 
         // EduVanzAPI__c objEduvanz = EduVanzAPI__c.getValues('Loan Application Data');  // custom setting for EduVanz Loan Application
 
@@ -1338,6 +1538,7 @@ public class PostPaymentController
             objLead.Subvention_Value__c = subventionValue;
             objLead.Student_Consent_Loan__c = true;
             objLead.Student_Consent_Loan_Date__c = DateTime.now();
+            objLead.Agreed_To_Loan_Terms__c = isLoanTermAgreed;
             update objLead;
             PageReference pg = new PageReference(formDataURL);          
             pg.setRedirect(true);
@@ -1355,6 +1556,7 @@ public class PostPaymentController
             objOpportunity.Student_Consent_Loan__c = true;
             objOpportunity.Student_Consent_Loan_Date__c = DateTime.now();
             objOpportunity.Subvention_Value__c = subventionValue;
+            objOpportunity.Agreed_To_Loan_Terms__c = isLoanTermAgreed;
             update objOpportunity;
             PageReference pg = new PageReference(formDataURL);
             pg.setRedirect(true);
@@ -1370,6 +1572,9 @@ public class PostPaymentController
     * @return PageReference 
     **/
     public PageReference GrayQuestRequest() {
+        if (!isLoanTermAgreed) {
+            return null;
+        }
         Double subventionValue = 0.0;
         String newOrderId = null;
         String recordId = LeadId;       
@@ -1382,6 +1587,7 @@ public class PostPaymentController
         // studentConsentLoan(String.isNotBlank(LeadId) ? LeadId : null, String.isNotBlank(opportunityId) ? opportunityId : null);
         // to avoid fields creaion for same logic used zest field
         if(String.isNotBlank(zestLaonApplicationRequest) && !grayQuestApplicationRequestCancelled){
+            updateLoanTerms();
             PageReference pg = new PageReference(zestLaonApplicationRequest);
             pg.setRedirect(true);
             return pg;
@@ -1473,6 +1679,7 @@ public class PostPaymentController
                 objLead.Student_Consent_Loan__c = true;
                 objLead.Student_Consent_Loan_Date__c = DateTime.now();
                 objLead.Loan_Student_Id__c = studentNo;
+                objLead.Agreed_To_Loan_Terms__c = isLoanTermAgreed;
                 update objLead;
           
             }else if(String.isNotBlank(opportunityId)){
@@ -1491,6 +1698,7 @@ public class PostPaymentController
                 objOpportunity.Student_Consent_Loan__c = true;
                 objOpportunity.Student_Consent_Loan_Date__c = DateTime.now();
                 objOpportunity.Loan_Student_Id__c = studentNo;
+                objOpportunity.Agreed_To_Loan_Terms__c = isLoanTermAgreed;
                 update objOpportunity;
             } 
             System.debug('responseString '+responseString);
@@ -1507,6 +1715,9 @@ public class PostPaymentController
     * @return Pagereference
     **/
     public Pagereference liquiLoansApplicationRequest(){
+        if (!isLoanTermAgreed) {
+            return null;
+        }
         Double subventionValue = 0.0;
         String feetypeforLiquiloan = '';
         // studentConsentLoan(String.isNotBlank(LeadId) ? LeadId : null, String.isNotBlank(opportunityId) ? opportunityId : null);
@@ -1606,6 +1817,7 @@ public class PostPaymentController
                 objLead.Subvention_Value__c = subventionValue;
                 objLead.Student_Consent_Loan__c = true;
                 objLead.Student_Consent_Loan_Date__c = DateTime.now();
+                objLead.Agreed_To_Loan_Terms__c = isLoanTermAgreed;
                 update objLead;
                 API_Request__c apiReq = new API_Request__c();
                 apiReq.Request__c = formDataURL;
@@ -1634,6 +1846,7 @@ public class PostPaymentController
                 objOpportunity.Student_Consent_Loan__c = true;
                 objOpportunity.Student_Consent_Loan_Date__c = DateTime.now();
                 objOpportunity.Subvention_Value__c = subventionValue;
+                objOpportunity.Agreed_To_Loan_Terms__c = isLoanTermAgreed;
                 update objOpportunity;
                 API_Request__c apiReq = new API_Request__c();
                 apiReq.Request__c = formDataURL;
@@ -1655,15 +1868,15 @@ public class PostPaymentController
         return null;
     }
 
-    public Double getSuvbentionValue(String chooseProgram,String ProgramType,String LoanType,String Tenure,String feeType){
+    public Double getSuvbentionValue(String chooseProgram,String ProgramType,String LoanType,String Tenure,String feeTypeValue){
         Double subventionValue = 0.0;
         List<String> programs = new List<String>{'Master Programs','MBA (Online) Programs'};
         ProgramType = String.isNotBlank(ProgramType) && programs.contains(chooseProgram) ? ProgramType : null;
         List<String> admissionFeeTypeLst = new List<String>{'MBAallTermfee','admission','registration','InitialAdmissionFee','ReRegistrationPayment'};
-        if(admissionFeeTypeLst.contains(feeType)) {
-            feeType = 'Admission';
+        if(admissionFeeTypeLst.contains(feeTypeValue)) {
+            feeTypeValue = 'Admission';
         }
-        String key = chooseProgram + '-' + ProgramType + '-' + LoanType + '-' + feeType;
+        String key = chooseProgram + '-' + ProgramType + '-' + LoanType + '-' + feeTypeValue;
         List<Tenure__c> lstTenures = [SELECT Id,Interest_Rate__c,Key__c,Subvention_Value__c,Tenure__c FROM Tenure__c WHERE Key__c=:key AND Tenure__c=:Tenure AND IsActive__c=true LIMIT 1];
         if(lstTenures.size() > 0) {
             subventionValue = lstTenures[0].Subvention_Value__c;
@@ -1683,7 +1896,6 @@ public class PostPaymentController
         // mapOfPricebook = getMapOfPriceBookIdProductVsPriceBookEntry.get(TagPriceBookId);
         String programKey = programId+'-'+semester;
         System.debug('product Name--'+productName);
-        System.debug('mapOfPricebook---->' + JSON.serialize(mapOfPricebook));
         if(mapOfPricebook != null && !mapOfPricebook.isEmpty()){
             Integer multiplicationFactor = 1;
             if('Admission'.equalsIgnoreCase(productName)){
@@ -1970,14 +2182,12 @@ public class PostPaymentController
                     amount =  mapOfPricebook.get(programKey).UnitPrice;
                     system.debug('amount---->'+amount);                              
                 }
-                
                 else if(!'MBA (WX)'.equalsIgnoreCase(programSpecialization) && !'MBA (X)'.equalsIgnoreCase(programSpecialization) && !'MBA - X'.equalsIgnoreCase(programSpecialization) && !'M.Sc. (AI & ML Ops)'.equalsIgnoreCase(programSpecialization) && !'M.Sc. (AI)'.equalsIgnoreCase(programSpecialization) ){   
                     // for(Integer i = sem ;i<=(sem + multiplicationFactor - 1);i++)
                     // {
                     //     System.debug('--multiplicationFactor---'+i+'-----'+programId);                
                     //     amount += mapOfPricebook.containsKey(programId+'-'+i) ? mapOfPricebook.get(programId+'-'+i).UnitPrice:0;
                     //     system.debug('amount---->'+amount);
-                    //     System.debug('EntriesID---->' + mapOfPricebook.get(programId+'-'+i).Id);        
                     // } 
                     amount =  mapOfPricebook.get(programKey).UnitPrice;
                     system.debug('amount---->'+amount);
@@ -1993,7 +2203,7 @@ public class PostPaymentController
         }
        
         else{
-            if('BA'.equalsIgnoreCase(programSpecialization) && (productName =='AnnualFee' || productName =='3SemFee') )
+            if((('BBA'.equalsIgnoreCase(programSpecialization) && 'BBA (BA)'.equalsIgnoreCase(programName) && Integer.valueOf(semester) > 2) || 'BA'.equalsIgnoreCase(programSpecialization)) && (productName =='AnnualFee' || productName =='3SemFee') )
             {
                 for(Integer i = sem ;i<=(sem + multiplicationFactor - 1);i++)
                 {
@@ -2098,22 +2308,111 @@ public class PostPaymentController
     }
 
     public PageReference cancelLoanApplication(){
-
-        Datetime dateofBirth = null;
+       Boolean isLoanApproved = false;
         System.debug('paymentTrackId ==>'+paymentTrackId);
         if(String.isNotBlank(paymentTrackId)) {
-            List<nm_Payment__c> downLoanPaymentLst = [SELECT id,nm_PaymentType__c,nm_Installment_Payment_Ref__c FROM nm_Payment__c WHERE nm_Merchant_Track_Id__c=:paymentTrackId AND (nm_PaymentType__c LIKE '%DownPayment%') LIMIT 1];
+            List<nm_Payment__c> downLoanPaymentLst = [SELECT id,nm_PaymentType__c,nm_Installment_Payment_Ref__c,nm_OpportunityNew__r.Loan_Approved__c FROM nm_Payment__c WHERE nm_Merchant_Track_Id__c=:paymentTrackId AND (nm_PaymentType__c LIKE '%DownPayment%') LIMIT 1];
+            isLoanApproved = downLoanPaymentLst.size() > 0 && downLoanPaymentLst[0].nm_OpportunityNew__r != null && downLoanPaymentLst[0].nm_OpportunityNew__r.Loan_Approved__c ? true : false;
+            if(downLoanPaymentLst.size() > 0 && !isLoanApproved) {  
+               String installmentReference = ProcessCancelLoanApplication(); 
+               if(String.isBlank(installmentReference)){
+                 return null;
+               }    
+                nm_Payment__c downLoanPayment = downLoanPaymentLst[0];
+                downLoanPayment.nm_PaymentType__c = 'Installment';
+                downLoanPayment.nm_Installment_Payment_Ref__c = installmentReference;
+                try {
+                    if(String.isNotBlank(LeadId)) {
+                        // To update Lead
+                        update objLead;
+                    } else if(String.isNotBlank(opportunityId)) {
+                        // To update opportunity
+                        update objOpportunity;
+                    }
+                    // To update payment record.
+                    update downLoanPayment;
 
-            if(downLoanPaymentLst.size() > 0) {
+                } catch (Exception e) {
+                    System.debug(e.getMessage());
+                    return null;
+                }
+                String redirectURL = System.Label.Site_Url+'EnrollmentForm';
+                if(feeType.endsWithIgnoreCase('ReRegistrationPayment')) {
+                    redirectURL = System.Label.Site_Url+'nmlogin_new?dob='+dateofBirth.format('dd/MM/yyyy')+'&type=reregistration&studentNo='+studentNo;
+                }
+                // objSessionManager.destroySession();
+                System.debug('redirectURL--'+redirectURL);
+                PageReference pg = new PageReference(redirectURL);
+                pg.setRedirect(true);
+                return pg;
+            } else {  
+                if (isLoanApproved) {
+                    errMessages = 'Loan cannot be cancelled once the application has been Approved';
+                }
+                else {
+                    errMessages = 'No Record found against Loan request, Kindly raise a Ticket';
+                }            
+            }
+        }
+        return null;
+    }
 
+    /**
+    * @description 
+    * @author @Ravi | 04--11--2025 
+    * @return map<String, String> 
+    **/
+    public map<String, String> cancelLoanApplicationMobileApp(){
+       Boolean isLoanApproved = false;
+        System.debug('paymentTrackId ==>'+paymentTrackId);
+        if(String.isNotBlank(paymentTrackId)) {
+            List<nm_Payment__c> downLoanPaymentLst = [SELECT id,nm_PaymentType__c,nm_Installment_Payment_Ref__c,nm_OpportunityNew__r.Loan_Approved__c FROM nm_Payment__c WHERE nm_Merchant_Track_Id__c=:paymentTrackId AND (nm_PaymentType__c LIKE '%DownPayment%') LIMIT 1];
+            isLoanApproved = downLoanPaymentLst.size() > 0 && downLoanPaymentLst[0].nm_OpportunityNew__r != null && downLoanPaymentLst[0].nm_OpportunityNew__r.Loan_Approved__c ? true : false;
+            if(downLoanPaymentLst.size() > 0 && !isLoanApproved) {
+               String installmentReference = ProcessCancelLoanApplication(); 
+               if(String.isBlank(installmentReference)) {
+                 return new Map<String, String>{'Status' => 'Success','errMessages' => errMessages } ;
+               } 
+               nm_Payment__c downLoanPayment = downLoanPaymentLst[0];
+                downLoanPayment.nm_PaymentType__c = 'Installment';
+                downLoanPayment.nm_Installment_Payment_Ref__c = installmentReference;
+                try {
+                    if(String.isNotBlank(LeadId)) {
+                        // To update Lead
+                        update objLead;
+                    } else if(String.isNotBlank(opportunityId)) {
+                        // To update opportunity
+                        update objOpportunity;
+                    }
+                    // To update payment record.
+                    update downLoanPayment;
+
+                } catch (Exception e) {
+                    System.debug(e.getMessage());
+                    return new Map<String, String>{ 'Status' => 'Failed','errMessages' => +e.getMessage() } ;
+                }
+                 return new Map<String, String>{'Status' => 'Success','errMessages' => 'Loan Application Cancelled Successfully' } ;
+            } else {  
+                if (isLoanApproved) {
+                    errMessages = 'Loan cannot be cancelled once the application has been Approved';
+                    return new Map<String, String>{ 'Status' => 'Success', 'errMessages' => errMessages } ;
+                }
+                else {
+                    errMessages = 'No Record found against Loan request, Kindly raise a Ticket';
+                    return new Map<String, String>{'Status' => 'Success', 'errMessages' => errMessages } ;
+                }   
+            }         
+        }
+        return null; 
+    }
+
+    public String ProcessCancelLoanApplication(){
                 String installmentReference = 'Installment-admission';
                 String loanType = '';
                 String loanOrderId = '';
                 String loanCancellationReason = '';
-                String feeType = '';
                 String quoteId = '';
                 String recordId = '';
-
                 if(recordType == 'Lead'){
                     System.debug('objLead 2-->'+objLead);
                     dateofBirth = objLead.nm_DateOfBirth__c;
@@ -2122,6 +2421,7 @@ public class PostPaymentController
                     objLead.LiveLecturesType__c  = 'No';
                     objLead.Loan_Cancellation_Reason__c = 'do not want to opt for loan';
                     objLead.nm_Fee_Type__c = 'registration';
+                    objLead.Agreed_To_Loan_Terms__c = false;
                     loanType = objLead.Loan_Type__c;
                     loanOrderId = objLead.Loan_Order_Id__c;
                     loanCancellationReason = objLead.Loan_Cancellation_Reason__c;
@@ -2138,7 +2438,7 @@ public class PostPaymentController
                     objOpportunity.Loan_Application_Cancelled__c = true;
                     objOpportunity.Down_Payment_Made__c = false;
                     objOpportunity.LiveLecturesType__c = 'No';
-                    
+                    objOpportunity.Agreed_To_Loan_Terms__c = false;
                     objOpportunity.Loan_Cancellation_Reason__c = 'do not want to opt for loan';
                     feeType = 'registration';
                     if(objOpportunity.nm_Semester__c != '1') {
@@ -2160,7 +2460,7 @@ public class PostPaymentController
 
                 // To cancel zest loan request.
                 boolean isFailed = false;
-                if(String.isNotBlank(loanType) && (loanType.equalsIgnoreCase('Zest') || loanType.equalsIgnoreCase('Propelld')) && String.isNotBlank(loanOrderId) && objOpportunity.Loan_Application_Cancelled__c) {
+                if(String.isNotBlank(loanType) && (loanType.equalsIgnoreCase('Zest') || loanType.equalsIgnoreCase('Propelld')) && String.isNotBlank(loanOrderId) && (objOpportunity.Loan_Application_Cancelled__c || objLead.Loan_Application_Cancelled__c)) {
                     String result = null;
                     if(loanType.equalsIgnoreCase('Zest')) {
                         Boolean isSubventionScheme = false;
@@ -2175,8 +2475,10 @@ public class PostPaymentController
                     //     result = objAvanseWebSerevice.cancelAvanseLoan(quoteId,recordType,recordId);
                     // } 
                     else {
-                        PropelldWebService objPropelldWebService = new PropelldWebService();
-                        result = objPropelldWebService.updateStatusByQuoteId(quoteId,false,recordId,recordType);
+                        if (String.isNotBlank(quoteId)) {
+                            PropelldWebService objPropelldWebService = new PropelldWebService();
+                            result = objPropelldWebService.updateStatusByQuoteId(quoteId,false,recordId,recordType);
+                        }
                     }
                    
                     if(String.isBlank(result)) {
@@ -2219,7 +2521,7 @@ public class PostPaymentController
                         // errMessages = 'Loan Application Cancellation failed, kindly contact your authorized AEP';
                         isFailed = true;
                     }
-                }else if (String.isNotBlank(loanType) && loanType.equalsIgnoreCase('Avanse') && String.isNotBlank(loanOrderId) && objOpportunity.Loan_Application_Cancelled__c && String.isNotBlank(objOpportunity.EduVanz_lead_id__c)) {
+                }else if (String.isNotBlank(loanType) && loanType.equalsIgnoreCase('Avanse') && String.isNotBlank(loanOrderId) && (objOpportunity.Loan_Application_Cancelled__c || objLead.Loan_Application_Cancelled__c) && (String.isNotBlank(objOpportunity.EduVanz_lead_id__c) || String.isNotBlank(objLead.EduVanz_lead_id__c))) {
                     AvanseWebService objAvanseWebSerevice = new AvanseWebService();
                     Boolean result = objAvanseWebSerevice.cancelAvanseLoan(quoteId,recordType,recordId);
                     if (!result) {
@@ -2227,46 +2529,11 @@ public class PostPaymentController
                         isFailed = true;
                     }
                 }
-                if(isFailed) {
+                if(isFailed) { 
                     LoanCancellationRequestFailedController loanFailed = new LoanCancellationRequestFailedController();
                     loanFailed.loanCancellation(recordId,recordType, 'Loan Cancelation Failed', 'Loan Cancelation Failed');
                 }
-
-                nm_Payment__c downLoanPayment = downLoanPaymentLst[0];
-                downLoanPayment.nm_PaymentType__c = 'Installment';
-                downLoanPayment.nm_Installment_Payment_Ref__c = installmentReference;
-
-                try {
-                    if(String.isNotBlank(LeadId)) {
-                        // To update Lead
-                        update objLead;
-                    } else if(String.isNotBlank(opportunityId)) {
-                        // To update opportunity
-                        update objOpportunity;
-                    }
-
-                    // To update payment record.
-                    update downLoanPayment;
-
-                } catch (Exception e) {
-                    System.debug(e.getMessage());
-                    return null;
-                }
-               
-                String redirectURL = System.Label.Site_Url+'EnrollmentForm';
-                // if(feeType.endsWithIgnoreCase('ReRegistrationPayment')) {
-                //     redirectURL = System.Label.Site_Url+'nmlogin_new?dob='+dateofBirth.format('dd/MM/yyyy')+'&type=reregistration&studentNo='+studentNo;
-                // }
-                // objSessionManager.destroySession();
-                System.debug('redirectURL--'+redirectURL);
-                PageReference pg = new PageReference(redirectURL);
-                pg.setRedirect(true);
-                return pg;
-            } else {
-                errMessages = 'No Record found against Loan request, Kindly raise a Ticket';
-            }
-        }
-        return null;
+        return installmentReference  ;
     }
 
     /**
@@ -2352,6 +2619,17 @@ public class PostPaymentController
             return pg;
         }
         return null;
+    }
+
+    public void updateLoanTerms() {
+        if (LeadId !=null && LeadId !='' && !objLead.Agreed_To_Loan_Terms__c) {
+            objLead.Agreed_To_Loan_Terms__c = true;
+            update objLead;
+        }
+        else if(opportunityId !='' && opportunityId !=null && !objOpportunity.Agreed_To_Loan_Terms__c) {
+            objOpportunity.Agreed_To_Loan_Terms__c = true;
+            update objOpportunity;
+        }
     }
 
 }

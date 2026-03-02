@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 27-03-2023
- * @last modified by  : @BK
+ * @last modified on  : 02--03--2026
+ * @last modified by  : @Ravi
 **/
 public class PaymentHandler {
 
@@ -54,7 +54,7 @@ public class PaymentHandler {
                     objPay.configurePaymentOption();
                     String strLeadRespons = objPay.MakePaymentAfterResponse(objResponse);
                     System.debug('strLeadRespons ==='+strLeadRespons);
-                }else if((paymentFor.contains('Additional Charge') || paymentFor.contains('Late Fees') || paymentFor.contains('Repeat Term')) && udf3 == 'NA') {
+                } else if((paymentFor.contains('Additional Charge') || paymentFor.contains('Late Fees') || paymentFor.contains('Repeat Term')) && udf3 == 'NA') {
                     nmAdditonalChargePaymentController objPayment = new nmAdditonalChargePaymentController();
                     System.debug('udf1------>'+udf1);
                     // for Manually Created Additional Payment 
@@ -107,7 +107,7 @@ public class PaymentHandler {
                     objPayment.showMakePaymentButtonAfterWindowClosedDateAndShowDDMessgae();
                     objPayment.getMapOfActiveCalender();
                     String strLeadRespons = objPayment.MakePaymentAfterResponse(objResponse);
-                    // String strLeadRespons = objPayment.MakePaymentAfterResponse(objResponse.transactionId, objResponse.modeOfPayment ,objResponse.merchantId, objResponse.BankTXNId, objResponse.status, objResponse.responseDescription, objResponse.responseCode, udf1, objResponse.status, udf2,objResponse.feeChrages,objResponse.tax);
+                    //String strLeadRespons = objPayment.MakePaymentAfterResponse(objResponse.transactionId, objResponse.modeOfPayment ,objResponse.merchantId, objResponse.BankTXNId, objResponse.status, objResponse.responseDescription, objResponse.responseCode, udf1, objResponse.status, udf2,objResponse.feeChrages,objResponse.tax);
                     System.debug( 'Sumit strLeadRespons: '+ strLeadRespons );
                 }else if(paymentFor.contains('Live Lectures') && udf3 == 'NA') { 
                     AdditionalLiveLectures objPayment = new AdditionalLiveLectures();
@@ -125,6 +125,7 @@ public class PaymentHandler {
                 }
                 page = Label.Site_Url+objResponse.postPaymentPage+'?ResTrackId='+objResponse.merchantId;
             } else {
+                //https://registration.online.nmims.edu/nmPayResponseStatus?ResTrackId='+objResponse.merchantId;
                 page = objResponse.paymentResponseUrl+'?ResTrackId='+objResponse.merchantId;
             }
         } catch (Exception error) {

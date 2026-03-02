@@ -2,7 +2,7 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 09-04-2024
+  @last modified on  : 09--12--2025
   @last modified by  : @Ravi
 -->
 <apex:component access="global" controller="FormPageController">
@@ -180,10 +180,19 @@
                                 <td>{!objAccount.nm_Domicile__c}</td>
                             </tr>
                             <tr>
-                                <apex:outputPanel rendered="{!IF(objAccount.nm_Nationality__c == 'Indian' && (objAccount.Adhar_Card_Number__c !=  null && objAccount.Adhar_Card_Number__c != ''),true,false)}">
-                                    <td width="20%"><b>Aadhar Number:</b></td>
-                                    <td>{!objAccount.Adhar_Card_Number__c}</td>
-                                </apex:outputPanel>
+                                <td>
+                                    <b>
+                                    <apex:outputText rendered="{!objAccount.nm_Nationality__c = 'Indian' && NOT(ISBLANK(objAccount.Adhar_Card_Number__c))}">
+                                        Aadhar Number:
+                                    </apex:outputText>
+                                    </b>
+                                </td>
+                                    
+                                <td>
+                                    <apex:outputText rendered="{!objAccount.nm_Nationality__c = 'Indian' && NOT(ISBLANK(objAccount.Adhar_Card_Number__c))}">
+                                        {!objAccount.Adhar_Card_Number__c}
+                                    </apex:outputText>
+                                </td> 
                             </tr>
                         </table>
                         <div style="
@@ -908,13 +917,15 @@
                         </apex:outputPanel>
 
                         <table width="100%">
+                         <apex:outputPanel rendered="{!IF(objAccount.nm_Other_Reason__c != '' && objAccount.nm_Other_Reason__c != null,true,false)}">
                             <tr>
-                                <apex:outputPanel rendered="{!IF(objAccount.nm_Other_Reason__c != '' && objAccount.nm_Other_Reason__c != null,true,false)}">
                                     <td width="25%">
                                         <b>Reason For Not working:</b>
                                     </td>
-                                    <td width="25%">{!objAccount.nm_Other_Reason__c}</td>
-                                </apex:outputPanel>
+                                    <td width="25%">{!objAccount.nm_Other_Reason__c}
+                                        
+                                    </td>
+                               
                                 <td width="25%"><b>LinkedIn URL:</b></td>
                                 <td width="25%">{!objAccount.LinkedIn_URL__c}</td>
                                 <apex:outputPanel rendered="{!IF(objAccount.nm_Other_Reason__c == '' || objAccount.nm_Other_Reason__c == null,true,false)}">
@@ -922,6 +933,7 @@
                                     <td width="25%"></td>
                                 </apex:outputPanel>
                             </tr>
+                         </apex:outputPanel>
                         </table>
 
                         <div align="center" draggable="false" style="margin-top: 5px">

@@ -2,7 +2,7 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 10-09-2024
+  @last modified on  : 18--12--2025
   @last modified by  : @Ravi
 -->
 <apex:component access="global" controller="FormPageController">
@@ -188,26 +188,37 @@
                                 <td width="20%"><b>Domicile:</b></td>
                                 <td>{!objLead.nm_Domicile__c}</td>
                             </tr>
+
                             <tr>
-                                <apex:outputPanel rendered="{!IF(objLead.nm_Nationality__c == 'Indian',true,false)}">
-                                    <td width="20%">
-                                        <b>
-                                            <apex:outputLabel value="{!IF(objLead.Adhar_Card_Number__c !=  null && objLead.Adhar_Card_Number__c != '','Aadhar Number:','')}" />
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <apex:outputLabel value="{!IF(objLead.Adhar_Card_Number__c !=  null && objLead.Adhar_Card_Number__c != '',objLead.Adhar_Card_Number__c,'')}" />
-                                    </td>
-                                    <td width="20%">
-                                        <b>
-                                            <apex:outputLabel value="{!IF(objLead.Pancard_no__c !=  null && objLead.Pancard_no__c != '','Pancard Number:','')}" />
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <apex:outputLabel value="{!IF(objLead.Pancard_no__c !=  null && objLead.Pancard_no__c != '',objLead.Pancard_no__c,'')}" />
-                                    </td>
-                                </apex:outputPanel>
+                                <td width="20%">
+                                    <b>
+                                        <apex:outputText rendered="{!objLead.nm_Nationality__c = 'Indian' && NOT(ISBLANK(objLead.Adhar_Card_Number__c))}">
+                                            Aadhar Number:
+                                        </apex:outputText>
+                                    </b>
+                                </td>
+                            
+                                <td>
+                                    <apex:outputText rendered="{!objLead.nm_Nationality__c = 'Indian' && NOT(ISBLANK(objLead.Adhar_Card_Number__c))}">
+                                        {!objLead.Adhar_Card_Number__c}
+                                    </apex:outputText>
+                                </td>
+                            
+                                <td width="20%">
+                                    <b>
+                                        <apex:outputText rendered="{!objLead.nm_Nationality__c = 'Indian' && NOT(ISBLANK(objLead.Pancard_no__c))}">
+                                            Pancard Number:
+                                        </apex:outputText>
+                                    </b>
+                                </td>
+                            
+                                <td>
+                                    <apex:outputText rendered="{!objLead.nm_Nationality__c = 'Indian' && NOT(ISBLANK(objLead.Pancard_no__c))}">
+                                        {!objLead.Pancard_no__c}
+                                    </apex:outputText>
+                                </td>                   
                             </tr>
+
                             <tr>
                                 <td width="20%"><b>Passport Number:</b></td>
                                 <td>{!objLead.nm_Passport__c}</td>
@@ -1002,21 +1013,36 @@
 
                         <table width="100%">
                             <tr>
-                                <apex:outputPanel rendered="{!IF(objLead.Reason__c != '' && objLead.Reason__c != null,true,false)}">
-                                    <td width="25%">
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!NOT(ISBLANK(objLead.Reason__c))}">
                                         <b>Reason For Not working:</b>
-                                    </td>
-                                    <td width="25%">{!objLead.Reason__c}</td>
-                                </apex:outputPanel>
-                                <td width="25%"><b>LinkedIn URL:</b></td>
+                                    </apex:outputPanel>
+                                </td>
+                        
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!NOT(ISBLANK(objLead.Reason__c))}">
+                                        {!objLead.Reason__c}
+                                    </apex:outputPanel>
+                                </td>
+                                <td width="25%">
+                                    <b>LinkedIn URL:</b>
+                                </td>
                                 <td width="25%">{!objLead.LinkedIn_URL__c}</td>
-                                <apex:outputPanel rendered="{!IF(objLead.Reason__c == '' || objLead.Reason__c == null,true,false)}">
-                                    <td width="25%"></td>
-                                    <td width="25%"></td>
-                                </apex:outputPanel>
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!ISBLANK(objLead.Reason__c)}">
+                                        &nbsp;
+                                    </apex:outputPanel>
+                                </td>
+                        
+                                <td width="25%">
+                                    <apex:outputPanel rendered="{!ISBLANK(objLead.Reason__c)}">
+                                        &nbsp;
+                                    </apex:outputPanel>
+                                </td>
+                        
                             </tr>
                         </table>
-
+                        
                         <div align="center" draggable="false" style="margin-top: 5px">
                             <button type="button" onClick="PrintMe('section-to-print');" class="btn btn-primary waves-effect no-print btn-custom">Print</button>
                             <!-- <a href="javascript:void(0);" 

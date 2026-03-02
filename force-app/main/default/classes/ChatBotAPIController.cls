@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 11-09-2022
- * @last modified by  : shubhranshu
+ * @last modified on  : 17--01--2026
+ * @last modified by  : @Ravi
  * Modifications Log 
  * Ver   Date         Author   Modification
  * 1.0   01-20-2021   @BK   Initial Version
@@ -657,8 +657,7 @@ public without sharing class ChatBotAPIController {
         Set<String> setRequiredParam = new Set<String>{'email','mobile'};
         List<Object> subResult = new List<Object>();
         Boolean InvalidRequest = false;
-
-        // To pass params
+        //To pass params
         mapOfAttributes.put('setRequiredParam',setRequiredParam);
         mapOfAttributes.put('mapOfRequestParameters',mapOfRequestParameters);
 

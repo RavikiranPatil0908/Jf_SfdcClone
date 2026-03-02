@@ -2,11 +2,15 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 23--07--2025
+ * @last modified on  : 24--12--2025
  * @last modified by  : @Ravi
 **/
 public without sharing class GetMandatoryDocuments {
 
+    public Map<String,Decimal> mapOfEligibilityVsRequiredAcademicPercentage = new Map<String,Decimal>();
+    public String selectedChooseProgram = '';
+    public String selectedProgramType ='';
+    
     /**
     * @description 
     * @author @BK | 08-08-2024 
@@ -16,6 +20,9 @@ public without sharing class GetMandatoryDocuments {
     public Set<String> getMandatoryDocumentsName(StudentStatus objStatus) {
         // Retrieve work experience records based on object type or from wrapper
         List<nm_WorkExperience__c> lstWk = new List<nm_WorkExperience__c>();
+        selectedChooseProgram =objStatus.chooseProgram;
+        selectedProgramType = objStatus.programType;
+
         if(objStatus.lstWk.size() > 0) {
             lstWk = objStatus.lstWk;
         } else if(objStatus.recordId != null) {
@@ -242,8 +249,14 @@ public without sharing class GetMandatoryDocuments {
     
     // Helper method to add CastCertificate documents if applicable
     private void addCastCertificateDocumentsIfApplicable(StudentStatus objStatus, Set<String> documents) {
-        if (String.isNotBlank(objStatus.castCertificateDocument) && objStatus.castCertificateDocument != 'General' && PickListHelper.getPickListValuesForLeadCategory().contains(objStatus.castCertificateDocument) ) {
-            documents.add('Caste Certificate Document');
+          getElegibilityCriteriaList();
+           System.debug('AcademicPercentage=>'+objStatus.mapOfAcadmicsvsPercentage +'  mapOfEligibilityVsRequiredAcademicPercentage=>'+mapOfEligibilityVsRequiredAcademicPercentage);
+        if (String.isNotBlank(objStatus.castCertificateDocument) && objStatus.castCertificateDocument != 'General' && PickListHelper.getPickListValuesForLeadCategory().contains(objStatus.castCertificateDocument)  ) {
+           for(String key : mapOfEligibilityVsRequiredAcademicPercentage.keySet()){
+                if(mapOfEligibilityVsRequiredAcademicPercentage.get(key) !=null && objStatus.mapOfAcadmicsvsPercentage.get(key) != null && objStatus.mapOfAcadmicsvsPercentage.get(key) < mapOfEligibilityVsRequiredAcademicPercentage.get(key)) {
+                        documents.add('Caste Certificate Document');
+                }
+            }  
         }
     }
     
@@ -272,6 +285,36 @@ public without sharing class GetMandatoryDocuments {
         }
     }
 
+    public void getElegibilityCriteriaList(){   //comment by- Ravi   same mathod copied in MobileAppFormPageAPIHandler class if any logic updated here need to update the same for Admission App 
+        // mapOfEligibilityVsRequiredAcademic = new Map<String,Boolean>();
+        Map<String,Boolean> mapOfEligibilityVsMaster = new Map<String,Boolean>();
+        
+        String chooseProgram = selectedChooseProgram;
+        String programType;
+        if(String.isNotBlank(chooseProgram) && chooseProgram.equals('Master Programs')) {
+            programType = selectedProgramType;
+        }
+        System.debug('chooseProgram ==>'+chooseProgram +'  programType ==>'+programType);
+        
+        List<nm_EligiblityCriteria__c> lstElegibility = [SELECT id,nm_EligiblityCriteria__c,Experience_Required_In_Year__c,HSC_Re__c,Diploma_Required__c,Graduation_Required__c,Post_Graduation_Required__c,
+        Post_Graduation_Percentage__c,Graduation_Percentage__c,nm_Program__c,Is_Active__c,Program_Type__c,HSC_Percentage__c,Diploma_Percentage__c,Enable_Master__c FROM nm_EligiblityCriteria__c 
+        WHERE Program_Type__c=:programType AND nm_Program__c=:chooseProgram AND Is_Active__c=true];
+        
+        if(lstElegibility.size() > 0 ){
+            for(nm_EligiblityCriteria__c objEligibility : lstElegibility){
+                // mapOfEligibilityVsRequiredAcademic.put(objEligibility.id+'-HSC',objEligibility.HSC_Re__c);
+                // mapOfEligibilityVsRequiredAcademic.put(objEligibility.id+'-Diploma',objEligibility.Diploma_Required__c);
+                // mapOfEligibilityVsRequiredAcademic.put(objEligibility.id+'-Graduation',objEligibility.Graduation_Required__c);
+                // mapOfEligibilityVsRequiredAcademic.put(objEligibility.id+'-Professional',objEligibility.Post_Graduation_Required__c);
+                mapOfEligibilityVsRequiredAcademicPercentage.put(objEligibility.id+'-HSC',objEligibility.HSC_Percentage__c);
+                mapOfEligibilityVsRequiredAcademicPercentage.put(objEligibility.id+'-Diploma',objEligibility.Diploma_Percentage__c);
+                mapOfEligibilityVsRequiredAcademicPercentage.put(objEligibility.id+'-Graduation',objEligibility.Graduation_Percentage__c);
+                mapOfEligibilityVsRequiredAcademicPercentage.put(objEligibility.id+'-PostGraduation',objEligibility.Post_Graduation_Percentage__c);
+            }
+
+        }
+    }
+
     public class StudentStatus {
         public StudentStatus() {
             this.eligibilityCriteria = '';
@@ -287,7 +330,9 @@ public without sharing class GetMandatoryDocuments {
             this.isIndian = true;
             this.recordId = null;
             this.objectType = 'Account';
+            this.programType = '';
             this.lstWk = new List<nm_WorkExperience__c>();
+            this.mapOfAcadmicsvsPercentage = new Map<String, Decimal>();
         }
         public String eligibilityCriteria {get;set;}
         public String chooseProgram {get;set;}
@@ -302,6 +347,8 @@ public without sharing class GetMandatoryDocuments {
         public String studentProgram {get;set;}
         public Id recordId {get;set;}
         public String objectType {get;set;}
+        public String programType {get;set;}
+        public Map<String,Decimal> mapOfAcadmicsvsPercentage {get;set;}
         public List<nm_WorkExperience__c> lstWk {get;set;}
     }
 }

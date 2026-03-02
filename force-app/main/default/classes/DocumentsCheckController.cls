@@ -4,10 +4,10 @@
  * @Author             : shubhranshu
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 10-14-2024
+ * @Last Modified On   : 02--03--2026
  * @Modification Log   : 
  *==============================================================================
- * Ver         Date                     Author      		      Modification
+ * Ver         Date                     Author                Modification
  *==============================================================================
  * 1.0    21/7/2019, 4:50:48 PM   shubhranshu     Initial Version
 **/
@@ -53,7 +53,7 @@ public void getDocumentRelatedData(String accId) {
         mapDocumentIdVsDocument = new Map<String,nm_LinksForDocuments__c>();
         lstWorkExperience = new list<nm_WorkExperience__c>();
 
-        String queryforAcc = getQueryAllFieldSql('Account' ,'Id =:accId','nm_Program2__r.Name,nm_Program__r.Name,(SELECT id,DocumentQuerySubmitted__c, nm_DocumentName__c, nm_AccountEmail__c, nm_DocumentLink__c,Document_Query__c,nm_ReasonforDisapprove__c,nm_Status__c, nm_URLforDocuments__c, nm_Old_URL_for_Documents__c, nm_Old_Status__c ,nm_URLforIncorrectDocuments__c,nm_Account__c,nm_Account__r.Admission_Co_ordinator__c,Document_Upload_Mode__c FROM Links_For_Documents__r)' );
+        String queryforAcc = getQueryAllFieldSql('Account' ,'Id =:accId','nm_Program2__r.Name,nm_Program__r.Name,(SELECT id,DocumentQuerySubmitted__c, nm_DocumentName__c, nm_AccountEmail__c, nm_DocumentLink__c,Document_Query__c,nm_ReasonforDisapprove__c,nm_Status__c,Provisional_Original_Marksheet_Pending__c,Provisional_Document_Comment__c, nm_URLforDocuments__c, nm_Old_URL_for_Documents__c, nm_Old_Status__c ,nm_URLforIncorrectDocuments__c,nm_Account__c,nm_Account__r.Admission_Co_ordinator__c,Document_Upload_Mode__c FROM Links_For_Documents__r)' );
         list<Account> lstAcc = DataBase.query(queryforAcc);
         if(lstAcc != null && lstAcc.size() > 0 && lstAcc[0].nm_StudentStatus__c !='Not Eligible') {
             objAccount = lstAcc[0];
@@ -98,12 +98,12 @@ public void getDocumentRelatedData(String accId) {
 * @return @RemoteAction
 */
 @RemoteAction
-public static String save(String studStatusForAcc,String linkForDocumentId,String documentStatus,String docQuery,String reasonIfDisapproved,String jsonMapDocumentIdVsDocument,String jsonMapUserIdVsCounselorId) {
+public static String save(String studStatusForAcc,String linkForDocumentId,String documentStatus,String docQuery,String reasonIfDisapproved,Boolean isprovisional, String provisionalComment ,String jsonMapDocumentIdVsDocument,String jsonMapUserIdVsCounselorId) {
     if(Schema.sObjectType.nm_LinksForDocuments__c.isUpdateable()) {
         mapDocumentIdVsDocument = new Map<String,nm_LinksForDocuments__c>();
         System.debug('enter to update');
         // call method to validate Document Status if Document Status is Disapproved then Reason make Manadtory
-        String validationError = ValidateDocumentStatus(linkForDocumentId,documentStatus,docQuery,reasonIfDisapproved);
+        String validationError = ValidateDocumentStatus(linkForDocumentId,documentStatus,docQuery,reasonIfDisapproved,provisionalComment);
         if(String.isNotBlank(validationError)) {
             return validationError;
         }
@@ -116,6 +116,8 @@ public static String save(String studStatusForAcc,String linkForDocumentId,Strin
             if(documentStatus == 'None'){
                objDocuments.nm_Status__c = ''; 
             }
+            objDocuments.Provisional_Original_Marksheet_Pending__c = isprovisional;
+            objDocuments.Provisional_Document_Comment__c = provisionalComment;
             objDocuments.Document_Query__c = docQuery;
             objDocuments.nm_ReasonforDisapprove__c = reasonIfDisapproved;
             System.debug('objDocuments.id -->'+objDocuments.id);
@@ -126,7 +128,7 @@ public static String save(String studStatusForAcc,String linkForDocumentId,Strin
                     String urlvalue = objDocuments.nm_URLforDocuments__c;
                     objDocuments.nm_URLforIncorrectDocuments__c = urlvalue;  
                     
-                    if(objDocuments.nm_URLforIncorrectDocuments__c!='' &&  objDocuments.nm_URLforIncorrectDocuments__c !=null) {
+                    if(objDocuments.nm_URLforIncorrectDocuments__c !='' &&  objDocuments.nm_URLforIncorrectDocuments__c !=null) {
                         objDocuments.nm_URLforDocuments__c = '';
                     }
                     objDocuments.DocumentQuerySubmitted__c = System.Today();                       
@@ -163,11 +165,12 @@ public static void updateAccountCordinator(String jsonMapUserIdVsCounselorId,Str
     System.debug(jsonMapUserIdVsCounselorId);
     System.debug(accountId);
     mapUserIdVsCounselorId = (Map<String,String>)JSON.deserialize(jsonMapUserIdVsCounselorId,Map<String,String>.class);
-    List<Account> lstAccount = [SELECT id,Admission_Co_ordinator__c	FROM Account WHERE id=:accountId];
+    List<Account> lstAccount = [SELECT id,Admission_Co_ordinator__c  FROM Account WHERE id=:accountId];
     String UserId = UserInfo.getUserId();
     if(mapUserIdVsCounselorId.size() > 0 && lstAccount.size() > 0 && mapUserIdVsCounselorId.containsKey(UserId) && lstAccount[0].Admission_Co_ordinator__c != mapUserIdVsCounselorId.get(UserId)) {
         System.debug('Entered for update');
         lstAccount[0].Admission_Co_ordinator__c = mapUserIdVsCounselorId.get(UserId);
+
         update lstAccount;
     }
 }
@@ -203,7 +206,7 @@ public static void updateAccountCordinator(String jsonMapUserIdVsCounselorId,Str
 * @param String reasonIfDisapproved
 * @return String
 */
-public static String ValidateDocumentStatus(String linkForDocumentId,String documentStatus,String docQuery, String reasonIfDisapproved) {
+public static String ValidateDocumentStatus(String linkForDocumentId,String documentStatus,String docQuery, String reasonIfDisapproved ,String provisionalComment) {
 
     System.debug('ValidateDocumentStatus eneter '+linkForDocumentId + documentStatus+ docQuery + reasonIfDisapproved);
     if(String.isNotBlank(linkForDocumentId) && String.isNotBlank(documentStatus))
@@ -223,7 +226,7 @@ public static String ValidateDocumentStatus(String linkForDocumentId,String docu
             return 'Please provide Document Query';
         }
 
-        if(documentStatus.equals('Admission Form & Documents Provisional') && String.isBlank(reasonIfDisapproved)){
+        if(documentStatus.equals('Admission Form & Documents Provisional') && (String.isBlank(provisionalComment))){
 
             return 'Please provide reason for Documents Provisional';
         }

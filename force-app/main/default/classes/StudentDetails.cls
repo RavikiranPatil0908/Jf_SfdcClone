@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 08-08-2024
- * @last modified by  : @BK
+ * @last modified on  : 17--01--2026
+ * @last modified by  : @Ravi
 **/
 public class StudentDetails {
     public String studentName {get;set;}
@@ -22,4 +22,7 @@ public class StudentDetails {
     public String programCategory {get;set;}
     public String program {get;set;}
     public String programSpecialisaton {get;set;}
+    public String lateralSem {get;set;}
+    public Boolean isLateral {get;set;}
+
 }

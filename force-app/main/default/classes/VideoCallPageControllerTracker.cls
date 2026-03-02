@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @vickysahu
  * @group             : 
- * @last modified on  : 12-16-2024
- * @last modified by  : @vickysahu
+ * @last modified on  : 12--02--2026
+ * @last modified by  : @Ravi
 **/
 @isTest(SeeAllData=false)
 public class VideoCallPageControllerTracker {
@@ -70,13 +70,15 @@ public class VideoCallPageControllerTracker {
         nmpay.Current_Admission_Year__c = '2020';
         nmpay.Session__c = 'July';
         nmpay.Program_Type__c = null;
+        nmpay.Last_Date_For_Video_Verification__c = System.today().addDays(10);
         update nmpay;
 
-        Cancelation_Date__c objCancel = new Cancelation_Date__c();
-        objCancel.NM_Payment_Form_Configuration__c = nmpay.Id;
-        objCancel.From_Date__c = System.today().addDays(-5);
-        objCancel.To_Date__c = System.today().addDays(10);
-        insert objCancel;
+        // Cancelation_Date__c objCancel = new Cancelation_Date__c();
+        // objCancel.NM_Payment_Form_Configuration__c = nmpay.Id;
+        // objCancel.From_Date__c = System.today().addDays(-5);
+        // objCancel.To_Date__c = System.today().addDays(10);
+        // objCancel.Amount__c =1000;
+        // insert objCancel;
 
         VVC_Question__c objVVQ = new VVC_Question__c(Account__c = objAccount.Id,Question__c = 'Test',Display_to_Student__c = true,Answer__c='test',VVC_Junction__c = objVVC.Id);
         insert objVVQ;
@@ -108,6 +110,7 @@ public class VideoCallPageControllerTracker {
             objnmReg.getVideoTranscript();
             
             objnmReg.SaveDetail();
+            objnmReg.saveVVCDetailFromAdmApp();
         Test.stopTest();
     }
 
@@ -126,15 +129,19 @@ public class VideoCallPageControllerTracker {
             wrapper.meetingTimeRange = '6:00 PM - 7:00 PM';
             wrapper.meetingTime = '6:00 PM';
             objnmReg.setObjectId(objAccount.Id);
+            objnmReg.getObjectId();
+            objnmReg.getObjectType();
             objnmReg.getVideoCallDate();
             objnmReg.getVideoCallTimeRange();
             objnmReg.getVideoCallTime();
             objnmReg.SaveDetail();
+            objnmReg.saveVVCDetailFromAdmApp();
             //objnmReg.checkValidityOfMeeting();
             Test.setMock(HttpCalloutMock.class, new RestMockI());
             objnmReg.checkReschedule();
             objnmReg.getCallSchedulingPage();
-            // objnmReg.getStudentRating();
+            objnmReg.checkValidityOfMeeting();
+            objnmReg.setObjectType('Account');
         Test.stopTest();
     }
 }

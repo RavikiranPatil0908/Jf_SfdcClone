@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 07-21-2025
- * @last modified by  : @vickysahu
+ * @last modified on  : 12--02--2026
+ * @last modified by  : @Ravi
 **/
 public without sharing class VideoCallPageController {
     public Account objAccount {get; set;}
@@ -47,6 +47,9 @@ public without sharing class VideoCallPageController {
     public VideoCallWrapper objVideoCall {get;set;}
     public Boolean isVVCNotExpired {get;set;}
     public Boolean allowVVCAfterLastDate {get;set;}
+    public Date lastDateVVC;
+    public String enableDEBVerification;
+    public String byPassDEBVerification;
 
     public VideoCallPageController(){
         objAccount = null;
@@ -84,6 +87,10 @@ public without sharing class VideoCallPageController {
         objVideoCall = new VideoCallWrapper();
         isVVCNotExpired = false;
         allowVVCAfterLastDate = false;
+        lastDateVVC = null;
+        enableDEBVerification = System.Label.Enable_DEB_Verification;
+        byPassDEBVerification = System.Label.ByPass_DEB_Verification;
+        byPassDEBVerification = enableDEBVerification == 'Yes' && byPassDEBVerification == 'Yes' ? 'No' : byPassDEBVerification;
     }
 
 
@@ -93,7 +100,6 @@ public without sharing class VideoCallPageController {
     * @return Id 
     **/
     public Id getObjectId() {
-        System.debug('get Id');
     return this.objectId;
   }
 
@@ -118,7 +124,6 @@ public without sharing class VideoCallPageController {
     * @return Id 
     **/
     public String getObjectType() {
-        System.debug('get type');
         return this.objectType;
     }
     /**
@@ -127,7 +132,6 @@ public without sharing class VideoCallPageController {
     * @param String objectType 
     **/
     public void setObjectType(String objectType) {
-        System.debug('set type');
         this.objectType = objectType;
     }
 
@@ -148,13 +152,13 @@ public without sharing class VideoCallPageController {
     * @param recordId 
     **/
     public void queryRecordData(Id recordId){
-        List<Account> lstAccount = [SELECT Id, nm_RegistrationNumber__c,nm_DateOfBirth__c, nm_ChooseaProgram__c, nm_StudentStatus__c, nm_Program__r.nm_ProgramValidity__c, nm_Program__r.Specialisation__c, nm_Program__r.nm_ProgramDuration__c, nm_Program__r.nm_ProgramName__c, is_Video_Call_Verified__c, FirstName, LastName, nm_Program__r.Name, PersonMobilePhone, PersonEmail,nm_ProgramType__c,Specialization_Type__c,nm_Program2__r.nm_ProgramName__c,nm_Nationality__c,nm_Domicile__c,DEBID__c,OwnerId FROM Account WHERE Id=:recordId LIMIT 1];
+        List<Account> lstAccount = [SELECT Id, nm_RegistrationNumber__c,nm_DateOfBirth__c, nm_ChooseaProgram__c, nm_StudentStatus__c, nm_Program__r.nm_ProgramValidity__c, nm_Program__r.Specialisation__c, nm_Program__r.nm_ProgramDuration__c, nm_Program__r.nm_ProgramName__c, is_Video_Call_Verified__c, FirstName, LastName, nm_Program__r.Name, PersonMobilePhone, PersonEmail,nm_ProgramType__c,Specialization_Type__c,nm_Program2__r.nm_ProgramName__c,nm_Nationality__c,nm_Domicile__c,DEBID__c,Agree_DEB_Terms__c,OwnerId,DEB_on_hold__c, is_Deb_verified__c FROM Account WHERE Id=:recordId LIMIT 1];
         List<Schedule_Time_Slot__c> lstScheduling = [SELECT Id,Start_time__c,End_time__c,Total_Counselors__c,Per_Call_Schedule_Minutes__c,Start_date__c,End_date__c,Recurrence__c,Custom_Schedule_Days__c,allowed_registration_nos__c FROM Schedule_Time_Slot__c WHERE RecordType.Name = 'Video Call' AND IsActive__c=true AND End_date__c>=TODAY ORDER BY End_date__c ASC];
         List<DEB_Detail__c> lstDebDetails = [SELECT Id, Is_Active__c FROM DEB_Detail__c WHERE Is_Active__c=true AND Account__c=:recordId ORDER BY CreatedDate DESC LIMIT 1];
         isSlotAvailable = lstScheduling.size() > 0 ? true : false;
         if(lstAccount.size() > 0){
             objAccount = lstAccount[0];
-            isDebVerified = (lstDebDetails.size() > 0 && String.isNotBlank(objAccount.DEBID__c)) || (objAccount.nm_Nationality__c != 'Indian' && objAccount.nm_Nationality__c != 'India') ? true : false;
+            isDebVerified = (lstDebDetails.size() > 0 && String.isNotBlank(objAccount.DEBID__c) && objAccount.is_Deb_verified__c) || (String.isNotBlank(objAccount.nm_Nationality__c) && !objAccount.nm_Nationality__c.contains('India')) || (system.label.ByPass_DEB_Verification == 'Yes' || (byPassDEBVerification == 'No' && enableDEBVerification == 'No' && String.isNotBlank(objAccount.DEBID__c)) && objAccount.Agree_DEB_Terms__c) ? true : false;
             wrapper = new ObjWrapper(objAccount);
             List<Opportunity> lstOpp = [SELECT Id,Applied_For_Loan__c,Specialisation__c,Zest_Loan_Application_Request__c,Loan_Type__c,Tenure__c,Loan_Amount__c,Down_Payment_Made__c,Is_Re_Registration_Payment__c,nm_Session__c,nm_Year__c,nm_Semester__c,nm_Category__c,StageName FROM Opportunity WHERE AccountId=: objAccount.Id AND Is_Re_Registration_Payment__c=false AND (nm_Category__c='Admission' OR nm_Category__c='Lateral Admission') LIMIT 1];
             objOpp = lstOpp.size() > 0 ? lstOpp[0] : new Opportunity();
@@ -183,7 +187,7 @@ public without sharing class VideoCallPageController {
                             lstVVCTranscript.add(objVVC);
                         }
                     }
-                }
+                                    }
                 //System.debug(' objRating--->' + JSON.serialize(objRating));
             }
             
@@ -213,6 +217,7 @@ public without sharing class VideoCallPageController {
         List<NM_Payment_Form_Configuration__c> lstNMConfig = new List<NM_Payment_Form_Configuration__c>();
         lstNMConfig = [SELECT Id,Last_Date_For_Video_Verification__c FROM NM_Payment_Form_Configuration__c WHERE Session__c =: objOpp.nm_Session__c AND Current_Admission_Year__c =: String.valueOf(objOpp.nm_Year__c) AND Payment_Type__c = 'Admission' AND Program_Category__c =: objAccount.nm_ChooseaProgram__c AND Program_Type__c =: objOpp.Specialisation__c LIMIT 1];
         isVVCNotExpired  = lstNMConfig.size() > 0 && lstNMConfig[0].Last_Date_For_Video_Verification__c >= Date.today() ? true : false;
+        lastDateVVC = lstNMConfig.size() > 0 ? lstNMConfig[0].Last_Date_For_Video_Verification__c : null;
         if(isVVCNotExpired == false){
             if(lstScheduling.size() > 0 ){
                 for (Schedule_Time_Slot__c stslot : lstScheduling) {
@@ -438,7 +443,7 @@ public without sharing class VideoCallPageController {
     public Map<String,List<Map<String,String>>> getSchedulingList() {
         Map<String,List<Map<String,String>>> mapOfDateVsTimeRange = new Map<String, List<Map<String,String>>>();
         try {
-            List<Schedule_Time_Slot__c> lstScheduling = [SELECT Id,Start_time__c,End_time__c,Total_Counselors__c,Per_Call_Schedule_Minutes__c,Start_date__c,End_date__c,Recurrence__c,Custom_Schedule_Days__c,Zoom_Id__c,sameDayBookingDate__c,Time_Gap__c FROM Schedule_Time_Slot__c WHERE RecordType.Name = 'Video Call' AND IsActive__c=true AND End_date__c>=TODAY ORDER BY End_date__c ASC];
+            List<Schedule_Time_Slot__c> lstScheduling = [SELECT Id,Start_time__c,End_time__c,Total_Counselors__c,Per_Call_Schedule_Minutes__c,Start_date__c,End_date__c,Recurrence__c,Custom_Schedule_Days__c,Zoom_Id__c,sameDayBookingDate__c,Time_Gap__c,Disable_Days_Selection__c,Program_Type__c FROM Schedule_Time_Slot__c WHERE RecordType.Name = 'Video Call' AND IsActive__c=true AND End_date__c>=TODAY ORDER BY End_date__c ASC];
             
             for (Schedule_Time_Slot__c objSlot : lstScheduling) {
                 Date startDate = objSlot.Start_date__c > System.today() ? objSlot.Start_date__c : System.today().addDays(1);
@@ -451,6 +456,11 @@ public without sharing class VideoCallPageController {
                 if (objSlot.Start_date__c <= System.today() && objSlot.Time_Gap__c != null && Integer.valueOf(objSlot.Time_Gap__c) > 0) {
                     startDate = System.today();
                 }
+
+                if (objSlot.Program_Type__c == 'Master' && objAccount.nm_ProgramType__c != 'Master Programs') {
+                    continue;
+                }
+
                 if (startDate > endDate) {
                     continue;
                 }
@@ -464,7 +474,8 @@ public without sharing class VideoCallPageController {
                     while (startDate <= endDate) {
                         DateTime dt = startDate;
                         String weekOfDay = dt.format('EEEE');
-                        if(objSlot.Recurrence__c == 'Daily' || (objSlot.Recurrence__c == 'Monday to Saturday' && workingDays.contains(weekOfDay)) || (objSlot.Recurrence__c == 'Custom' && customDays.contains(weekOfDay))) {
+                        Boolean hideSelectedDays = hideForSelectedDays(weekOfDay,startDate,objSlot);
+                        if((objSlot.Recurrence__c == 'Daily' || (objSlot.Recurrence__c == 'Monday to Saturday' && workingDays.contains(weekOfDay)) || (objSlot.Recurrence__c == 'Custom' && customDays.contains(weekOfDay))) && (startDate <= lastDateVVC || allowVVCAfterLastDate) && !hideSelectedDays) {
                             mapOfDateVsTimeRange = getDateWithTimeRange(startDate,objSlot,mapOfDateVsTimeRange,maxAllowedPerTimeRange,zoomIdAvailable);
                         }
                         startDate = startDate.addDays(1);
@@ -472,7 +483,8 @@ public without sharing class VideoCallPageController {
                 } else {
                     DateTime dt = startDate;
                     String weekOfDay = dt.format('EEEE');
-                    if(objSlot.Recurrence__c == 'Daily' || (objSlot.Recurrence__c == 'Monday to Saturday' && workingDays.contains(weekOfDay)) || (objSlot.Recurrence__c == 'Custom' && customDays.contains(weekOfDay))) {
+                    Boolean hideSelectedDays = hideForSelectedDays(weekOfDay,startDate,objSlot);
+                    if((objSlot.Recurrence__c == 'Daily' || (objSlot.Recurrence__c == 'Monday to Saturday' && workingDays.contains(weekOfDay)) || (objSlot.Recurrence__c == 'Custom' && customDays.contains(weekOfDay))) && (startDate <= lastDateVVC || allowVVCAfterLastDate) && !hideSelectedDays) {
                         mapOfDateVsTimeRange = getDateWithTimeRange(startDate,objSlot,mapOfDateVsTimeRange,maxAllowedPerTimeRange,zoomIdAvailable);
                     }
                 }
@@ -482,6 +494,20 @@ public without sharing class VideoCallPageController {
             System.debug('Error Line No: ==>'+err.getLineNumber());
         }
         return mapOfDateVsTimeRange;
+    }
+
+    public Boolean hideForSelectedDays(String Days, Date dt, Schedule_Time_Slot__c objSlot) {
+        if (objSlot.Disable_Days_Selection__c == '' || Days != 'Saturday') {
+            return false;
+        }
+        Integer satCount = (dt.day() + 6) / 7;
+        if (objSlot.Disable_Days_Selection__c == '1 & 3 Saturday') {
+            return satCount == 1 || satCount == 3;
+        }
+        else if (objSlot.Disable_Days_Selection__c == '2 & 4 Saturday') {
+            return satCount == 2 || satCount == 4;
+        }
+        return false;
     }
 
     /**
@@ -715,19 +741,180 @@ public without sharing class VideoCallPageController {
         return startHour + ' - ' + endHour;
     }
 
+    // /**
+    // * @description 
+    // * @author @vickysahu | 07-02-2024 
+    // * @return PageReference 
+    // **/
+    // public PageReference saveDetail(){   
+    //     try{
+    //         Boolean checkGap = false;
+    //         VideoCallSchedulingHandler objHandler = new VideoCallSchedulingHandler();
+    //         VVC_Junction__c objVVC = new VVC_Junction__c();
+    //         objVVC.Call_Date__c = Date.valueOf(wrapper.meetingDate);
+    //         checkGap = checkTimeGap(objVVC);
+    //         if(checkForSlotAvalialbility() && checkGap && String.isNotBlank(wrapper.meetingDate) && String.isNotBlank(wrapper.meetingTime) && String.isNotBlank(wrapper.meetingTimeRange)){
+    //             System.debug('acc-->'+ objAccount);
+    //             objVVC.Account__c = objAccount.Id;
+    //             // objVVC.Call_Date__c = Date.valueOf(wrapper.meetingDate);
+    //             objVVC.Time_Range__c = wrapper.meetingTimeRange;
+    //             objVVC.Schedule_Time_Slot__c = scheduleTimeSlotId;
+    //             objVVC.Status__c = 'Not Started';
+    //             objVVC.Mobile_Number__c = wrapper.phoneNumber;
+    //             objVVC.Student_Name__c = wrapper.firstName + ' ' +  wrapper.lastName;
+    //             objVVC.Student_Email__c = wrapper.email;
+    //             objVVC.Opportunity__c = objOpp.Id;
+    //             objVVC.OwnerId = objAccount.OwnerId;
+    //             System.debug('VVC_Junction__c-->'+ JSON.serialize(objVVC));
+    //             System.debug('wrapper-->'+JSON.serialize(wrapper));
+    //             String msg = objHandler.scheduleMeeting(objVVC,isReschedule,wrapper.meetingTime);
+    //             if(String.isNotBlank(msg)) {
+    //                 ErrorMessage(msg,'PopUpError');
+    //             }
+    //             else {
+    //                 wrapper.isCallScheduled = true;
+    //                 List<VVC_Junction__c> lstVVCRecord = getScheduledVVC();
+    //                 formStatus = 'Slot Booked';
+    //                 sectionHeader = 'SLOT DETAILS FOR VIDEO VERIFICATION CALL V2';
+    //                 DateTime currentDt = System.now().addHours(24);
+    //                 showReScheduleButton = objSlotBooked.Schedule_Call_Time__c > currentDt || objSlotBooked.Call_Date__c < Date.today() ? true : false;
+    //                 ErrorMessage('Video Call Meeting Schedule Successfully!','Success');
+    //             }
+    //         }
+    //         else{
+    //             ErrorMessage('The selected slot is not available.','PopUpError');
+    //         }
+
+    //     }catch(Exception e) {
+    //         System.debug('System error '+e);
+    //         ErrorMessage('Something Went Wrong','PopUpError');
+    //     }
+    //     return null;
+    // }
+
+     
+
+    // /**
+    // * @description 
+    // * @author @Ravi | 13--11--2025 
+    // * @return Map<String, Object> 
+    // **/
+    // public Map<String, Object> saveVVCDetailFromAdmApp() {
+    //     Map<String, Object> responseMap = new Map<String, Object>();
+    //     try {
+    //         Boolean checkGap = false;
+    //         VideoCallSchedulingHandler objHandler = new VideoCallSchedulingHandler();
+    //         VVC_Junction__c objVVC = new VVC_Junction__c();
+    //         objVVC.Call_Date__c = Date.valueOf(wrapper.meetingDate);
+    //         checkGap = checkTimeGap(objVVC);
+    
+    //         if (checkForSlotAvalialbility() && checkGap && String.isNotBlank(wrapper.meetingDate) &&  String.isNotBlank(wrapper.meetingTime) && String.isNotBlank(wrapper.meetingTimeRange)) {
+    //             objVVC.Account__c = objAccount.Id;
+    //             objVVC.Time_Range__c = wrapper.meetingTimeRange;
+    //             objVVC.Schedule_Time_Slot__c = scheduleTimeSlotId;
+    //             objVVC.Status__c = 'Not Started';
+    //             objVVC.Mobile_Number__c = wrapper.phoneNumber;
+    //             objVVC.Student_Name__c = wrapper.firstName + ' ' + wrapper.lastName;
+    //             objVVC.Student_Email__c = wrapper.email;
+    //             objVVC.Opportunity__c = objOpp.Id;
+    //             objVVC.OwnerId = objAccount.OwnerId;
+    
+    //             String msg = objHandler.scheduleMeeting(objVVC, isReschedule, wrapper.meetingTime);
+    //             if (String.isNotBlank(msg)) {
+    //                 responseMap.put('status', 'Success');
+    //                 responseMap.put('message', msg);
+    //                 responseMap.put('data', null);
+    //             } else {
+    //                 wrapper.isCallScheduled = true;
+    //                 List<VVC_Junction__c> lstVVCRecord = getScheduledVVC();
+    //                 formStatus = 'Slot Booked';
+    //                 sectionHeader = 'SLOT DETAILS FOR VIDEO VERIFICATION CALL V2';
+    //                 DateTime currentDt = System.now().addHours(24);
+    //                 showReScheduleButton = 
+    //                     objSlotBooked.Schedule_Call_Time__c > currentDt || 
+    //                     objSlotBooked.Call_Date__c < Date.today();
+    
+    //                 responseMap.put('status', 'Success');
+    //                 responseMap.put('message', 'Video Call Meeting Scheduled Successfully!');
+    //                 responseMap.put('data', lstVVCRecord);
+    //             }
+    //         } else {
+    //             responseMap.put('status', 'Success');
+    //             responseMap.put('message', 'The selected slot is not available.');
+    //             responseMap.put('data', null);
+    //         }
+    //     } catch (Exception e) {
+    //         System.debug('System error: ' + e);
+    //         responseMap.put('status', 'Error');
+    //         responseMap.put('message', 'Something went wrong.');
+    //         responseMap.put('data', null);
+    //     }
+    //     return responseMap;
+    // }
+
+
     /**
     * @description 
-    * @author @vickysahu | 07-02-2024 
+    * @author @Ravi | 12--02--2026 
     * @return PageReference 
     **/
-    public PageReference saveDetail(){
-        try{
+    public PageReference saveDetail() {
+
+        Map<String, Object> result = scheduleVVCMeeting();
+    
+        if ((Boolean)result.get('isSuccess')) {
+            wrapper.isCallScheduled = true;
+            formStatus = 'Slot Booked';
+            sectionHeader = 'SLOT DETAILS FOR VIDEO VERIFICATION CALL V2';
+            DateTime currentDt = System.now().addHours(24);
+            showReScheduleButton = objSlotBooked.Schedule_Call_Time__c > currentDt || objSlotBooked.Call_Date__c < Date.today() ? true : false;
+            ErrorMessage((String)result.get('message'), 'Success');
+        } 
+        else {
+            ErrorMessage((String)result.get('message'), 'PopUpError');
+        }
+        return null;
+    }
+
+    /**
+    * @description 
+    * @author @Ravi | 12--02--2026 
+    * @return Map<String, Object> 
+    **/
+    public Map<String, Object> saveVVCDetailFromAdmApp() {
+
+        Map<String, Object> result = scheduleVVCMeeting();
+        Map<String, Object> responseMap = new Map<String, Object>();
+    
+        if ((Boolean)result.get('isSuccess')) {
+            responseMap.put('status', 'Success');
+        } else {
+            responseMap.put('status', 'Error');
+        }
+        responseMap.put('message', result.get('message'));
+        responseMap.put('data', result.get('data'));
+
+        return responseMap;
+    }
+   
+    /**
+    * @description 
+    * @author @Ravi | 12--02--2026 
+    * @return Map<String, Object> 
+    **/
+    public Map<String, Object> scheduleVVCMeeting() {
+        Map<String, Object> responseMap = new Map<String, Object>();
+    
+        try {
             Boolean checkGap = false;
             VideoCallSchedulingHandler objHandler = new VideoCallSchedulingHandler();
             VVC_Junction__c objVVC = new VVC_Junction__c();
+    
             objVVC.Call_Date__c = Date.valueOf(wrapper.meetingDate);
             checkGap = checkTimeGap(objVVC);
-            if(checkForSlotAvalialbility() && checkGap && String.isNotBlank(wrapper.meetingDate) && String.isNotBlank(wrapper.meetingTime) && String.isNotBlank(wrapper.meetingTimeRange)){
+    
+            if (checkForSlotAvalialbility()  && checkGap   && String.isNotBlank(wrapper.meetingDate)  && String.isNotBlank(wrapper.meetingTime)  && String.isNotBlank(wrapper.meetingTimeRange)) {
+               
                 System.debug('acc-->'+ objAccount);
                 objVVC.Account__c = objAccount.Id;
                 // objVVC.Call_Date__c = Date.valueOf(wrapper.meetingDate);
@@ -735,36 +922,40 @@ public without sharing class VideoCallPageController {
                 objVVC.Schedule_Time_Slot__c = scheduleTimeSlotId;
                 objVVC.Status__c = 'Not Started';
                 objVVC.Mobile_Number__c = wrapper.phoneNumber;
-                objVVC.Student_Name__c = wrapper.firstName + ' ' +  wrapper.lastName;
+                objVVC.Student_Name__c = wrapper.firstName + ' ' + wrapper.lastName;
                 objVVC.Student_Email__c = wrapper.email;
                 objVVC.Opportunity__c = objOpp.Id;
                 objVVC.OwnerId = objAccount.OwnerId;
-                System.debug('VVC_Junction__c-->'+ JSON.serialize(objVVC));
                 System.debug('wrapper-->'+JSON.serialize(wrapper));
-                String msg = objHandler.scheduleMeeting(objVVC,isReschedule,wrapper.meetingTime);
-                if(String.isNotBlank(msg)) {
-                    ErrorMessage(msg,'PopUpError');
-                }
-                else {
-                    wrapper.isCallScheduled = true;
+                String msg = objHandler.scheduleMeeting(objVVC, isReschedule, wrapper.meetingTime);
+    
+                if (String.isNotBlank(msg)) {
+                    responseMap.put('isSuccess', false);
+                    responseMap.put('message', msg);
+                    responseMap.put('data', null);
+                } else {
+    
                     List<VVC_Junction__c> lstVVCRecord = getScheduledVVC();
-                    formStatus = 'Slot Booked';
-                    sectionHeader = 'SLOT DETAILS FOR VIDEO VERIFICATION CALL V2';
-                    DateTime currentDt = System.now().addHours(24);
-                    showReScheduleButton = objSlotBooked.Schedule_Call_Time__c > currentDt || objSlotBooked.Call_Date__c < Date.today() ? true : false;
-                    ErrorMessage('Video Call Meeting Schedule Successfully!','Success');
+    
+                    responseMap.put('isSuccess', true);
+                    responseMap.put('message', 'Video Call Meeting Scheduled Successfully!');
+                    responseMap.put('data', lstVVCRecord);
                 }
+            } else {
+                responseMap.put('isSuccess', false);
+                responseMap.put('message', 'The selected slot is not available.');
+                responseMap.put('data', null);
             }
-            else{
-                ErrorMessage('The selected slot is not available.','PopUpError');
-            }
-
-        }catch(Exception e) {
-            System.debug('System error '+e);
-            ErrorMessage('Something Went Wrong','PopUpError');
+    
+        } catch (Exception e) {
+            responseMap.put('isSuccess', false);
+            responseMap.put('message', 'Something Went Wrong.');
+            responseMap.put('data', null);
         }
-        return null;
+    
+        return responseMap;
     }
+    
 
     public Boolean checkTimeGap(VVC_Junction__c objVVC) {
         List<Schedule_Time_Slot__c> lstSTS = new List<Schedule_Time_Slot__c>();
@@ -861,7 +1052,7 @@ public without sharing class VideoCallPageController {
                 objSlotBooked.ZoomId_Key__c = '';
                 objSlotBooked.Agent_Key__c = '';
                 objSlotBooked.is_Call_Cancel__c = true;
-                update objSlotBooked;
+                update objSlotBooked;                         
         
                 objSlotBooked = new VVC_Junction__c();
                 formStatus = 'Pending (Needs Re-booking)';
@@ -914,6 +1105,7 @@ public without sharing class VideoCallPageController {
             this.isScheduleCallTimeNull = isScheduleCallTimeNull;
             this.errorMsg = '';
             this.isCallScheduled = false;
+            this.isReschedule =false;
         }
 
         public ObjWrapper(Account acc){
@@ -937,6 +1129,7 @@ public without sharing class VideoCallPageController {
         public Boolean isScheduleCallTimeNull{get;set;}
         public String errorMsg {get;set;}
         public Boolean isCallScheduled {get;set;}
+        public Boolean isReschedule;
     }
 
     public class VideoCallWrapper {

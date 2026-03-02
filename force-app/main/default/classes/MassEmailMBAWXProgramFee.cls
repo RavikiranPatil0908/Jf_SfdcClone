@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : @BK
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 10-04-2024
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 09--09--2025
  * @Modification Log   : 
  * Ver       Date            Author                 Modification
  * 1.0    21/1/2020   @BK     Initial Version
@@ -77,7 +77,7 @@ global class MassEmailMBAWXProgramFee Implements Schedulable
                                     '                            <tr>'+
                                     '                                <td width="5" height="100" align="left">'+
                                     '                                    <a href="'+Label.Student_Zone_Base_Url+'studentportal/" style="color: #aa1f24">'+
-                                    '                                        <img WIDTH=720 HEIGHT=100 alt="" src="https://c.ap19.content.force.com/servlet/servlet.ImageServer?id=0152j000000PdAV&oid=00D90000000s6BL&lastMod=1603953932000" style=" display: table"></a>'+
+                                    '                                        <img WIDTH=720 HEIGHT=100 alt="" src="https://registration.online.nmims.edu/servlet/servlet.ImageServer?id=0152j000000PdAV&oid=00D90000000s6BL&lastMod=1603953932000" style=" display: table"></a>'+
                                     '                                </td>'+
                                     '                            </tr>'+
                                     '                        </tbody>'+
@@ -100,7 +100,7 @@ global class MassEmailMBAWXProgramFee Implements Schedulable
                                     '                                    <table border="0" cellpadding="0" cellspacing="0" width="600">'+
                                     '                                        <tbody>'+
                                     '                                            <tr>'+
-                                    '                                                <td width="20"><img alt="" height="44" src="https://c.ap19.content.force.com/servlet/servlet.ImageServer?id=0152j000000PdAk&oid=00D90000000s6BL&lastMod=1603954131000" width="22"></td>'+
+                                    '                                                <td width="20"><img alt="" height="44" src="https://registration.online.nmims.edu/servlet/servlet.ImageServer?id=0152j000000PdAk&oid=00D90000000s6BL&lastMod=1603954131000" width="22"></td>'+
                                     '                                                <td pardot-region="" style="font-size: 16px; color: #464648; line-height: 24px;" valign="top" width="708">Dear '+objaccount.Name+','+
                                     '                                                    <br>'+
                                     '                                                    <br> Greetings from NMIMS Center For Distance And Online Education'+
@@ -120,7 +120,7 @@ global class MassEmailMBAWXProgramFee Implements Schedulable
                                     '                                                    <span><b>NMIMS CDOE</span>'+
                                     ''+
                                     '                                                </td>'+
-                                    '                                                <td width="22"><img alt="" height="44" src="https://c.ap19.content.force.com/servlet/servlet.ImageServer?id=0152j000000PdAk&oid=00D90000000s6BL&lastMod=1603954131000" width="22"></td>'+
+                                    '                                                <td width="22"><img alt="" height="44" src="https://registration.online.nmims.edu/servlet/servlet.ImageServer?id=0152j000000PdAk&oid=00D90000000s6BL&lastMod=1603954131000" width="22"></td>'+
                                     ''+
                                     '                                            </tr>'+
                                     ''+
@@ -131,7 +131,7 @@ global class MassEmailMBAWXProgramFee Implements Schedulable
                                     '                                            </tr>'+
                                     '                                            <tr>'+
                                     '                                                <td> </td>'+
-                                    '                                                <td colspan="3" height="20" valign="top"><img src="https://c.ap19.content.force.com/servlet/servlet.ImageServer?id=0152j000000PdAp&oid=00D90000000s6BL&lastMod=1603954244000" style="display: table" width="750"></td>'+
+                                    '                                                <td colspan="3" height="20" valign="top"><img src="https://registration.online.nmims.edu/servlet/servlet.ImageServer?id=0152j000000PdAp&oid=00D90000000s6BL&lastMod=1603954244000" style="display: table" width="750"></td>'+
                                     '                                                <td> </td>'+
                                     '                                            </tr>'+
                                     '                                            <tr>'+

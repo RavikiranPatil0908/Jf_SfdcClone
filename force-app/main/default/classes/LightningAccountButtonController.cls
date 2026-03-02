@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @Ravi
  * @group             : 
- * @last modified on  : 20--08--2025
+ * @last modified on  : 14--01--2026
  * @last modified by  : @Ravi
  * Modifications Log
  * Ver   Date           Author   Modification
@@ -244,7 +244,7 @@ public without sharing class LightningAccountButtonController {
     * @return AccountWrapper 
     **/
     @AuraEnabled
-    public static AccountWrapper getRecordForNewEmail(String email){
+    public static AccountWrapper recordForNewEmail(String email){
         AccountWrapper leadacc = new AccountWrapper();
         List<Account> accountList = new List<Account>();
         List<Lead> leadList = new List<Lead>();
@@ -269,7 +269,7 @@ public without sharing class LightningAccountButtonController {
     * @return AccountWrapper 
     **/
     @AuraEnabled
-    public static AccountWrapper getRecordForNewMobile(String mobile){
+    public static AccountWrapper recordForNewMobile(String mobile){
         AccountWrapper leadacc = new AccountWrapper();
         List<Account> accountList = new List<Account>();
         List<Lead> leadList = new List<Lead>();

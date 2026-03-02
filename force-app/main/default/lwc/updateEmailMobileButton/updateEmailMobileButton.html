@@ -2,7 +2,7 @@
   @description       : 
   @author            : @Ravi
   @group             : 
-  @last modified on  : 10--07--2025
+  @last modified on  : 14--01--2026
   @last modified by  : @Ravi
   Modifications Log
   Ver   Date           Author   Modification
@@ -16,9 +16,8 @@
         <div class="slds-modal__content slds-p-around_medium">
             <span>Request to update email address or mobile number</span>
             <div class="slds-col slds-size_2-of-1">
-                <lightning-combobox required="true" value={updateType} options={updateOptions}  onchange={handleChange} >
-               
-                </lightning-combobox>
+                <lightning-combobox label="Kindly select your request:" value={updateType} options={updateOptions}
+                    onchange={handleChange} required="true"></lightning-combobox>
             </div>
         </div>
         <footer class="slds-modal__footer">

@@ -4,7 +4,7 @@
  * @Author             : shubhranshu
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 10-17-2024
+ * @Last Modified On   : 25--11--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author      		      Modification
@@ -73,7 +73,7 @@ public class DocumentsCheckControllerTracker {
 
     @isTest 
     static void testSave1(){
-        nm_LinksForDocuments__c linkDoc = [select id,nm_Status__c,Document_Query__c,nm_ReasonforDisapprove__c from nm_LinksForDocuments__c limit 1];
+        nm_LinksForDocuments__c linkDoc = [select id,nm_Status__c,Document_Query__c,nm_ReasonforDisapprove__c,Provisional_Document_Comment__c,Provisional_Original_Marksheet_Pending__c from nm_LinksForDocuments__c limit 1];
         linkDoc.nm_Status__c = 'Approved'; 
         update linkDoc;
         Account objAccount = [select id,nm_StudentStatus__c from Account limit 1];
@@ -81,6 +81,8 @@ public class DocumentsCheckControllerTracker {
         update objAccount;
         Counsellor_Profile__c cp = [select Id ,Salutation__c, First_Name__c ,Last_Name__c from Counsellor_Profile__c limit 1];
         String studStatusForAcc = objAccount.nm_StudentStatus__c;
+        Boolean provisionalFlag = linkDoc.Provisional_Original_Marksheet_Pending__c;
+        String provisionalComment =linkDoc.Provisional_Document_Comment__c;
         String linkForDocumentId = linkDoc.id;
         String documentStatus = linkDoc.nm_Status__c;
         String docQuery = '';
@@ -96,13 +98,13 @@ public class DocumentsCheckControllerTracker {
         String jsonMapOfUserId = JSON.serialize(mapUserIdVsCounselorId);
         Test.setMock(HttpCalloutMock.class, new RestMock());
         Test.startTest();
-        DocumentsCheckController.save(studStatusForAcc,linkForDocumentId,documentStatus,docQuery,reasonIfDisapproved,jsonMap,jsonMapOfUserId);
+        DocumentsCheckController.save(studStatusForAcc,linkForDocumentId,documentStatus,docQuery,reasonIfDisapproved,provisionalFlag,provisionalComment,jsonMap,jsonMapOfUserId);
         Test.stopTest();
     }
 
     @isTest 
     static void testSave2(){
-       nm_LinksForDocuments__c linkDoc = [select id,nm_Status__c,Document_Query__c,nm_ReasonforDisapprove__c, nm_URLforDocuments__c from nm_LinksForDocuments__c limit 1];
+        nm_LinksForDocuments__c linkDoc = [select id,nm_Status__c,Document_Query__c,nm_ReasonforDisapprove__c,Provisional_Document_Comment__c,Provisional_Original_Marksheet_Pending__c from nm_LinksForDocuments__c limit 1];
        linkDoc.nm_Status__c = 'Documents incorrect'; 
        linkDoc.nm_URLforDocuments__c='www.google.com';
        linkDoc.Document_Query__c ='Blur Photo';
@@ -113,6 +115,8 @@ public class DocumentsCheckControllerTracker {
        Counsellor_Profile__c cp = [select Id ,Salutation__c, First_Name__c ,Last_Name__c from Counsellor_Profile__c limit 1];
        String studStatusForAcc = objAccount.nm_StudentStatus__c;
        String linkForDocumentId = linkDoc.id;
+       Boolean provisionalFlag = linkDoc.Provisional_Original_Marksheet_Pending__c;
+       String provisionalComment =linkDoc.Provisional_Document_Comment__c;
        String documentStatus = linkDoc.nm_Status__c;
        String docQuery = linkDoc.Document_Query__c;
        String reasonIfDisapproved = '';
@@ -127,13 +131,13 @@ public class DocumentsCheckControllerTracker {
        String jsonMapOfUserId = JSON.serialize(mapUserIdVsCounselorId);
        Test.setMock(HttpCalloutMock.class, new RestMock());
        Test.startTest();
-       DocumentsCheckController.save(studStatusForAcc,linkForDocumentId,documentStatus,docQuery,reasonIfDisapproved,jsonMap,jsonMapOfUserId);
+       DocumentsCheckController.save(studStatusForAcc,linkForDocumentId,documentStatus,docQuery,reasonIfDisapproved,provisionalFlag,provisionalComment,jsonMap,jsonMapOfUserId);
        Test.stopTest();
     }
 
     @isTest 
     static void testSave3(){
-       nm_LinksForDocuments__c linkDoc = [select id,nm_Status__c,Document_Query__c,nm_ReasonforDisapprove__c from nm_LinksForDocuments__c limit 1];
+        nm_LinksForDocuments__c linkDoc = [select id,nm_Status__c,Document_Query__c,nm_ReasonforDisapprove__c,Provisional_Document_Comment__c,Provisional_Original_Marksheet_Pending__c from nm_LinksForDocuments__c limit 1];
        linkDoc.nm_Status__c = 'Disapproved'; 
        update linkDoc;
        Account objAccount = [select id,nm_StudentStatus__c from Account limit 1];
@@ -143,6 +147,8 @@ public class DocumentsCheckControllerTracker {
        String studStatusForAcc = objAccount.nm_StudentStatus__c;
        String linkForDocumentId = linkDoc.id;
        String documentStatus = linkDoc.nm_Status__c;
+       Boolean provisionalFlag = linkDoc.Provisional_Original_Marksheet_Pending__c;
+       String provisionalComment =linkDoc.Provisional_Document_Comment__c;
        String docQuery = '';
        String reasonIfDisapproved = '';
        Map<String,nm_LinksForDocuments__c> mpaOflinkOfDoc = new Map<String,nm_LinksForDocuments__c>();
@@ -156,7 +162,7 @@ public class DocumentsCheckControllerTracker {
        String jsonMapOfUserId = JSON.serialize(mapUserIdVsCounselorId);
        Test.setMock(HttpCalloutMock.class, new RestMock());
        Test.startTest();
-       DocumentsCheckController.save(studStatusForAcc,linkForDocumentId,documentStatus,docQuery,reasonIfDisapproved,jsonMap,jsonMapOfUserId);
+       DocumentsCheckController.save(studStatusForAcc,linkForDocumentId,documentStatus,docQuery,reasonIfDisapproved,provisionalFlag,provisionalComment,jsonMap,jsonMapOfUserId);
        Test.stopTest();
     }
 }

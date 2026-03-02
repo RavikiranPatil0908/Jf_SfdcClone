@@ -1,3 +1,13 @@
+/**
+ * @description       : 
+ * @author            : @Ravi
+ * @group             : 
+ * @last modified on  : 23--02--2026
+ * @last modified by  : @Ravi
+ * Modifications Log
+ * Ver   Date           Author   Modification
+ * 1.0   19--02--2026   @Ravi   Initial Version
+**/
 import { LightningElement, api, wire, track } from 'lwc';
 import { getRecord ,updateRecord,generateRecordInputForUpdate, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id'; //this is how you will retreive the USER ID of current in user.
@@ -35,6 +45,12 @@ export default class AepPurchaseLicense extends NavigationMixin(LightningElement
     @track ichareId;
     @track accId;
     @track options;
+    @track licensesActions;
+    @track IsReleaseSelected = false;
+    @track showReleaseMessage = false;
+    @track hidePaymentButton = false;
+    @track showReleaseButton = false;
+    @track showReleaseSuccessMsg = false;
 
     @api calculation = {
         monthsBetween : 0,
@@ -65,21 +81,21 @@ export default class AepPurchaseLicense extends NavigationMixin(LightningElement
     objectInfo;
     
     @wire(getPicklistValues, { recordTypeId: '$objectInfo.data.defaultRecordTypeId', fieldApiName: ContactRole })
-	getBoardNameList({ error, data }) {
-		if (data) {
-			this.options = data.values;
-		} else if (error) {
-			console.error(error);
-		}
-	}
+    getBoardNameList({ error, data }) {
+        if (data) {
+            this.options = data.values;
+        } else if (error) {
+            console.error(error);
+        }
+    }
 
     @wire(getMonthsBetween)
     getMonthsBetween({ error, data }) {
-		if (data) {
+        if (data) {
             this.calculation.monthsBetween = data;
-		} else if (error) {
-			console.error(error);
-		}
+        } else if (error) {
+            console.error(error);
+        }
     }
     
     // @wire(getRecord, { recordId: this.contactname, fields: FIELDS })
@@ -99,7 +115,7 @@ export default class AepPurchaseLicense extends NavigationMixin(LightningElement
 
 
     @wire(getCenterUserData, { userId: USER_ID })
-	getAEPUserDetails({ error, data }) {
+    getAEPUserDetails({ error, data }) {
         console.log("data in getAEPUserDetails" + JSON.stringify(data));
         if (data) {
             console.log(JSON.stringify(data));
@@ -114,7 +130,7 @@ export default class AepPurchaseLicense extends NavigationMixin(LightningElement
                   //  this.sendEmail();
                 }
             }
-		} else if (error) {
+        } else if (error) {
             console.error(error);
         } 
     }
@@ -132,19 +148,36 @@ export default class AepPurchaseLicense extends NavigationMixin(LightningElement
                     // Preventing unexcepted data 
                     if (response.hasOwnProperty(key)) {
                         // Filtering the data in the loop
-                        this.cpRecords.push({ value: response[key], key:key, selected : false, role: 'User' });
+                        let cpWrapper = response[key];
+                        let licenseActive = cpWrapper.licenseActive ? cpWrapper.licenseActive : false;
+                        console.log('Test12345  ==' + cpWrapper.cpData);
+                        this.cpRecords.push({ value: cpWrapper.cpData, key:key, selected : false, role: 'User' , licenseAction: '' , licenseActive: licenseActive,
+                             // { label: 'Release License', value: 'release' } 
+                            licenseOptions: licenseActive ? [
+                               { label: 'Renew License', value: 'renew' }, { label: 'Release License', value: 'release' } 
+                             ]
+                            :[
+                                { label: 'Purchase New License', value: 'purchase' }
+                            ]
+                         });
                     }
                 }
                 console.log('cpRecords ' + JSON.stringify(cpRecords));
                 arrayofCpRecords = this.cpRecords;
                 this.sizeofCpRecords = arrayofCpRecords.length;
             }
-    	})
-		.catch((error) => {
-			this.message = undefined;
+        })
+        .catch((error) => {
+            this.message = undefined;
             this.error = error;
-		});
+        });
     }
+
+    // @track licensesActions = [
+    //     { label: 'Renew License', value: 'renew' },
+    //     { label: 'Purchase New License', value: 'purchase' },
+    //     { label: 'Release License', value: 'release' }
+    // ];
 
     handleChange(event){
 
@@ -184,7 +217,37 @@ export default class AepPurchaseLicense extends NavigationMixin(LightningElement
         // }         
     }
 
-    handleClick(event) {
+  //comm on 21/2/26 by swati
+    /*handleLicenseActionChange(event) {
+        let value = event.currentTarget.dataset.key;
+
+        this.cpRecords.forEach(element => {
+            if (element.key === value) {
+                element.licenseAction = event.detail.value;
+            }
+             if(element.licenseAction === 'release') {
+                this.IsReleaseSelected = true;
+                --this.calculation.noOfProfiles; 
+                calculateTotalAmount();
+            }
+        });
+    }*/
+
+    handleLicenseActionChange(event) {
+    let key = event.currentTarget.dataset.key;
+    let action = event.detail.value;
+
+    this.cpRecords.forEach(element => {
+        if (element.key === key) {
+            element.licenseAction = action;
+        }
+    });
+
+    this.recalculateProfileCount();
+}
+
+    //comm on 21/2/26 by swati
+    /*handleClick(event) {
         let value = event.currentTarget.dataset.value;
         console.log('value ==> '+value);
         this.cpRecords.forEach(element => {
@@ -196,28 +259,102 @@ export default class AepPurchaseLicense extends NavigationMixin(LightningElement
                     element.selected = true;
                     ++this.calculation.noOfProfiles;  
                 }
-                this.calculateTotalAmount();
+                this.calculateTotalAmount(); 
             }
         });
-    }
+    }*/
 
-    calculateTotalAmount() {
+
+    handleClick(event) {
+    let key = event.currentTarget.dataset.value;
+
+    this.cpRecords.forEach(element => {
+        if (element.key === key) {
+            element.selected = !element.selected;
+
+            // if user unselects card → clear action
+            if (!element.selected) {
+                element.licenseAction = '';
+            }
+        }
+    });
+
+    this.recalculateProfileCount();
+}
+
+recalculateProfileCount() {
+
+    let payableCount = 0;
+    let selectedCount = 0;
+    let releaseCount = 0;
+
+    this.cpRecords.forEach(element => {
+        if (element.selected) {
+            selectedCount++;
+
+            if (element.licenseAction === 'release') {
+                releaseCount++;
+            }
+
+            if (
+                element.licenseAction === 'purchase' ||
+                element.licenseAction === 'renew'
+            ) {
+                payableCount++;
+            }
+        }
+    });
+
+    this.calculation.noOfProfiles = payableCount;
+    this.calculateTotalAmount();
+
+    // ⭐ NEW DECISION LOGIC
+    if (selectedCount > 0 && selectedCount === releaseCount) {
+        // only release selected
+        this.hidePaymentButton = true;
+        this.showReleaseButton = true;
+    } else {
+        this.hidePaymentButton = false;
+        this.showReleaseButton = false;
+        this.showReleaseSuccessMsg = false;
+    }
+}
+
+handleReleaseSubmit() {
+     this.showReleaseSuccessMsg = true;
+     this.saveCenterDetailsOnlineMethod();
+     this.showReleaseButton = false;
+}
+
+//comm on 21/2/26 by swati
+    /*calculateTotalAmount() {
         this.calculation.amount = parseFloat((this.calculation.noOfProfiles * this.calculation.perMonth) * this.calculation.monthsBetween).toFixed(2);
         if (this.calculation.amount > 0) {
             this.calculation.show = true;
         } else {
             this.calculation.show = false;
         }
-    }
+    }*/
 
-	formValidate() {
-		const allValid = [
-			...this.template.querySelectorAll('lightning-input, lightning-combobox, lightning-radio-group')
-		].reduce((validSoFar, inputCmp) => {
-			inputCmp.reportValidity();
-			return validSoFar && inputCmp.checkValidity();
-		}, true);
-		return allValid;
+        calculateTotalAmount() {
+    this.calculation.amount =
+        parseFloat(
+            this.calculation.noOfProfiles *
+            this.calculation.perMonth *
+            this.calculation.monthsBetween
+        ).toFixed(2);
+
+    this.calculation.show = this.cpRecords.some(el => el.selected);
+}
+
+    formValidate() {
+        const allValid = [
+            ...this.template.querySelectorAll('lightning-input, lightning-combobox, lightning-radio-group')
+        ].reduce((validSoFar, inputCmp) => {
+            inputCmp.reportValidity();
+            return validSoFar && inputCmp.checkValidity();
+        }, true);
+        return allValid;
     }
 
     saveLicenseDetails(){
@@ -259,24 +396,37 @@ export default class AepPurchaseLicense extends NavigationMixin(LightningElement
         let cpusers = {};
         this.cpRecords.forEach(element => {
             if(element.selected) {
-                cpusers[element.key] = element.role;
+                cpusers[element.key] ={
+                    Name:element.value.Name,
+                    Role: element.role,
+                    Action: element.licenseAction
+             };
             }
         });
         console.log('cpusers '+JSON.stringify(cpusers));
         let cpusersJSON = JSON.stringify(cpusers);
         saveCentersDetailsForOnline({ numberOflicense: this.calculation.noOfProfiles, amount: this.calculation.amount, cpusers: cpusersJSON , centerId : this.aepDetails.Id })
             .then((result) => {
+                console.log('result==>'+JSON.stringify(result));
                 if (result != null) {
-                    this.showHtmlMessage('Record updated successfully !', result.TotalLicensesRequired__c, 'success');
+                    this.showHtmlMessage('AEP Licenses Request Created !', result.TotalLicensesRequired__c, 'success');
+                    
+                    if(this.showReleaseSuccessMsg==true)
+                    {
+                        console.log('release license');
+                        window.location.reload();
+                    }
+                    else{
                     this.onlinepayment = true;
                     window.open(siteUrl + 'nmAdditonalCharge?id=' + this.aepDetails.Id, "_self");
+                    }
                     //window.history.back();
                 }
             })
             .catch((error) => {
                 this.showHtmlMessage('Error while updating the record!', 'error', 'error');
                 this.rollbackCenterDetailsOnlineMethod();
-                console.log(error);
+                console.log('error==>'+error);
             });
     }
 
@@ -398,10 +548,10 @@ export default class AepPurchaseLicense extends NavigationMixin(LightningElement
     }
 
     // To show Toast message
-	showHtmlMessage(title, message, variant) {
-		this.showPopup.title = title;
-		this.showPopup.message = message;
-		this.showPopup.variant = variant;
-		this.template.querySelector('c-lwc-custom-toast').showCustomNotice();
-	}
+    showHtmlMessage(title, message, variant) {
+        this.showPopup.title = title;
+        this.showPopup.message = message;
+        this.showPopup.variant = variant;
+        this.template.querySelector('c-lwc-custom-toast').showCustomNotice();
+    }
 }

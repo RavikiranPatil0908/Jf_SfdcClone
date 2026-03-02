@@ -21,6 +21,9 @@
 	background-color: #f5f5f5;
  }
 
+ .error-text lightning-formatted-rich-text {
+ 	color: red;
+ }
 
 /* Title styling */
 .form-title {

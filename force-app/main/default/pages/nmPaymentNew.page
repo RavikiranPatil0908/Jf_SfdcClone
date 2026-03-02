@@ -4,7 +4,7 @@
   @Author             : shubhranshu
   @Group              : 
   @Last Modified By   : @vickysahu
-  @Last Modified On   : 03-07-2025
+  @Last Modified On   : 10-24-2025
   @Modification Log   : 
   ==============================================================================
   Ver         Date                     Author                 Modification
@@ -955,10 +955,14 @@
                                         <input id="icicigateway" type="radio" name="paymentGatewayGrp" value="ICICI GateWay" />
                                         <label class="drinkcard-cc icicigateway" for="icicigateway" />
                                     </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(gatewayMessages != '',true,false)}" styleclass="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                        <span style="color:#c00"><b>Note: </b>{!gatewayMessages}</span>
+                                    </apex:outputPanel>
                                 </div>
                                 <!-- <div>
                                     <p>Note: currently we are facing low success rate for payment made using billdesk</p>
                                 </div> -->
+                                
                             </div>
                             <div class="modal-footer">
                                 <div class="row">
@@ -1168,8 +1172,8 @@
         <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/moment.js')}" />
         <apex:includeScript value="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}" />
         <script type="text/javascript" src="{!URLFOR($Resource.NewResourceRevised, 'NewResourceRevised/assets/js/fontawesome.min.js')}" data-auto-replace-svg="nest"/>
-        <script src="../../soap/ajax/45.0/connection.js" type="text/javascript"></script>
-        <script src="../../soap/ajax/45.0/apex.js" type="text/javascript"></script>
+        <script src="../../soap/ajax/64.0/connection.js" type="text/javascript"></script>
+        <script src="../../soap/ajax/64.0/apex.js" type="text/javascript"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
         <!--------------------------------------------------------------------Script ------------------------------------------>

@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : Balakrishnan
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 20-09-2022
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 17--01--2026
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -35,13 +35,13 @@ public class nmOnlinePayment
     public String InstallmentAmount {get;set;}
     public String ReqTranportalId{get;set;}
     public String ReqTranportalPassword{get;set;}
-    public String ReqAmount{get;set;}
-    public String ReqTrackId{get;set;}
-    public String ReqCurrency{get;set;}
-    public String ReqLangid{get;set;}
-    public String ReqAction{get;set;}
-    public String ReqResponseUrl{get;set;}
-    public String ReqErrorUrl{get;set;}
+    public String ReqAmount {get;set;}
+    public String ReqTrackId {get;set;}
+    public String ReqCurrency {get;set;}
+    public String ReqLangid {get;set;}
+    public String ReqAction {get;set;}
+    public String ReqResponseUrl {get;set;}
+    public String ReqErrorUrl {get;set;}
     public String postPaymentPage {get;set;}
     public boolean IsReregistartion {get;set;}
     public decimal depositAmount {get;set;}
@@ -65,7 +65,10 @@ public class nmOnlinePayment
     public Boolean isInternational {get;set;}
     
     //////////////////////////////////
-    public string duration{get;set;}
+    public string duration {get;set;}
+    public String ipAddress;
+    public String userAgent;
+    public Boolean isMobileAPICall;
     
   
     public nmOnlinePayment()
@@ -78,6 +81,7 @@ public class nmOnlinePayment
         //Currency Code INR
         //Currency Code Exponential 2
         //Payment gateway fss
+        isMobileAPICall =false;
         postPaymentPage = '';
         InstallmentPayOpt  ='';      
         TranTrackid = '';
@@ -98,6 +102,8 @@ public class nmOnlinePayment
         courseList = '';
         isInternational = false;
         redirectPaymentPage = 'NA';
+        ipAddress ='';
+        userAgent ='';
 
     }
     
@@ -367,7 +373,7 @@ public class nmOnlinePayment
         System.debug('successEcryptedData '+successEcryptedData);
         // Encrypted data for security purpose with error message
         String failEcryptedData = PayPalWebService.generateEncryptedData(TranTrackid,uniqueReference,String.valueof(amount.total),'fail');
-        System.debug('failEcryptedData '+failEcryptedData);
+        System.debug('failEcryptedData '+failEcryptedData)createICICIOrderRequest;
         String PayPalResponseURL = nmCommon.getConfigSettings('PaymentResponseUrl_PayPal__c');
         redirect_urls.return_url = PayPalResponseURL+'?data='+successEcryptedData+'&txnid='+TranTrackid;
         redirect_urls.cancel_url = PayPalResponseURL+'?data='+failEcryptedData+'&txnid='+TranTrackid;
@@ -479,8 +485,7 @@ public class nmOnlinePayment
         return mapOfParametersToPass;
     }
 
-    public Map<String,String> createHDFCDeskRequest()
-    {
+    public Map<String,String> createHDFCDeskRequest() {
        if(strAddress =='' || strAddress ==null)
        {
            strAddress='NA';
@@ -787,9 +792,15 @@ public class nmOnlinePayment
 
         Map<String,String> mapOfDevice = new Map<String,String>();
         mapOfDevice.put('init_channel','internet');
-        mapOfDevice.put('ip',ApexPages.currentPage().getHeaders().get('X-Salesforce-SIP'));
-        mapOfDevice.put('user_agent',ApexPages.currentPage().getHeaders().get('User-Agent'));
-
+        
+        if(!isMobileAPICall){
+            mapOfDevice.put('ip',ApexPages.currentPage().getHeaders().get('X-Salesforce-SIP'));
+            mapOfDevice.put('user_agent',ApexPages.currentPage().getHeaders().get('User-Agent'));
+        } else {
+            mapOfDevice.put('ip',ipAddress);
+            mapOfDevice.put('user_agent',userAgent);
+        }
+    
         Map<String,Object> mapOfParametersToPass = new Map<String,Object>();
         mapOfParametersToPass.put('mercid',BilldeskV2.Merchant_ID__c);
         mapOfParametersToPass.put('orderid',TranTrackid);

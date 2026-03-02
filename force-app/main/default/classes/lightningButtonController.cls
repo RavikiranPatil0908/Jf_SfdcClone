@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : shubhranshu
  * @Group              : 
- * @Last Modified By   : @Shailesh
- * @Last Modified On   : 25-06-2025
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 09--09--2025
  * @Modification Log   : 
  * Ver       Date            Author      		    Modification
  * 1.0    26/3/2020   shubhranshu     Initial Version
@@ -591,7 +591,7 @@ public without sharing class lightningButtonController {
         '                                <td width="5" height="100" align="left">'+
         '                                    <a href="'+Label.Student_Portal+'" style="color: #aa1f24">'+
         '                                        <img WIDTH="720" HEIGHT="100" alt=""'+
-        '                                            src="https://c.ap19.content.force.com/servlet/servlet.ImageServer?id=0152j000000PdAV&oid=00D90000000s6BL"'+
+        '                                            src="https://registration.online.nmims.edu/servlet/servlet.ImageServer?id=0152j000000PdAV&oid=00D90000000s6BL"'+
         '                                            style=" display: table" /></a>'+
         '                                </td>'+
         '                            </tr>'+
@@ -639,7 +639,7 @@ public without sharing class lightningButtonController {
         '                                            <tr>'+
         '                                                <td> </td>'+
         '                                                <td colspan="3" height="20" valign="top"><img'+
-        '                                                        src="https://c.ap19.content.force.com/servlet/servlet.ImageServer?id=0152j000000PdAp&oid=00D90000000s6BL&lastMod=1603954244000"'+
+        '                                                        src="https://registration.online.nmims.edu/servlet/servlet.ImageServer?id=0152j000000PdAp&oid=00D90000000s6BL&lastMod=1603954244000"'+
         '                                                        style="display: table" width="750" /></td>'+
         '                                                <td> </td>'+
         '                                            </tr>'+

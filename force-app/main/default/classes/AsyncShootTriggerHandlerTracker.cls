@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 30-12-2024
- * @last modified by  : @BK
+ * @last modified on  : 23--02--2026
+ * @last modified by  : @Ravi
 **/
 @isTest
 public class AsyncShootTriggerHandlerTracker {
@@ -21,9 +21,9 @@ public class AsyncShootTriggerHandlerTracker {
         ob.Recording_Format__c='Zoom';
         ob.Recording_Platform__c='Zoom';
         ob.Post_Production_Minutes__c = 10;
-        ob.Partner__c = 'Devendra Sharma';
-        ob.Editor_Name__c = 'Devendra Sharma';
-        ob.Editor_Email_Id__c = 'devendrasuthra750@gmail.com';
+        ob.Partner__c = 'Nikita bhosale';
+        ob.Editor_Name__c = 'Nikita bhosale';
+        ob.Editor_Email_Id__c = 'nikitabhosale1709@gmail.com';
         ob.Video_Link_Version_1__c = 'http://www.youtube.com/watch?v=zbYf5_S7oJo';
         ob.Program__c = 'UG';
         insert ob;

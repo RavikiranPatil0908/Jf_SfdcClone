@@ -2,8 +2,8 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 03-03-2025
-  @last modified by  : @vickysahu
+  @last modified on  : 16--02--2026
+  @last modified by  : @Ravi
 -->
 <apex:component access="global" allowDML="true" controller="PaymentPageController">
     <apex:attribute access="global" name="recordId" type="ID" description="Record Id" assignTo="{!objectId}"/>
@@ -76,6 +76,12 @@
                                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!objDetails.programSpecialisaton}</span></div>
                                 </div>
                             </apex:outputPanel>
+                            <!-- <apex:outputPanel rendered="{!!ISBLANK(semester)}" layout="none">
+                                <div class="row col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-0">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span class="table-label">Semester</span></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span>{!semester}</span></div>
+                                </div>
+                            </apex:outputPanel> -->
                             <apex:outputPanel layout="none" rendered="{!objDetails.isPaymentMade}">
                                 <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-0">
                                     <apex:outputPanel styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" rendered="{!IF(!objLoanDetails.isDownPaymentMade || objAdmissionAmount.isRedirect, true, false)}">
@@ -970,6 +976,17 @@
                             </div>
                         </apex:outputPanel>
                     </div>
+                    <!-- <apex:outputPanel rendered="{!NOT(ISNULL(gatewayMessages)) && gatewayMessages.size > 0}">
+                        <span><b>Note:</b></span>
+                        <ul>
+                            <apex:repeat value="{!gatewayMessages}" var="msg">
+                                <li>{!msg}</li>
+                            </apex:repeat>
+                        </ul>
+                    </apex:outputPanel> -->
+                    <apex:outputPanel rendered="{!IF(gatewayMessages != '',true,false)}" styleclass="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                        <span style="color:#c00"><b>Note: </b>{!gatewayMessages}</span>
+                    </apex:outputPanel>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary btn-lg btn-custom waves-effect" data-dismiss="modal">CLOSE</button>
                     </div>
@@ -990,7 +1007,7 @@
                     <div class="modal-footer">
                         <apex:commandButton styleClass="btn btn-primary btn-lg btn-custom waves-effect" value="I Agree" rendered="{!returnUrl == null || returnUrl =''}"
                             html-data-dismiss="modal" />
-                        <apex:outputPanel rendered="{!returnUrl!=null}">
+                        <apex:outputPanel rendered="{!returnUrl != null }">
                             <a href="{!returnUrl}" class="btn btn-primary btn-lg btn-custom waves-effect">I Agree</a>
                         </apex:outputPanel>
                     </div>

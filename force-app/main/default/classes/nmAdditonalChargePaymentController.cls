@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : @BK
  * @Group              : 
- * @Last Modified By   : @vickysahu
- * @Last Modified On   : 02-19-2025
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 24--02--2026
  * @Modification Log   : 
  * Ver       Date            Author              Modification
  * 1.0    7/10/2019   @BK     Initial Version
@@ -31,6 +31,7 @@ public without sharing class nmAdditonalChargePaymentController{
     public NM_Payment_Form_Configuration__c objPaymentFormConfiguration {get;set;}
     public nm_Centers__c objtCenter {get;set;}
     public AEP_site_inspection__c aepisp {get;set;}
+    public AEP_License_Request__c aepLicenseObj {get;set;}
     public date Today {get;set;}
     public String programType {get;set;}
     public String programCategory {get;set;}
@@ -78,6 +79,7 @@ public without sharing class nmAdditonalChargePaymentController{
     public String aepCenId {get;set;}
     public Decimal TotalAEPMerchPrice {get;set;}
     public Boolean isOpportunityProcessed {get;set;}
+    public String gatewayMessages {get;set;}
     
     public nmAdditonalChargePaymentController(){
         recordId = '';
@@ -139,6 +141,7 @@ public without sharing class nmAdditonalChargePaymentController{
         isOpportunityProcessed = false;
         aepCenId='';
         isCourseraOpted = false;
+        gatewayMessages = '';
         if(ApexPages.currentPage() != null) {
             recordId = ApexPages.currentPage().getParameters().get('id');
             if(ApexPages.currentPage().getParameters().get('IC') !=null){
@@ -163,6 +166,7 @@ public without sharing class nmAdditonalChargePaymentController{
         if(String.isNotBlank(recordId) && String.isBlank(aepCenId) && paymentFor=='coursera') {
             QueryCourseraProduct();
         }
+        gatewayMessages = PaymentPageHandler.getGatewayMessage();
     }
     
     public String getQueryAllFieldSql(String SObjectAPIName,String conditionString , String relatedField){
@@ -462,7 +466,8 @@ public without sharing class nmAdditonalChargePaymentController{
                                 Date expiryDate ;
                                 Decimal productprice;
                                 Map<String,Integer> licenseapplicableName = new Map<String,Integer>();      
-                                
+                                List<AEP_License_Request__c> latestRecord = [SELECT Id FROM AEP_License_Request__c WHERE 	AEP__c=:lstCenter[0].Id ORDER BY CreatedDate DESC LIMIT 1];
+                                 system.debug('lstCenter--->'+latestRecord);
                                 String UserLicense  = getQueryAllFieldSql('PermissionSetLicense','Status = \'Active\' limit 1',null);
                                 String priceBookEntryQuery4 = getQueryAllFieldSql('PriceBookEntry','product2.Family=\'AEP\' and product2.isActive = true AND Pricebook2.nmSession_Start_Date__c <= today AND Pricebook2.nmSession_End_Date__c >= today',' product2.Name,product2.GST__c, product2.nm_Program__c, product2.nm_Program__r.id, product2.nm_Semester__c ');
 
@@ -525,13 +530,15 @@ public without sharing class nmAdditonalChargePaymentController{
                                 //        licenseapplicable.put(countlicense,'UG And PG License Fee');
                                 //        system.debug('countlicense-->'+countlicense);
                                 //    }
-                                
+                                  if (!latestRecord.isEmpty()) {
+                                        aepLicenseObj = latestRecord[0];
+                                    }
                                     Cpjson = objcenter.Partner_User_list__c ;
-                                    displayName = paymentFor !=null ?paymentFor:'Partner Community Licenses Fee';
+                                    displayName = paymentFor !=null && paymentFor!='' ?paymentFor:'Partner Community Licenses Fee';
                                     Integer monthsBetween = expiryDate!=null? expiryDate.monthsBetween(Today):0;
                                     Integer TotalLicensesRequired = Integer.valueOf(objcenter.TotalLicensesRequired__c) !=null? Integer.valueOf(objcenter.TotalLicensesRequired__c) :0;
                                     paymentFor = paymentFor !=null && paymentFor!='' ?paymentFor:'Community Licenses Fee';
-                                    licensesFee = objcenter.amount_For_new_License__c>0 && objcenter.amount_For_new_License__c!=null?Integer.valueof(objcenter.amount_For_new_License__c ):0;      
+                                    licensesFee = objcenter.amount_For_new_License__c>0 && objcenter.amount_For_new_License__c!=null?Integer.valueof(objcenter.amount_For_new_License__c ):0; 
                                     system.debug('licensesFee--->'+licensesFee);  
                                     system.debug('monthsBetween--->'+monthsBetween);
                                     system.debug('TotalLicensesRequired--->'+TotalLicensesRequired);
@@ -977,7 +984,7 @@ public without sharing class nmAdditonalChargePaymentController{
             }
             System.debug('semesterProductPrice After GST ==> ' + semesterProductPrice);
             semesterProductPrice  = semesterProductPrice  - admissionAmountReceived;
-              system.debug('LateFeeProductPrice ------>'+LateFeeProductPrice);           
+            system.debug('LateFeeProductPrice ------>'+LateFeeProductPrice);           
         }
         
         if(programChangeAndICChangeWithStudyKitFeeReceived > 0){
@@ -1014,6 +1021,7 @@ public without sharing class nmAdditonalChargePaymentController{
         * then minus the product amount with loan Opted amount. 
         * Added by Bala 07-10-2019
         **/
+        System.debug('check----->' + objOpportunity.Down_Payment_Made__c +' '+  loanOptedAmount +' '+ objOpportunity.Loan_Application_Cancelled__c +' '+ loanAmountDisbursed +' '+ objOpportunity.Loan_Approved__c +' '+objOpportunity.Loan_Type__c);
         if(objOpportunity.Down_Payment_Made__c && loanOptedAmount > 0 && !objOpportunity.Loan_Application_Cancelled__c && 
             (!loanAmountDisbursed || (objOpportunity.Loan_Approved__c && objOpportunity.Loan_Type__c!='Zest')) ) {
             Decimal LiveLectureProductPrice = LiveLecturePrice;
@@ -1128,7 +1136,7 @@ public without sharing class nmAdditonalChargePaymentController{
                         mapOfProductAndAmount.put(paymentFor,balanceAmount);
                     }
                 }
-                if(ProgramChangeProductPrice > 0){
+                if(ProgramChangeProductPrice > 0 && ProgramChangeProductPrice != -semesterProductPrice){
                     balanceAmount = ProgramChangeProductPrice;
                     if(balanceAmount >= 0){
                         paymentFor = 'Additional Charge - ProgramChange';
@@ -1235,7 +1243,7 @@ public without sharing class nmAdditonalChargePaymentController{
                 DateTime currentDateTime = DateTime.now();
             if(objPaymentFormConfiguration.Payment_Window_EndDate__c < currentDateTime){
                 if(setOfStudentAndRegistrationNoAllowedToMakePaymentAfterEndDate.size() > 0){
-                    if(!setOfStudentAndRegistrationNoAllowedToMakePaymentAfterEndDate.contains(studentNo)){
+                    if(!setOfStudentAndRegistrationNoAllowedToMakePaymentAfterEndDate.contains(studentNo) || objPaymentFormConfiguration.Last_Date_Reg_No_Allowed_After_End_Date__c < currentDateTime || objPaymentFormConfiguration.Last_Date_Reg_No_Allowed_After_End_Date__c == null){
                          paymentWindowClosed = true;
                          paymentClouserMessage = objPaymentFormConfiguration.Payment_Window_Closure_Message__c;
                     }
@@ -1822,6 +1830,7 @@ public without sharing class nmAdditonalChargePaymentController{
         boolean AEPlicensePayment = false ;
         String firstPaymentRecordId = '';
         Boolean AEPMerchendisePayment = false;
+        String  aepRecId ='';
         
         Set<String> merchantRefNumberIds = new Set<String>();
         for(nm_Payment__c payment : lstPaymentToInsert){
@@ -1865,8 +1874,10 @@ public without sharing class nmAdditonalChargePaymentController{
             insert insertList;
             system.debug('insertList --> ' + insertList);
             firstPaymentRecordId = insertList[0].Id;
+             aepRecId = insertList[0].AEP__c;
             if(AEPlicensePayment)
-            {
+            { 
+                updateAEPLicenseRequest(Cpjson,firstPaymentRecordId);
                 insertContactsandSendMail(Cpjson,firstPaymentRecordId);
 
             }
@@ -1950,10 +1961,32 @@ public without sharing class nmAdditonalChargePaymentController{
         System.debug('objOpportunity----'+objOpportunity);
     }
 
+    /**
+    * @description 
+    * @author @Ravi | 20--02--2026 
+    * @param String userListJson 
+    **/
+    public void updateAEPLicenseRequest(String userListJson,String firstPaymentRecordId){
+
+        Map<String,Object> mapOfCps = (Map<String,Object>)Json.deserializeuntyped(userListJson);
+        String cpData='';                                                                                                                                                                                                             
+        AEP_License_Request__c licenseReq = new AEP_License_Request__c();
+        licenseReq.Id =aepLicenseObj.Id;
+        licenseReq.Payment__c = firstPaymentRecordId;
+         try{
+              System.debug('licenseReq ='+licenseReq);
+               update licenseReq;
+            }catch(DMLException e){
+                System.debug('Error '+e.getMessage());
+            }
+    }
+
     public void insertContactsandSendMail(String userListJson,String paymentId){
 
         List<Counsellor_Profile__c> lstOfCp = new List<Counsellor_Profile__c>();
         List<Contact> lstContact = new List<Contact>();
+        List<Contact> contactsForEmail = new List<Contact>();
+        Map<Id, Contact> existingContactMap = new Map<Id, Contact>();
         
         Map<String,Object> mapOfCps = (Map<String,Object>)Json.deserializeuntyped(userListJson);
         System.debug('mapOfCps '+mapOfCps);
@@ -1965,10 +1998,27 @@ public without sharing class nmAdditonalChargePaymentController{
         if(cpIdSet.size() > 0){
             lstOfCp = [Select Id,First_Name__c,Last_Name__c,Email__c,MobilePhone__c ,BusinessAccount__c from Counsellor_Profile__c where id in: cpIdSet];
         }
-        System.debug('lstOfCp '+lstOfCp);
+
+          /*NEW LOGIC: Check Existing Contacts */
+        Set<Id> existingCpIds = new Set<Id>();
+        List<Contact> existingContacts = new List<Contact>();
+
+         if(!cpIdSet.isEmpty()){
+           existingContacts = [ SELECT Id, LastName,FirstName,User_Role__c,Counselor_Profile__c FROM Contact WHERE Counselor_Profile__c IN :cpIdSet ];
+
+            for(Contact con : existingContacts){
+                if(con.Counselor_Profile__c != null){
+                    existingCpIds.add(con.Counselor_Profile__c);
+                    existingContactMap.put(con.Counselor_Profile__c, con);
+                }
+            }
+        }
         if(lstOfCp.size() > 0){
             for(Counsellor_Profile__c cp : lstOfCp){
-               
+                    if(existingCpIds.contains(cp.Id)){
+                         contactsForEmail.add(existingContactMap.get(cp.Id));
+                       continue; 
+                   }
                 Contact c = new Contact();
                 c.FirstName = cp.First_Name__c;
                 c.LastName = cp.Last_Name__c;
@@ -1977,29 +2027,38 @@ public without sharing class nmAdditonalChargePaymentController{
                 c.Phone = String.valueOf(cp.MobilePhone__c);
                 c.LeadSource = 'Web';
                 c.Counselor_Profile__c = cp.Id;
-                c.User_Role__c = String.valueOf(mapOfCps.get(cp.Id));
+
+                if(mapOfCps.containsKey(cp.Id)) {
+                    Map<String, Object> innerMap =
+                        (Map<String, Object>) mapOfCps.get(cp.Id);
+                    c.User_Role__c = (String) innerMap.get('Role');
+                }
 
                 lstContact.add(c);
             }
         }
         System.debug('lstContact '+lstContact);
         if(lstContact.size()>0)
-        {   
+         {  
             try{
                 insert lstContact;
-            }catch(DMLException e){
+                contactsForEmail.addAll(lstContact);
+            } catch(DMLException e){
                 System.debug('Error '+e.getMessage());
             }
-            
+        }
+          System.debug('contactsForEmail '+contactsForEmail);
+         if(contactsForEmail.size()>0)
+         { 
             String paymentReceipt = System.Label.Site_Url +'nmRegistrationThankYou?PaymentId='+paymentId;
             Decimal timePeriod = purchaseLicenseForAEPController.getNoOfMonths();
            
             if(objtCenter != null){
-
-                purchaseLicenseForAEPController.sendNotificationEmail(objtCenter.Center_Name__c,String.valueOf(objtCenter.TotalLicensesRequired__c),String.valueOf(objtCenter.amount_For_new_License__c),String.valueOf(timePeriod),lstContact,paymentReceipt,'online');
+                System.debug('objtCenter1 '+objtCenter);
+                purchaseLicenseForAEPController.sendNotificationEmail(objtCenter.Center_Name__c,String.valueOf(objtCenter.TotalLicensesRequired__c),String.valueOf(objtCenter.amount_For_new_License__c),String.valueOf(timePeriod),contactsForEmail,paymentReceipt,'online');
             }
 
-        }
+        } 
     }
     
      /*-----------------------------------------------------------------------DD Payment ------------------------------------------------*/

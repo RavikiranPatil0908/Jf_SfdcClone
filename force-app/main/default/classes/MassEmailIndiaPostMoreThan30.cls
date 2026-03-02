@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 10-04-2024
- * @last modified by  : @BK
+ * @last modified on  : 09--09--2025
+ * @last modified by  : @Ravi
 **/
 global class MassEmailIndiaPostMoreThan30 Implements Schedulable
             {
@@ -341,7 +341,7 @@ global class MassEmailIndiaPostMoreThan30 Implements Schedulable
                                             '                                                   <div class=\'contentEditableContainer contentImageEditable\'>'+
                                             '                                                      <div class=\'contentEditable\'>'+
                                             '                                                         <a target=\'_blank\' href="#">'+
-                                            '                                                         <img src="https://c.ap19.content.force.com/servlet/servlet.ImageServer?id=0152j000000PdAQ&oid=00D90000000s6BL&lastMod=1603953535000" alt="Logo" valign="top" width=\'100%\' data-default="placeholder" data-max-width="100" ></a>'+
+                                            '                                                         <img src="https://registration.online.nmims.edu/servlet/servlet.ImageServer?id=0152j000000PdAQ&oid=00D90000000s6BL&lastMod=1603953535000" alt="Logo" valign="top" width=\'100%\' data-default="placeholder" data-max-width="100" ></a>'+
                                             '                                                      </div>'+
                                             '                                                   </div>'+
                                             '                                                </td>'+
@@ -414,9 +414,9 @@ global class MassEmailIndiaPostMoreThan30 Implements Schedulable
                                             '                                                            </p>'+
                                             '                                                            <br/>'+
                                             '                                                         </div>'+
-                                            '                                                         <img src="https://c.ap19.content.force.com/servlet/servlet.ImageServer?id=0152j000000PdAG&oid=00D90000000s6BL&lastMod=1603952774000" alt="Logo" valign="top" width=\'100%\' data-default="placeholder" data-max-width="100" ></a>'+
+                                            '                                                         <img src="https://registration.online.nmims.edu/servlet/servlet.ImageServer?id=0152j000000PdAG&oid=00D90000000s6BL&lastMod=1603952774000" alt="Logo" valign="top" width=\'100%\' data-default="placeholder" data-max-width="100" ></a>'+
                                             '                                                         <p  style=\'background-color: #E0D7B8;\'>  </p>'+
-                                            '                                                         <img src="https://c.ap19.content.force.com/servlet/servlet.ImageServer?id=0152j000000PdAL&oid=00D90000000s6BL&lastMod=1603953322000" alt="Logo" valign="top" width=\'100%\' data-default="placeholder" data-max-width="100" style=\'background-color:#e0d7b8;\'></a>'+
+                                            '                                                         <img src="https://registration.online.nmims.edu/servlet/servlet.ImageServer?id=0152j000000PdAL&oid=00D90000000s6BL&lastMod=1603953322000" alt="Logo" valign="top" width=\'100%\' data-default="placeholder" data-max-width="100" style=\'background-color:#e0d7b8;\'></a>'+
                                             '                                                         <div style=\' margin: 20px;\'>'+
                                             '                                                            <p style="font-size:11px;line-height: 14px;">You are receiving this email because you had signed up to receive emails from NMIMS CDOE. If you prefer not to receive future emails of this type, you can unsubscribe <a href="'+Label.Site_Url+'UnsubscribeEmail?l={!Lead.Id}&cid={!Contact.Id}&e={!Lead.Email}&ei={!Contact.Email}" target="_blank" style=\'color:#36183E;\'><b>here</b></a> | Please do not reply to this email, as this inbox is not monitored.</p>'+
                                             '                                                         </div>'+

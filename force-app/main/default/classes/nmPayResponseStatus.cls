@@ -1,3 +1,13 @@
+/**
+ * @description       : 
+ * @author            : @Ravi
+ * @group             : 
+ * @last modified on  : 17--01--2026
+ * @last modified by  : @Ravi 
+ * Modifications Log
+ * Ver   Date           Author   Modification
+ * 1.0   17--01--2026   @Ravi   Initial Version
+**/
 public class nmPayResponseStatus 
 {
     public string strPaymentTrackId{get;set;}  
@@ -13,7 +23,7 @@ public class nmPayResponseStatus
         try
         { 
             strPaymentTrackId = apexpages.currentpage().getparameters().get('ResTrackId');  //Merchant Track ID 
-            IsReRegistration = apexpages.currentpage().getparameters().get('type'); // IsRegistartion
+            IsReRegistration = apexpages.currentpage().getparameters().get('type'); //IsRegistartion
             isSuccess = false;    
             if(String.isNotBlank(strPaymentTrackId))
             {

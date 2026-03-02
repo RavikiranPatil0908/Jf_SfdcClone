@@ -1,3 +1,13 @@
+/**
+ * @description       : 
+ * @author            : @test
+ * @group             : 
+ * @last modified on  : 23--02--2026
+ * @last modified by  : @Ravi
+ * Modifications Log
+ * Ver   Date           Author   Modification
+ * 1.0   23--02--2026   @test   Initial Version
+**/
 @isTest(SeeAllData=false)
 public class AsyncShootFacultyControllerTracker {
     
@@ -14,9 +24,9 @@ public class AsyncShootFacultyControllerTracker {
         obj.Recording_Platform__c = 'Zoom';
         obj.Post_Production_Status__c='Sent For Faculty Review';
         obj.Post_Production_Minutes__c = 10;
-        obj.Partner__c = 'Devendra Sharma';
-        obj.Editor_Name__c = 'Devendra Sharma';
-        obj.Editor_Email_Id__c = 'devendrasuthra750@gmail.com';
+        obj.Partner__c = 'Nikita bhosale';
+        obj.Editor_Name__c = 'Nikita bhosale';
+        obj.Editor_Email_Id__c = 'nikitabhosale1709@gmail.com';
         obj.Video_Link_Version_1__c = 'http://www.youtube.com/watch?v=zbYf5_S7oJo';
         obj.Video_Link_Version_2__c = 'http://www.youtube.com/watch?v=zbYf5_S7oJo';
         obj.Program__c = 'UG';

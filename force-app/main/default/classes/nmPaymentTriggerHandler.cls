@@ -4,7 +4,7 @@
  * @Author             : phalguni
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 15--05--2025
+ * @Last Modified On   : 05--05--2025
  * @Modification Log   : 
  * Ver       Date            Author                 Modification
  * 1.0    3/2/2020   phalguni     Initial Version
@@ -722,7 +722,7 @@ public without sharing class nmPaymentTriggerHandler
          for(nm_Payment__c objPay : lstPayment) {
                   setOfPaymentIds.add(objPay.Id);
          } 
-         List<nm_Payment__c> lstLeadPayments = [select id, nm_PaymentType__c ,nm_OpportunityNew__c from nm_Payment__c where id in: setOfPaymentIds];
+        List<nm_Payment__c> lstLeadPayments = [select id, nm_PaymentType__c ,nm_OpportunityNew__c from nm_Payment__c where id in: setOfPaymentIds];
         if(lstLeadPayments.size()>0)
         {
             for(nm_Payment__c objPayment : lstLeadPayments)
@@ -1083,8 +1083,8 @@ public without sharing class nmPaymentTriggerHandler
                 List<nm_Centers__c> lstCenters = [SELECT id,Validity_From__c,Validity_To__c FROM nm_Centers__c WHERE id IN :lstCenterIdOfPGandUG];
                 if(lstCenters.size() > 0) {
                     for(nm_Centers__c objCenter : lstCenters) {
-                        objCenter.Validity_From__c = System.today();
-                        objCenter.Validity_To__c = System.today().addYears(3);
+                        //objCenter.Validity_From__c = System.today();
+                        //objCenter.Validity_To__c = System.today().addYears(3);
                     }
                     try {
                         update lstCenters;   
@@ -1130,8 +1130,8 @@ public without sharing class nmPaymentTriggerHandler
                 if(lstCenters.size() > 0) {
                     for(nm_Centers__c objCenter : lstCenters) {
                         Date validityEndDate = objCenter.Validity_To__c;
-                        objCenter.Validity_From__c = validityEndDate;
-                        objCenter.Validity_To__c = validityEndDate.addYears(3);
+                       // objCenter.Validity_From__c = validityEndDate;
+                        //objCenter.Validity_To__c = validityEndDate.addYears(3);
 
                     }
                     try {
@@ -1148,8 +1148,8 @@ public without sharing class nmPaymentTriggerHandler
                 if(lstCenters.size() > 0) {
                     for(nm_Centers__c objCenter : lstCenters) {
                         Date validityEndDate = objCenter.Validity_To_MS__c;
-                        objCenter.Validity_From_MS__c = validityEndDate;
-                        objCenter.Validity_To_MS__c = validityEndDate.addYears(3);
+                        //objCenter.Validity_From_MS__c = validityEndDate;
+                        //objCenter.Validity_To_MS__c = validityEndDate.addYears(3);
 
                     }
                     try {
@@ -1164,10 +1164,10 @@ public without sharing class nmPaymentTriggerHandler
                 List<nm_Centers__c> lstCenters = [SELECT id,Validity_From_MS__c,Validity_To_MS__c FROM nm_Centers__c WHERE id IN :lstCenterIdOfPGandUGandMS];
                 if(lstCenters.size() > 0) {
                     for(nm_Centers__c objCenter : lstCenters) {
-                        objCenter.Validity_From__c = System.today();
-                        objCenter.Validity_To__c = System.today().addYears(3);
-                        objCenter.Validity_From_MS__c = System.today();
-                        objCenter.Validity_To_MS__c = System.today().addYears(3);
+                       // objCenter.Validity_From__c = System.today();
+                       // objCenter.Validity_To__c = System.today().addYears(3);
+                        //objCenter.Validity_From_MS__c = System.today();
+                       // objCenter.Validity_To_MS__c = System.today().addYears(3);
                     }
                     try {
                         update lstCenters;   
@@ -1183,11 +1183,11 @@ public without sharing class nmPaymentTriggerHandler
                 if(lstCenters.size() > 0) {
                     for(nm_Centers__c objCenter : lstCenters) {
                         Date validityUGAndPGEndDate = objCenter.Validity_To__c;
-                        objCenter.Validity_From__c = System.today();
-                        objCenter.Validity_To__c = validityUGAndPGEndDate.addYears(3);
+                        //objCenter.Validity_From__c = System.today();
+                        //objCenter.Validity_To__c = validityUGAndPGEndDate.addYears(3);
                         Date validityMSEndDate = objCenter.Validity_To_MS__c;
-                        objCenter.Validity_From_MS__c = System.today();
-                        objCenter.Validity_To_MS__c = validityMSEndDate.addYears(3);
+                       // objCenter.Validity_From_MS__c = System.today();
+                        //objCenter.Validity_To_MS__c = validityMSEndDate.addYears(3);
 
                     }
                     try {
@@ -1237,16 +1237,17 @@ public without sharing class nmPaymentTriggerHandler
                     for(nm_Centers__c objCenter : lstCenters) {
                         AEP_site_inspection__c objASI = myMap.containsKey(objCenter.Id) ? myMap.get(objCenter.Id) : null;
                         if(objASI != null) {
+                            
                             if(objASI.AEP_Service_Request__c == 'Name Change') {
-                                objCenter.IC_Company_Name__c = objASI.New_IC_Company_Name__c;
+                               // objCenter.IC_Company_Name__c = objASI.New_IC_Company_Name__c;
                             } else if(objASI.AEP_Service_Request__c == 'Entity Change') {
-                                objCenter.Entity__c = objASI.Entity__c;
+                               // objCenter.Entity__c = objASI.Entity__c;
                             } else if(objASI.AEP_Service_Request__c == 'Address Change') {
-                                objCenter.nm_Street__c = objASI.nm_Street__c;
-                                objCenter.nm_City__c = objASI.Location_City__c;
-                                objCenter.nm_PostalCode__c = objASI.nm_PostalCode__c;
+                                //objCenter.nm_Street__c = objASI.nm_Street__c;
+                               // objCenter.nm_City__c = objASI.Location_City__c;
+                               // objCenter.nm_PostalCode__c = objASI.nm_PostalCode__c;
                                 if(String.isNotBlank(objASI.nm_StateProvince__c)) {
-                                    objCenter.nm_StateProvince__c = objASI.nm_StateProvince__c;  
+                                    //objCenter.nm_StateProvince__c = objASI.nm_StateProvince__c;  
                                 } 
                             }
                             objASI.AEP_Service_Request__c = '';

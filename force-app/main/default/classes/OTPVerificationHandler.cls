@@ -2,14 +2,13 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 03--09--2025
+ * @last modified on  : 02--03--2026
  * @last modified by  : @Ravi
 **/
 public without sharing class OTPVerificationHandler {
 
     public OTPFields sendOTP(OTPFields objOTP) {
-        try {
-            
+        try {          
             objOTP.errorMsg = '';
             System.debug('OtpMode --> ' + objOTP.OtpMode);
             if (objOTP.OtpMode == 'E') {
@@ -24,8 +23,8 @@ public without sharing class OTPVerificationHandler {
                 System.debug('mobile No-->'+objOTP.mobileNo.left(10));
                 sendSMS sendSMS = new sendSMS(objOTP.mobileNo.left(10),smsMessage);
                 // enqueue the job for processing
-                // Id jobID = System.enqueueJob(sendSMS);
-                // System.debug('jobID -->'+jobID);
+                Id jobID = System.enqueueJob(sendSMS);
+                System.debug('jobID -->'+jobID);
                 objOTP.alertMsg = '******'+objOTP.mobileNo.right(4);
                 objOTP.otpStatus = 'OTP Sent';
                 System.debug('otpStatus-->'+objOTP.otpStatus); 
@@ -145,8 +144,7 @@ public without sharing class OTPVerificationHandler {
 
                 mailRecordId = objOTP.PersonContactId;
                 mailTemplateId = emailTemplate.Id;
-            }
-            
+            }          
             if(objOTP.isEmailMobileChange){
                  SendEmailForEmailMobileChangeOTP.callEmailAlertFlowUpdateEmail(mailRecordId, mailTemplateId,objOTP.EmailId);
             } else{

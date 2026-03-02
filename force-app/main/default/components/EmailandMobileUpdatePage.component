@@ -1,0 +1,461 @@
+<!--
+  @description       : 
+  @author            : @Shailesh
+  @group             : 
+  @last modified on  : 11-09-2025
+  @last modified by  : @Shailesh
+-->
+<apex:component controller="EmailandMobileUpdatePageController" access="global" allowDML="true" >
+  <apex:attribute access="global" name="recId" type="ID" description="Record Id" assignTo="{!recordId}" />
+  <apex:attribute access="global" name="objType" type="String" description="Object Type" assignTo="{!objectType}" />
+  <link href="{!URLFOR($Resource.AdminBSBMaterialDesign, 'AdminBSBMaterialDesign/css/spinner.css')}" rel="stylesheet" />
+    <!-- Bootstrap DatePicker Css -->
+  <link href="{!URLFOR($Resource.NewResource, 'NewResource/assets/css/bootstrap-datetimepicker.min.css')}" rel="stylesheet" />
+    <!-- Wait Me Css -->
+  <link href="https://gurayyarar.github.io/AdminBSBMaterialDesign/plugins/waitme/waitMe.css" rel="stylesheet" />
+    
+  <!-- Select2 Select Css -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <!-- Easy AutoComplete Css -->
+  <apex:stylesheet value="{!URLFOR($Resource.easyAutoCompleteCSS)}" />
+  <style>
+    .header {
+      background-color: #337ab7;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 2px;
+      /* margin-bottom: 50px; */
+    }
+
+    .header p {
+      margin: 0;
+      font-weight: bold;
+      color: white;
+      font-size: larger;
+    }
+    
+    .form-group .form-line .form-label {
+      top: -10px;
+    }
+
+    .zindex4 {
+      z-index: 4;
+    }
+
+    .btn:not(.btn-link):not(.btn-circle) span.noTop { 
+      top: 0px;
+      margin-left: 0px;
+    }
+
+    .btn-custom {
+      border-bottom: 5px solid #285e8e;
+      position: relative;
+      margin-right: 5px;
+    }
+
+    .btn-custom:hover {
+      top: 0.5px;
+      border-bottom-width: 2.5px;
+    }
+
+    .btn-custom:active {
+      top: 5px;
+      border-bottom: 0;
+    }
+
+    .form-control.custom-input  {
+      border: #777 solid 1px;
+      padding-left: 7px;
+    }
+
+    .custom-input:hover,
+    .custom-input:focus {
+      border-color: #007bff; 
+      outline:none; 
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+    }
+
+    a.btn.disabled {
+      background-color: #a6a6a6;
+      cursor: not-allowed;
+      pointer-events: none;
+      color: #666666;
+    }
+/* 320 611 ///  360  740*/
+    @media (max-width: 430px) and (max-height: 932px) {
+
+    .form-group .form-line.focused .form-label {
+    top: -38px;
+    left: 0;
+    font-size: 12px;
+    }
+    .form-group .form-line .form-label {
+      top: -30px;
+    }
+
+  /* Styles for screens 360px wide or smaller AND 740px tall or shorter */
+    label.form-label {
+      font-size: 14px;       /* Smaller font size for small screens */
+      color: #333333;        /* Darker text color */
+      display: block;        /* Make sure label takes full width */
+      margin-bottom: 8px;    /* Some spacing below */
+    }
+
+    .form-line p {
+      font-size: 14px;        /* Smaller text on small screens */
+      color: #444;            /* Slightly lighter text color */
+      margin: 0 0 10px 0;     /* Bottom margin for spacing */
+      word-break: break-word; /* Wrap long emails nicely */
+    }
+
+    .form-line {
+      padding: 8px 5px;       /* Some padding around the block */
+      background-color: #f9f9f9; /* Light background */
+      border-radius: 4px;     /* Rounded corners */
+    }
+
+    }
+
+  </style>
+  <apex:actionFunction name="doUpdatefield" action="{!doUpdatefield}" reRender="handleMsg,otpInput,errorMsg,VerificationModal,dupMessageId,showVerificationModalId" oncomplete="showVerificationModal();">
+  </apex:actionFunction>
+  <apex:actionFunction name="VerifyOTP" action="{!VerifyOTP}" reRender="handleMsg,otpInput,errorMsg,currentEmailId,currentMobileNoId" oncomplete="showErrorMsg();">
+      <apex:param name="otpCode" value="" assignTo="{!objOTP.Otp}" />
+  </apex:actionFunction>
+  <apex:outputPanel styleClass="modal  VerificationModal" id="VerificationModal" html-tabindex="-1" html-role="dialog" layout="block">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="defaultModalLabel">OTP Verification!</h4>
+          </div>
+          <div class="modal-body row">
+            <apex:outputPanel id="errorMsg" rendered="{! !objOTP.isSuccess}" >
+              <p class="errorMsg" id="errorMsgId" style="color:red;">{!objOTP.errorMsg}</p> 
+            </apex:outputPanel>
+            <p>Enter the code sent to your {!objOTP.alertMsg} to verify your account.</p>
+            <apex:inputText id="otpInputId"  styleClass="form-control numonly notnull" value="{!objOTP.Otp}" html-placeholder="Enter OTP.." />
+          </div>
+          <div class="modal-footer">
+            <a href="javascript:void(0);" id="resendBtn" class="btn btn-lg btn-primary waves-effect disabled" onclick="return triggerOTP();" style="display : inline;">Resend<span class="timerSection noTop">(<span class="showTimer noTop"></span><span Id="timer" style="top: 0px;"></span>)</span></a>
+            <a href="javascript:void(0);" class="btn btn-lg btn-primary waves-effect" onclick="return validateOTPInput();">Submit</a>
+            <a href="javascript:void(0);" class="btn btn-lg btn-primary waves-effect" data-dismiss="modal" onclick=" closeModal();" id="closeId" >Close</a>
+          </div>
+      </div>
+    </div>
+  </apex:outputPanel>
+  <apex:actionFunction name="SendOTP" action="{!sendOTP}" reRender="VerificationModal,handleMsg" oncomplete="showVerificationModal();">
+  </apex:actionFunction>
+    <apex:outputPanel styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12 formSection form1" id="Maincontent" layout="block" style="display:block;">
+            <!-- <div class="row clearfix"> -->
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                      <div class="header">
+                        <p style="text-align: center;">
+                            UPDATE EMAIL/MOBILE 
+                        </p>
+                      </div>
+                        <div class="body">
+                            <div class="row">
+                          <!-- <div class="row clearfix"> -->
+                           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                              <div class="row clearfix">
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                  <apex:outputPanel id="dupMessageId">
+                                  <p class="errorMsg" style="color:red;">{!dupMessage}</p> 
+                                </apex:outputPanel>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                              <div class="row clearfix">
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                  <div class="form-group">
+                                      <div class="form-line">
+                                          <apex:outputlabel styleClass="form-label " value="Choose the Contact Detail you want to update "></apex:outputLabel>
+                                          <apex:selectList value="{!selectedOption}" styleClass="form-control notnull h-34"  multiselect="false" size="1" style="width:99%;"  id="selectedOptionId" onchange="showemailmobileform()">
+                                            <apex:selectOption itemValue="none" itemLabel="Select" />
+                                            <apex:selectOption itemValue="Email" itemLabel="Change Email" />
+                                            <apex:selectOption itemValue="Mobile" itemLabel="Change Mobile" />
+                                          </apex:selectList>     
+                                      </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                          <!-- </div> -->
+                        <apex:outputPanel styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12 formSection form1" layout="block" style="display:none;"  id="emailpanelId">
+                          <div class="row clearfix">
+                               <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                  <div class="form-group">
+                                      <div class="form-line">
+                                        <apex:outputPanel id="currentEmailId" style="display:block;">
+                                            <apex:outputlabel styleClass="form-label " value="Current Email Id "></apex:outputLabel>
+                                            <input type="text" Class="form-control notnull" value = "{!objRecord.email}" disabled = "true"/>
+                                        </apex:outputPanel>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row clearfix">
+                          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <div class="form-line">
+                                  <apex:outputlabel styleClass="form-label " value="Enter new EmailId "></apex:outputLabel>
+                                  <apex:inputText styleClass="form-control notnull emailfieldId" id="emailfieldId" value="{!emailFieldvalue}" html-aria-required="true"/> 
+                                </div>
+                            </div>
+                          </div>
+                          </div>
+                          <div class="row clearfix">
+                              <div class="col-md-3">
+                                <div class="form-group form-float">
+                                <div>
+                                  <a href="javascript:void(0);" id = 'emailverifybtn' class="btn btn-lg btn-primary waves-effect" onclick="return validateInput();">Verify</a>
+                                  </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel styleClass="col-xs-12 col-sm-12 col-md-12 col-lg-12 formSection form1" layout="block" style="display:none;"  id="mobilepanelId">
+                          <div class="row clearfix">
+                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                  <div class="form-group form-float">
+                                      <div class="form-line">
+                                        <apex:outputPanel id="currentMobileNoId" style="display:block;">
+                                          <apex:outputlabel styleClass="form-label " value="Current Mobile No "></apex:outputLabel>
+                                          <input type="text" Class="form-control notnull" value = "{!objRecord.phone}" disabled = "true"/>
+                                        </apex:outputPanel>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row clearfix">
+                              <div  class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                <div class="form-line">
+                                  
+                                    <apex:outputlabel styleClass="form-label " value="Enter new Mobile No "></apex:outputLabel>
+                                    <apex:inputText styleClass="form-control notnull numonly mobilefieldId" id="mobilefieldId" value="{!mobileFieldvalue}" maxlength="10"/> 
+                                  
+                                  </div>
+                                  </div> 
+                              </div>
+                          </div>
+                          <div class="row clearfix">
+                              <div class="col-md-3">
+                                <div class="form-group form-float">
+                                <div>
+                                  <a href="javascript:void(0);" id="mobileverifybtn" class="btn btn-lg btn-primary waves-effect" onclick="return validateInput();">Verify</a>
+                                  </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </apex:outputPanel>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+      </apex:outputPanel>
+      
+
+
+
+
+
+<!-- Bootstrap Datepicker Plugin Js -->
+ <!-- SweetAlert Plugin Js -->
+    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.0/sweetalert2.all.min.js"/>
+    <script src="{!URLFOR($Resource.NewResource, 'NewResource/assets/js/bootstrap-datetimepicker.js')}"></script>
+    <script src="https://gurayyarar.github.io/AdminBSBMaterialDesign/js/pages/ui/notifications.js"></script>
+<!-- Select2 Plugin Js -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <apex:outputPanel id="handleMsg">
+   <script>
+     function showErrorMsg() {
+      console.log('{!otpVerifiedStatus}',{!otpVerifiedStatus});
+      console.log('{!objOTP.isSuccess}',{!objOTP.isSuccess});
+        if('{!otpVerifiedStatus}' == 'true') {
+            
+            console.log('Mode==>'+'{!JSENCODE(objOTP.isModeVerified)}');
+            let msg = '{!JSENCODE(selectedOption)}' == 'Email' ? 'Email Id has been verified' : 'Mobile Number has been verified';
+            showNotificationMsg('alert-success', msg);
+            $('[id$=VerificationModal]').modal('hide');
+            $('.modal-backdrop').remove();
+        } 
+    }
+   </script>
+    </apex:outputPanel>
+  <apex:outputPanel id="showVerificationModalId">
+    <script>
+      function showVerificationModal(){
+        if('{!dupMessage}' === ''){
+        console.log('Ravi-');
+        $('[id$=VerificationModal]').modal({
+                      backdrop: 'static',
+                      keyboard: false
+                  }).modal('show');
+                  getTimmer();
+                  closeModal();
+      }else{
+        closeModal();
+      }
+      }
+    </script>
+ </apex:outputPanel>
+ <script>
+  $(document).ready(function (e) { 
+        $('body').on('focus','.form-control', function(){
+            $(this).closest('.form-line').addClass('focused');
+        });
+      });
+
+    function showHtmlMessage(header,message) {
+        if(/<\/?[a-z][\s\S]*>/i.test(message)) {
+            swal({
+                title: header+"!",
+                html: message,
+                type: "warning"
+            });
+        } else {
+            swal({
+                title: header+"!",
+                text: message,
+                type: "warning"
+            });
+        }
+    }
+function closeModal(){
+  
+   document.getElementById('emailverifybtn').classList.remove('disabled');
+   document.getElementById('mobileverifybtn').classList.remove('disabled');
+}
+function showemailmobileform(){
+  const selectedOption = document.getElementById('{!$Component.selectedOptionId}').value;
+  const mobilePanel = document.getElementById('{!$Component.mobilepanelId}');
+  const emailPanel = document.getElementById('{!$Component.emailpanelId}');
+  document.getElementById('{!$Component.emailfieldId}').value = '';
+  document.getElementById('{!$Component.mobilefieldId}').value = '';
+  console.log('selectedOptionId',document.getElementById('{!$Component.selectedOptionId}').value);
+  if(selectedOption === 'Email'){
+    mobilePanel.style.display = 'none';
+    emailPanel.style.display = 'block';
+  } else if(selectedOption === 'Mobile'){
+    mobilePanel.style.display = 'block';
+    emailPanel.style.display = 'none';
+  } else{
+    mobilePanel.style.display = 'none';
+    emailPanel.style.display = 'none';
+  }
+}
+  function getTimmer(){
+    const timerDisplay = document.getElementById('timer'); 
+    let totalSeconds = 3 * 60; //3sec
+    function updateTimer() {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
+        timerDisplay.textContent = `${minutes}:${formattedSeconds}`;
+        if (totalSeconds <= 0) {
+            clearInterval(timerInterval);
+          //  timerDisplay.textContent = "Time's up!";
+            //document.getElementById('resendBtn').disabled = false;;
+            document.getElementById('resendBtn').classList.remove('disabled');
+            //timerDisplay.textContent = `${minutes}`;
+        } else {
+            totalSeconds--;
+            //document.getElementById('resendBtn').style.display = 'none';
+        }
+       
+    }
+    const timerInterval = setInterval(updateTimer, 1000);
+  }
+
+
+function triggerOTP() {
+    document.getElementById('resendBtn').classList.add('disabled');
+    document.getElementById('{!$Component.otpInputId}').value = '';
+    SendOTP();
+    return true;
+}
+
+function showModalMsg(message) {
+          let element = document.getElementById('errorMsgId');
+          if (element) {
+              element.innerText = message; // Set the message text
+
+              // Show the element
+              element.style.display = 'block';
+
+              // Hide it after 9 seconds
+              setTimeout(() => {
+                  element.style.display = 'none';
+              }, 9000);
+          } else {
+              console.error('Element not found: errorMsgId');
+          }
+        }
+function validateOTPInput() {
+            let otpInput = document.getElementById('{!$Component.otpInputId}').value;
+            console.log('otpInput',typeof(otpInput));
+            if(otpInput == '' || otpInput.length == 0 || otpInput == null) {
+                showModalMsg('Please enter the value');
+                return false;
+            }
+            VerifyOTP(otpInput);
+            //return true;
+        }
+
+     function validateInput() {
+      console.log('validation');
+      let selectedOptionvalue = document.getElementById('{!$Component.selectedOptionId}').value;
+      let isValid = false;
+      if(selectedOptionvalue === 'Email'){
+      let inputValue = document.getElementById('{!$Component.emailfieldId}').value;
+      const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      isValid = emailRegex.test(String(inputValue).toLowerCase());
+
+      if('{!objRecord.email}' === String(inputValue)){
+          isValid = false;
+        if (!isValid) {
+          showHtmlMessage("Validation error","New email cannot be the same as the current email!");
+          return false;
+        }
+      }
+  
+      if (!isValid) {
+        showHtmlMessage("Validation error","Please enter valid email Id!");
+        return false;
+      }
+      document.getElementById('emailverifybtn').classList.add('disabled');
+      }
+      else if(selectedOptionvalue === 'Mobile'){
+        let inputValue = document.getElementById('{!$Component.mobilefieldId}').value;
+        const mobileRegex = /^[0-9]{10}$/;
+        isValid = mobileRegex.test(String(inputValue).toLowerCase());
+        if('{!objRecord.phone}' === String(inputValue.trim())){
+          isValid = false;
+          if (!isValid) {
+          showHtmlMessage("Validation error","New mobile no cannot be the same as the current mobile no!");
+          return false;
+        }
+        }
+        if (!isValid) {
+          //alert("Invalid data!");
+          showHtmlMessage("Validation error","Please enter valid mobile no!");
+          return false;
+        }
+        document.getElementById('mobileverifybtn').classList.add('disabled');
+      }
+    
+    if (!isValid) {
+      //alert("Invalid data!");
+      showHtmlMessage("Validation error","Invalid data!");
+      return false;
+    }
+      doUpdatefield();
+      return true;
+     }
+</script>
+
+</apex:component>

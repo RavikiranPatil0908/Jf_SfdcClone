@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 10--03--2025
+ * @last modified on  : 09--02--2026
  * @last modified by  : @Ravi
 **/
 public without sharing class UpdateInternalCaseOwner {
@@ -34,12 +34,12 @@ public without sharing class UpdateInternalCaseOwner {
                 'Internal Exam' => 'Ngasce Exams',
                 'Academics' => 'Ngasce Academics',
                 'Career Services' => 'Varun Mathur',
-                'Product' => 'Likesh Bhambhwani',
+                'Product' => 'Bhaumik Shah',
                 'Logistics' => 'Logistics Department',
                 'Student Support' => 'Sangeeta Shetty',
                 'Bhaumik' => 'Bhaumik Shah',
-                'Likesh' => 'Likesh Bhambhwani',
-                'Snehal' => 'Snehal Paddalwar',
+                'Divya' => 'Divya Patel',
+                'Pranab' => 'Pranab Deshpande',
                 'LC Mumbai' => 'LC Mumbai',
                 'LC Lucknow' => 'LC Lucknow',
                 'LC Chandigarh' => 'LC Chandigarh',
@@ -71,7 +71,7 @@ public without sharing class UpdateInternalCaseOwner {
    
                 // }}
 
-                if(mapCategoryVsUserNames.containsKey(category) && category != 'AEP Request') {
+                if((mapCategoryVsUserNames.containsKey(category) ||  category =='SFDC Tech') && category != 'AEP Request') {
                     category = getProductUser(category, productCategoryUserName);
                     System.debug('Updated category -->'+ category);
                     return updateCase(lstCase[0], category, mapCategoryVsUserNames.get(category), productCategoryUserName);
@@ -114,12 +114,18 @@ public without sharing class UpdateInternalCaseOwner {
                     objCase.OwnerId = lstQueues[0].Id;
                     isOwnerChanged = true;
                 }
-            } else {
-                // For other categories, set the owner from the userMap if available
-                if (String.isNotBlank(userId)) {
-                    objCase.OwnerId = userId;
+            } else if(category == 'SFDC Tech') {
+                List<Group> lstQueues = [SELECT Id,Name,DeveloperName,Email,Type FROM Group WHERE Type='Queue' AND Name='SFDC Tech Team' LIMIT 1];
+                if(!lstQueues.isEmpty()) {
+                    objCase.OwnerId = lstQueues[0].Id;
                     isOwnerChanged = true;
-                }
+                } 
+            } else {
+              // For other categories, set the owner from the userMap if available
+              if (String.isNotBlank(userId)) {
+                objCase.OwnerId = userId;
+                isOwnerChanged = true;
+             }
             }
     
             // Update the case if OwnerId was changed

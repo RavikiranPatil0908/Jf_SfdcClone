@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @Ravi
  * @group             : 
- * @last modified on  : 09-25-2024
+ * @last modified on  : 07--10--2025
  * @last modified by  : @Ravi
 **/
 public with sharing class QuickSearchController {
@@ -15,28 +15,29 @@ public with sharing class QuickSearchController {
     **/
     @AuraEnabled(cacheable=true)
 public static List<RecordAccessWrapper> searchRecords(String searchText) {
-    String soslQuery = 'FIND \'' + String.escapeSingleQuotes(searchText) + '\' IN ALL FIELDS RETURNING ' +
+    searchText =String.escapeSingleQuotes(searchText).trim();
+    String soslQuery = 'FIND \'' + searchText+ '\' IN ALL FIELDS RETURNING ' +
                         'Lead(Id, Name, Email, nm_RegistrationNo__c, MobilePhone, nm_SecondryEmail__c, Phone WHERE ' +
-                        'Name LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\' ' +
-                        'OR Email LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\' ' +
-                        'OR nm_RegistrationNo__c LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\' ' +
-                        'OR MobilePhone LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\' ' +
-                        'OR nm_SecondryEmail__c LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\' ' +
-                        'OR Phone LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\'), ' +
+                        'Name LIKE \'%' + searchText + '%\' ' +
+                        'OR Email LIKE \'%' + searchText + '%\' ' +
+                        'OR nm_RegistrationNo__c LIKE \'%' + searchText + '%\' ' +
+                        'OR MobilePhone LIKE \'%' + searchText + '%\' ' +
+                        'OR nm_SecondryEmail__c LIKE \'%' + searchText + '%\' ' +
+                        'OR Phone LIKE \'%' + searchText + '%\'), ' +
 
                         'Account(Id, Name, PersonEmail, nm_RegistrationNumber__c, PersonMobilePhone, nm_SecondryEmail__c, Phone WHERE ' +
-                        'Name LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\' ' +
-                        'OR PersonEmail LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\' ' +
-                        'OR nm_RegistrationNumber__c LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\' ' +
-                        'OR PersonMobilePhone LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\' ' +
-                        'OR nm_SecondryEmail__c LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\' ' +
-                        'OR Phone LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\'), ' +
+                        'Name LIKE \'%' + searchText + '%\' ' +
+                        'OR PersonEmail LIKE \'%' + searchText + '%\' ' +
+                        'OR nm_RegistrationNumber__c LIKE \'%' + searchText + '%\' ' +
+                        'OR PersonMobilePhone LIKE \'%' + searchText + '%\' ' +
+                        'OR nm_SecondryEmail__c LIKE \'%' + searchText + '%\' ' +
+                        'OR Phone LIKE \'%' + searchText + '%\'), ' +
 
                         'Partner_Lead__c(Id, First_Name__c, Last_Name__c, Email__c, MOBILEPHONE__c WHERE ' +
-                        'First_Name__c LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\' ' +
-                        'OR Last_Name__c LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\' ' +
-                        'OR Email__c LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\' ' +
-                        'OR MOBILEPHONE__c LIKE \'%' + String.escapeSingleQuotes(searchText) + '%\')';
+                        'First_Name__c LIKE \'%' + searchText + '%\' ' +
+                        'OR Last_Name__c LIKE \'%' + searchText + '%\' ' +
+                        'OR Email__c LIKE \'%' + searchText + '%\' ' +
+                        'OR MOBILEPHONE__c LIKE \'%' + searchText + '%\')';
 
     List<List<SObject>> searchResults = Search.query(soslQuery);
     System.debug('Search results ::::'+searchResults);

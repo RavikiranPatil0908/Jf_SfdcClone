@@ -2,7 +2,7 @@
   @description       : 
   @author            : 
   @group             : 
-  @last modified on  : 25--04--2025
+  @last modified on  : 10--12--2025
   @last modified by  : @Ravi
   Modifications Log
   Ver   Date           Author   Modification
@@ -13,7 +13,9 @@
 			<div class="card-body-wrapper">
 				<h2 class="form-title">For Registrants</h2>
 				<div class="slds-wrap slds-grid">
-					<lightning-formatted-rich-text value={error}></lightning-formatted-rich-text>
+					<div class="error-text">
+						<lightning-formatted-rich-text value={error}></lightning-formatted-rich-text>
+					</div>
 					<template if:true={showToast}>
 						<div class="slds-col slds-size_1-of-1 toast-error">
 							Fill all the mandatory details
@@ -47,7 +49,7 @@
 					<!-- Registration No -->
 					<template if:true={showReg}>
 						<div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-var-m-bottom_x-small">
-							<lightning-input type="text" label="Registration No." value={regNo} onchange={handleNoChange} required
+							<lightning-input type="text" label="Registration No." value={regNo} onchange={handleNoChange} onblur={handleNoBlur} required 
 								onkeypress={validateDigits} maxlength="15"></lightning-input>
 						</div>
 					</template>
@@ -55,11 +57,11 @@
 					<!-- Email + Mobile -->
 					<template if:true={showContact}>
 						<div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-var-m-bottom_x-small">
-							<lightning-input type="email" label="Email Id" value={email} onchange={handleEmailChange}
+							<lightning-input type="email" label="Email Id" value={email} onchange={handleEmailChange} onblur={handleEmailBlur}
 								required></lightning-input>
 						</div>
 						<div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-var-m-bottom_x-small">
-							<lightning-input type="tel" label="Mobile No" value={mobile} onchange={handleMobileChange} required
+							<lightning-input type="tel" label="Mobile No" value={mobile} onchange={handleMobileChange} onblur={handleMobileBlur} required
 								pattern="[0-9]{10}"></lightning-input>
 						</div>
 					</template>
@@ -72,14 +74,14 @@
 				
 					<!-- Category -->
 					<div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
-						<lightning-combobox label="Category" options={categories} onchange={handleCategoryChange}
-							required></lightning-combobox>
+						<lightning-combobox label="Category" options={categories}  value={category} onchange={handleCategoryChange}
+							required placeholder="Select an Option"></lightning-combobox>
 					</div>
 				
 					<!-- Sub Category -->
 					<template if:true={enable}>
 						<div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
-							<c-search-box label="Sub Category" options={options} value={subCategory} onchange={handleChange}
+							<c-search-box label="Sub Category" options={options} value={subCategory} onchange={handleChange} 
 								required></c-search-box>
 							<lightning-formatted-rich-text value={suberror}></lightning-formatted-rich-text>
 						</div>

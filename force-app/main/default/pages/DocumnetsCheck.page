@@ -4,7 +4,7 @@
   @Author             : shubhranshu
   @Group              : 
   @Last Modified By   : @Ravi
-  @Last Modified On   : 23--02--2025
+  @Last Modified On   : 09--02--2026
   @Modification Log   : 
   ==============================================================================
   Ver         Date                     Author                 Modification
@@ -143,6 +143,12 @@
                 width: 100%; 
             }
             .imageViewer{max-width: 700px; height:700px;}
+            .highlight {
+                background-color: yellow;
+                font-weight: bold;
+                padding: 5px;
+                border-radius: 3px;
+            }
         </style>
        
     </head>
@@ -188,7 +194,7 @@
                                     
                                 </a> 
                             </li>
-                          
+    
                         <apex:variable value="{!count + 1}" var="count"/> 
                         </apex:repeat>
                              <li>
@@ -252,7 +258,6 @@
                                         <!-- <apex:inputTextarea styleClass="form-control reasonDis reasonforDisapproved{!count}" id="txt" value="{!varDocument.nm_ReasonforDisapprove__c}"  required="{!(varDocument.nm_Status__c == 'Disapproved' || varDocument.nm_Status__c == 'Admission Form & Documents Provisional')}"> 
                                             <c:AutoComplete autocomplete_textbox="{!$Component.txt}" objectname="nm_LinksForDocuments__c" additionalfield="nm_ReasonforDisapprove__c"/>
                                         </apex:inputTextarea> -->
-                                      
                                     </div>
                                 </div>
                                 <div class="col-sm-6"> 
@@ -260,6 +265,26 @@
                                     <apex:outputLabel value="Upload Mode: {!varDocument.Document_Upload_Mode__c}"></apex:outputLabel>
                                 </div>
                             </div>
+                            <apex:outputPanel rendered="{!AND(OR( CONTAINS(LOWER(varDocument.nm_DocumentName__c), 'mark sheet'), CONTAINS(LOWER(varDocument.nm_DocumentName__c), 'marksheet'),
+                            CONTAINS(LOWER(varDocument.nm_DocumentName__c),'certificate')),NOT(CONTAINS(LOWER(varDocument.nm_DocumentName__c), 'caste')),NOT(CONTAINS(LOWER(varDocument.nm_DocumentName__c), 'aiu')), NOT(CONTAINS(LOWER(varDocument.nm_DocumentName__c), 'work experience')))}">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <apex:inputCheckbox styleClass="isprovisional{!count} proviFlag " value="{!varDocument.Provisional_Original_Marksheet_Pending__c}">
+                                            </apex:inputCheckbox>&nbsp;&nbsp;
+                                            <label for="text">Provisional (Original Marksheet Pending)</label>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="text">Reason For Provisional Document</label>
+                                            <apex:inputTextarea styleClass="form-control autocompleteSugg reasonProvi proviQuery{!count}" id="provisional" value="{!varDocument.Provisional_Document_Comment__c}" disabled="{!varDocument.nm_Status__c != 'Admission Form & Documents Provisional'}" 
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
                             <div class="row">
                                 <div class="col-sm-3">
                                     <apex:commandButton title="Update"  styleClass="form-control btn btn-md btn-success" value="Save" onclick="validate('{!varDocument.id}','{!count}'); return false;"/>  
@@ -303,8 +328,10 @@
                             <div id="collapse1" class="panel-collapse collapse in">
                                 <div class="panel-body">
                                     <p><b>Registartion No:</b> {!objAccount.nm_RegistrationNumber__c}</p>
+                                    <p><b>Salutation:</b> {!objAccount.Salutation}</p>
                                     <p><b>First Name:</b> {!objAccount.firstname}</p>
                                     <p><b>Last Name:</b> {!objAccount.lastname}</p>
+                                    <p><b>Gender:</b> {!objAccount.nm_Gender__c}</p>
                                     <p><b>Program Name:</b> {!objAccount.nm_Program__r.Name}</p>
                                     <apex:outputPanel rendered="{!IF(objAccount.nm_Program2__c!='' && objAccount.nm_Program2__c!=null,true,false)}">
                                         <p><b>Program Name2:</b> {!objAccount.nm_Program2__r.Name}</p>
@@ -319,8 +346,16 @@
                                     <p><b>Aadhaar No:</b> {!objAccount.Adhar_Card_Number__c}</p>
                                     <p><b>Father Name:</b> {!objAccount.Father_First_Name__c}</p>
                                     <p><b>Mother Name:</b> {!objAccount.Mother_First_Name__c}</p>
-                                    <p><b>Nationality:</b> {!objAccount.nm_Nationality__c}</p>
-                                    <p><b>Domicile:</b> {!objAccount.nm_Domicile__c}</p>
+                                    <p class="{!IF(objAccount.nm_Nationality__c != 'Indian', 'highlight', '')}">
+                                        <b>Nationality:</b> {!objAccount.nm_Nationality__c}
+                                    </p>
+
+                                    <p class="{!IF(objAccount.nm_Domicile__c != 'India', 'highlight', '')}">
+                                        <b>Domicile:</b> {!objAccount.nm_Domicile__c}
+                                    </p>
+                                     <p class="{!IF(objAccount.Passport__c!= '', 'highlight', '')}">
+                                        <b>Passport:</b> {!objAccount.Passport__c}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -450,22 +485,69 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 extCheck();
-                $('body').on('change','.statusForDoc', function(index){
+                $('body').on('change', '.statusForDoc', function () {
+
                     var valueSelected = $(this).val();
-                    var indexVal = $(".statusForDoc").index(this);
-                    $('.reasonDis').eq(indexVal).prop('disabled', true);
-                    $('.docQuery').eq(indexVal).prop('disabled', true);
-                    if(valueSelected == 'Disapproved' || valueSelected == 'Admission Form & Documents Provisional') {
-                        $('.reasonDis').eq(indexVal).removeAttr("disabled");
+                    console.log('valueSelected=', valueSelected);
+
+                    var $row = $(this).closest('.tab-pane');
+
+                    var reasonDis = $row.find('.reasonDis');
+                    var docQuery = $row.find('.docQuery');
+                    var proviFlag = $row.find('.proviFlag');
+                    var reasonProvi = $row.find('.reasonProvi');
+
+                    // Reset
+                    reasonDis.prop('disabled', true);
+                    docQuery.prop('disabled', true);
+                    // if (proviFlag.length) {
+                    //     proviFlag.prop('checked', false);
+                    // }
+                    if (reasonProvi.length) {
+                        reasonProvi.prop('disabled', true);
                     }
 
-                    if(valueSelected == 'Documents incorrect') {
-                        $('.docQuery').eq(indexVal).removeAttr("disabled");
+                    // Status-specific logic
+                    if (valueSelected === 'Disapproved') {
+                        reasonDis.prop('disabled', false);
+                    }
+                    if (valueSelected === 'Documents incorrect') {
+                        docQuery.prop('disabled', false);
+                    }
+
+                    if (valueSelected === 'Admission Form & Documents Provisional') {
+                        console.log('proviFlag.length2====', proviFlag.length);
+                        // if (proviFlag.length) {
+                        //     proviFlag.prop('checked', true);
+                        // }
+                        if (reasonProvi.length) {
+                            reasonProvi.prop('disabled', false);
+                        }
                     }
                 });
+
                 
                 $('.statusForDoc').trigger('change');
-                
+                $('.proviFlag').trigger('change');
+
+                $('body').on('change', '.proviFlag', function () {
+
+                    var $row = $(this).closest('.tab-pane');
+                    var isChecked = $(this).prop('checked');
+                    var statusVal = $row.find('.statusForDoc').val();
+
+                    // If status is Provisional → NEVER disable
+                    if (statusVal === 'Admission Form & Documents Provisional') {
+                        $row.find('.reasonProvi').prop('disabled', false);
+                        return;
+                    }
+
+                    if (!isChecked) {
+                        $row.find('.reasonProvi').val('');
+                    }
+                    $row.find('.reasonProvi').prop('disabled', !isChecked);
+                });
+
                 
                 // To make student image elastic.
                 $(".card").draggable({
@@ -507,9 +589,12 @@
                 window.top.close();
             }
             function validate(DocumentId,count) {
-               console.log("valid==> "+count);
                 var docStatus = $('.docStatus'+count).val();
                 var docQuery = $('.documentQuery'+count).val();
+                var isprovisinalEl = $('.isprovisional' + count);
+                var isprovisinal = isprovisinalEl.length ? isprovisinalEl.prop('checked') : false;
+                var provisionalQueryEl = $('.proviQuery' + count);
+                var provisionalQuery = provisionalQueryEl.length ? provisionalQueryEl.val() : '';
                 var reasonForDisapprove = $('.reasonforDisapproved'+count).val();
                 var mapDocumentIdVsDocument = '{!JSENCODE(jsonMap)}';
                 var mapUserIdVsCounselorId = '{!JSENCODE(jsonMapOfUserId)}';
@@ -524,12 +609,12 @@
                     docStatus,
                     docQuery,
                     reasonForDisapprove,
+                    isprovisinal,
+                    provisionalQuery,
                     mapDocumentIdVsDocument,
                     mapUserIdVsCounselorId,
                     function(result, event) {
-                        console.log('status --'+event.status);
                         if (event.status) {
-                            console.log('result ===', result);
                             if(result.indexOf('success') == -1) {
                                 showHtmlMessage('Warning',result,'error');
                             }else{

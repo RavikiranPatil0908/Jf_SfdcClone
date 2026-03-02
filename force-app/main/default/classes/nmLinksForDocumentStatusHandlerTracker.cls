@@ -4,7 +4,7 @@
  * @Author             : shubhranshu
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 31--07--2025
+ * @Last Modified On   : 16--02--2026
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author      		      Modification
@@ -37,6 +37,9 @@ public with sharing class nmLinksForDocumentStatusHandlerTracker {
         nm_WorkExperience__c objWk1 = new nm_WorkExperience__c();
         objWk1.nm_Student__c = objAccount.Id;
         objWk1.nm_CompanyName__c = 'fgjdffj';
+        objWk1.nm_StartDate__c = Date.today().addYears(-3);
+        objWk1.nm_EndDate__c = Date.today().addYears(-1);
+        
         insert objWk1;
         nm_LinksForDocuments__c objDoc= nmGenericTracker.CreateDocumentforAccount(objAccount,'Photo ID proof');
         nm_LinksForDocuments__c objDoc1= nmGenericTracker.CreateDocumentforAccount(objAccount,'Degree Mark Sheet');

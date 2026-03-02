@@ -1,8 +1,8 @@
 /**
  * @description       : 
- * @author            : 
+ * @author            : @Ravi
  * @group             : 
- * @last modified on  : 07--12--2024
+ * @last modified on  : 06--02--2026
  * @last modified by  : @Ravi
 **/
 import { LightningElement, track, wire, api } from 'lwc';
@@ -24,7 +24,6 @@ import AccountId from '@salesforce/schema/AccountHistory.AccountId';
 
 export default class RaiseInternalTicket extends NavigationMixin(LightningElement) {
 
-   
    @api isClassic = false;
     @track record;
     @track CurrentuserName ;
@@ -37,6 +36,7 @@ export default class RaiseInternalTicket extends NavigationMixin(LightningElemen
     @track categories;
     @track filesUploaded = [];
     @track ccEmailError = '';
+    @track profileName='';
   
     objectApiName = CASE_OBJECT;
     isUploadFile = false;
@@ -58,7 +58,8 @@ export default class RaiseInternalTicket extends NavigationMixin(LightningElemen
         Description: '',
         AccountId: '',
         nm_StudentNo__c: '',
-        RecordTypeId: ''
+        RecordTypeId: '',
+        Expected_Close_Date__c:''
 
     };
 
@@ -93,8 +94,9 @@ export default class RaiseInternalTicket extends NavigationMixin(LightningElemen
             ['Ngasce Academics', 'Academics'],
             ['Sangeeta Shetty', 'Student Support'],
             ['Finance Department', 'Finance'],
-            ['Harshad Kasliwal', 'Product'],
-            ['Likesh Bhambhwani', 'Product'],
+            ['Bhaumik Shah', 'Product'],
+            ['Divya Patel', 'Product'],
+            ['Pranab Deshpande', 'Product'],
             ['Deepali Shetty', 'Logistics'],
             ['Admission Dept.', 'Admissions'],
             ['Varun Mathur', 'Career Services'],
@@ -137,8 +139,10 @@ export default class RaiseInternalTicket extends NavigationMixin(LightningElemen
 
             if (data.fields.Name.value != null) {
                 this.CurrentuserName = data.fields.Name.value;
+                this.profileName =data.fields.Profile.value.fields.Name.value;
                 console.log("Current user Name : " + this.CurrentuserName);
             }
+
             // this.userProfileName = data.fields.Profile.value.fields.Name.value;
             if(data.fields.Profile.value.fields.Name.value === 'Information Center Partner Community User') {
                 this.isAEP = true;
@@ -153,7 +157,7 @@ export default class RaiseInternalTicket extends NavigationMixin(LightningElemen
     async picklistCategoryResults({ error, data }) {
         if (data) {
             // console.log("values =" + data.values);
-            console.log("picklist data " + JSON.stringify(data.values));
+            // console.log("picklist data " + JSON.stringify(data.values));
             let LCName; 
             if(this.isAEP) {
                 LCName = await this.getLCNameOfAEP();
@@ -167,9 +171,14 @@ export default class RaiseInternalTicket extends NavigationMixin(LightningElemen
                 if(this.isAEP && (LCName === category.value  || category.value =='AEP Request')) {
                     const options = { 'label': category.label, 'value': category.value };
                     this.categories = [ ...this.categories, options ];
-                } else if(!this.isAEP && (category.value != this.categoryVal )) {       //&& (category.value != 'AEP Request')
-                    const options = { 'label': category.label, 'value': category.value };
-                    this.categories = [ ...this.categories, options ];
+                } else if(!this.isAEP && (category.value != this.categoryVal)) {   
+                        //&& (category.value != 'AEP Request')&& (this.profileName !== 'Head Office Community' || this.categoryVal != 'Admissions' || this.profileName != 'System Administrator')
+                        if (category.value === 'SFDC Tech' && this.profileName !== 'Head Office Community' && this.categoryVal !== 'Admissions'  ) {
+                            return;
+                        }
+                        const options = { 'label': category.label, 'value': category.value };
+                        this.categories = [ ...this.categories, options ];
+                    
                 }
             });
             this.showSpinner = false;
@@ -220,7 +229,7 @@ export default class RaiseInternalTicket extends NavigationMixin(LightningElemen
 
     handleChange(event) {
         this.objCase[event.target.dataset.field] = event.target.value;
-        console.log(this.objCase[event.target.dataset.field]);
+        // console.log(this.objCase[event.target.dataset.field]);
     }
 
     async getLCNameOfAEP() {
@@ -265,13 +274,14 @@ export default class RaiseInternalTicket extends NavigationMixin(LightningElemen
                 this.showMessage('Fill all the mandatory details', 'error', 'Fields Incomplete!');
                 return;
             } 
-
             this.objCase.Subject = `${this.objCase.InternalCategory__c} - ${this.objCase.InternalSub_Category__c}`;
             this.objCase.RecordTypeId = this.internalRecordTypeId;
+            if (this.objCase.InternalCategory__c == 'SFDC Tech') {
+                const d = new Date();
+                d.setDate(d.getDate() + 2);
+                this.objCase.Expected_Close_Date__c = d.toISOString().split('T')[0];
+            }
             this.showSpinner = true;
-           
-            console.log("this.isAEPRequest :: " + this.isAEPRequest);
-            console.log("!this.isEmpty(this.objCase.nm_StudentNo__c) ::" + !this.isEmpty(this.objCase.nm_StudentNo__c));
 
             if(this.isAEPRequest  && !this.isEmpty(this.objCase.nm_StudentNo__c)) {
                 console.log("Student Number: " + this.objCase.nm_StudentNo__c);
@@ -314,7 +324,7 @@ export default class RaiseInternalTicket extends NavigationMixin(LightningElemen
            }
 
     async insertCase() {
-        console.log('Case transfer process initiated ==>'+this.objCase.Account);
+        // console.log('Case transfer process initiated ==>'+this.objCase.Account);
         const RecordId = await createCase({objCase: this.objCase})
         .then(result => {
             console.log('Case transfer result ==>'+result);

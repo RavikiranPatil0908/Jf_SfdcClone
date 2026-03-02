@@ -3,8 +3,8 @@
 * @Description        : 
  * @Author             : shubhranshu
 * @Group              : 
- * @Last Modified By   : @vickysahu
-* @Last Modified On   : 07-11-2025
+ * @Last Modified By   : @Ravi
+* @Last Modified On   : 13--01--2026
 * @Modification Log   : 
  *==============================================================================
 * Ver         Date                     Author                    Modification
@@ -189,6 +189,7 @@ public without sharing class nmPaymentNew{
 
     // --------Admission Amount -------------------
     public AdmissionAmount objAdmissionAmount {get;set;}
+    public String gatewayMessages {get;set;}
    
     public nmPaymentNew(){
         Today = Date.today();
@@ -339,6 +340,7 @@ public without sharing class nmPaymentNew{
         // subventionWith2PercentPrograms = false;
         SessionChecksum = '';
         setOfPaymentOptionsAvailable = new Set<String>();
+        gatewayMessages = '';
         if(ApexPages.currentPage() != null) {
             recordId = ApexPages.currentPage().getParameters().get('id');
             opportunityId = ApexPages.currentPage().getParameters().get('OppsId');
@@ -374,6 +376,7 @@ public without sharing class nmPaymentNew{
             findPaymentsMadeUsingLead();
             configurePaymentOption();
             generateSessionChecksum();
+            gatewayMessages = PaymentPageHandler.getGatewayMessage();
         }
         
     }
@@ -412,7 +415,7 @@ public without sharing class nmPaymentNew{
         String opportunityReRegQuerString = getQueryAllFieldSql('Opportunity','Id=:opportunityId and nm_StudentProgram__c =:studentProgramId','nm_Program__r.nm_TotalSemesters__c,nm_Program__r.IsTerm__c');
         //String studentProgramQueryString = getQueryAllFieldSql('nm_StudentProgram__c',' nm_Student__c=:recordId limit 1 ');
         String centerAddressQueryString = getQueryAllFieldSql('nm_Centers__c',' Nm_Active__c = true ',null);
-        String opportunityProgramChangeReRegQuery= getQueryAllFieldSql('IC_Change_Request__c','Opportunity__c=:opportunityId  and Status__c = \'New\' and (New_Program__r.Name  =\'BBA-BA\' OR New_Program__r.Name  =\'BBA\') ','New_Program__r.Specialisation__c,New_Program__r.id,New_Program__r.Name,New_Program__r.nm_TotalSemesters__c');
+        String opportunityProgramChangeReRegQuery= getQueryAllFieldSql('IC_Change_Request__c','Opportunity__c=:opportunityId  and Status__c = \'New\' and (New_Program__r.Name  =\'BBA-BA\' OR New_Program__r.Name  =\'BBA\' OR New_Program__r.Name =\'BBA (BA)\' OR New_Program__r.Name =\'BBA (M)\' OR New_Program__r.Name =\'BBA (F)\') ','New_Program__r.Specialisation__c,New_Program__r.id,New_Program__r.Name,New_Program__r.nm_TotalSemesters__c');
         Map<String,String> mapOfCenterNameAndCenterAddress = new Map<String,String>();
         System.debug('opportunityAdmissionQuerString -->'+opportunityId);
         // create Map Of Center Name and Center Address
@@ -845,7 +848,7 @@ public without sharing class nmPaymentNew{
             DateTime currentDateTime = DateTime.now();
             if(objPaymentFormConfiguration.Payment_Window_EndDate__c < currentDateTime){
                 if(setOfStudentAndRegistrationNoAllowedToMakePaymentAfterEndDate.size() > 0){
-                    if(!setOfStudentAndRegistrationNoAllowedToMakePaymentAfterEndDate.contains(studentNo)){
+                    if(!setOfStudentAndRegistrationNoAllowedToMakePaymentAfterEndDate.contains(studentNo) || objPaymentFormConfiguration.Last_Date_Reg_No_Allowed_After_End_Date__c < currentDateTime || objPaymentFormConfiguration.Last_Date_Reg_No_Allowed_After_End_Date__c == null){
                          paymentWindowClosed = true;
                          paymentClouserMessage = objPaymentFormConfiguration.Payment_Window_Closure_Message__c;
                     }
@@ -857,7 +860,7 @@ public without sharing class nmPaymentNew{
               // show loan option
             if(objPaymentFormConfiguration.Loan_Window_EndDate__c < currentDateTime) {
                 if(setOfStudentAndRegistrationNoAllowedToOptLoanAfterEndDate.size() > 0) {
-                    if(!setOfStudentAndRegistrationNoAllowedToOptLoanAfterEndDate.contains(studentNo)) {
+                    if(!setOfStudentAndRegistrationNoAllowedToOptLoanAfterEndDate.contains(studentNo) || objPaymentFormConfiguration.Last_Date_for_Reg_No_Allowed_For_Loan__c < currentDateTime || objPaymentFormConfiguration.Last_Date_for_Reg_No_Allowed_For_Loan__c == null) {
                         loanWindowClosed = true;
                     }
                 } else {

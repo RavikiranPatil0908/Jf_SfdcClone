@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : shubhranshu
  * @Group              : 
- * @Last Modified By   : @vickysahu
- * @Last Modified On   : 02-08-2025
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 13--02--2026
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -163,11 +163,11 @@ public class PostPaymentControllerTest {
     @isTest 
     static void leadPaymentTest(){
         
-        Lead objLead = [select id,nm_Program__c,nm_RegistrationNo__c,nm_DateOfBirth__c ,nm_EligiblityCriteria__c ,
-        nm_Program__r.Loan_API_Code__c,nm_InformationCenter__r.Loan_API_Code__c,nm_InformationCenter__r.nm_LearningCenter__r.Loan_API_Code__c from Lead limit 1];
-        nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c  from nm_Payment__c where nm_Lead__c!=null limit 1];
         //NM_Payment_Form_Configuration__c nmpay = [SELECT Id ,Name from NM_Payment_Form_Configuration__c LIMIT 1];
         Test.startTest();
+            Lead objLead = [select id,nm_Program__c,nm_RegistrationNo__c,nm_DateOfBirth__c ,nm_EligiblityCriteria__c ,
+            nm_Program__r.Loan_API_Code__c,nm_InformationCenter__r.Loan_API_Code__c,nm_InformationCenter__r.nm_LearningCenter__r.Loan_API_Code__c from Lead limit 1];
+            nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c  from nm_Payment__c where nm_Lead__c!=null limit 1];
             Test.setMock(HttpCalloutMock.class, new RestMock());
             objLead.nm_Year__c = 2018;
             objLead.Loan_Type__c = 'Zest';
@@ -189,13 +189,14 @@ public class PostPaymentControllerTest {
 
     @isTest 
     static void oppPaymentTest(){
-        Account objAccount = [select id,nm_LeadId__c,Father_Name__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
-        BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
-        nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
-        Opportunity objopp = [select id,Loan_Type__c,AccountId,Tenure__c,nm_Year__c from Opportunity  limit 1];
-        nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
-        Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
+        
         Test.startTest();
+            Account objAccount = [select id,nm_LeadId__c,Father_Name__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
+            BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
+            nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
+            Opportunity objopp = [select id,Loan_Type__c,AccountId,Tenure__c,nm_Year__c from Opportunity  limit 1];
+            nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
+            Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
             Test.setMock(HttpCalloutMock.class, new RestMock());
             objopp.nm_Year__c = 2018;
             objopp.Loan_Type__c = 'Zest';
@@ -231,23 +232,23 @@ public class PostPaymentControllerTest {
     @isTest 
     static void opprtuPaymentTest2(){
       
-        Account objAccount = [select id,nm_LeadId__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
-        BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
-        nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
-        objAccount.nm_StudentNo__c ='77116975114';
-        update objAccount;
-        Career_Service_Program__c  objCareerProgram =[select id ,CareerServiceProgram__c ,Student_Number_Of_Account__c,CS_Program_Record_Id__c from Career_Service_Program__c   limit 1 ];
-        Map<String,String> mapOfParametersToPass = new Map<String,String>{
-              'message'=>'dgfd',
-              'sapid'=>objCareerProgram.Student_Number_Of_Account__c,
-              'packageId'=>objCareerProgram.CareerServiceProgram__c,
-              'status'=>'Payment made',
-              'paymentTrackId'=>'8799735',
-              'paymentInitializationId'=>objCareerProgram .CS_Program_Record_Id__c
-          };
-        
-        nm_Payment__c objpayment2 = [select id ,nm_Merchant_Track_Id__c,Online_Response_Error__c ,nm_PaymentStatus__c,nm_PaymentType__c  from nm_Payment__c where CareerServiceProgram__c!=null limit 1];
         Test.startTest();
+            Account objAccount = [select id,nm_LeadId__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
+            BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
+            nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
+            objAccount.nm_StudentNo__c ='77116975114';
+            update objAccount;
+            Career_Service_Program__c  objCareerProgram =[select id ,CareerServiceProgram__c ,Student_Number_Of_Account__c,CS_Program_Record_Id__c from Career_Service_Program__c   limit 1 ];
+            Map<String,String> mapOfParametersToPass = new Map<String,String>{
+                'message'=>'dgfd',
+                'sapid'=>objCareerProgram.Student_Number_Of_Account__c,
+                'packageId'=>objCareerProgram.CareerServiceProgram__c,
+                'status'=>'Payment made',
+                'paymentTrackId'=>'8799735',
+                'paymentInitializationId'=>objCareerProgram .CS_Program_Record_Id__c
+            };
+            
+            nm_Payment__c objpayment2 = [select id ,nm_Merchant_Track_Id__c,Online_Response_Error__c ,nm_PaymentStatus__c,nm_PaymentType__c  from nm_Payment__c where CareerServiceProgram__c!=null limit 1];
             Test.setMock(HttpCalloutMock.class, new RestMock());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment2.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -271,20 +272,20 @@ public class PostPaymentControllerTest {
 
     @isTest
     static void leadEduVanzTest() {
-        Lead ld = [select id,Loan_Type__c,Tenure__c,nm_Year__c from Lead  limit 1];
-        nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_Lead__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
-        Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
-        ld.nm_Year__c = 2020;
-        ld.Loan_Type__c = 'EduVanz';
-        ld.Interest_Rate__c = '0.0';
-        ld.Tenure__c = '12';
-        update ld;
-        objpayment.nm_Lead__c = ld.id;
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='EduVanz-DownPayment';
-        update objpayment;
 
         Test.startTest();
+            Lead ld = [select id,Loan_Type__c,Tenure__c,nm_Year__c from Lead  limit 1];
+            nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_Lead__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
+            Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
+            ld.nm_Year__c = 2020;
+            ld.Loan_Type__c = 'EduVanz';
+            ld.Interest_Rate__c = '0.0';
+            ld.Tenure__c = '12';
+            update ld;
+            objpayment.nm_Lead__c = ld.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='EduVanz-DownPayment';
+            update objpayment;
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
             obj.EduVanzLoanApplicationRequest();
@@ -293,13 +294,14 @@ public class PostPaymentControllerTest {
 
     @istest
     static void opportunityCancelAdmission() {
-        Opportunity objopp = [select id,Loan_Type__c,Loan_Order_Id__c,Loan_Application_Cancelled__c,AccountId from Opportunity  limit 1];
-        nm_Payment__c objpayment = [select id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c from nm_Payment__c where nm_OpportunityNew__c!=null and nm_PaymentType__c='Zest-DownPayment' limit 1];
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        update objpayment;
-        objopp.Loan_Type__c = 'Zest';
-        update objopp;
+        
         Test.startTest();
+            Opportunity objopp = [select id,Loan_Type__c,Loan_Order_Id__c,Loan_Application_Cancelled__c,AccountId from Opportunity  limit 1];
+            nm_Payment__c objpayment = [select id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c from nm_Payment__c where nm_OpportunityNew__c!=null and nm_PaymentType__c='Zest-DownPayment' limit 1];
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            update objpayment;
+            objopp.Loan_Type__c = 'Zest';
+            update objopp;
             Test.setMock(HttpCalloutMock.class, new RestMock());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -309,13 +311,14 @@ public class PostPaymentControllerTest {
 
     @istest
     static void opportunityCancelAdmissionLiqioloans() {
-        Opportunity objopp = [select id,Loan_Type__c,Loan_Order_Id__c,Loan_Application_Cancelled__c,AccountId from Opportunity  limit 1];
-        nm_Payment__c objpayment = [select id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c from nm_Payment__c where nm_OpportunityNew__c!=null and nm_PaymentType__c='Zest-DownPayment' limit 1];
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        update objpayment;
-        objopp.Loan_Type__c = 'liquiLoans';
-        update objopp;
+        
         Test.startTest();
+            Opportunity objopp = [select id,Loan_Type__c,Loan_Order_Id__c,Loan_Application_Cancelled__c,AccountId from Opportunity  limit 1];
+            nm_Payment__c objpayment = [select id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c from nm_Payment__c where nm_OpportunityNew__c!=null and nm_PaymentType__c='Zest-DownPayment' limit 1];
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            update objpayment;
+            objopp.Loan_Type__c = 'liquiLoans';
+            update objopp;
             Test.setMock(HttpCalloutMock.class, new RestMock());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -325,13 +328,14 @@ public class PostPaymentControllerTest {
 
     @istest
     static void opportunityCancelAdmissionCF() {
-        Opportunity objopp = [select id,Loan_Type__c,Loan_Order_Id__c,Loan_Application_Cancelled__c,AccountId from Opportunity  limit 1];
-        nm_Payment__c objpayment = [select id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c from nm_Payment__c where nm_OpportunityNew__c!=null and nm_PaymentType__c='Zest-DownPayment' limit 1];
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        update objpayment;
-        objopp.Loan_Type__c = 'Capital Float';
-        update objopp;
+        
         Test.startTest();
+            Opportunity objopp = [select id,Loan_Type__c,Loan_Order_Id__c,Loan_Application_Cancelled__c,AccountId from Opportunity  limit 1];
+            nm_Payment__c objpayment = [select id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c from nm_Payment__c where nm_OpportunityNew__c!=null and nm_PaymentType__c='Zest-DownPayment' limit 1];
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            update objpayment;
+            objopp.Loan_Type__c = 'Capital Float';
+            update objopp;
             Test.setMock(HttpCalloutMock.class, new RestMock());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -341,13 +345,14 @@ public class PostPaymentControllerTest {
 
     @istest
     static void opportunityCancelAdmissionEduvanz() {
-        Opportunity objopp = [select id,Loan_Type__c,Loan_Order_Id__c,Loan_Application_Cancelled__c,AccountId from Opportunity  limit 1];
-        nm_Payment__c objpayment = [select id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c from nm_Payment__c where nm_OpportunityNew__c!=null and nm_PaymentType__c='Zest-DownPayment' limit 1];
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        update objpayment;
-        objopp.Loan_Type__c = 'Eduvanz';
-        update objopp;
+        
         Test.startTest();
+            Opportunity objopp = [select id,Loan_Type__c,Loan_Order_Id__c,Loan_Application_Cancelled__c,AccountId from Opportunity  limit 1];
+            nm_Payment__c objpayment = [select id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c from nm_Payment__c where nm_OpportunityNew__c!=null and nm_PaymentType__c='Zest-DownPayment' limit 1];
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            update objpayment;
+            objopp.Loan_Type__c = 'Eduvanz';
+            update objopp;
             Test.setMock(HttpCalloutMock.class, new RestMock());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -398,24 +403,23 @@ public class PostPaymentControllerTest {
      
     @isTest
     static void EzCredLoanTest() {
-        
-        Account objAccount = [select id,nm_LeadId__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
-        BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
-        nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
-        Opportunity objopp = [select id,Loan_Type__c,AccountId,Tenure__c,nm_Year__c from Opportunity  limit 1];
-        nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
-        Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
-        objopp.nm_Year__c = 2020;
-        objopp.Loan_Type__c = 'EzCred';
-        objopp.LiveLecturesType__c= '2SemLecturesFee';
-        objopp.Tenure__c = '6';
-        update objopp;
-        objpayment.nm_OpportunityNew__c = objopp.id;
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='EzCred-DownPayment';
-        update objpayment;
 
         Test.startTest();
+            Account objAccount = [select id,nm_LeadId__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
+            BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
+            nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
+            Opportunity objopp = [select id,Loan_Type__c,AccountId,Tenure__c,nm_Year__c from Opportunity  limit 1];
+            nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
+            Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
+            objopp.nm_Year__c = 2020;
+            objopp.Loan_Type__c = 'EzCred';
+            objopp.LiveLecturesType__c= '2SemLecturesFee';
+            objopp.Tenure__c = '6';
+            update objopp;
+            objpayment.nm_OpportunityNew__c = objopp.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='EzCred-DownPayment';
+            update objpayment;
             Test.setMock(HttpCalloutMock.class, new RestMockEzcred());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -425,25 +429,24 @@ public class PostPaymentControllerTest {
 
     @isTest
     static void EzCredLoanTest1() {
-        
-        Account objAccount = [select id,nm_LeadId__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
-        BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
-        nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
-        Opportunity objopp = [select id,Loan_Type__c,AccountId,Tenure__c,nm_Year__c,Zest_Loan_Application_Request__c from Opportunity  limit 1];
-        nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_OpportunityNew__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
-        Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
-        objopp.nm_Year__c = 2020;
-        objopp.Loan_Type__c = 'EzCred';
-        objopp.LiveLecturesType__c= '3SemLecturesFee';
-        objopp.Tenure__c = '6';
-        objopp.Zest_Loan_Application_Request__c='https://www.google.com/';
-        update objopp;
-        objpayment.nm_OpportunityNew__c = objopp.id;
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='EzCred-DownPayment';
-        update objpayment;
 
         Test.startTest();
+            Account objAccount = [select id,nm_LeadId__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
+            BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
+            nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
+            Opportunity objopp = [select id,Loan_Type__c,AccountId,Tenure__c,nm_Year__c,Zest_Loan_Application_Request__c from Opportunity  limit 1];
+            nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_OpportunityNew__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
+            Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
+            objopp.nm_Year__c = 2020;
+            objopp.Loan_Type__c = 'EzCred';
+            objopp.LiveLecturesType__c= '3SemLecturesFee';
+            objopp.Tenure__c = '6';
+            objopp.Zest_Loan_Application_Request__c='https://www.google.com/';
+            update objopp;
+            objpayment.nm_OpportunityNew__c = objopp.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='EzCred-DownPayment';
+            update objpayment;
             Test.setMock(HttpCalloutMock.class, new RestMockEzcred());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -453,27 +456,26 @@ public class PostPaymentControllerTest {
     
     @isTest
     static void EzCredLoanTest2() {
-        
-        Account objAccount = [select id,nm_LeadId__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
-        BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
-        nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
-        Opportunity objopp = [select id,Loan_Type__c,AccountId,Tenure__c,nm_Year__c,Loan_Application_Cancelled__c,Loan_Application_Cancellations_Count__c,Down_Payment_Made__c from Opportunity  limit 1];
-        nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_OpportunityNew__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
-        Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
-        objopp.nm_Year__c = 2020;
-        objopp.Loan_Type__c = 'EzCred';
-        objopp.LiveLecturesType__c= '4SemLecturesFee';
-        objopp.Tenure__c = '6';
-        objopp.Loan_Application_Cancelled__c = true;
-        objopp.Loan_Application_Cancellations_Count__c =1;
-        objopp.Down_Payment_Made__c = true;
-        update objopp;
-        objpayment.nm_OpportunityNew__c = objopp.id;
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='EzCred-DownPayment';
-        update objpayment;
 
         Test.startTest();
+            Account objAccount = [select id,nm_LeadId__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
+            BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
+            nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
+            Opportunity objopp = [select id,Loan_Type__c,AccountId,Tenure__c,nm_Year__c,Loan_Application_Cancelled__c,Loan_Application_Cancellations_Count__c,Down_Payment_Made__c from Opportunity  limit 1];
+            nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_OpportunityNew__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
+            Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
+            objopp.nm_Year__c = 2020;
+            objopp.Loan_Type__c = 'EzCred';
+            objopp.LiveLecturesType__c= '4SemLecturesFee';
+            objopp.Tenure__c = '6';
+            objopp.Loan_Application_Cancelled__c = true;
+            objopp.Loan_Application_Cancellations_Count__c =1;
+            objopp.Down_Payment_Made__c = true;
+            update objopp;
+            objpayment.nm_OpportunityNew__c = objopp.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='EzCred-DownPayment';
+            update objpayment;
             Test.setMock(HttpCalloutMock.class, new RestMockEzcred());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -483,20 +485,19 @@ public class PostPaymentControllerTest {
 
     @isTest
     static void EzCredLoanTest3() {
-        
-        Lead ld = [select id,Loan_Type__c,Tenure__c,nm_Year__c from Lead  limit 1];
-        nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_Lead__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
-        Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
-        ld.nm_Year__c = 2020;
-        ld.Loan_Type__c = 'EzCred';
-        ld.Tenure__c = '6';
-        update ld;
-        objpayment.nm_Lead__c = ld.id;
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='EzCred-DownPayment';
-        update objpayment;
 
         Test.startTest();
+            Lead ld = [select id,Loan_Type__c,Tenure__c,nm_Year__c from Lead  limit 1];
+            nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_Lead__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
+            Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
+            ld.nm_Year__c = 2020;
+            ld.Loan_Type__c = 'EzCred';
+            ld.Tenure__c = '6';
+            update ld;
+            objpayment.nm_Lead__c = ld.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='EzCred-DownPayment';
+            update objpayment;
             Test.setMock(HttpCalloutMock.class, new RestMockEzcred());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -507,20 +508,19 @@ public class PostPaymentControllerTest {
     @isTest
     static void LiquiloansLoanapplicationTest() {
         
-        Lead ld = [select id,Loan_Type__c,Tenure__c,nm_Year__c from Lead  limit 1];
-        nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_Lead__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
-        Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
-        ld.nm_Year__c = 2020;
-        ld.Loan_Type__c = 'liquiLoans';
-        ld.Interest_Rate__c = '0.0';
-        ld.Tenure__c = '12';
-        update ld;
-        objpayment.nm_Lead__c = ld.id;
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='Liquiloan-DownPayment';
-        update objpayment;
-
         Test.startTest();
+            Lead ld = [select id,Loan_Type__c,Tenure__c,nm_Year__c from Lead  limit 1];
+            nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_Lead__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
+            Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
+            ld.nm_Year__c = 2020;
+            ld.Loan_Type__c = 'liquiLoans';
+            ld.Interest_Rate__c = '0.0';
+            ld.Tenure__c = '12';
+            update ld;
+            objpayment.nm_Lead__c = ld.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='Liquiloan-DownPayment';
+            update objpayment;
             Test.setMock(HttpCalloutMock.class, new RestMockEzcred());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -530,24 +530,23 @@ public class PostPaymentControllerTest {
 
     @isTest
     static void LiquiloansLoanapplicationTest2() {
-        
-        Account objAccount = [select id,nm_LeadId__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
-        BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
-        nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
-        Opportunity objopp = [select id,Loan_Type__c,AccountId,Tenure__c,nm_Year__c,Loan_Application_Cancelled__c,Loan_Application_Cancellations_Count__c,Down_Payment_Made__c from Opportunity  limit 1];
-        nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_Lead__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
-        Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
-        objopp.nm_Year__c = 2020;
-        objopp.Loan_Type__c = 'liquiLoans';
-        objopp.Interest_Rate__c = '0.0';
-        objopp.Tenure__c = '12';
-        update objopp;
-        objpayment.nm_OpportunityNew__c = objopp.id;
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='Liquiloan-DownPayment';
-        update objpayment;
 
         Test.startTest();
+            Account objAccount = [select id,nm_LeadId__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
+            BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
+            nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
+            Opportunity objopp = [select id,Loan_Type__c,AccountId,Tenure__c,nm_Year__c,Loan_Application_Cancelled__c,Loan_Application_Cancellations_Count__c,Down_Payment_Made__c from Opportunity  limit 1];
+            nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_Lead__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
+            Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
+            objopp.nm_Year__c = 2020;
+            objopp.Loan_Type__c = 'liquiLoans';
+            objopp.Interest_Rate__c = '0.0';
+            objopp.Tenure__c = '12';
+            update objopp;
+            objpayment.nm_OpportunityNew__c = objopp.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='Liquiloan-DownPayment';
+            update objpayment;
             Test.setMock(HttpCalloutMock.class, new RestMockEzcred());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -558,22 +557,23 @@ public class PostPaymentControllerTest {
     
     @isTest
     static void grayQuestLoanTestOpportunity() {
-        Account objAccount = [select id,nm_LeadId__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
-        BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
-        nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
-        Opportunity objopp = [select id,Loan_Type__c,Zest_Loan_Application_Request__c,AccountId,Tenure__c,nm_Year__c from Opportunity  limit 1];
-        nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
-        // Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
-        objopp.nm_Year__c = 2020;
-        objopp.Loan_Type__c = 'GrayQuest';
-        objopp.Tenure__c = '6';
-        objopp.Zest_Loan_Application_Request__c ='www.dsfs.com';
-        update objopp;
-        objpayment.nm_OpportunityNew__c = objopp.id;
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='GrayQuest-DownPayment';
-        update objpayment;
+        
         Test.startTest();
+            Account objAccount = [select id,nm_LeadId__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
+            BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
+            nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
+            Opportunity objopp = [select id,Loan_Type__c,Zest_Loan_Application_Request__c,AccountId,Tenure__c,nm_Year__c from Opportunity  limit 1];
+            nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
+            // Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
+            objopp.nm_Year__c = 2020;
+            objopp.Loan_Type__c = 'GrayQuest';
+            objopp.Tenure__c = '6';
+            objopp.Zest_Loan_Application_Request__c ='www.dsfs.com';
+            update objopp;
+            objpayment.nm_OpportunityNew__c = objopp.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='GrayQuest-DownPayment';
+            update objpayment;
             Test.setMock(HttpCalloutMock.class, new RestMockGrayQuest());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -584,12 +584,13 @@ public class PostPaymentControllerTest {
 
     @isTest
     static void grayQuestLoanTestLead() {
-        Lead objLead = [SELECT id FROM Lead LIMIT 1];
-        nm_Payment__c objpayment = [SELECT id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c FROM nm_Payment__c WHERE nm_Lead__c!=null AND nm_Installment_Payment_Ref__c='DownPayment-Admission' LIMIT 1];
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='GrayQuest-DownPayment';
-        update objpayment;
+        
         Test.startTest();
+            Lead objLead = [SELECT id FROM Lead LIMIT 1];
+            nm_Payment__c objpayment = [SELECT id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c FROM nm_Payment__c WHERE nm_Lead__c!=null AND nm_Installment_Payment_Ref__c='DownPayment-Admission' LIMIT 1];
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='GrayQuest-DownPayment';
+            update objpayment;
             Test.setMock(HttpCalloutMock.class, new RestMockGrayQuest());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -603,12 +604,13 @@ public class PostPaymentControllerTest {
 
     @isTest
     static void grayQuestLoanTestLead2() {
-        Lead objLead = [SELECT id FROM Lead LIMIT 1];
-        nm_Payment__c objpayment = [SELECT id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c FROM nm_Payment__c WHERE nm_Lead__c!=null AND nm_Installment_Payment_Ref__c='DownPayment-Admission' LIMIT 1];
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='GrayQuest-DownPayment';
-        update objpayment;
+        
         Test.startTest();
+            Lead objLead = [SELECT id FROM Lead LIMIT 1];
+            nm_Payment__c objpayment = [SELECT id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c FROM nm_Payment__c WHERE nm_Lead__c!=null AND nm_Installment_Payment_Ref__c='DownPayment-Admission' LIMIT 1];
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='GrayQuest-DownPayment';
+            update objpayment;
             Test.setMock(HttpCalloutMock.class, new RestMockGrayQuest());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -622,20 +624,20 @@ public class PostPaymentControllerTest {
 
     @isTest
     static void grayQuestLoanTestReOpen() {
-        Opportunity objopp = [SELECT id,Loan_Type__c,Zest_Loan_Application_Request__c,AccountId,Tenure__c,nm_Year__c FROM Opportunity LIMIT 1];
-        nm_Payment__c objpayment = [SELECT id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c FROM nm_Payment__c WHERE nm_OpportunityNew__c!=null LIMIT 1];
-        objopp.nm_Year__c = 2020;
-        objopp.Loan_Type__c = 'GrayQuest';
-        objopp.Tenure__c = '6';
-        objopp.Zest_Loan_Application_Request__c ='www.dsfs.com';
-        update objopp;
-
-        objpayment.nm_OpportunityNew__c = objopp.id;
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='GrayQuest-DownPayment';
-        update objpayment;
         
         Test.startTest();
+            Opportunity objopp = [SELECT id,Loan_Type__c,Zest_Loan_Application_Request__c,AccountId,Tenure__c,nm_Year__c FROM Opportunity LIMIT 1];
+            nm_Payment__c objpayment = [SELECT id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c FROM nm_Payment__c WHERE nm_OpportunityNew__c!=null LIMIT 1];
+            objopp.nm_Year__c = 2020;
+            objopp.Loan_Type__c = 'GrayQuest';
+            objopp.Tenure__c = '6';
+            objopp.Zest_Loan_Application_Request__c ='www.dsfs.com';
+            update objopp;
+
+            objpayment.nm_OpportunityNew__c = objopp.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='GrayQuest-DownPayment';
+            update objpayment;
             Test.setMock(HttpCalloutMock.class, new RestMockGrayQuest());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -646,22 +648,23 @@ public class PostPaymentControllerTest {
 
     @isTest
     static void grayQuestLoanTestReApply() {
-        Opportunity objopp = [SELECT id,Loan_Type__c,Zest_Loan_Application_Request__c,AccountId,Tenure__c,nm_Year__c,Loan_Application_Cancelled__c,Down_Payment_Made__c,Loan_Application_Cancellations_Count__c FROM Opportunity LIMIT 1];
-        nm_Payment__c objpayment = [SELECT id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c FROM nm_Payment__c WHERE nm_OpportunityNew__c!=null LIMIT 1];
-        objopp.nm_Year__c = 2020;
-        objopp.Loan_Type__c = 'GrayQuest';
-        objopp.Tenure__c = '6';
-        objopp.Zest_Loan_Application_Request__c ='www.dsfs.com';
-        objopp.Loan_Application_Cancelled__c = true;
-        objopp.Down_Payment_Made__c = true;
-        objopp.Loan_Application_Cancellations_Count__c = 2;
-        update objopp;
-
-        objpayment.nm_OpportunityNew__c = objopp.id;
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='GrayQuest-DownPayment';
-        update objpayment;
+        
         Test.startTest();
+            Opportunity objopp = [SELECT id,Loan_Type__c,Zest_Loan_Application_Request__c,AccountId,Tenure__c,nm_Year__c,Loan_Application_Cancelled__c,Down_Payment_Made__c,Loan_Application_Cancellations_Count__c FROM Opportunity LIMIT 1];
+            nm_Payment__c objpayment = [SELECT id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c FROM nm_Payment__c WHERE nm_OpportunityNew__c!=null LIMIT 1];
+            objopp.nm_Year__c = 2020;
+            objopp.Loan_Type__c = 'GrayQuest';
+            objopp.Tenure__c = '6';
+            objopp.Zest_Loan_Application_Request__c ='www.dsfs.com';
+            objopp.Loan_Application_Cancelled__c = true;
+            objopp.Down_Payment_Made__c = true;
+            objopp.Loan_Application_Cancellations_Count__c = 2;
+            update objopp;
+
+            objpayment.nm_OpportunityNew__c = objopp.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='GrayQuest-DownPayment';
+            update objpayment;
             Test.setMock(HttpCalloutMock.class, new RestMockGrayQuest());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
@@ -671,21 +674,20 @@ public class PostPaymentControllerTest {
 
     @isTest
     static void AvanseLoanLeadTest() {
-        
-        Lead ld = [select id,Loan_Type__c,Tenure__c,nm_Year__c from Lead  limit 1];
-        nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_Lead__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
-        Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
-        ld.nm_Year__c = 2020;
-        ld.Loan_Type__c = 'Avanse';
-        ld.Interest_Rate__c = '0.0';
-        ld.Tenure__c = '12';
-        update ld;
-        objpayment.nm_Lead__c = ld.id;
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='Avanse-DownPayment';
-        update objpayment;
 
         Test.startTest();
+            Lead ld = [select id,Loan_Type__c,Tenure__c,nm_Year__c from Lead  limit 1];
+            nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_Lead__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
+            Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
+            ld.nm_Year__c = 2020;
+            ld.Loan_Type__c = 'Avanse';
+            ld.Interest_Rate__c = '0.0';
+            ld.Tenure__c = '12';
+            update ld;
+            objpayment.nm_Lead__c = ld.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='Avanse-DownPayment';
+            update objpayment;
             //Test.setMock(HttpCalloutMock.class, new AvanseLoan());
             Test.setMock(HttpCalloutMock.class, new AvanseProgramList());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
@@ -696,24 +698,23 @@ public class PostPaymentControllerTest {
 
     @isTest
     static void AvanseLoanAccountTest() {
-        
-        Account objAccount = [select id,nm_LeadId__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
-        BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
-        nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
-        Opportunity objopp = [select id,Loan_Type__c,AccountId,Tenure__c,nm_Year__c,nm_Program__r.nm_ProgramName__c from Opportunity  limit 1];
-        nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
-        Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
-        objopp.nm_Year__c = 2020;
-        objopp.Loan_Type__c = 'Avanse';
-        objopp.LiveLecturesType__c= '2SemLecturesFee';
-        objopp.Tenure__c = '6';
-        update objopp;
-        objpayment.nm_OpportunityNew__c = objopp.id;
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='Avanse-DownPayment';
-        update objpayment;
 
         Test.startTest();
+            Account objAccount = [select id,nm_LeadId__c,PersonEmail,FirstName,nm_StudentNo__c,LastName,BillingPostalCode,nm_HouseNumber__c,nm_LocalityName__c,
+            BillingStreet,Billingstate,BillingCountry,PersonMobilePhone,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c, 
+            nm_Program__r.Loan_API_Code__c,nm_Centers__r.Loan_API_Code__c,nm_Centers__r.nm_LearningCenter__r.Loan_API_Code__c from Account limit 1];
+            Opportunity objopp = [select id,Loan_Type__c,AccountId,Tenure__c,nm_Year__c,nm_Program__r.nm_ProgramName__c from Opportunity  limit 1];
+            nm_Payment__c objpayment = [select id ,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c  from nm_Payment__c where nm_OpportunityNew__c!=null limit 1];
+            Id priceBooke2Id = [select id,pricebook2Id from Opportunity limit 1].pricebook2Id;
+            objopp.nm_Year__c = 2020;
+            objopp.Loan_Type__c = 'Avanse';
+            objopp.LiveLecturesType__c= '2SemLecturesFee';
+            objopp.Tenure__c = '6';
+            update objopp;
+            objpayment.nm_OpportunityNew__c = objopp.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='Avanse-DownPayment';
+            update objpayment;
             //Test.setMock(HttpCalloutMock.class, new AvanseLoan());
             Test.setMock(HttpCalloutMock.class, new AvanseProgramList());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
@@ -724,22 +725,122 @@ public class PostPaymentControllerTest {
 
     @istest
     static void leadCancelAdmissionavanse() {
-        Lead ld = [select id,Loan_Type__c,Tenure__c,nm_Year__c from Lead  limit 1];
-        nm_Payment__c objpayment = [select id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c from nm_Payment__c where nm_OpportunityNew__c!=null and nm_PaymentType__c='Zest-DownPayment' limit 1];
-        objpayment.nm_Lead__c = ld.id;
-        objpayment.nm_Merchant_Track_Id__c = '11111111111';
-        objpayment.nm_PaymentType__c='Avanse-DownPayment';
-        update objpayment;
-        ld.Loan_Type__c = 'Avanse';
-        update ld;
+        
         Test.startTest();
+            Lead ld = [select id,Loan_Type__c,Tenure__c,nm_Year__c from Lead  limit 1];
+            nm_Payment__c objpayment = [select id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c from nm_Payment__c where nm_OpportunityNew__c!=null and nm_PaymentType__c='Zest-DownPayment' limit 1];
+            objpayment.nm_Lead__c = ld.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='Avanse-DownPayment';
+            update objpayment;
+            ld.Loan_Type__c = 'Avanse';
+            update ld;
             Test.setMock(HttpCalloutMock.class, new AvanseCancelLoan());
             ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
             PostPaymentController obj = new PostPaymentController();
             obj.cancelLoanApplication();
         Test.stopTest();
     }
+    
+    
+    @istest
+    static void leadCancelAdmissionavanseOnMobile() {
+        
+        Test.startTest();
+            Lead ld = [select id,Loan_Type__c,Tenure__c,nm_Year__c from Lead  limit 1];
+            nm_Payment__c objpayment = [select id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c from nm_Payment__c where nm_OpportunityNew__c!=null and nm_PaymentType__c='Zest-DownPayment' limit 1];
+            objpayment.nm_Lead__c = ld.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='Avanse-DownPayment';
+            update objpayment;
+            ld.Loan_Type__c = 'Avanse';
+            update ld;
+            Test.setMock(HttpCalloutMock.class, new AvanseCancelLoan());
+            PostPaymentController obj = new PostPaymentController();
+            obj.paymentTrackId ='11111111111';
+            obj.cancelLoanApplicationMobileApp();
+        Test.stopTest();
+    }
 
+    @istest
+    static void testMethod1() {
+        
+        Test.startTest();
+            Lead ld = [select id,Loan_Type__c,Tenure__c,nm_Year__c from Lead  limit 1];
+            nm_Payment__c objpayment = [select id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c from nm_Payment__c where nm_OpportunityNew__c!=null and nm_PaymentType__c='Zest-DownPayment' limit 1];
+            objpayment.nm_Lead__c = ld.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='Avanse-DownPayment';
+            update objpayment;
+            ld.Loan_Type__c = 'Avanse';
+            update ld;
+            Test.setMock(HttpCalloutMock.class, new AvanseCancelLoan());
+            ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
+            PostPaymentController obj = new PostPaymentController();
+            obj.productName = 'AnnualFee';
+            obj.programSpecialization = 'M.Sc. (AI & ML Ops)';
+            obj.getTotalProductAmount();
+            obj.productName = '2TermFee';
+            obj.getTotalProductAmount();
+            obj.productName = 'PGAllSemFee';
+            obj.getTotalProductAmount();
+            obj.productName = 'MultipleSemFee';
+            obj.getTotalProductAmount();
+            obj.productName = 'FullFeeLoan';
+            obj.getTotalProductAmount();
+            obj.productName = 'AnnualFeeLoan';
+            obj.getTotalProductAmount();
+            obj.productName = '3SemFee';
+            obj.getTotalProductAmount();
+            obj.productName = '3TermFee';
+            obj.getTotalProductAmount();
+            obj.productName = '4SemFee';
+            obj.getTotalProductAmount();
+            obj.productName = '5SemFee';
+            obj.getTotalProductAmount();
+        Test.stopTest();
+    }
+
+    @isTest
+    static void PropelldLoanLeadTest() {
+        
+        Test.startTest();
+            Lead ld = [select id,Loan_Type__c,Tenure__c,nm_Year__c from Lead  limit 1];
+            nm_Payment__c objpayment = [select id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c from nm_Payment__c where nm_OpportunityNew__c!=null and nm_PaymentType__c='Zest-DownPayment' limit 1];
+            objpayment.nm_Lead__c = ld.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111111';
+            objpayment.nm_PaymentType__c='Propelld-DownPayment';
+            update objpayment;
+            ld.Loan_Type__c = 'Propelld';
+            update ld;
+            Test.setMock(HttpCalloutMock.class, new RestMockII());
+            ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
+            PostPaymentController obj = new PostPaymentController();
+            obj.zestLoanApplicationRequestCancelled = false;
+            obj.zestLaonApplicationRequest = 'www.google.com';
+            obj.propelldApplicationReqest();
+        Test.stopTest();
+    }
+    
+    @isTest
+    static void PropelldLoanTest() {
+        Test.startTest();
+            Lead ld = [select id,Loan_Type__c,Tenure__c,nm_Year__c from Lead  limit 1];
+            nm_Payment__c objpayment = [select id,nm_Merchant_Track_Id__c,nm_PaymentStatus__c,nm_PaymentType__c from nm_Payment__c where nm_OpportunityNew__c!=null and nm_PaymentType__c='Zest-DownPayment' limit 1];
+            objpayment.nm_Lead__c = ld.id;
+            objpayment.nm_Merchant_Track_Id__c = '11111111112';
+            objpayment.nm_PaymentType__c='Propelld-DownPayment';
+            update objpayment;
+            ld.Loan_Type__c = 'Propelld';
+            update ld;
+            Test.setMock(HttpCalloutMock.class, new RestMockII());
+            ApexPages.currentPage().getParameters().put('ResTrackId',objpayment.nm_Merchant_Track_Id__c);
+            PostPaymentController obj = new PostPaymentController('test');
+            obj.zestLoanApplicationRequestCancelled = false;
+            obj.zestLaonApplicationRequest = 'www.google.com';
+            obj.propelldApplicationReqestFromMobile();
+        Test.stopTest();
+    }
     // @isTest
     // static void AvanseLoanAccountTest2() {
         
@@ -815,7 +916,7 @@ public class PostPaymentControllerTest {
         objpaymentconfig.No_Of_Applicable_Installment__c ='1';
         objpaymentconfig.Registration_Fee__c=1200;
         objpaymentconfig.Program_Type__c='';
-        objpaymentconfig.Reg_No_Allowed_After_End_Date__c = '01723456';
+        //objpaymentconfig.Reg_No_Allowed_After_End_Date__c = '01723456';
         objpaymentconfig.Capital_Float_AEP_Available__c = 'Mumbai,Pune';
         objpaymentconfig.Show_Registration_Payment_Option__c = true;
         objpaymentconfig.Show_Admission_Payment_Option__c = true;

@@ -4,7 +4,7 @@
  * @Author             : @BK
  * @Group              : 
  * @Last Modified By   : @vickysahu
- * @Last Modified On   : 02-14-2025
+ * @Last Modified On   : 02-06-2026
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -78,6 +78,7 @@ public class ProductHelper
    public Map<String,Set<String>> mapOfCourseKeyVsProgram = new Map<String,Set<String>>();
    public Map<String,Map<Id,nm_Courses__c>> mapOfCourseKeyVsCourseObj = new Map<String,Map<Id,nm_Courses__c>> ();
    public List<nm_Courses__c> lstAllProgramCourse = new List<nm_Courses__c>();
+   //public Boolean isEligibilityChanged = false;
    
    public String getQueryAllFieldSql(String SObjectAPIName,String conditionString,String relatedField){
         Map < String, schema.SObjectType > scemapMap = schema.getGlobalDescribe();
@@ -874,7 +875,7 @@ public class ProductHelper
         Opportunity objOpp = [select id,Account.AI_Component__c,isLiveLecture__c,IsTerm__c,nm_SelfLearningMaterial__c,Account.nm_Nationality__c,Dispatch_Order_For_Student__c,nm_Program__r.AI_Component__c,nm_Session__c,nm_Year__c,Down_Payment_Made__c,IC__c,nm_Future_Sems_Created__c,late_fee__c,CareerServiceFee__c,RegistrationFee__c,ActualAmountReceived__c,ConsumerType__c,Sem__c,Program_Structure__c,LiveLecturesType__c,CourseList__c,WaivedOffAmount__c,E_S_charge__c,Account.nm_Centers__c,ShareApplicable__c ,AdditionalAmountRecieved__c,Total_Amount_Received__c,Account.nm_Tagged_Pricebook__c,Career_Service__c,Account.Name,Choose_a_Program__c,ChooseProgram__c,ActualPendingAmount__c,Pending_For__c,Actual_Amount__c,
         Account.nm_ChooseaProgram__c,CloseDate,Processed__c,Accountid,nm_StudentProgram__c,nm_Payment_Approved__c,nm_Category__c,Account.nm_IsEmailVerified__c,Specialisation__c,
                              nm_StudentProgram__r.nm_Program__c,Term_Cleared__c,nm_Semester__c,nm_Program__c,nm_Fee_Type__c ,Account.Is_Mobile_Verified__c,Account.nm_Domicile__c,Account.DEBID__c,Account.Program_Type__c,Account.Interview_Status__c,
-                             Is_Re_Registration_Payment__c,Student_Number__c,StageName,Coursera__c,Account.is_Video_Call_Verified__c, Account.is_Deb_verified__c,
+                             Is_Re_Registration_Payment__c,Student_Number__c,ClosedWonDateTime__c,StageName,Coursera__c,Account.is_Video_Call_Verified__c, Account.is_Deb_verified__c, Account.DEB_on_hold__c,Account.Agree_DEB_Terms__c,
                              Account.nm_StudentStatus__c,(select id, nm_Amount__c from Opportunities__r 
                              where (nm_PaymentStatus__c='Payment Approved' OR nm_PaymentStatus__c='Waived Off' or nm_PaymentStatus__c = 'Payment Made')) 
                              from Opportunity where id =:OppsId];
@@ -895,9 +896,18 @@ public class ProductHelper
        system.debug('isOpportunityCloseWon--->'+isOpportunityCloseWon);
         decimal LateFeeAmount = 0;
         if(!objOpp.Processed__c) {
-            if (objOpp.Is_Re_Registration_Payment__c || (!objOpp.Is_Re_Registration_Payment__c && String.isBlank(objOpp.Student_Number__c))) {
-                LateFeeAmount = CreateLateFeeProduct(objOpp,eventName);
-            }
+            // if (objOpp.Is_Re_Registration_Payment__c || (!objOpp.Is_Re_Registration_Payment__c && String.isBlank(objOpp.Student_Number__c))) {
+            //     LateFeeAmount = CreateLateFeeProduct(objOpp,eventName);
+            // }
+
+            // if (objOpp.ClosedWonDateTime__c == null) {
+            //     LateFeeAmount = CreateLateFeeProduct(objOpp,eventName);
+            // }
+
+            // if (checkForLateFee(objOpp)) {
+            //     LateFeeAmount = CreateLateFeeProduct(objOpp,eventName);
+            // }
+            LateFeeAmount = CreateLateFeeProduct(objOpp,eventName);
         }
         if(objOpp.Career_Service__c!='')
         {
@@ -924,7 +934,8 @@ public class ProductHelper
         pendingAmountToApproved = totalAmountReceived - totalAmountApproved ;
         system.debug('StageName-->'+pendingAmount );
         System.debug('pendingAmountToApproved -->'+pendingAmountToApproved);
-        Boolean isDebVerified =  ((objOpp.Account.nm_Nationality__c != 'Indian' && objOpp.Account.nm_Nationality__c != 'India')) || (objOpp.Account.is_Deb_verified__c && String.isNotBlank(objOpp.Account.DEBID__c));
+        //Boolean isDebVerified =  (String.isNotBlank(objOpp.Account.nm_Nationality__c) && !objOpp.Account.nm_Nationality__c.contains('India')) || ((objOpp.Account.is_Deb_verified__c || ((System.label.ByPass_DEB_Verification == 'No' && System.Label.Enable_DEB_Verification == 'No') && objOpp.Account.Agree_DEB_Terms__c)) && String.isNotBlank(objOpp.Account.DEBID__c) || ((System.label.ByPass_DEB_Verification == 'Yes' && System.Label.Enable_DEB_Verification == 'No') && objOpp.Account.Agree_DEB_Terms__c));
+        Boolean isDebVerified = checkDEBVerified(objOpp);
         System.debug('isDebMandatory -->'+isDebVerified);
         // pending Amount is '-' in Additional Charger Case in such cases after Additional Charger Payment Approved then Update Opportunity Stage to Closed or Closed Won depending On Account Stage
         if((
@@ -956,6 +967,7 @@ public class ProductHelper
             objOpp.CloseDate = System.Today();
             system.debug('Closed Won');
             boolean ICProgramChange = ApproveReRegistrationAdmissionPaymentAfterPaymnetMade(objOpp);
+            //isEligibilityChanged = false;
             if(objOpp.LiveLecturesType__c!='' && objOpp.LiveLecturesType__c!=null  && objOpp.LiveLecturesType__c!='Custom')
             {
                 objOpp = SetLiveLecturesValue(objOpp);
@@ -1033,6 +1045,47 @@ public class ProductHelper
         
         return objOpp;
     }
+
+    public Boolean checkDEBVerified(Opportunity objOpp) {
+        Boolean isForeignNational =
+            String.isNotBlank(objOpp.Account.nm_Nationality__c) &&
+            !objOpp.Account.nm_Nationality__c.contains('India');
+
+        Boolean isDebNormallyVerified =
+            objOpp.Account.is_Deb_verified__c &&
+            String.isNotBlank(objOpp.Account.DEBID__c);
+
+        Boolean isDebVerifiedWithTerms =
+            System.Label.ByPass_DEB_Verification == 'No' &&
+            System.Label.Enable_DEB_Verification == 'No' &&
+            objOpp.Account.Agree_DEB_Terms__c &&
+            String.isNotBlank(objOpp.Account.DEBID__c);
+
+        Boolean isDebBypassEnabled =
+            System.Label.ByPass_DEB_Verification == 'Yes' &&
+            System.Label.Enable_DEB_Verification == 'No' &&
+            objOpp.Account.Agree_DEB_Terms__c;
+
+        Boolean isDebVerified =
+            isForeignNational ||
+            isDebNormallyVerified ||
+            isDebVerifiedWithTerms ||
+            isDebBypassEnabled;
+
+        return isDebVerified;
+    }
+
+    // public Boolean checkForLateFee(Opportunity objOpportunity) {
+    //     Boolean allowLateFee = false;
+    //     Set<String> setOfStage = new Set<String>{'Payment made','Closed Won','Closed'};
+    //     if(!objOpportunity.Is_Re_Registration_Payment__c) {
+    //         allowLateFee = String.isBlank(objOpportunity.Student_Number__c) ? true : false;
+    //     }
+    //     else if (objOpportunity.Is_Re_Registration_Payment__c) {
+    //         allowLateFee = objOpportunity.Account.nm_StudentStatus__c != 'Confirmed' || (!setOfStage.contains(objOpportunity.StageName) && objOpportunity.ClosedWonDateTime__c == null) ? true : false;
+    //     }
+    //     return allowLateFee;
+    // }
 
     public Boolean isLastOpportunityCleared(Opportunity objOpp) {
         String Sem = String.valueOf(Integer.valueOf(objOpp.nm_Semester__c) - 1);
@@ -1663,7 +1716,7 @@ public decimal Feetypeprice(Opportunity objOpportunity,String Feetype,Map<String
     system.debug('BA objOpportunity.nm_Fee_Type__c--->'+objOpportunity.nm_Fee_Type__c);
     system.debug('Specialisation--->'+objprg.Specialisation__c);
    
-     if('BA'.equalsIgnoreCase(objprg.Specialisation__c) && (objOpportunity.nm_Fee_Type__c =='AnnualFee' || objOpportunity.nm_Fee_Type__c =='3SemFee'))
+     if((('BBA'.equalsIgnoreCase(objprg.Specialisation__c) && 'BBA (BA)'.equalsIgnoreCase(objprg.Name) && sem > 2) || 'BA'.equalsIgnoreCase(objprg.Specialisation__c)) && (objOpportunity.nm_Fee_Type__c =='AnnualFee' || objOpportunity.nm_Fee_Type__c =='3SemFee'))
         {
             system.debug('Enter');
             for(Integer i = sem ;i<=(sem + multiplicationFactor - 1);i++)
@@ -3244,6 +3297,8 @@ public void DeleteOpportunityLineItemAfterProgramChange(Opportunity objOpportuni
             {
                 for(IC_Change_Request__c objICChange : lstICR )
                 {
+                    //System.debug('Eligiblity---->' + isEligibilityChanged);
+                    //if(objICChange.nm_TypeofRequest__c=='Program Change' && objICChange.New_Program__c !=null && objICChange.Status__c=='New' && !isEligibilityChanged)  
                     if(objICChange.nm_TypeofRequest__c=='Program Change' && objICChange.New_Program__c !=null && objICChange.Status__c=='New')  
                     {
                         nm_StudentProgram__c objStudentPro=new nm_StudentProgram__c(id=ObjOpp.nm_StudentProgram__c);
@@ -4356,18 +4411,18 @@ public void DeleteOpportunityLineItemAfterProgramChange(Opportunity objOpportuni
             system.debug('SingleSem ---->'+SingleSem );
             pendingSem = (objprogram.nm_TotalSemesters__c - sem) + 1;
             system.debug('pendingSem ----'+pendingSem );
-            if(sem==2 && objprogram.nm_TotalSemesters__c==4 )
-            {
-                AfterSubstitude = (SingleSem*pendingSem)-6;
-            }
-            else if(sem==2 && objprogram.nm_TotalSemesters__c==2 )
-            {
-                AfterSubstitude = (SingleSem*pendingSem)+6;
-            }
-            else
-            {    
+            // if(sem==2 && objprogram.nm_TotalSemesters__c==4 ) // commneted by Ravi -->  changes to for lateral student validity is updated double to the total duration 
+            // {
+            //     AfterSubstitude = (SingleSem*pendingSem)-6;
+            // }
+            // else if(sem==2 && objprogram.nm_TotalSemesters__c==2 )
+            // {
+            //     AfterSubstitude = (SingleSem*pendingSem)+6;
+            // }
+            // else
+            // {    
                 AfterSubstitude = SingleSem*pendingSem;
-            }
+            // }
             
            //system.debug('add month'+(()-1));
             ValidityExpiryDate =  BatchStart.addMonths(Integer.valueof(AfterSubstitude - 1));

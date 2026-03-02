@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 26--08--2025
+ * @last modified on  : 11--02--2026
  * @last modified by  : @Ravi
 **/
 public without sharing class DashboardPageController {
@@ -13,12 +13,14 @@ public without sharing class DashboardPageController {
     public OTPFields objOTP {get;set;}
     public Boolean isDataFetched {get;set;}
     public Request objDEBRequest {get;set;}
+    public String paymentUrl {get;set;}
 
     public DashboardPageController() {
         objRecord = new RecordDetails();
         objOTP = new OTPFields();
         isDataFetched = false;
         objDEBRequest = new Request();
+        paymentUrl = '';
     }
 
     public Id getObjectId() {
@@ -43,10 +45,9 @@ public without sharing class DashboardPageController {
 
     private void queryRecordData(Id recordId) {
         objOTP.recordId = recordId;
-        System.debug('recordId'+recordId);
-        System.debug('this.objectType'+this.objectType);
         if (this.objectType == 'Account') {
-            List<Account> lstAccount = [SELECT id,is_Video_Call_Verified__c,nm_DateOfBirth__c,nm_Nationality__c,nm_StudentStatus__c,Name,PersonMobilePhone,nm_Program__r.Bachelor_Specialization__c,nm_Program__r.nm_ProgramName__c,PersonEmail,PersonContactId,Is_Mobile_Verified__c,nm_IsEmailVerified__c,City_Shipping_Account__c,nm_Program__r.Form_Specialisation__c,nm_RegistrationNumber__c,nm_ProgramType__c,Program_Name__c,OwnerId FROM Account WHERE id=:recordId LIMIT 1];
+            PaymentPageHandler objHandler = new PaymentPageHandler();
+            List<Account> lstAccount = [SELECT id,is_Video_Call_Verified__c,DEBID__c,nm_DateOfBirth__c,nm_Nationality__c,nm_StudentStatus__c,Name,PersonMobilePhone,nm_Program__r.Bachelor_Specialization__c,nm_Program__r.nm_ProgramName__c,PersonEmail,PersonContactId,Is_Mobile_Verified__c,nm_IsEmailVerified__c,City_Shipping_Account__c,nm_Program__r.Form_Specialisation__c,nm_RegistrationNumber__c,nm_ProgramType__c,Program_Name__c,OwnerId,Extend_Validity_upto_Month__c,Extend_Validity_Upto_Year__c,Provisional_With_Hold__c,Batch__c,Validity_Month__c,Validity_Year__c,Program_Type__c,Agree_DEB_Terms__c FROM Account WHERE id=:recordId LIMIT 1];
             objRecord.name = lstAccount[0].Name;
             objRecord.email = lstAccount[0].PersonEmail;
             objRecord.phone = lstAccount[0].PersonMobilePhone;
@@ -62,6 +63,8 @@ public without sharing class DashboardPageController {
             objRecord.isMobileVerified = lstAccount[0].Is_Mobile_Verified__c;
             objRecord.isVideoCallVerified = lstAccount[0].is_Video_Call_Verified__c;
             objRecord.ownerId = lstAccount[0].OwnerId;
+            objRecord.debId = lstAccount[0].DEBID__c;
+            objRecord.isAgreeDEBTerms = lstAccount[0].Agree_DEB_Terms__c;
             // OTP
             objOTP.isEmailVerified = lstAccount[0].nm_IsEmailVerified__c;
             objOTP.isMobileVerified = lstAccount[0].Is_Mobile_Verified__c;
@@ -69,10 +72,15 @@ public without sharing class DashboardPageController {
             objOTP.EmailId = lstAccount[0].PersonEmail;
             objOTP.mobileNo = lstAccount[0].PersonMobilePhone;
             objOTP.recordObject = 'Account';
+            if (!isDataFetched) {
+                objDEBRequest.debId = lstAccount[0].DEBID__c;
+            }
             objRecord.isDebVerificationPending = checkDEBVerified(recordId) 
                                                 ? true 
                                                 : (lstAccount[0].nm_Nationality__c != 'Indian' ? true : false);
             getStatus(null,lstAccount[0]);
+            paymentUrl = objHandler.checkForLateFee(lstAccount[0]);
+            getNMConfig(lstAccount[0]);
 
         } else if (this.objectType == 'Lead') {
             List<Lead> lstLead = [SELECT id,Name,MobilePhone,Email,Status,nm_DateOfBirth__c,nm_IsEmailVerified__c,Is_Mobile_Verified__c,nm_Program__r.Bachelor_Specialization__c,nm_Program__r.nm_ProgramName__c,nm_RegistrationNo__c,nm_City_P__c,nm_Program__r.Form_Specialisation__c,nm_ChooseaProgram__c,nm_ProgramName__c,Student_Number_Lateral__c,Year_Of_Passing_Lateral__c FROM Lead WHERE id=:recordId LIMIT 1];
@@ -101,6 +109,21 @@ public without sharing class DashboardPageController {
             getStatus(lstLead[0],null);
         }
         System.debug(objRecord);
+    }
+
+    public void getNMConfig(Account objAccount) {
+        List<NM_Payment_Form_Configuration__c> lstNmConfig = new List<NM_Payment_Form_Configuration__c>();
+        List<Opportunity> lstOpportunity = [SELECT Id,nm_Session__c,nm_Year__c FROM Opportunity WHERE AccountId=:objAccount.Id AND Is_Re_Registration_Payment__c=false LIMIT 1];
+        if(lstOpportunity.size() > 0) {
+            if (String.isNotBlank(objAccount.Program_Type__c) && lstOpportunity.size() > 0) {
+                lstNmConfig = [SELECT Id,DEB_Terms_And_Condition__c FROM NM_Payment_Form_Configuration__c WHERE Session__c=:lstOpportunity[0].nm_Session__c AND Current_Admission_Year__c=:String.valueOf(lstOpportunity[0].nm_Year__c) AND Program_Category__c=:objAccount.nm_ProgramType__c and Payment_Type__c ='Admission' and Program_Type__c=:objAccount.Program_Type__c LIMIT 1];
+            }
+            else {
+                lstNmConfig = [SELECT Id,DEB_Terms_And_Condition__c FROM NM_Payment_Form_Configuration__c WHERE Session__c=:lstOpportunity[0].nm_Session__c AND Current_Admission_Year__c=:String.valueOf(lstOpportunity[0].nm_Year__c) AND Program_Category__c=:objAccount.nm_ProgramType__c and Payment_Type__c ='Admission' LIMIT 1];
+            }
+            objDEBRequest.debTerms = lstNmConfig.size() > 0 ? lstNmConfig[0].DEB_Terms_And_Condition__c : '';
+            objRecord.debTerms =lstNmConfig.size() > 0 ? lstNmConfig[0].DEB_Terms_And_Condition__c : '';
+        }
     }
 
     public void sendOTP() {
@@ -173,35 +196,57 @@ public without sharing class DashboardPageController {
     * @author @BK | 09-16-2024 
     **/
     public void verifyDEBID() {
-        DEBVerificationHandler.Request objRequest = new DEBVerificationHandler.Request();
-        objRequest.recordId = getObjectId();
-        objRequest.objType = getObjectType();
-        objRequest.debId = objDEBRequest.debId;
-        objRequest.dob = objRecord.dob;
-        objRequest.ownerId = objRecord.ownerId;
+        System.debug('debId---->' + objDEBRequest.debId);
+        if (!objRecord.isDEBVerificationEnable && !objDEBRequest.isDebTermsAgreed) {
+            objDEBRequest.errorMsg = 'deb-terms-not-agreed';
+            return;
+        }
+        if (objDEBRequest.debId.length() != 12 && !objRecord.byPassDEBVerification) {
+            objDEBRequest.errorMsg = 'invalid-deb';
+            return;
+        }
 
-        DEBVerificationHandler.Response objResponse = DEBVerificationHandler.verifyDEBID(objRequest);
-        System.debug('isSuccess ==>'+objResponse.isSuccess);
-        objDEBRequest.errorMsg = 'error';
-        if(objResponse.isSuccess) {
-            if(!objResponse.isDebMatched) {
-                objDEBRequest.errorMsg = 'mismatch-deb';
-                return;
-            }
+        if (objRecord.isDEBVerificationEnable || Test.isRunningTest()) {
+            DEBVerificationHandler.Request objRequest = new DEBVerificationHandler.Request();
+            objRequest.recordId = getObjectId();
+            objRequest.objType = getObjectType();
+            objRequest.debId = objDEBRequest.debId;
+            objRequest.dob = objRecord.dob;
+            objRequest.ownerId = objRecord.ownerId;
 
-            if(!objResponse.isDOBMatched) {
-                objDEBRequest.errorMsg = 'mismatch-dob';
-                return;
-            }
+            DEBVerificationHandler.Response objResponse = DEBVerificationHandler.verifyDEBID(objRequest);
+            System.debug('isSuccess ==>'+objResponse.isSuccess);
+            objDEBRequest.errorMsg = 'error';
+            if(objResponse.isSuccess) {
+                if(!objResponse.isDebMatched) {
+                    objDEBRequest.errorMsg = 'mismatch-deb';
+                    return;
+                }
 
-            objDEBRequest.errorMsg = 'success';
-            objRecord.isDebVerificationPending = false;
-            if(objRequest.objType == 'Account') {
-                Account objAccount = new Account(id=objRequest.recordId,DEBID__c=objDEBRequest.debId,is_Deb_verified__c=true);
+                if(!objResponse.isDOBMatched) {
+                    objDEBRequest.errorMsg = 'mismatch-dob';
+                    return;
+                }
+
+                objDEBRequest.errorMsg = 'success';
+                objRecord.isDebVerificationPending = false;
+                if(objRequest.objType == 'Account') {
+                        Account objAccount = new Account(id=objRequest.recordId,DEBID__c=objDEBRequest.debId,ABCID__c=objResponse.abcUniqueId,is_Deb_verified__c=true);
+                        update objAccount;
+                } else {
+                        Lead objLead = new Lead(id=objRequest.recordId,DEBID__c=objDEBRequest.debId);
+                        update objLead;
+                    }
+                }
+        } else {
+            if(this.objectType == 'Account') {
+                objDEBRequest.errorMsg = 'saved-deb';
+                Account objAccount = new Account(id=this.objectId,DEBID__c=objDEBRequest.debId,Agree_DEB_Terms__c=objDEBRequest.isDebTermsAgreed);
+                if (!objRecord.isDEBVerificationEnable && (objAccount.Agree_DEB_Terms__c)) {
+                    objAccount.DEB_Terms_And_Condition__c = objDEBRequest.debTerms;
+                }
+                //objAccount.DEB_Terms_And_Condition__c = objAccount.Agree_DEB_Terms__c 
                 update objAccount;
-            } else {
-                Lead objLead = new Lead(id=objRequest.recordId,DEBID__c=objDEBRequest.debId);
-                update objLead;
             }
         }
         System.debug('status--->' + objRecord.isDebVerificationPending);
@@ -217,6 +262,12 @@ public without sharing class DashboardPageController {
         String subQuery = getObjectType() == 'Lead' ? 'Lead__c=:objRequest.recordId' : 'Account__c=:objRequest.recordId';
         String debQuery = DynamicQueryBuilder.getQueryAllFieldSql('DEB_Detail__c', 'Is_Active__c=true AND '+subQuery+' ORDER BY CreatedDate DESC', '');
         List<DEB_Detail__c> lstDebUpdate = DataBase.query(debQuery);
+        if (!objRecord.isDEBVerificationEnable && !objRecord.byPassDEBVerification) {
+            return String.isBlank(objRecord.debId) || (!objRecord.isAgreeDEBTerms && lstDebUpdate.isEmpty());
+        }
+        else if ( objRecord.byPassDEBVerification && !objRecord.isDEBVerificationEnable) {
+            return !objRecord.isAgreeDEBTerms;
+        }
         if(lstDebUpdate.isEmpty()) {
             return true;
         }
@@ -251,11 +302,19 @@ public without sharing class DashboardPageController {
         public Boolean isDebVerificationPending {get;set;}
         public Date dob {get;set;}
         public String ownerId {get;set;}
+        public String debId {get;set;}
+        public Boolean isAgreeDEBTerms {get;set;}
+        public Boolean isDEBVerificationEnable {get;set;}
+        public Boolean byPassDEBVerification {get;set;}
+        public String debTerms {get;set;}
 
         public RecordDetails() {
             this.isVideoCallVerified = false;
             this.isDebVerificationPending = false;
             this.dob = null;
+            this.isAgreeDEBTerms = false;
+            this.isDEBVerificationEnable = String.valueOf(System.label.Enable_DEB_Verification) =='Yes' ? true : false;
+            this.byPassDEBVerification = String.valueOf(System.Label.ByPass_DEB_Verification) == 'Yes' ? true: false;
             this.mapOfActionVsStatus = new Map<String,Boolean> {
                 'Interested' => true,
                 'Registration Form Filled' => false,
@@ -283,10 +342,14 @@ public without sharing class DashboardPageController {
         public Request() {
             this.debId = '';
             this.errorMsg = '';
+            this.isDebTermsAgreed = false;
+            this.debTerms = '';
         }
 
         public String debId {get;set;}
         public String errorMsg {get;set;}
+        public Boolean isDebTermsAgreed {get;set;}
+        public String debTerms {get;set;}
     }
     
 }

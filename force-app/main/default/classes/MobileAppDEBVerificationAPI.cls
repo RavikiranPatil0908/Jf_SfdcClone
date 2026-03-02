@@ -1,7 +1,7 @@
 /**
  * @description       : DEB Verification API for Mobile App
  * @author            : @Ravi
- * @last modified on  : 26--08--2025
+ * @last modified on  : 12--09--2025
  * @last modified by  : @Ravi
  * Modifications Log
  * Ver   Date         Author   Modification
@@ -49,7 +49,8 @@ global without sharing class MobileAppDEBVerificationAPI {
             // Call handler
             DEBVerificationHandler.Response objResponse = DEBVerificationHandler.verifyDEBID(objRequest);
             System.debug('isSuccess => ' + objResponse.isSuccess);
-
+            DEBDetails details =  (DEBDetails)JSON.deserialize(JSON.serialize(objResponse), DEBDetails.class);
+            response.debDetails = details;
             if (!objResponse.isSuccess) {
                 response.status  = 'Error';
                 response.message = 'Verification failed';
@@ -86,6 +87,7 @@ global without sharing class MobileAppDEBVerificationAPI {
     global class DEBResponseWrapper {
         public String status;   // Success / Error
         public String message;
+        public DEBDetails debDetails;
     }
 
     // Request Wrapper
@@ -93,4 +95,15 @@ global without sharing class MobileAppDEBVerificationAPI {
         public String recordId; // Account or Lead Id
         public String debId;  
     } 
+
+    global class DEBDetails {
+        public Boolean isDEBActive;
+        public Boolean isDOBMatched;
+        public Boolean isDebMatched;
+        public Boolean isABCMatched;
+        public Date dateOfBirthDEB;
+        public String debUniqueId;
+        public String abcUniqueId;
+        public Boolean isDebInvalid;
+    }
 }

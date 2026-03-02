@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : @BK
  * @Group              : 
- * @Last Modified By   : @Ravi
- * @Last Modified On   : 08--08--2025
+ * @Last Modified By   : @vickysahu
+ * @Last Modified On   : 12-08-2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -992,7 +992,7 @@ public without sharing class nmLeadTriggerHandler {
                         objLead.nm_ChooseaProgram__c ='Certificate Programs';
                     }else if(objLead.nm_ChooseaProgram__c.startsWithIgnoreCase('Bachelor')){
                         objLead.nm_ChooseaProgram__c ='Bachelor Programs';
-                    }else if(objLead.nm_ChooseaProgram__c.startsWithIgnoreCase('Master')){                           
+                    }else if(objLead.nm_ChooseaProgram__c.startsWithIgnoreCase('Master') || objLead.nm_ChooseaProgram__c.startsWithIgnoreCase('Executive') || objLead.nm_ChooseaProgram__c.startsWithIgnoreCase('MBA WX')){                           
                         objLead.nm_ChooseaProgram__c ='Master Programs';        
                     }else if(objLead.nm_ChooseaProgram__c.startsWithIgnoreCase('Professional')){      
                         objLead.nm_ChooseaProgram__c ='Professional Programs';      
@@ -2650,12 +2650,22 @@ public without sharing class nmLeadTriggerHandler {
                     }
                 }
             }
-            List<Lead> lstead = [SELECT Id, LeadSource FROM Lead WHERE LeadSource = 'Web' AND (MobilePhone IN : setMobile OR Email IN :setEmail)];
-            if(lstLead.size() > 0) {
+            List<Lead> lstead = [SELECT Id, Email, MobilePhone, CreatedDate, LeadSource FROM Lead WHERE LeadSource = 'Web' AND (MobilePhone IN : setMobile OR Email IN :setEmail) AND isconverted=false AND isdeleted=false];
+            if(lstead.size() > 0) {
                 for(Lead obLd : lstLead) {
-                    duplicateLeadWithSourceWeb.add(obLd.Id);
+                    for (Lead webLead : lstead) {
+                        if ((webLead.Email == obLd.Email || webLead.MobilePhone == obLd.MobilePhone) && webLead.CreatedDate < obLd.CreatedDate) {
+                            duplicateLeadWithSourceWeb.add(obLd.Id);
+                        }
+                    }
                 }
             }
+
+            // if(lstLead.size() > 0) {
+            //     for(Lead obLd : lstLead) {
+            //         duplicateLeadWithSourceWeb.add(obLd.Id);
+            //     }
+            // }
             
              LeadStatus convertStatus = [SELECT Id, MasterLabel FROM LeadStatus WHERE IsConverted=true LIMIT 1];
              for(Lead objLead : lstLead){
@@ -3749,6 +3759,7 @@ public without sharing class nmLeadTriggerHandler {
         set<string> setMobileNo = new set<string>();
         set<String> setIds = new set<String>();
         List<Lead> listExistingLead = new List<Lead>();
+        Map<String,Lead_Agency_History__c> mapofIdVsLeadAgency = new Map<String,Lead_Agency_History__c>();
         // List<Lead> ListUpdateNewLead = new List<Lead>();
         // boolean RebornLead =false;
         String duplicateLeadQuery;
@@ -3797,8 +3808,10 @@ public without sharing class nmLeadTriggerHandler {
                             {
                                 existingLead.Status ='Reborn';
                                 existingLead.nm_ChooseaProgram__c = existingLead.nm_InformationCenter__r.nm_ChooseaProgram__c.contains(objLead.nm_ChooseaProgram__c)?objLead.nm_ChooseaProgram__c:existingLead.nm_ChooseaProgram__c;
-                                existingLead.nm_Session__c = objLead.nm_Session__c;
-                                existingLead.nm_Year__c = objLead.nm_Year__c;
+                                // existingLead.nm_Session__c = objLead.nm_Session__c;
+                                // existingLead.nm_Year__c = objLead.nm_Year__c;
+                                mapofIdVsLeadAgency = createLeadHistory(existingLead,mapofIdVsLeadAgency,objLead);
+                                existingLead = updateExistingLeadAgency(existingLead, objLead);
                                 listExistingLead.add(existingLead);   
                             }   
                             //Delete the lead on condition of same AEP for leadsource partner
@@ -3807,7 +3820,6 @@ public without sharing class nmLeadTriggerHandler {
                             } else {
                                 duplicateLeadIdsToBeDeleted.add(objLead.Id);
                             } 
-
                         }else if(existingLead.nm_InformationCenter__r.nm_ChooseaProgram__c!=null && existingLead.LeadSource !='Partner' &&  objLead.LeadSource !='Partner'
                         && !existingLead.nm_InformationCenter__r.nm_ChooseaProgram__c.contains(objLead.nm_ChooseaProgram__c)) {
                             //Transfer Lead to LC as AEP don't offer the program
@@ -3816,6 +3828,7 @@ public without sharing class nmLeadTriggerHandler {
                                 if(mapOfCenterIdVsCenter.get(LearningCenterId).nm_ChooseaProgram__c.contains(objLead.nm_ChooseaProgram__c)){
                                     System.debug('System Delete4-->');
                                     // Call method to update existing lead Detail and reborn to LC
+                                    mapofIdVsLeadAgency = createLeadHistory(existingLead,mapofIdVsLeadAgency,objLead);
                                     existingLead = UpdateExistingLeadTransfertoLC(existingLead,objLead);                    
                                     listExistingLead.add(existingLead);
                                     System.debug('existingLead.nm_InformationCenter__c--->'+existingLead.nm_InformationCenter__c);
@@ -3827,7 +3840,6 @@ public without sharing class nmLeadTriggerHandler {
                                     }
                                 }
                             }
-    
                         }else if(existingLead.nm_InformationCenter__r.nm_ChooseaProgram__c!=null && existingLead.nm_InformationCenter__r.nm_ChooseaProgram__c.contains(objLead.nm_ChooseaProgram__c)
                         && existingLead.LeadSource!='Partner' && objLead.LeadSource !='Partner' ) {
                             //Reborn Web lead if again visited without touching partner
@@ -3838,18 +3850,17 @@ public without sharing class nmLeadTriggerHandler {
                             {
                                 existingLead.Status ='Reborn';
                                 existingLead.nm_ChooseaProgram__c = existingLead.nm_InformationCenter__r.nm_ChooseaProgram__c.contains(objLead.nm_ChooseaProgram__c)?objLead.nm_ChooseaProgram__c:existingLead.nm_ChooseaProgram__c;
-                                existingLead.nm_Session__c = objLead.nm_Session__c;
-                                existingLead.nm_Year__c = objLead.nm_Year__c;
                                 existingLead.LeadSource = (existingLead.LeadSource == 'Web' && objLead.LeadSource =='CC-AEP') ? 'Web & CC-AEP':existingLead.LeadSource;
-    
+                                mapofIdVsLeadAgency = createLeadHistory(existingLead,mapofIdVsLeadAgency,objLead);
+                                existingLead = updateExistingLeadAgency(existingLead, objLead);
                                 listExistingLead.add(existingLead);   
                             }else if(existingLead.LeadSource == 'Web' && objLead.LeadSource =='CC-AEP'){
                                 System.debug('CC-AEP update -->');
                                 existingLead.LeadSource = 'Web & CC-AEP';
                                 existingLead.Status ='Reborn';
                                 existingLead.nm_ChooseaProgram__c = objLead.nm_ChooseaProgram__c;
-                                existingLead.nm_Session__c = objLead.nm_Session__c;
-                                existingLead.nm_Year__c = objLead.nm_Year__c;
+                                mapofIdVsLeadAgency = createLeadHistory(existingLead,mapofIdVsLeadAgency,objLead);
+                                existingLead = updateExistingLeadAgency(existingLead, objLead);
                                 listExistingLead.add(existingLead);   
                             }
 
@@ -3858,7 +3869,6 @@ public without sharing class nmLeadTriggerHandler {
                             } else {
                                 duplicateLeadIdsToBeDeleted.add(objLead.Id);
                             }
-    
                         } else if(existingLead.nm_InformationCenter__r.nm_ChooseaProgram__c!=null && existingLead.LeadSource !='Partner' 
                         && objLead.LeadSource =='Partner' && existingLead.nm_InformationCenter__c == objLead.nm_InformationCenter__c  ) {
                             if(utils.profileMap.containsKey(profileId) && skipProfiles.contains(utils.profileMap.get(profileId).Name)) {
@@ -3876,7 +3886,15 @@ public without sharing class nmLeadTriggerHandler {
                             System.debug('System Delete8-->');
                             //If existing partner lead and web lead is incoming update lead source of existing Partner lead only if it came for same aep.
                             if(objLead.LeadSource =='Web'){
-                                existingLead.LeadSource ='Web & Partner';                                  
+                                existingLead.LeadSource ='Web & Partner'; 
+                                mapofIdVsLeadAgency = createLeadHistory(existingLead,mapofIdVsLeadAgency,objLead);
+                                if(String.isNotBlank(objLead.Agency__c) || String.isNotBlank(objLead.nm_AdvertisementCampaign__c)) {
+                                    existingLead.Agency__c = objLead.Agency__c;
+                                    existingLead.nm_AdvertisementCampaign__c = objLead.nm_AdvertisementCampaign__c;
+                                    existingLead.Ad_Group__c = objLead.Ad_Group__c;
+                                }
+                                existingLead.nm_SecondryEmail__c = existingLead.Email == objLead.Email ? existingLead.nm_SecondryEmail__c : objLead.Email;
+                                existingLead.Phone = existingLead.MobilePhone == objLead.MobilePhone ? existingLead.Phone : objLead.MobilePhone;                               
                                 listExistingLead.add(existingLead); 
                             }
                             if(utils.profileMap.containsKey(profileId) && skipProfiles.contains(utils.profileMap.get(profileId).Name)) {
@@ -3884,38 +3902,79 @@ public without sharing class nmLeadTriggerHandler {
                             } else {
                                 duplicateLeadIdsToBeDeleted.add(objLead.Id);
                             }
-
                         }            
                     }
                 }
             }
         }
         System.debug('listExistingLead--->'+listExistingLead);
+        List<Lead_Agency_History__c> lstLeadAgency = new List<Lead_Agency_History__c>();
         if(listExistingLead.size()>0) {          
             Database.SaveResult[] srList = Database.update(listExistingLead, false);
+            for (Integer i=0; i < srList.size(); i++) {
+                if (srList[i].isSuccess()) {
+                    String leadId = listExistingLead[i].Id; 
+                    if (mapofIdVsLeadAgency != null && mapofIdVsLeadAgency.containsKey(leadId)) {
+                        lstLeadAgency.add(mapofIdVsLeadAgency.get(leadId));
+                    }
+                }
+            }
+        }
+        if (lstLeadAgency.size() > 0) {
+            insert lstLeadAgency;
         }
     }
 
-    public Lead UpdateExistingLeadTransfertoLC(Lead existingLead,Lead objLead )
-{
-    String LearningCenterId;
-    String interestedLeadStatus = System.Label.Interested_LeadStatus;
-    List<String> setIntrestedList = interestedLeadStatus.split(',');
-    String RebornHighPriority = System.Label.RebornHighPriority;
-   
-    if(existingLead.Status !='Registration Fee Paid' && existingLead.Status !='Admission Fee Paid'
-    && existingLead.Status !='Registration form filled')
+    public Lead updateExistingLeadAgency (Lead existingLead,Lead objLead ) {
+        existingLead.nm_Session__c = objLead.nm_Session__c;
+        existingLead.nm_Year__c = objLead.nm_Year__c;
+        if(String.isNotBlank(objLead.Agency__c) || String.isNotBlank(objLead.nm_AdvertisementCampaign__c)) {
+            existingLead.Agency__c = objLead.Agency__c;
+            existingLead.nm_AdvertisementCampaign__c = objLead.nm_AdvertisementCampaign__c;
+            existingLead.Ad_Group__c = objLead.Ad_Group__c;
+        }
+        existingLead.RebornDate__c = System.today();
+        existingLead.nm_SecondryEmail__c = existingLead.Email == objLead.Email ? existingLead.nm_SecondryEmail__c : objLead.Email;
+        existingLead.Phone = existingLead.MobilePhone == objLead.MobilePhone ? existingLead.Phone : objLead.MobilePhone;
+        existingLead.FirstName = objLead.FirstName;
+        existingLead.LastName = objLead.LastName;
+        return existingLead;
+    }
+
+    public Map<string,Lead_Agency_History__c> createLeadHistory(Lead existingLead,Map<String,Lead_Agency_History__c> mapofIdVsLeadAgency,Lead objLead) {
+        Lead_Agency_History__c objLeadAgency = new Lead_Agency_History__c();
+        if ((String.isNotBlank(existingLead.Agency__c) || String.isNotBlank(existingLead.nm_AdvertisementCampaign__c)) && (existingLead.Agency__c != objLead.Agency__c || existingLead.nm_AdvertisementCampaign__c != objLead.nm_AdvertisementCampaign__c || existingLead.Ad_group__c != objLead.Ad_group__c)) {
+            objLeadAgency.Agency__c = existingLead.Agency__c;
+            objLeadAgency.Advertisement_Campaign__c = existingLead.nm_AdvertisementCampaign__c;
+            objLeadAgency.Choose_a_program__c = existingLead.nm_ChooseaProgram__c;
+            objLeadAgency.Ad_group__c = existingLead.Ad_group__c;
+            objLeadAgency.Lead__c = existingLead.Id;
+            //objLeadAgency.OwnerId = existingLead.OwnerId;
+            mapofIdVsLeadAgency.put(existingLead.Id,objLeadAgency);
+        }
+        return mapofIdVsLeadAgency;
+    }
+
+    public Lead UpdateExistingLeadTransfertoLC(Lead existingLead,Lead objLead)
+    {
+        String LearningCenterId;
+        String interestedLeadStatus = System.Label.Interested_LeadStatus;
+        List<String> setIntrestedList = interestedLeadStatus.split(',');
+        String RebornHighPriority = System.Label.RebornHighPriority;
+    
+        if(existingLead.Status !='Registration Fee Paid' && existingLead.Status !='Admission Fee Paid'
+            && existingLead.Status !='Registration form filled')
         {
-           // Map<Id,nm_Centers__c> mapOfCenterIdVsCenter = getMapOfCenterIdVsCenter();
-           system.debug('mapOfCenterIdVsCenter--->'+mapOfCenterIdVsCenter);
-           System.debug('Inside of If Function' + '----------------------->');
-                LearningCenterId = mapOfCenterIdVsCenter.get(existingLead.nm_InformationCenter__c).nm_LearningCenter__c;
-                LearningCenterId = IsNullOrEmpty(LearningCenterId)? existingLead.nm_InformationCenter__c : LearningCenterId;
+            // Map<Id,nm_Centers__c> mapOfCenterIdVsCenter = getMapOfCenterIdVsCenter();
+            system.debug('mapOfCenterIdVsCenter--->'+mapOfCenterIdVsCenter);
+            System.debug('Inside of If Function' + '----------------------->');
+            LearningCenterId = mapOfCenterIdVsCenter.get(existingLead.nm_InformationCenter__c).nm_LearningCenter__c;
+            LearningCenterId = IsNullOrEmpty(LearningCenterId)? existingLead.nm_InformationCenter__c : LearningCenterId;
                 
-                system.debug('LearningCenterId--->'+LearningCenterId);
-                if(LearningCenterId!=null && existingLead.LeadSource !='Partner'){
-                    system.debug('existingLead.LeadSource--->'+existingLead.LeadSource);                   
-                  /*  if(objLead.nm_ChooseaProgram__c!=null && objLead.nm_ChooseaProgram__c=='Bachelor Programs'){
+            system.debug('LearningCenterId--->'+LearningCenterId);
+            if(LearningCenterId!=null && existingLead.LeadSource !='Partner'){
+                system.debug('existingLead.LeadSource--->'+existingLead.LeadSource);                   
+                /*  if(objLead.nm_ChooseaProgram__c!=null && objLead.nm_ChooseaProgram__c=='Bachelor Programs'){
                         system.debug('objLead.nm_ChooseaProgram__c--->'+objLead.nm_ChooseaProgram__c);
                         existingLead.nm_InformationCenter__c = System.Label.LC_bachelorID;
                         existingLead = SetOwner(existingLead);
@@ -3925,54 +3984,50 @@ public without sharing class nmLeadTriggerHandler {
                         // existingLead.nm_InformationCenter__c = LearningCenterId;
                         // system.debug('existingLead.nm_InformationCenter__c--->'+existingLead.nm_InformationCenter__c);
                         // existingLead = SetOwner(existingLead);
-                      
-                        if(!setIntrestedList.contains(existingLead.Status)) {
-                            System.debug('inside contain if' + '--------------------->');
-                            existingLead.nm_InformationCenter__c = LearningCenterId; 
-                            existingLead.Status='Reborn';            
-                            existingLead = SetOwner(existingLead);                  
-                        }                      
-                        existingLead.Status= !IsNullOrEmpty(objLead.Agency__c) && RebornHighPriority.contains(objLead.Agency__c)?'Reborn - High Priority':'Reborn';                                             
-                        existingLead.nm_Session__c = objLead.nm_Session__c;
-                        existingLead.nm_Year__c = objLead.nm_Year__c;
-                        existingLead.LeadSource = (existingLead.LeadSource == 'Web' && objLead.LeadSource =='CC-AEP') ? 'Web & CC-AEP':existingLead.LeadSource;
-                        
-                        
-                }
-                 if(objLead.nm_ChooseaProgram__c != existingLead.nm_ChooseaProgram__c && existingLead.LeadSource !='Partner')   
+                    
+                if(!setIntrestedList.contains(existingLead.Status)) {
+                    System.debug('inside contain if' + '--------------------->');
+                    existingLead.nm_InformationCenter__c = LearningCenterId; 
+                    existingLead.Status='Reborn';            
+                    existingLead = SetOwner(existingLead);                  
+                }                      
+                existingLead.Status= !IsNullOrEmpty(objLead.Agency__c) && RebornHighPriority.contains(objLead.Agency__c)?'Reborn - High Priority':'Reborn';                                             
+                // existingLead.nm_Session__c = objLead.nm_Session__c;
+                // existingLead.nm_Year__c = objLead.nm_Year__c;
+                existingLead.LeadSource = (existingLead.LeadSource == 'Web' && objLead.LeadSource =='CC-AEP') ? 'Web & CC-AEP':existingLead.LeadSource;
+                existingLead = updateExistingLeadAgency(existingLead, objLead);
+            }
+            if(objLead.nm_ChooseaProgram__c != existingLead.nm_ChooseaProgram__c && existingLead.LeadSource !='Partner')   
+            {
+                //existingLead = ToUpdatePRogramDetailOnLead(existingLead,objLead );
+                existingLead.nm_ChooseaProgram__c = objLead.nm_ChooseaProgram__c;
+
+                if(existingLead.nm_EligiblityCriteria__c!=null && existingLead.nm_EligiblityCriteria__r.nm_Program__c!=objLead.nm_ChooseaProgram__c)
                 {
-                  //existingLead = ToUpdatePRogramDetailOnLead(existingLead,objLead );
-                  existingLead.nm_ChooseaProgram__c = objLead.nm_ChooseaProgram__c;
-
-
-                  if(existingLead.nm_EligiblityCriteria__c!=null && existingLead.nm_EligiblityCriteria__r.nm_Program__c!=objLead.nm_ChooseaProgram__c)
-                  {
-                      existingLead.nm_EligiblityCriteria__c=null;
-                  }
-                  if(existingLead.nm_Program__c!=null && existingLead.nm_Program__r.nm_Type__c!=objLead.nm_ChooseaProgram__c)
-                  {
-                      existingLead.nm_Program__c= objLead.nm_Program__c!=null? objLead.nm_Program__c : null;
-                      
-                      if(objLead.nm_Program__c==null)
-                       {
-                          existingLead.Program_Type__c ='';
-                       }
-                  }
-              
-               }   
-               if(existingLead!=null)
-               {
-                   existingLead = UpdateExistingLeadEmailMobile(existingLead,objLead);
-                   existingLead = UpdateExistingLeadCounter(existingLead,objLead);
-               }
-               
+                    existingLead.nm_EligiblityCriteria__c=null;
+                }
+                if(existingLead.nm_Program__c!=null && existingLead.nm_Program__r.nm_Type__c!=objLead.nm_ChooseaProgram__c)
+                {
+                    existingLead.nm_Program__c= objLead.nm_Program__c!=null? objLead.nm_Program__c : null;
+                    
+                    if(objLead.nm_Program__c==null)
+                    {
+                        existingLead.Program_Type__c ='';
+                    }
+                }
+            }   
+            if(existingLead!=null)
+            {
+                existingLead = UpdateExistingLeadEmailMobile(existingLead,objLead);
+                existingLead = UpdateExistingLeadCounter(existingLead,objLead);
+            } 
         }
       return existingLead;
     }
+
     public Lead UpdateExistingLeadCounter(Lead existingLead,Lead objLead )
-    {
-                                            
-// Increment Duplicate Counter in Existing Lead for Reference 
+    {                                    
+        // Increment Duplicate Counter in Existing Lead for Reference 
         if(existingLead.Counter__c == null  ){
             existingLead.Counter__c = 1;
         }else{
@@ -4007,9 +4062,7 @@ public without sharing class nmLeadTriggerHandler {
                 }
             }
         }
-
       return existingLead;
-
     }
 
     public Lead UpdateExistingLeadEmailMobile(Lead existingLead,Lead objLead )

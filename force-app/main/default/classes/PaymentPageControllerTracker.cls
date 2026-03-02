@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 10-22-2024
- * @last modified by  : @vickysahu
+ * @last modified on  : 13--02--2026
+ * @last modified by  : @Ravi
 **/
 @isTest(SeeAllData=false)
 public class PaymentPageControllerTracker {
@@ -288,6 +288,23 @@ public class PaymentPageControllerTracker {
             objController.configurePaymentOption();
         Test.stopTest();
     }
+    
+      @isTest
+    static void leadPaymentTest8(){
+        Lead objLead = [select id,nm_Program__c,nm_EligiblityCriteria__c from Lead limit 1];
+        Test.startTest();
+          Test.setMock(HttpCalloutMock.class, new ICICI());
+            PaymentPageController objController = new PaymentPageController();
+            objController.setObjectId(objLead.id);
+            objController.setObjectType('Lead');
+
+            //make online payment
+            objController.objDetails.ICName = 'Verizon';
+            objController.paymentFor ='DownPayment-Admission';
+            objController.paymentGateWayName = 'ICICI GateWay';
+        objController.makeOnlinePaymentMobileAPI(new Map<String,String>{'user-Agent'=>'test','id'=>'Test'});
+        Test.stopTest();
+    }
 
     @isTest 
     static void accountRegistrationPaymentTest(){
@@ -312,6 +329,58 @@ public class PaymentPageControllerTracker {
             PaymentPageController objController = new PaymentPageController();
             objController.opportunityId = objOpps.Id;
 
+            objController.setObjectId(objAccount.id);
+            objController.setObjectType('Account');
+            objController.getObjectType();
+            objController.getObjectId();
+            
+            objController.getBacklogDataFromStudentZone('77115001053');
+            System.debug('mapPricebooktest--->'+mapPricebook);
+            //updateDetails
+            objController.objDetails.programName = objStudentProgram.nm_Program__c;
+            objController.objStudentDetails.eligibility  = objStudentProgram.nm_EligiblityCriteria__c;
+            objController.objOpportunity = objOpps;
+            objController.opportunityId = objOpps.Id;
+            objController.updateLoanDetails('Opportunity');
+            objController.objDetails.TagPriceBookId = objAccount.nm_Tagged_Pricebook__c;
+            
+            //make online payment
+            objController.objDetails.ICName = 'Verizon';
+            objController.paymentFor ='InitialAdmissionFee';
+            objController.paymentGateWayName = 'HDFC GateWay';
+            objController.objDownPayment = [SELECT id,nm_Merchant_Track_Id__c,nm_ActualPaymentAmmount__c,nm_Installment_Payment_Ref__c,nm_PaymentType__c FROM nm_Payment__c WHERE nm_PaymentType__c = 'DownPayment' LIMIT 1];
+            objController.proceedToDirectLoan();
+        Test.stopTest();
+    }
+
+    @isTest 
+    static void accountReRegistrationPaymentTest(){
+        Test.startTest();
+            Test.setMock(HttpCalloutMock.class, new RestMock());
+            Account objAccount = [select id,nm_LeadId__c,nm_Tagged_Pricebook__c from Account  limit 1];
+            Opportunity objOpps = [select id,Down_Payment_Made__c,nm_Fee_Type__c,Loan_Type__c,EMI_Amount__c,Tenure__c,Interest_Rate__c,
+                DP_EMI_Processing_Fee__c,Loan_Cancellation_Reason__c,Loan_Application_Cancelled__c,LiveLecturesType__c,CourseList__c,BacklogList__c from Opportunity limit 1];
+            nm_StudentProgram__c objStudentProgram = [select id,nm_EligiblityCriteria__c,nm_Program__c  from nm_StudentProgram__c limit 1];
+
+            objOpps.nm_Semester__c = '2';
+            objOpps.StageName = 'Pending Payment';
+            objOpps.nm_StudentProgram__c = objStudentProgram.id;
+            update objOpps;
+
+            ProductHelper productHelper = new ProductHelper();
+            Map<String,PriceBookEntry> mapPricebook = productHelper.getMapOfProductVsPriceBookEntry(objAccount.nm_Tagged_Pricebook__c);
+            System.debug('objAccount.nm_Tagged_Pricebook__c ==>'+objAccount.nm_Tagged_Pricebook__c);
+            System.debug('mapPricebook.get(\'Late Fee\') ==>'+mapPricebook.get('Late Fee'));
+            PriceBookEntry entryP = mapPricebook.get('Late Fee');
+            mapPricebook.put('PG_All_Sem',entryP);
+            mapPricebook.put('MSAllSemFee',entryP );
+            mapPricebook.put('Registration Fee',entryP );
+            mapPricebook.put('Live Lectures',entryP );
+            System.debug('mapPricebooktest--->'+mapPricebook);
+
+            PaymentPageController objController = new PaymentPageController();
+            objController.opportunityId = objOpps.Id;
+            objController.IsReregistartion = true;
             objController.setObjectId(objAccount.id);
             objController.setObjectType('Account');
             objController.getObjectType();
@@ -420,7 +489,7 @@ public class PaymentPageControllerTracker {
         objpaymentconfig.No_Of_Applicable_Installment__c ='1';
         objpaymentconfig.Registration_Fee__c=1200;
         objpaymentconfig.Program_Type__c='';
-        objpaymentconfig.Reg_No_Allowed_After_End_Date__c = '01723456';
+        //objpaymentconfig.Reg_No_Allowed_After_End_Date__c = '01723456';
         objpaymentconfig.Capital_Float_AEP_Available__c = 'Mumbai,Pune';
         objpaymentconfig.Show_Registration_Payment_Option__c = true;
         objpaymentconfig.Show_Admission_Payment_Option__c = true;
@@ -431,6 +500,7 @@ public class PaymentPageControllerTracker {
         objpaymentconfig.Is_Late_Fee_Applicable__c = true;
         objpaymentconfig.DownPayment_Amount__c = 5000;
         objpaymentconfig.ShowLiveLectures__c = true;
+        //objpaymentconfig.Last_Date_Reg_No_Allowed_After_End_Date__c = System.today().addDays(1);
         if(mergePercent != null) {
             objpaymentconfig.MergeAdmissionFeeWithRegistration__c = true;
             objpaymentconfig.PercentageAtoR__c = mergePercent;

@@ -4,7 +4,7 @@
  * @Author             : shubhranshu
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 31--07--2025
+ * @Last Modified On   : 16--02--2026
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                Modification
@@ -129,23 +129,25 @@ public without sharing class nmLinksForDocumentStatusHandler{
                     setOfAccIds.add(accId);
                 }
 
-                // if(linksForDocuments.StudentStatus__c.contains('Confirmed') && (linksForDocuments.Student_Number__c != null || linksForDocuments.Student_Number__c != '')) {
-                //     System.debug('linksForDocuments.StudentStatus__c:::::::: '+linksForDocuments.Student_Number__c);
-                //     setOfAccountIds.add(accId);
-                // }
+                if(linksForDocuments.StudentStatus__c.contains('Confirmed') && (linksForDocuments.Student_Number__c != null || linksForDocuments.Student_Number__c != '')) {
+                    System.debug('linksForDocuments.StudentStatus__c:::::::: '+linksForDocuments.Student_Number__c);
+                    setOfAccountIds.add(accId);
+                }
             }
 
-            // if(setOfAccountIds.size() > 0 ){
-            //     String lstAccQuery = getQueryAllFieldSql('Account','Id IN: setOfAccountIds',null);
-            //     lstofNewAccount = Database.query(lstAccQuery);
-            //     System.debug('lstofNewAccount '+lstofNewAccount);
-            //     for (Account lstAcc :lstofNewAccount ) {
-            //         if(lstAcc.Provisional_With_Hold__c == true) {
-            //           lstofNewAccounts.add(lstAcc);
-            //         }
-            //     }
-            //     UpdateProvisionalWithHoldFlagOnAccount(lstofNewAccount);
-            // }
+            if(setOfAccountIds.size() > 0 ){
+                String lstAccQuery = getQueryAllFieldSql('Account','Id IN: setOfAccountIds',null);
+                lstofNewAccount = Database.query(lstAccQuery);
+                System.debug('lstofNewAccount '+lstofNewAccount);
+                for (Account lstAcc :lstofNewAccount ) {
+                    if(lstAcc.Provisional_With_Hold__c == true) {
+                      lstofNewAccounts.add(lstAcc);
+                    }
+                }
+                if(lstofNewAccounts.size()> 0){
+                    UpdateProvisionalWithHoldFlagOnAccount(lstofNewAccounts);
+                }
+            }
             
             if(setOfAccIds.size() > 0 ) {
               
@@ -240,7 +242,7 @@ public without sharing class nmLinksForDocumentStatusHandler{
         //fetch all document Already Inserted for current Account 
         List<nm_LinksForDocuments__c> lstDocs = [SELECT id,nm_DocumentName__c,nm_Account__c,nm_AccountEmail__c,
             nm_DocumentLink__c,Documents_Submited_Date__c,nm_Lead__c,linkID__c,Links_For_Documents_Lead__c,
-            nm_ReasonforDisapprove__c,Registration_No__c,Sample__c,nm_Status__c,nm_URLforDocuments__c FROM nm_LinksForDocuments__c WHERE nm_Account__c IN :MapOfAccountIdVsSetOfMandatoryDocs.keySet()];
+            nm_ReasonforDisapprove__c,Provisional_Document_Comment__c,Registration_No__c,Sample__c,nm_Status__c,nm_URLforDocuments__c FROM nm_LinksForDocuments__c WHERE nm_Account__c IN :MapOfAccountIdVsSetOfMandatoryDocs.keySet()];
 
         for (nm_LinksForDocuments__c objDocs : lstDocs) {
             List<nm_LinksForDocuments__c> lstDocuments = MapOfAccountIdVslstDocs.containsKey(objDocs.nm_Account__c) 
@@ -292,7 +294,14 @@ public without sharing class nmLinksForDocumentStatusHandler{
     public Set<String> getMandatoryDocuments(Account objAccount, List<nm_WorkExperience__c> lstWk) {
         GetMandatoryDocuments documentHanlder = new GetMandatoryDocuments();
         GetMandatoryDocuments.StudentStatus objStatus = new GetMandatoryDocuments.StudentStatus();
-        objStatus.chooseProgram = objAccount.Program_Type__c;
+           Map<String, Decimal> qualificationMap = new Map<String, Decimal>{
+        objAccount.nm_EligiblityCriteria__c + '-HSC'          => objAccount.nm_12thPercentage__c,
+        objAccount.nm_EligiblityCriteria__c + '-Diploma'      => objAccount.nm_ResultDiploma__c,
+        objAccount.nm_EligiblityCriteria__c + '-Graduation'   => objAccount.Percentage_Bachlor__c
+        // objAccount.nm_EligiblityCriteria__c + '-Professional' => (objAccount.Percentage1__c == null ? null : Decimal.valueOf(objAccount.Percentage1__c))
+       };
+        objStatus.chooseProgram = objAccount.nm_ProgramType__c;
+        objStatus.programType =objAccount.Program_Type__c;
         objStatus.eligibilityCriteria = objAccount.Eligibility_Criteria_Ref__c;
         objStatus.isDefencePersonnel = objAccount.nm_DefencePersonnel__c;
         objStatus.relationship = objAccount.nm_Relationship__c;
@@ -305,6 +314,7 @@ public without sharing class nmLinksForDocumentStatusHandler{
         objStatus.objectType = 'Account';
         objStatus.lstWk = lstWk;
         objStatus.castCertificateDocument = objAccount.nm_Category__c;
+        objStatus.mapOfAcadmicsvsPercentage.putAll(qualificationMap);
         return documentHanlder.getMandatoryDocumentsName(objStatus);
     }
 
@@ -353,68 +363,63 @@ public without sharing class nmLinksForDocumentStatusHandler{
 }
 
 
-    // /**
-    // * @description Make the flag false if all mandatory documents are submitted.
-    // * @author @Ravi | 10-19-2024
-    // * @param lstAccount - List of accounts to be processed.
-    // **/
-    // public void UpdateProvisionalWithHoldFlagOnAccount(List<Account> lstAccount) {
-      
-    //     System.debug('lstAccount::::::::::'+lstAccount);
-    //         Map<String, Set<String>> MapOfAccountIdVsSetOfMandatoryDocs = new Map<String, Set<String>>();
-    //         Map<String, List<nm_WorkExperience__c>> getMapAccIdVsWk = getMapAccIdVsWk(lstAccount);
-    //         Set<String> mandatoryDocumentForCurrentCriteria = new Set<String>();
-    //         Map<String, List<nm_LinksForDocuments__c>> MapOfAccountIdVslstDocs = new Map<String, List<nm_LinksForDocuments__c>>();
-    //         List<Account> lstAccountsForUpdate = new List<Account>();
+    /**
+    * @description Make the flag false if all mandatory documents are submitted.
+    * @author @Ravi | 10-19-2024
+    * @param lstAccount - List of accounts to be processed.
+    **/
+   public void UpdateProvisionalWithHoldFlagOnAccount(List<Account> lstAccount) {
 
-    //         // Iterate through accounts and get mandatory documents
-    //         for (Account objAccount : lstAccount) {
-    //             mandatoryDocumentForCurrentCriteria = getMandatoryDocuments( objAccount, getMapAccIdVsWk.containsKey(objAccount.Id) ? getMapAccIdVsWk.get(objAccount.Id): new List<nm_WorkExperience__c>());
-    //             System.debug('mandatoryDocumentForCurrentCriteria:::::::::::::'+mandatoryDocumentForCurrentCriteria.size());
-    //             MapOfAccountIdVsSetOfMandatoryDocs.put(objAccount.Id, mandatoryDocumentForCurrentCriteria);
-    //         }
-    //         // Fetch the documents related to the accounts
-    //         List<nm_LinksForDocuments__c> lstDocs = [ SELECT Id, nm_DocumentName__c, nm_Account__c, nm_AccountEmail__c, nm_DocumentLink__c,Documents_Submited_Date__c, nm_Lead__c, linkID__c, Links_For_Documents_Lead__c, 
-    //                                                          Registration_No__c, Sample__c, nm_Status__c, nm_URLforDocuments__c   
-    //                                                          FROM nm_LinksForDocuments__c WHERE nm_Account__c IN :MapOfAccountIdVsSetOfMandatoryDocs.keySet()];
-            
-    //        System.debug('lstDocs:::::::'+lstDocs.size() + ':::::::::'+lstDocs);    
-    //        List<nm_LinksForDocuments__c> lstOfMandatoryDocs = new List<nm_LinksForDocuments__c>();                                      
-    //         for (nm_LinksForDocuments__c objDocs : lstDocs) {        
-    //             System.debug('objDocs.nm_DocumentName__c:::::::'+objDocs.nm_DocumentName__c);     
-    //             if(mandatoryDocumentForCurrentCriteria.contains(objDocs.nm_DocumentName__c)) {
-    //                 lstOfMandatoryDocs.add(objDocs);
-    //                 System.debug('lstDocuments size'+lstOfMandatoryDocs.size());
-    //             }
-    //             //  List<nm_LinksForDocuments__c> lstDocuments = MapOfAccountIdVslstDocs.containsKey(objDocs.nm_Account__c) ? MapOfAccountIdVslstDocs.get(objDocs.nm_Account__c) : new List<nm_LinksForDocuments__c>();
-    //             MapOfAccountIdVslstDocs.put(objDocs.nm_Account__c, lstOfMandatoryDocs);
-    //         }
-    //         for (String AccountId : MapOfAccountIdVslstDocs.keySet()) {
-    //             List<nm_LinksForDocuments__c> lstDocuments= MapOfAccountIdVslstDocs.get(AccountId);
-    //             System.debug('lstDocuments::::::'+lstDocuments.size()+''+lstDocuments);
-    //             if (lstDocuments.size() > 0) {
-    //                 Integer sizeOfDocList = lstDocuments.size();
-    //                 Integer count = 0;
-    //                 for (nm_LinksForDocuments__c objDocs : lstDocuments) {
-    //                     if (objDocs.nm_URLforDocuments__c != null && (objDocs.nm_Status__c == 'Approved' || objDocs.nm_Status__c == 'Provisional')) {
-    //                         count++;
-    //                     }
-    //                 }
-    //                 System.debug('count::::::'+count+'sizeOfDocList'+sizeOfDocList);
-    //                 //  update the account flag
-    //                 if (count == sizeOfDocList) {
-    //                     Account objAcc = [SELECT Id, Provisional_With_Hold__c FROM Account WHERE Id = :AccountId];
-    //                     objAcc.Provisional_With_Hold__c = false;
-    //                     lstAccountsForUpdate.add(objAcc);
-    //                 }
-    //             }
-    //         }
-    //                 if (lstAccountsForUpdate.size() > 0) {
-    //                     update lstAccountsForUpdate;
-    //                 }
-    //     }
+    if(lstAccount == null || lstAccount.isEmpty()) return;
+    Map<String, Set<String>> accIdVsMandatoryDocs = new Map<String, Set<String>>();
+    Map<String, List<nm_WorkExperience__c>> accIdVsWk = getMapAccIdVsWk(lstAccount);
+    Set<Id> accountIds = new Set<Id>();
 
+    // Get mandatory docs per account
+    for(Account acc : lstAccount){
+        accountIds.add(acc.Id);
+        Set<String> mandatoryDocs = getMandatoryDocuments( acc, accIdVsWk.containsKey(acc.Id) ? accIdVsWk.get(acc.Id) : new List<nm_WorkExperience__c>() );
+        accIdVsMandatoryDocs.put(acc.Id, mandatoryDocs);
+    }
+    // Fetch all documents in single query
+    List<nm_LinksForDocuments__c> allDocs = [ SELECT Id, nm_DocumentName__c, nm_Account__c, nm_Status__c, nm_URLforDocuments__c FROM nm_LinksForDocuments__c  WHERE nm_Account__c IN :accountIds];
 
+    //group only mandatory docs per account
+    Map<Id, List<nm_LinksForDocuments__c>> accIdVsDocs = new Map<Id, List<nm_LinksForDocuments__c>>();
+    for(nm_LinksForDocuments__c doc : allDocs){
+        if(!accIdVsMandatoryDocs.containsKey(doc.nm_Account__c)) continue;
+        Set<String> mandatorySet = accIdVsMandatoryDocs.get(doc.nm_Account__c);
+
+        if(mandatorySet != null && mandatorySet.contains(doc.nm_DocumentName__c)){
+            if(!accIdVsDocs.containsKey(doc.nm_Account__c)){
+                accIdVsDocs.put(doc.nm_Account__c, new List<nm_LinksForDocuments__c>());
+            }
+            accIdVsDocs.get(doc.nm_Account__c).add(doc);
+        }
+    }
+    //update accounts
+    List<Account> accountsToUpdate = new List<Account>();
+    for(Account acc : lstAccount){
+        if(!accIdVsMandatoryDocs.containsKey(acc.Id)) continue;
+
+        Set<String> mandatorySet = accIdVsMandatoryDocs.get(acc.Id);
+        List<nm_LinksForDocuments__c> docs = accIdVsDocs.get(acc.Id);
+        Integer approvedCount = 0;
+        for(nm_LinksForDocuments__c doc : docs){
+            if(doc.nm_URLforDocuments__c != null &&
+              (doc.nm_Status__c == 'Approved' || doc.nm_Status__c == 'Admission Form & Documents Provisional')){
+                approvedCount++;
+            }
+        }
+        if(approvedCount == mandatorySet.size()){
+            acc.Provisional_With_Hold__c = false;
+            accountsToUpdate.add(acc);
+        }
+    }
+    if(!accountsToUpdate.isEmpty()){
+        update accountsToUpdate;
+    }
+}
 
     /**
     * @description 
@@ -571,8 +576,8 @@ public without sharing class nmLinksForDocumentStatusHandler{
             {
                 ProMandatoryDocs.add(objDoc.nm_DocumentName__c);                    
             }
-            if('Admission Form & Documents Provisional'.equalsIgnoreCase(objDoc.nm_Status__c) && objDoc.nm_ReasonforDisapprove__c != null){
-                ProvisionalReason += objDoc.nm_ReasonforDisapprove__c + '\n';
+            if('Admission Form & Documents Provisional'.equalsIgnoreCase(objDoc.nm_Status__c) && objDoc.Provisional_Document_Comment__c != null){
+                ProvisionalReason += objDoc.Provisional_Document_Comment__c + '\n';
             }
             if('Documents incorrect'.equalsIgnoreCase(objDoc.nm_Status__c) && String.IsBlank(objDoc.nm_URLforDocuments__c) )
             {
@@ -1133,7 +1138,7 @@ public without sharing class nmLinksForDocumentStatusHandler{
         {
             //fetch all document Already Inserted for current Account 
             List<nm_WorkExperience__c> lstWorkExperience = new List<nm_WorkExperience__c>();
-            List<nm_LinksForDocuments__c> oldDocuments = [Select id, nm_DocumentName__c, nm_Account__c, nm_AccountEmail__c, nm_DocumentLink__c, Documents_Submited_Date__c, nm_Lead__c, linkID__c, Links_For_Documents_Lead__c, nm_ReasonforDisapprove__c, Registration_No__c, Sample__c, nm_Status__c, nm_URLforDocuments__c from nm_LinksForDocuments__c where nm_Account__c =:AccountId ];
+            List<nm_LinksForDocuments__c> oldDocuments = [Select id, nm_DocumentName__c, nm_Account__c, nm_AccountEmail__c,nm_Old_URL_for_Documents__c, nm_DocumentLink__c, Documents_Submited_Date__c, nm_Lead__c, linkID__c, Links_For_Documents_Lead__c,Provisional_Document_Comment__c, nm_ReasonforDisapprove__c, Registration_No__c, Sample__c, nm_Status__c, nm_URLforDocuments__c from nm_LinksForDocuments__c where nm_Account__c =:AccountId ];
             if (mapOfAccIdVsAccount.containsKey(AccountId)) {
                 String programType = mapOfAccIdVsAccount.get(AccountId).Program_Type__c;
                 if (String.isNotBlank(programType) && programTypeOfLabel.contains(programType)) {
@@ -1171,7 +1176,6 @@ public without sharing class nmLinksForDocumentStatusHandler{
                         objDocument.name = strDocumentName.left(75);
                         objDocument.nm_DocumentName__c = strDocumentName;
                         objDocument.nm_Account__c = AccountId;
-                        objDocument.nm_Status__c = 'Created';
                         lstDocuments.add(objDocument);
                     }
                 }
@@ -1310,7 +1314,7 @@ public without sharing class nmLinksForDocumentStatusHandler{
                     {
                         System.debug('oldDoc ==> ' + oldDoc.nm_URLforDocuments__c);
                         // allowed to Insert Additional Documents
-                        if(strDocumentName !=null && strDocumentName !='' && !strDocumentName.contains('Additional') && (String.IsBlank(oldDoc.nm_URLforDocuments__c) || oldDoc.nm_Status__c!='Approved'))
+                        if(strDocumentName !=null && strDocumentName !='' && !strDocumentName.contains('Additional') && ((String.IsBlank(oldDoc.nm_URLforDocuments__c) || oldDoc.nm_Status__c!='Approved') && (String.IsBlank(oldDoc.nm_Old_URL_for_Documents__c))))
                         {
                             if(((oldDoc.nm_DocumentName__c == 'Caste Certificate Document' && deleteCastDocument==true) || (oldDoc.nm_DocumentName__c == 'Differently Abled Document' && deletedisabledDocument==true)) && !String.IsBlank(oldDoc.nm_URLforDocuments__c))
                             {

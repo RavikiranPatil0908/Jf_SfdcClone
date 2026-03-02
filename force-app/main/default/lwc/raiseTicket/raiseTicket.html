@@ -2,7 +2,7 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 22--04--2025
+  @last modified on  : 08--12--2025
   @last modified by  : @Ravi
 -->
 <template>
@@ -11,7 +11,9 @@
         <div class="card-body-wrapper">
             <h2 class="form-title" >For Students</h2>
             <div class="slds-wrap slds-grid">
-                <lightning-formatted-rich-text value={error}></lightning-formatted-rich-text>
+                <div class="error-text">
+                    <lightning-formatted-rich-text value={error}></lightning-formatted-rich-text>
+                </div>
             <template if:true={showToast}>
                 <div class="slds-col slds-size_1-of-1 toast-error">
                     Fill all the mandatory details
@@ -41,6 +43,7 @@
                     <lightning-combobox
                         label="Category"
                         options={categories}
+                        value={category}
                         onchange={handleCategoryChange}
                         required="true"
                     >

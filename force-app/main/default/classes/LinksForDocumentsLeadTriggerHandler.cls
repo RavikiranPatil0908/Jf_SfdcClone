@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : @BK
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 08-18-2024
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 17--01--2026
  * @Modification Log   : 
  * Ver       Date            Author      		    Modification
  * 1.0    9/9/2019   @BK     Initial Version
@@ -63,7 +63,7 @@ public without sharing class LinksForDocumentsLeadTriggerHandler {
         }
 
         if(setOfLeadId.size() > 0) {
-            Map<String, Lead> mapOfIdVsLead = new Map<String, Lead>([SELECT Id,nm_Eligibility_Criteria_Ref__c,Relationship__c,Are_you_from_Defence__c,Is_Lateral__c,nm_ProgramName__c,nm_ChooseaProgram__c,HSC_status__c,Diploma_status__c,nm_Nationality__c FROM Lead WHERE Id IN :setOfLeadId]);
+            Map<String, Lead> mapOfIdVsLead = new Map<String, Lead>([SELECT Id,nm_Eligibility_Criteria_Ref__c,nm_EligiblityCriteria__c,Relationship__c,Are_you_from_Defence__c,Is_Lateral__c,nm_ProgramName__c,nm_ChooseaProgram__c,HSC_status__c,Diploma_status__c,nm_Nationality__c,Percentage1__c,nm_BachelorsDegreePercentage__c,Result_Diploma__c,nm_12thPercentage__c,Program_Type__c FROM Lead WHERE Id IN :setOfLeadId]);
             Set<String> setOfCriteria = new Set<String>();
             Map<String, Set<String>> mapOfCriteraiIdVsManDocuments = new Map<String, Set<String>>();
             Map<String,List<nm_WorkExperience__c>> getMapLeadIdVsWk = getMapLeadIdVsWk(setOfLeadId);
@@ -126,7 +126,15 @@ public without sharing class LinksForDocumentsLeadTriggerHandler {
     public Set<String> getMandatoryDocumentList(Lead objLead, List<nm_WorkExperience__c> lstWk) {
         GetMandatoryDocuments documentHanlder = new GetMandatoryDocuments();
         GetMandatoryDocuments.StudentStatus objStatus = new GetMandatoryDocuments.StudentStatus();
+        Map<String, Decimal> qualificationMap = new Map<String, Decimal>{
+        objLead.nm_EligiblityCriteria__c + '-HSC'          => objLead.nm_12thPercentage__c,
+        objLead.nm_EligiblityCriteria__c + '-Diploma'      => objLead.Result_Diploma__c,
+        objLead.nm_EligiblityCriteria__c + '-Graduation'   => objLead.nm_BachelorsDegreePercentage__c,
+        objLead.nm_EligiblityCriteria__c + '-PostGraduation' => (objLead.Percentage1__c == null ? null : Decimal.valueOf(objLead.Percentage1__c))
+       };
+
         objStatus.chooseProgram = objLead.nm_ChooseaProgram__c;
+        objStatus.programType =objLead.Program_Type__c;
         objStatus.eligibilityCriteria = objLead.nm_Eligibility_Criteria_Ref__c;
         objStatus.isDefencePersonnel = objLead.Are_you_from_Defence__c;
         objStatus.relationship = objLead.Relationship__c;
@@ -135,6 +143,7 @@ public without sharing class LinksForDocumentsLeadTriggerHandler {
         objStatus.diplomaStatus = objLead.Diploma_status__c;
         objStatus.isLateral = objLead.Is_Lateral__c;
         objStatus.isIndian = objLead.nm_Nationality__c == 'Indian' ? true : false;
+        objStatus.mapOfAcadmicsvsPercentage.putAll(qualificationMap);
         objStatus.lstWk = lstWk;
         objStatus.objectType = 'Lead';
         return documentHanlder.getMandatoryDocumentsName(objStatus);

@@ -2,7 +2,7 @@
  * @description       : Unit tests for the DocumentPageController class.
  * @author            : Ravi
  * @group             : Test
- * @last modified on  : 10-17-2024
+ * @last modified on  : 17--01--2026
  * @last modified by  : @Ravi
 **/
 @isTest(SeeAllData = false)
@@ -227,6 +227,48 @@ public with sharing class DocumentPageControllerTracker {
     static void unitTest6(){
         Test.startTest();
           DocumentPageController.SelectedDocumentData data =new DocumentPageController.SelectedDocumentData();
+        // Create and populate StudentDetails DTO
+        StudentDetails details = new StudentDetails();
+        details.studentName = 'Test Student';
+        details.firstName = 'Test';
+        details.lastName = 'User';
+        details.studentEmail = 'test@example.com';
+        details.studentMobileNo = '9999999999';
+        details.studentAddress = 'Test Address';
+        details.studentCity = 'Mumbai';
+        details.studentCountry = 'India';
+        details.studentPincode = '400001';
+        details.studentShippingAddress = 'Shipping Address';
+        details.studentNo = 'STU001';
+        details.eligibility = 'Eligible';
+        details.studentNumber = '123456';
+        details.programCategory = 'MBA';
+        details.program = 'MBA Program';
+        details.programSpecialisaton = 'Finance';
+        details.lateralSem = '3';
+        details.isLateral = true;
+        Test.stopTest();
+    }
+    @isTest
+    static void unitTest7(){
+        Test.startTest();
+        List<Account> lstAccount = [SELECT Id FROM Account LIMIT 1];
+            Id recordId = lstAccount[0].Id;
+            nm_LinksForDocuments__c leadDoc = [SELECT id FROM nm_LinksForDocuments__c LIMIT 1]; 
+            ApexPages.currentPage().getHeaders().put('X-Salesforce-SIP', '192.168.1.1');
+            ApexPages.currentPage().getHeaders().put('USER-AGENT', 'TestUserAgent');
+            ApexPages.currentPage().getCookies().put('JSESSIONID', new Cookie('JSESSIONID', 'oldSessionId', null, 0, true, 'None'));
+            Map<String, String> mapOfUrlParams = new Map<String, String>{'client_id' => '1234','selectedDocment' =>'Student Photograph'};
+            // Act
+            SessionManager sessionManager = new SessionManager();
+            Boolean result = sessionManager.loginSuccessFull(recordId, 'Account', mapOfUrlParams);
+            
+            Test.setMock(HttpCalloutMock.class, new DocumentPageControllerTracker.SaveFileGenerator());
+            DocumentPageController objDocument = new DocumentPageController();
+            objDocument.clientId = '1234';
+            objDocument.setObjectId(recordId);
+            objDocument.jsonDocumentList = '[{"recordId":"'+leadDoc.Id+'","name":"Sample Name","objType":"Account","fileId":"67890","link":"https://example.com/link","awsUrl":"https://aws.amazon.com/sampleurl"}]';
+            objDocument.fetchDocumentsFromDigiLocker();
         Test.stopTest();
     }
 

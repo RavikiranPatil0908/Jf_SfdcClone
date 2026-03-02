@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 27--03--2025
+ * @last modified on  : 02--03--2026
  * @last modified by  : @Ravi
 **/
 public without sharing class MyCasesController {
@@ -811,7 +811,6 @@ public without sharing class MyCasesController {
                 'Academics' => new List<String>{'Batch Planner clarification','Harvard module not available','E resources/Digital  books not available','PPT not updated','Recording not updated','Repeat subject policy clarification','Term III Electives selection','Term IV Electives selection','Term V Electives selection','Webinar/Ascend enquiries','Session schedule change'},
                 'Assignment/Internal Assessment' => new List<String>{'IA - Copy case','IA - Missed','IA Issue - Unable to submit','IA marks clarification','IA QP incorrect','IA results not declared'},
                 'Term End Examination' => new List<String>{'Capstone clarification','Compatibility test issue','Demo exams not working','Grade clarification','Re-Exam dates','Re-Exam pattern','Re-Exam payment issue','Re-Exam Policy clarification','TEE - results clarification','TEE - unable to join','TEE - Link not visible','TEE - Missed both slots','TEE - results not declared','TEE - schedule request','TEE - Unfair means'},          
-                'Logistics' => new List<String>{},
                 'Others' => new List<String>{'Course coordinator complaint'},
                 'Service Request' => new List<String>{'Marksheet/Certificate - SR Procedure','Marksheet/Certificate - SR Status','Service Request - Status Enquiry'},
                 'Learner Support Center' => new List<String>{}
@@ -849,7 +848,11 @@ public without sharing class MyCasesController {
             'Learner Support Center' => new List<String>{},
             'Career Services' => new List<String>{}
         }; 
-        Boolean isTermProgram = [SELECT id,nm_ProgramName__c, Name, IsTerm__c FROM nm_Program__c WHERE Name =:program LIMIT 1].IsTerm__c;
+        Boolean isTermProgram =false ;
+        if(program != null) {
+            isTermProgram = [SELECT id,nm_ProgramName__c, Name, IsTerm__c FROM nm_Program__c WHERE Name =:program LIMIT 1].IsTerm__c;
+        }
+       
         Map<Object,List<String>> dependentPicklistValues = new Map<Object,List<String>>();
         //Get dependent field result
         Schema.DescribeFieldResult dependentFieldResult = Case.Student_Sub_Categories__c.getDescribe();

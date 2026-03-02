@@ -2,8 +2,8 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 28-05-2025
-  @last modified by  : @Shailesh
+  @last modified on  : 27--11--2025
+  @last modified by  : @Ravi
 -->
 <apex:component access="global" controller="VideoCallPageController" allowDML="true">
     <apex:attribute access="global" name="recordId" type="ID" description="Record Id" assignTo="{!objectId}"/>
@@ -26,7 +26,6 @@
             position: relative;
             margin-right: 5px;
         }
-
         .btn-custom:hover {
             top: 0.5px;
             border-bottom-width: 2.5px;
@@ -67,7 +66,7 @@
         }
 
         .hidden {
-            display: none; /* Initially hidden */
+            display: none;  /* Initially hidden */
         }
 
         /* Prevent scrolling when loader is visible */
@@ -443,7 +442,7 @@
                                         <!-- <apex:outputText rendered="{!a.Not_Joined__c == true  && a.Status == 'Not Connected'}" value="Not Joined" />
                                         <apex:outputText rendered="{!a.is_Call_Cancel__c == true && a.Status == 'Not Connected'}" value="Cancelled" /> -->
                                         <apex:outputText rendered="{!a.Status__c == 'Completed'}" value="Completed" />
-                                    </td>                                                     
+                                    </td>                                                  
                                     <td>
                                         <apex:outputPanel rendered="{!(a.Not_Joined__c == false && a.is_Call_Cancel__c == false)}" layout="none">
                                             <a href="javascript:void(0);" onclick="renderTranscript('{!a.Id}');" class="btn btn-primary btn-lg btn-custom waves-effect" id="videoCallTabel">
@@ -720,7 +719,6 @@
             </div>
         </div>
 
-
         <div class="modal fade" id="largeModalReschedule" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -897,7 +895,7 @@
                  return false;
              }
          }
-          // GMT tracking 
+         // GMT tracking 
          if('{!formStatus}' == 'Not Verified' || '{!formStatus}' == 'Slot Booked'){
             pushData('Video Call Scheduled');
          }

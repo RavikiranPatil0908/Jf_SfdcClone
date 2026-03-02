@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : 
  * @group             : 
- * @last modified on  : 12--05--2025
+ * @last modified on  : 10--12--2025
  * @last modified by  : @Ravi
 **/
 import { LightningElement, track } from 'lwc';
@@ -114,7 +114,7 @@ export default class RaiseTicketForRegistrants extends LightningElement {
 			this.showSpinner = false;
 		})
 		.catch(error => {
-			this.suberror = 'Invalid SAP ID/Reg No/Mobile No & Email ID';
+			this.suberror = 'Enter Valid SAP ID/Reg No/Mobile No & Email ID';
 			this.showSpinner = false;
 			console.log(error);
 		});
@@ -154,24 +154,58 @@ export default class RaiseTicketForRegistrants extends LightningElement {
 		}
 	}
 
+	// handleEmailChange(event) {
+	// 	var email = event.target;
+	// 	console.log('email validate==',email.validity.valid);
+	// 	if (email.validity.valid) {
+	// 		this.email = email.value.trim();
+	// 		this.caseMap.email = this.email;
+	// 		this.subCategory ='';
+	// 		this.category ='';
+	// 		this.options = [];
+	// 		this.program =''
+	// 		this.subject ='';
+	// 		this.regNo ='';
+	// 		this.studentDetails();
+	// 	} else {
+	// 		//const helpTextElement = document.getElementById("help-message-16");
+	// 		//helpTextElement.textContent = "Please enter a valid email address (e.x. John@domain.com)";
+	// 	}
+	// }
+
 	handleEmailChange(event) {
-		var email = event.target;
-		console.log(email.validity.valid);
-		if (email.validity.valid) {
-			this.email = email.value;
-			this.caseMap.email = this.email;
-			this.studentDetails();
-		} else {
-			//const helpTextElement = document.getElementById("help-message-16");
-			//helpTextElement.textContent = "Please enter a valid email address (e.x. John@domain.com)";
+		this.email = event.target.value.trim();
+		this.caseMap.email = this.email;
+		this.resetFields();
+	}
+	
+	handleEmailBlur(event) {
+		if (event.target.validity.valid) {
+			console.log('res===2> ' + event.target.validity.valid);
+			this.studentDetails();   // Only final call
 		}
 	}
+	
+	resetFields() {
+		this.subCategory = '';
+		this.category = '';
+		this.options = [];
+		this.program = '';
+		this.subject = '';
+		this.regNo = '';
+	}
+	
 
 	handleMobileChange(event) {
-		this.mobile = event.target.value;
+		this.mobile = event.target.value.trim();
 		this.caseMap.mobile = this.mobile;
+		this.resetFields();
+	}
+
+	handleMobileBlur(event) {
 		this.studentDetails();
 	}
+
 
 	validateDigits(event) {
 		const keyCode = event.which || event.keyCode;
@@ -181,15 +215,25 @@ export default class RaiseTicketForRegistrants extends LightningElement {
 	}
 
 	handleNoChange(event) {
-		this.regNo = event.target.value;
+		this.regNo = event.target.value.trim(); 
 		this.caseMap.regNo = this.regNo;
-		this.studentDetails();
+		this.subCategory ='';
+		this.category ='';
+		this.options = [];
+		this.program =''
+		this.subject ='';
+		this.email ='';
+		this.mobile='';
 	}
 
+	handleNoBlur(event) {
+			this.studentDetails();   // Only final call
+	}
 	async studentDetails() {
 		console.log(this.caseMap);
 		let objRequest = { sno: '', rno: '', email: '', mobile: '' };
 		let alertMsg;
+
 		if (this.regNo.length > 6 && (this.email !== '' && this.mobile.length === 10)) {
 			objRequest.email = this.email;
 			objRequest.mobile = this.mobile;
@@ -203,21 +247,22 @@ export default class RaiseTicketForRegistrants extends LightningElement {
 			alertMsg = `We couldn't find these details in our database. Please ensure you are using the registered Email ID and Mobile Number combination or <a href='${siteUrl}ApplicationInquiry'>Register Here</a>.`;
 		}
 
-		if(alertMsg) {
+		if (alertMsg) {
 			await this.getStudentDetailsVal(objRequest, alertMsg);
 		}
 	}
 
 	async getStudentDetailsVal(objRequest, alertMsg) {
 		await getStudentDetails(objRequest).then(result => {
-			console.log('res ' + JSON.stringify(result));
 			if (JSON.stringify(result) !== '{}') {
+				
 				this.program = result.program;
 				if (result.converted !== undefined) {
 					this.caseMap.converted = result.converted;
 				} else {
 					this.caseMap.converted = true;
 				}
+				this.suberror ='';
 				this.error = '';
 			} else {
 				this.error = alertMsg;

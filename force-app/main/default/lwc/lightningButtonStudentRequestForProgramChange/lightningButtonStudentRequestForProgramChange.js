@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @Ravi
  * @group             : 
- * @last modified on  : 04--07--2025
+ * @last modified on  : 09--01--2026
  * @last modified by  : @Ravi
  * Modifications Log
  * Ver   Date           Author   Modification
@@ -20,7 +20,6 @@ export default class LightningButtonStudentRequestForProgramChange extends Light
             window.open(this.FinalURL, '_blank');
             this.dispatchEvent(new CloseActionScreenEvent()); // close the action
         }
-        this.dispatchEvent(new CloseActionScreenEvent());
+            this.dispatchEvent(new CloseActionScreenEvent());
     }
-   
 }

@@ -1,25 +1,18 @@
 /**
  * @description       : Controller for handling login and OTP verification logic
  * @author            : @BK
- * @last modified on  : 29--08--2025
+ * @group             : 
+ * @last modified on  : 20--02--2026
  * @last modified by  : @Ravi
- */
+**/
 public without sharing class LoginPageController {
 
     public RequestWrapper objRequest { get; set; }
     public OTPFields objOTP { get; set; }
     public String urlGenerate { get; set; }
-    public Boolean isRestCall { get; set; }  // to be set externally by REST controller
 
     public LoginPageController() {
         initializeController();
-        this.isRestCall=false;
-    }
-
-    public LoginPageController(Boolean restCall) {
-        objRequest = new RequestWrapper();
-        objOTP = new OTPFields();
-        this.isRestCall = restCall;
     }
 
     private void initializeController() {
@@ -35,7 +28,7 @@ public without sharing class LoginPageController {
     }
 
     private void configureOTPSettings() {
-        objOTP.skipOTP = String.isNotBlank(ApexPages.currentPage().getParameters().get('skipOTP'))
+        objOTP.skipOTP = String.isNotBlank(ApexPages.currentPage().getParameters().get('skipOTP')) 
                             ? Boolean.valueOf(ApexPages.currentPage().getParameters().get('skipOTP'))
                             : false;
         if(!Test.isRunningTest()) {
@@ -52,97 +45,42 @@ public without sharing class LoginPageController {
     **/
     public PageReference submitLogin() {
         objRequest.errorMsg = '';
+
         if (String.isBlank(objRequest.registrationNumber) || !getRecordDetails()) {
             objRequest.errorMsg = 'No match found for entered Registration no.';
             return null;
         }
-        
-        if (objRequest.inActive) {
+
+        if(objRequest.inActive) {
             objRequest.errorMsg = 'Provided Registration Number had been expired.';
             return null;
         }
-        if (objRequest.isAlreadyQualified) {
+
+        if(objRequest.isAlreadyQualified) {
             objRequest.errorMsg = 'Lead already qualified with another partner.';
             return null;
         }
+
         if (!checkEmailMobile()) {
             objRequest.errorMsg = 'Email or Mobile No is Missing.';
             return null;
         }
-        if (isRestCall || objOTP.checkToAllowOTP) {
+
+        if (objOTP.checkToAllowOTP) {
             if (objOTP.otpStatus == 'OTP Verified') {
                 objRequest.errorMsg = 'OTP Already Verified';
                 return null;
             }
+
             if (!sendOTP()) {
                 objRequest.errorMsg = 'OTP couldn\'t be sent';
                 return null;
             }
+
             return null;
         }
+
         return skipOTP();
-    }
-
-    /**
-    * @description OTP and redirects if successful.
-    * @author @BK | 25-07-2024 
-    * @return PageReference based on OTP verification success or failure. 
-    **/
-    public PageReference verifyOTP() {
-        objRequest.errorMsg = '';
-        OTPVerificationHandler objVerifyHandler = new OTPVerificationHandler();
-        objOTP = objVerifyHandler.verifyOTP(objOTP);
-        if (objOTP.isSuccess) {
-            if (!isRestCall) {
-                SessionManager objSession = new SessionManager();
-                Boolean isSuccess = objSession.loginSuccessFull(objRequest.recordId, objRequest.objectType, null);
-                if (!isSuccess) {
-                    objRequest.errorMsg = 'Something went wrong, Kindly try again later.';
-                    return null;
-                }
-            }
-            if (objRequest.objectType == 'Lead' && objRequest.recordId != null) {
-                updateStudentLogin(objRequest.recordId);
-            }
-            return isRestCall ? null : new PageReference('/apex/EnrollmentForm' + urlGenerate).setRedirect(true);
-        } else {
-            objRequest.errorMsg = objOTP.errorMsg;
-        }
-        return null;
-    }
-
-    /**
-    * @description Skips OTP verification and initiates session login.
-    * @author @BK | 25-07-2024 
-    * @return PageReference to navigate to enrollment form. 
-    **/
-    public PageReference skipOTP() {
-        objRequest.errorMsg = '';
-        if (!isRestCall) {
-            SessionManager objSession = new SessionManager();
-            Boolean isSuccess = objSession.loginSuccessFull(objRequest.recordId, objRequest.objectType, null);
-            if (!isSuccess) {
-                objRequest.errorMsg = 'Something went wrong, Kindly try again later.';
-                return null;
-            }
-        }
-        if (objRequest.objectType == 'Lead' && objRequest.recordId != null) {
-            updateStudentLogin(objRequest.recordId);
-        }
-
-        return isRestCall ? null : new PageReference('/apex/EnrollmentForm' + urlGenerate).setRedirect(true);
-    }
-    
-    /**
-    * @description Re-sends OTP if it couldn't be sent previously.
-    * @author @BK | 25-07-2024 
-    * @return PageReference based on OTP re-send success or failure. 
-    **/
-    public PageReference reSendOTP() {
-        if (!sendOTP()) {
-            objRequest.errorMsg = 'OTP couldn\'t be sent';
-        }
-        return null;
     }
 
     /**
@@ -152,7 +90,11 @@ public without sharing class LoginPageController {
     **/
     public Boolean getRecordDetails() {
         objRequest.registrationNumber = objRequest.registrationNumber.trim();
-        List<Lead> lstLead = [SELECT Id, MobilePhone, Email, nm_IsEmailVerified__c, Is_Mobile_Verified__c, InactiveLead__c, Is_Already_Qualified__c FROM Lead WHERE nm_RegistrationNo__c = :objRequest.registrationNumber AND isConverted = FALSE LIMIT 1];
+
+        List<Lead> lstLead = [SELECT Id, MobilePhone, Email, nm_IsEmailVerified__c, Is_Mobile_Verified__c, InactiveLead__c, Is_Already_Qualified__c 
+                              FROM Lead 
+                              WHERE nm_RegistrationNo__c = :objRequest.registrationNumber AND isConverted = FALSE 
+                              LIMIT 1];
 
         if (!lstLead.isEmpty()) {
             objRequest.objectType = 'Lead';
@@ -164,14 +106,15 @@ public without sharing class LoginPageController {
             return true;
         }
 
-        List<Account> lstAccount = [SELECT Id, PersonMobilePhone, PersonEmail, PersonContactId, Is_Mobile_Verified__c, nm_IsEmailVerified__c FROM Account WHERE (nm_RegistrationNumber__c = :objRequest.registrationNumber OR nm_StudentNo__c = :objRequest.registrationNumber) AND nm_StudentStatus__c != 'Closed Lost' LIMIT 1];
-       
+        List<Account> lstAccount = [SELECT Id, PersonMobilePhone, PersonEmail, PersonContactId, Is_Mobile_Verified__c, nm_IsEmailVerified__c 
+                                    FROM Account 
+                                    WHERE nm_RegistrationNumber__c = :objRequest.registrationNumber AND nm_StudentStatus__c != 'Closed Lost' 
+                                    LIMIT 1];
+
         if (!lstAccount.isEmpty()) {
             objRequest.objectType = 'Account';
             objRequest.recordId = lstAccount[0].Id;
             objRequest.objAccount = lstAccount[0];
-            objRequest.inActive = false; 
-            objRequest.isAlreadyQualified=false;
             populateOTPFieldsFromAccount(lstAccount[0]);
             return true;
         }
@@ -219,6 +162,72 @@ public without sharing class LoginPageController {
         objOTP = objVerifyHandler.triggerToSendOTP(objOTP);
         return objOTP.isOTPSent;
     }
+
+    /**
+    * @description OTP and redirects if successful.
+    * @author @BK | 25-07-2024 
+    * @return PageReference based on OTP verification success or failure. 
+    **/
+    public PageReference verifyOTP() {
+        objRequest.errorMsg = '';
+        OTPVerificationHandler objVerifyHandler = new OTPVerificationHandler();
+        objOTP = objVerifyHandler.verifyOTP(objOTP);
+
+        if (objOTP.isSuccess) {
+            SessionManager objSession = new SessionManager();
+            Boolean isSuccess = objSession.loginSuccessFull(objRequest.recordId, objRequest.objectType, null);
+
+            if (!isSuccess) {
+                objRequest.errorMsg = 'Something went wrong, Kindly try again later.';
+                return null;
+            }
+
+            if(objRequest.objectType == 'Lead' && objRequest.recordId!=null) {
+                updateStudentLogin(objRequest.recordId);
+            }
+
+            return new PageReference('/apex/EnrollmentForm' + urlGenerate).setRedirect(true);
+        } else {
+            objRequest.errorMsg = objOTP.errorMsg;
+        }
+
+        return null;
+    }
+
+    /**
+    * @description Skips OTP verification and initiates session login.
+    * @author @BK | 25-07-2024 
+    * @return PageReference to navigate to enrollment form. 
+    **/
+    public PageReference skipOTP() {
+        objRequest.errorMsg = '';
+        SessionManager objSession = new SessionManager();
+        Boolean isSuccess = objSession.loginSuccessFull(objRequest.recordId, objRequest.objectType, null);
+
+        if (!isSuccess) {
+            objRequest.errorMsg = 'Something went wrong, Kindly try again later.';
+            return null;
+        }
+
+        if(objRequest.objectType == 'Lead' && objRequest.recordId!=null) {
+            updateStudentLogin(objRequest.recordId);
+        }
+
+        return new PageReference('/apex/EnrollmentForm' + urlGenerate).setRedirect(true);
+    }
+
+    /**
+    * @description Re-sends OTP if it couldn't be sent previously.
+    * @author @BK | 25-07-2024 
+    * @return PageReference based on OTP re-send success or failure. 
+    **/
+    public PageReference reSendOTP() {
+        if (!sendOTP()) {
+            objRequest.errorMsg = 'OTP couldn\'t be sent';
+        }
+        return null;
+    }
+
     /**
     * @description To update student Login
     * @author @BK | 21-08-2024 
@@ -226,12 +235,13 @@ public without sharing class LoginPageController {
     **/
     public void updateStudentLogin(Id leadId) {
         try {
-            Lead objLead = new Lead(StudentLogin__c = true, Id = leadId);
+            Lead objLead = new Lead(StudentLogin__c=true, Id=leadId);
             update objLead;
         } catch (Exception error) {
             System.debug(error.getMessage());
         }
     }
+
     /**
     * @description Validates if a session is available and verified.
     * @author @BK | 25-07-2024 
@@ -244,8 +254,10 @@ public without sharing class LoginPageController {
         if (objSessionUser.isVerified) {
             return new PageReference('/apex/EnrollmentForm' + urlGenerate).setRedirect(true);
         }
+
         return null;
     }
+
     /**
      * Wrapper class to hold request details and error messages.
      **/

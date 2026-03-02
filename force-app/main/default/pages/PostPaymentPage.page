@@ -4,7 +4,7 @@
   @Author             : shubhranshu
   @Group              : 
   @Last Modified By   : @vickysahu
-  @Last Modified On   : 05-30-2025
+  @Last Modified On   : 10-24-2025
   @Modification Log   : 
   ==============================================================================
   Ver         Date                     Author                 Modification
@@ -138,6 +138,13 @@
                 transform: translateZ(0);
             }
 
+            /* For mobile (screen width up to 767px) */
+            @media (max-width: 767px) {
+                .terms {
+                font-size: 13px;
+                }
+            }
+
             @-webkit-keyframes load4 {
               0%,
               100% {
@@ -258,8 +265,9 @@
                                                 <script>
                                                     function showDisclaimer(event) {
                                                         $('[id$=AddDisclaimer]').css("display", "block");
+                                                        $('[id$=errorMsg]').css("display", "none");
+                                                        $('#agreeTerms').prop("checked",false);
                                                         return false;
-
                                                     }
                                                     function PrintForm() {
                                                         var printPageUrl = '';
@@ -274,9 +282,10 @@
                                                         window.open(printPageUrl, '_blank');
                                                     }
                                                     $('body').on('click', '.disclaimerBtn', function () {
-                                                            $('[id$=AddDisclaimer]').css("display", "none");
-                                                            
-                                                        });
+                                                        $('[id$=AddDisclaimer]').css("display", "none");
+                                                        $('[id$=errorMsg]').css("display", "none");
+                                                        $('#agreeTerms').prop("checked",false);
+                                                    });
                                                 </script>
                                             </apex:outputPanel>
                                         </apex:outputlabel>
@@ -318,32 +327,53 @@
                         <div class="modal-header">
                             <h4 class="modal-title">Disclaimer:</h4>
                         </div>
-                        <div class="modal-body">
-                            <p><b>Terms and Conditions for Loan / funding-based admissions facilitated by NMIMS:</b></p> 
-                            <ul>
-                                <li> -&nbsp;&nbsp; For Interest loans: In case of cancellation of admission, the loan cancellation charges levied by the loan provider will have to be borne by the Student (Applicant).</li>
-                                <li> -&nbsp;&nbsp; On 0% Interest loans: The Interest discount is borne by University. In case of cancellation of admission, for cancellation of the loan, the Interest discount charges levied by the loan provider will have to be borne by the Student (Applicant).</li>
-                            </ul>
-                        </div>
-                        <div class="modal-footer">
-                            <apex:form >
-                                <button type="button" class="btn disclaimerBtn" >Close</button>
-                                <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!ZestLoanApplicationRequest}" value="I Agree"
-                                target="_blank" rendered="{!LoanType =='Zest'}" oncomplete="redirectToSamePage()" />
-                                <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!EduVanzLoanApplicationRequest}" value="I Agree"
-                                target="_blank" rendered="{!IF(LoanType='EduVanz',true,false)}" oncomplete="redirectToSamePage()" />
-                                <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!liquiLoansApplicationRequest}" value="I Agree"
-                                target="_blank" rendered="{!IF(LoanType='LiquiLoans',true,false)}" oncomplete="redirectToSamePage()" />
-                                <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!propelldApplicationReqest}" value="I Agree"
-                                target="_blank" rendered="{!IF(LoanType='Propelld',true,false)}" oncomplete="redirectToSamePage()" />
-                                <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!ezcredApplicationReqest}" value="I Agree"
-                                target="_blank" rendered="{!IF(LoanType='EzCred',true,false)}" oncomplete="redirectToSamePage()" />
-                                <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!GrayQuestRequest}" value="I Agree"
-                                target="_blank" rendered="{!IF(LoanType='GrayQuest',true,false)}" oncomplete="redirectToSamePage()" />
-                                <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!avanseApplicationReqest}" value="I Agree"
-                                target="_blank" rendered="{!IF(LoanType='Avanse',true,false)}" oncomplete="redirectToSamePage()" />
-                            </apex:form>
-                        </div>
+                        <apex:form >
+                            <div class="modal-body terms">
+                                <p>
+                                    <input type="checkbox" id="agreeTerms" value="{!isLoanTermAgreed}"/>
+                                    <b>  <span style="color:#c00">*</span>Terms and Conditions for Loan / funding-based admissions facilitated by NMIMS:</b>
+                                </p> 
+                                <ul>
+                                    <li> -&nbsp;&nbsp; <b>Interest-Bearing Loans:</b>  In the event of cancellation of admission, any loan cancellation charges imposed by the loan provider shall be the sole responsibility of the Student (Applicant). NMIMS shall not be liable for such charges.</li>
+                                    <li> -&nbsp;&nbsp; <b>0% Interest Loans:</b> For loans where the University bears the interest component, the interest discount is provided by NMIMS.
+                                        However, in the event of cancellation of admission, if the loan is to be cancelled, any charges or penalties levied by the loan provider, including those related to the interest discount, shall be borne entirely by the Student (Applicant).
+                                    </li>
+                                </ul>
+                                <!-- Error message placeholder -->
+                                <p id="errorMsg" style="color:red; display:none;">You must agree to the Terms and Conditions before proceeding.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <!-- <apex:form > -->
+                                    <button type="button" class="btn disclaimerBtn closeBtn" >Close</button>
+                                    <!-- Define action functions for each loan type -->
+                                    <apex:actionFunction name="submitZest" action="{!ZestLoanApplicationRequest}" oncomplete="redirectToSamePage();" />
+                                    <apex:actionFunction name="submitEduVanz" action="{!EduVanzLoanApplicationRequest}" oncomplete="redirectToSamePage();" />
+                                    <apex:actionFunction name="submitLiquiLoans" action="{!liquiLoansApplicationRequest}" oncomplete="redirectToSamePage();" />
+                                    <apex:actionFunction name="submitPropelld" action="{!propelldApplicationReqest}" oncomplete="redirectToSamePage();" />
+                                    <apex:actionFunction name="submitEzCred" action="{!ezcredApplicationReqest}" oncomplete="redirectToSamePage();" />
+                                    <apex:actionFunction name="submitGrayQuest" action="{!GrayQuestRequest}" oncomplete="redirectToSamePage();" />
+                                    <apex:actionFunction name="submitAvanse" action="{!avanseApplicationReqest}" oncomplete="redirectToSamePage();" />
+
+                                    <!-- Single custom button -->
+                                    <button type="button" class="btn btn-primary btn-lg btn-custom ProceedToLoanBtn" onclick="validateTerm('{!LoanType}')">I Agree</button>
+
+                                    <!-- <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!ZestLoanApplicationRequest}" value="I Agree"
+                                    target="_blank" rendered="{!LoanType =='Zest'}" oncomplete="redirectToSamePage()" />
+                                    <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!EduVanzLoanApplicationRequest}" value="I Agree"
+                                    target="_blank" rendered="{!IF(LoanType='EduVanz',true,false)}" oncomplete="redirectToSamePage()" />
+                                    <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!liquiLoansApplicationRequest}" value="I Agree"
+                                    target="_blank" rendered="{!IF(LoanType='LiquiLoans',true,false)}" oncomplete="redirectToSamePage()" />
+                                    <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!propelldApplicationReqest}" value="I Agree"
+                                    target="_blank" rendered="{!IF(LoanType='Propelld',true,false)}" oncomplete="redirectToSamePage()" />
+                                    <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!ezcredApplicationReqest}" value="I Agree"
+                                    target="_blank" rendered="{!IF(LoanType='EzCred',true,false)}" oncomplete="redirectToSamePage()" />
+                                    <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!GrayQuestRequest}" value="I Agree"
+                                    target="_blank" rendered="{!IF(LoanType='GrayQuest',true,false)}" oncomplete="redirectToSamePage()" />
+                                    <apex:commandLink styleClass="btn btn-primary btn-lg btn-custom ProceedToLoanBtn disclaimerBtn" action="{!avanseApplicationReqest}" value="I Agree"
+                                    target="_blank" rendered="{!IF(LoanType='Avanse',true,false)}" oncomplete="redirectToSamePage()" onclick="return validateTerm();"/> -->
+                                <!-- </apex:form> -->
+                            </div>
+                        </apex:form>
                     </div>
                 </div>
             </div>
@@ -362,8 +392,8 @@
         <script>
         
             function redirectToSamePage() {
-                console.log('loan completed');
                 $('.loaderPanel').hide();
+                $('.ProceedToLoanBtn').attr("disabled", false);
                 window.location.href = `/ResTrackId=${paymentTrackId}`;
             }
 
@@ -378,32 +408,63 @@
                 }
             }
 
-            // function showLoader() {
-            //     $('.loader-overlay').removeClass('hidden');
-            //     $('body').addClass('no-scroll'); // Disable scrolling and interactions
-            // }
-
-            // function hideLoader() {
-            //     $('.loader-overlay').addClass('hidden');
-            //     $('body').removeClass('no-scroll'); // Re-enable scrolling and interactions
-            // }
-            
+            function validateTerm(loanType) {
+                let agree =  $('#agreeTerms').prop("checked");
+                console.log('agree---->' + agree);
+                if (!agree) {
+                    $('[id$=errorMsg]').css("display", "block");
+                    return;
+                }
+                $(this).attr("disabled", true);
+                $('.loaderPanel').show();
+                // Call respective Apex action
+                $('[id$=AddDisclaimer]').css("display", "none");
+                switch(loanType) {
+                    case 'Zest': submitZest(); break;
+                    case 'EduVanz': submitEduVanz(); break;
+                    case 'LiquiLoans': submitLiquiLoans(); break;
+                    case 'Propelld': submitPropelld(); break;
+                    case 'EzCred': submitEzCred(); break;
+                    case 'GrayQuest': submitGrayQuest(); break;
+                    case 'Avanse': submitAvanse(); break;
+                }
+            }
             
             $(document).ready(function () { 
-                $('.ProceedToLoanBtn').click(function() {
-                    $(this).attr("disabled", true);
-                    $('.loaderPanel').show();
-                });
+                // $('.ProceedToLoanBtn').click(function(event) {
+                //     let agree =  $('#agreeTerms').prop("checked");
+                //     console.log('agree---->' + agree);
+                //     if (!agree) {
+                //         console.log('inside agree');
+                //         $('[id$=errorMsg]').css("display", "block");
+                //         return false;
+                //     }
+                //     $(this).attr("disabled", true);
+                //     $('.loaderPanel').show();
+                //     return true;
+                // });
+
                 $('body').on('click', '.disclaimerBtn', function () {
+                    $('[id$=errorMsg]').css("display", "none");
+                    $('#agreeTerms').prop("checked",false);
                     $('[id$=AddDisclaimer]').css("display", "none");
                     
                 });
+
                 $('body').on('click', '[id$=showDisclaimer]', function () {
-                console.log('showDisclaimer called');
-                  $('[id$=AddDisclaimer]').css("display", "block");
-                return false;
-                    
+                    $('[id$=AddDisclaimer]').css("display", "block");
+                    $('[id$=errorMsg]').css("display", "none");
+                    $('#agreeTerms').prop("checked",false);
+                    return false;
                 });
+
+                $('body').on('change', '[id$=agreeTerms]', function(e) {
+                    $('[id$=errorMsg]').css("display", "none");
+                    // let agree =  $('#agreeTerms').is(':checked');
+                    $('[id$=isLoanTermAgreed]').val(true);
+                    var backendVal = "{!isLoanTermAgreed}";
+                });
+
             });
             // GMT tracking 
             function pushDataPostPayment(eventName,gtmRecordId) {

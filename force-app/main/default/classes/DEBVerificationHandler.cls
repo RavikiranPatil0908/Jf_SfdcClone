@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 10-28-2024
- * @last modified by  : @vickysahu
+ * @last modified on  : 17--01--2026
+ * @last modified by  : @Ravi
 **/
 public without sharing class DEBVerificationHandler {
 
@@ -100,14 +100,16 @@ public without sharing class DEBVerificationHandler {
                     objLead.DEBID__c = objResponse.debUniqueId;
                     objLead.nm_DateOfBirth__c = objRequest.dob;
                     objLead.is_Deb_verified__c = true;
+                    objLead.ABCID__c = objDEBDetails.ABCID__c;
                 } else if(objRequest.objType == 'Account') {
                     objDEBDetails.Account__c = objRequest.recordId;
                     objDEBDetails.OwnerId = objRequest.ownerId;
+
                 }
                 insert objDEBDetails;
                 if (objLead != null && objRequest.objType == 'Lead') {
                     update objLead;
-                }
+                } 
             }
             else {
                 if (objRequest.objType == 'Lead') {

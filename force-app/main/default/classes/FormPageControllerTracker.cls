@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @vickysahu
  * @group             : 
- * @last modified on  : 25--03--2025
+ * @last modified on  : 07--02--2026
  * @last modified by  : @Ravi
 **/
 @isTest(SeeAllData=false)
@@ -33,7 +33,7 @@ public class FormPageControllerTracker {
     }
     private class RestMockIV implements HttpCalloutMock {
         public HTTPResponse respond(HTTPRequest req) {
-            String fullJson = '{"yearOfPassing": "","monthOfPassing": "","program": "","message": "","status": "fail","sapid": "77119958558"}';
+            String fullJson = '{"yearOfPassing": "","monthOfPassing": "","program": "","message": "","status": "fail","sapid": "77101110007"}';
             HttpResponse res = new HttpResponse();
             res.setHeader('Content-Type', 'application/json');
             res.setBody(fullJson);
@@ -89,25 +89,25 @@ public class FormPageControllerTracker {
         objStudentProg[0].Certificate_Issue__c=prog.Id;
         update objStudentProg;
 
-        Account ac = new Account(FirstName='Test1234', LastName='abcd', nm_StudentNo__c='77119958557', nm_Program__c=prog.Id, PersonMobilePhone='8652532024',PersonEmail='test1@gmail.com',Pass_Out__c = true, nm_DateOfBirth__c = System.today().addYears(-21));
-        insert ac;
-        Account account = new Account(FirstName='Test12', LastName='ab', nm_StudentNo__c='77119958558', nm_Program__c=prog.Id, PersonMobilePhone='8652532025',PersonEmail='test2@gmail.com',Pass_Out__c = false, nm_DateOfBirth__c = System.today().addYears(-21));
-        insert account;
-        Opportunity objOppforDiploma = nmGenericTracker.CreateOpportunityWithAccountAndProgram('Closed Won', '1', 'Diploma Programs', account, 'AnnualFee');
+        // Account ac = new Account(FirstName='Test1234', LastName='abcd', nm_StudentNo__c='77119958557', nm_Program__c=prog.Id, PersonMobilePhone='8652532024',PersonEmail='test1@gmail.com',Pass_Out__c = true, nm_DateOfBirth__c = System.today().addYears(-21));
+        // insert ac;
+        // Account account = new Account(FirstName='Test12', LastName='ab', nm_StudentNo__c='77119958558', nm_Program__c=prog.Id, PersonMobilePhone='8652532025',PersonEmail='test2@gmail.com',Pass_Out__c = false, nm_DateOfBirth__c = System.today().addYears(-21));
+        // insert account;
+        // Opportunity objOppforDiploma = nmGenericTracker.CreateOpportunityWithAccountAndProgram('Closed Won', '1', 'Diploma Programs', account, 'AnnualFee');
        
-        List<nm_StudentProgram__c> objStudentProg2 = [ SELECT id, nm_Student__c, Certificate_Issue__c, Certificate_Issue__r.nm_Type__c, ProgramType__c,nm_Program__c, nm_Program__r.nm_ProgramName__c, nm_Program__r.prgst__c, Certificate_Issue__r.prgst__c
-        FROM nm_StudentProgram__c WHERE nm_Student__r.Student_ID__c ='77119958558'];
-        objStudentProg2[0].Certificate_Issue__c=prog.Id;
-        update objStudentProg2;
-        nmGenericTracker.CreateWorkExperienceForAccount(ac);
-        nmGenericTracker.CreateDocumentforAccount(ac,'Photo ID proof');
-        nmGenericTracker.CreateDocumentforAccount(ac,'Aadhaar Card');
-        nmGenericTracker.CreateDiplomaStudentProgram(objAccount);
-        University_List__c university = new University_List__c();
-        university.Is_Active__c = true;
-        university.University_Name__c = 'Indira Gandhi Krishi Vishwavidyalaya';
-        university.University_Type__c = 'State University';
-        insert university;
+        // List<nm_StudentProgram__c> objStudentProg2 = [ SELECT id, nm_Student__c, Certificate_Issue__c, Certificate_Issue__r.nm_Type__c, ProgramType__c,nm_Program__c, nm_Program__r.nm_ProgramName__c, nm_Program__r.prgst__c, Certificate_Issue__r.prgst__c
+        // FROM nm_StudentProgram__c WHERE nm_Student__r.Student_ID__c ='77119958558'];
+        // objStudentProg2[0].Certificate_Issue__c=prog.Id;
+        // update objStudentProg2;
+        nmGenericTracker.CreateWorkExperienceForAccount(objAccount);
+        nmGenericTracker.CreateDocumentforAccount(objAccount,'Photo ID proof');
+        // nmGenericTracker.CreateDocumentforAccount(ac,'Aadhaar Card');
+        // nmGenericTracker.CreateDiplomaStudentProgram(objAccount);
+        // University_List__c university = new University_List__c();
+        // university.Is_Active__c = true;
+        // university.University_Name__c = 'Indira Gandhi Krishi Vishwavidyalaya';
+        // university.University_Type__c = 'State University';
+        // insert university;
 
     }
 
@@ -212,7 +212,7 @@ public class FormPageControllerTracker {
     @isTest 
     static void testMethod4() {
         Lead objLead = [SELECT Id FROM Lead LIMIT 1];
-        nm_Centers__c objCenter = [SELECT Id, recordtype.Name, Name, Allow_MBA_X__c FROM nm_Centers__c LIMIT 1];
+        // nm_Centers__c objCenter = [SELECT Id, recordtype.Name, Name, Allow_MBA_X__c FROM nm_Centers__c LIMIT 1];
         Test.startTest();
             Test.setMock(HttpCalloutMock.class, new RestMock());
             // PageReference pageRef = Page.AdmissionForm;
@@ -294,18 +294,18 @@ public class FormPageControllerTracker {
     
     @isTest
     static void testMethod7(){
-        Lead objLead = [SELECT Id ,FirstName,LastName,MobilePhone,Email,IC_Name__c,nm_RegistrationNo__c,nm_ChooseaProgram__c FROM Lead LIMIT 1];
-        Account objAccount = [SELECT Id, Name, PersonMobilePhone, PersonEmail, PersonContactId, Is_Mobile_Verified__c,nm_IsEmailVerified__c ,Pass_Out__c FROM Account WHERE nm_StudentNo__c='77119958558' LIMIT 1];
+        // Account objAccount = [SELECT Id, Name, PersonMobilePhone, PersonEmail, PersonContactId, Is_Mobile_Verified__c,nm_IsEmailVerified__c ,Pass_Out__c FROM Account WHERE nm_StudentNo__c='77119958558' LIMIT 1];
         
         Test.startTest();
+        Lead objLead = [SELECT Id ,FirstName,LastName,MobilePhone,Email,IC_Name__c,nm_RegistrationNo__c,nm_ChooseaProgram__c FROM Lead LIMIT 1];
         Test.setMock(HttpCalloutMock.class,new RestMockIV());
         FormPageController controller = new FormPageController();
-            controller.studentNumber='77119958558';
+            controller.studentNumber='77101110007';
             controller.objLead = objLead.clone();
             controller.objLead.FirstName = 'Test12';
             controller.objLead.LastName = 'ab';
             controller.objLead.nm_DateOfBirth__c = System.today().addYears(-21);
-            controller.objLead.Student_Number_Lateral__c = '77119958558';
+            controller.objLead.Student_Number_Lateral__c = '77101110007';
             controller.objLead.Is_Lateral__c = true;
             controller.objLead.MobilePhone ='8652532025';
             controller.objLead.Email ='test2@gmail.com';
@@ -330,9 +330,8 @@ public class FormPageControllerTracker {
     @isTest
     static void testMethod9() {
         Lead objLead = [SELECT Id ,IC_Name__c, nm_RegistrationNo__c FROM Lead LIMIT 1];
-        insertDEB(objLead.Id);
         Test.startTest();
-
+            insertDEB(objLead.Id);
             HttpResponse mockResponse = new HttpResponse();
             mockResponse.setStatusCode(200);
             mockResponse.setHeader('Content-Type', 'application/json');
@@ -381,9 +380,8 @@ public class FormPageControllerTracker {
     @isTest
     static void testMethod10() {
         Lead objLead = [SELECT Id ,IC_Name__c, nm_RegistrationNo__c FROM Lead LIMIT 1];
-        insertDEB(objLead.Id);
         Test.startTest();
-
+            insertDEB(objLead.Id);
             HttpResponse mockResponse = new HttpResponse();
             mockResponse.setStatusCode(400);
             mockResponse.setHeader('Content-Type', 'application/json');
@@ -416,7 +414,7 @@ public class FormPageControllerTracker {
     @isTest
     static void testMethod12(){
         Lead objLead = [SELECT Id ,FirstName,LastName,MobilePhone,Email,IC_Name__c,nm_RegistrationNo__c, nm_ChooseaProgram__c FROM Lead LIMIT 1];
-        Account objAccount = [SELECT Id, Name, PersonMobilePhone, PersonEmail, PersonContactId, Is_Mobile_Verified__c,nm_IsEmailVerified__c ,Pass_Out__c, nm_ChooseaProgram__c FROM Account LIMIT 1];
+        // Account objAccount = [SELECT Id, Name, PersonMobilePhone, PersonEmail, PersonContactId, Is_Mobile_Verified__c,nm_IsEmailVerified__c ,Pass_Out__c, nm_ChooseaProgram__c FROM Account LIMIT 1];
         
         Test.startTest();
         Test.setMock(HttpCalloutMock.class,new RestMockII());
@@ -435,19 +433,19 @@ public class FormPageControllerTracker {
      @isTest
     static void testMethod13(){
         Lead objLead = [SELECT Id ,FirstName,LastName,MobilePhone,Email,IC_Name__c,nm_RegistrationNo__c,nm_ChooseaProgram__c FROM Lead LIMIT 1];
-        Account objAccount = [SELECT Id,Name, PersonMobilePhone, PersonEmail, PersonContactId, Is_Mobile_Verified__c,nm_IsEmailVerified__c ,Pass_Out__c FROM Account WHERE Pass_Out__c = true AND nm_StudentNo__c='77119958557' LIMIT 1];
+        Account objAccount = [SELECT Id,Name, PersonMobilePhone, PersonEmail, PersonContactId, Is_Mobile_Verified__c,nm_IsEmailVerified__c ,Pass_Out__c FROM Account WHERE Pass_Out__c = true AND nm_StudentNo__c='77101110007' LIMIT 1];
         // List<nm_WorkExperience__c> lstWorkExperienceRecord = [SELECT id,nm_Student__c,nm_Lead__c,Currently_Working_Here__c,nm_StartDate__c,nm_EndDate__c,Total_Work_Experience__c,Industry__c,OtherIndustry__c,nm_CompanyName__c,nm_Other_Company_Name__c ,nm_Department__c,Department__c,nm_Designation__c,nm_OtherDesignation__c,Annual_Income__c,Experience_Level__c,Name,RecordId__c FROM nm_WorkExperience__c WHERE nm_Student__c=:objAccount.Id];
         Test.startTest();
         Test.setMock(HttpCalloutMock.class,new RestMockII());
         FormPageController controller = new FormPageController();
         LateralDataAssigmentWrapper wrapper = new LateralDataAssigmentWrapper();
             controller.leadId=objLead.Id;
-            controller.studentNumber='77119958557';
+            controller.studentNumber='77101110007';
             controller.objLead = objLead.clone();
             controller.objLead.FirstName = 'Test1234';
             controller.objLead.LastName = 'abcd';
             controller.objLead.nm_DateOfBirth__c = System.today().addYears(-21);
-            controller.objLead.Student_Number_Lateral__c = '77119958557';
+            controller.objLead.Student_Number_Lateral__c = '77101110007';
             controller.objLead.Is_Non_Lateral__c = 'No';
             controller.objLead.Lateral_Editable_set__c ='test,test1';
             controller.objLead.Is_Lateral__c = true;
@@ -474,7 +472,7 @@ public class FormPageControllerTracker {
     @isTest
     static void testMethod16() {
         Lead objLead = [SELECT Id FROM Lead LIMIT 1];  
-        Account objAccount = [SELECT Id FROM Account WHERE Pass_Out__c = true AND nm_StudentNo__c = '77119958557' LIMIT 1];  
+        Account objAccount = [SELECT Id FROM Account WHERE Pass_Out__c = true AND nm_StudentNo__c = '77101110007' LIMIT 1];  
         // List<nm_WorkExperience__c> lstWorkExperienceRecord = [SELECT Id FROM nm_WorkExperience__c WHERE nm_Student__c = :objAccount.Id];  
         Test.startTest();  
         LateralDataAssigmentWrapper wrapper = new LateralDataAssigmentWrapper();  
@@ -494,7 +492,7 @@ public class FormPageControllerTracker {
 
     @isTest
     static void testMethod18(){
-        Account objAccount = [SELECT Id,Name, PersonMobilePhone, PersonEmail, PersonContactId, Is_Mobile_Verified__c,nm_IsEmailVerified__c ,Pass_Out__c FROM Account WHERE Pass_Out__c = true AND  nm_StudentNo__c='77119958557' LIMIT 1];
+        Account objAccount = [SELECT Id,Name, PersonMobilePhone, PersonEmail, PersonContactId, Is_Mobile_Verified__c,nm_IsEmailVerified__c ,Pass_Out__c FROM Account WHERE Pass_Out__c = true AND  nm_StudentNo__c='77101110007' LIMIT 1];
         Test.startTest();
         FormPageController controller = new FormPageController();
         controller.updateAsNonLateral();
@@ -502,6 +500,14 @@ public class FormPageControllerTracker {
         Test.stopTest();
     }
     
+    @isTest
+    public static void testmethod19(){
+        Test.startTest();
+        // LateralDataAssigmentWrapper wrapper = new LateralDataAssigmentWrapper();
+        LateralDataAssigmentWrapper.convertDriveToDate('January2024');
+        
+        Test.stopTest();
+    }
     
     
     

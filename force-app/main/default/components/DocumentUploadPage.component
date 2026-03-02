@@ -2,7 +2,7 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 28--05--2025
+  @last modified on  : 12--02--2026
   @last modified by  : @Ravi
 -->
 <apex:component access="global" controller="DocumentPageController" allowDML="true">
@@ -123,15 +123,26 @@
                         </table>
                     </span>
                     <span class="instructions">
-                        <h2 class="card-inside-title">IMPORTANT INSTRUCTIONS (Read the Instructions Carefully and Scroll Down to Upload the Documents)</h2>
-                        <p>For every document you need to select a mode to upload from the 3 options provided as below: </p>
-                        <p> <b>Option 1</b>: Gazetted Office Attestation / Notarized by a Notary Public 
-                            <br/><b>Option 2</b>: Upload via DigiLocker 
-                            <br/><b>Option 3</b>: Upload Self-Attested Now <span class="text-color">with either Submit Gazetted / Notarized or Present Originals to the nearest Learning Centre / Examination Centre prior to the exam registration of Semester 2 or within 1 year from the date of admission whichever is earlier.</span>
-                        </p>
+                        <h2 class="card-inside-title">
+                            IMPORTANT INSTRUCTIONS (Read the Instructions Carefully and Scroll Down to Upload the Documents)
+                        </h2>
+                        <p>For every document you need to select a mode to upload from the 3 options provided as below:</p>
+                        <p>
+                            <b>Option 1</b>: Gazetted Office Attestation / Notarized by a Notary Public<br/>
+                            <b>Option 2</b>: Upload via DigiLocker<br/>
+                            <b>Option 3</b>: Upload Self-Attested Now
+                            <span class="text-color">with either Submit Gazetted / Notarized or Present Originals to the nearest Learning Centre / Examination Centre prior to the exam registration of <span class="instructionSem"></span> </span>
+                        </p> 
                         <p><b>DOCUMENT VERIFICATION COMPLIANCE</b></p>
-                        <p>Kindly note that your <b>admission will be PROVISIONAL</b> if you have selected <b>Option 3</b> as a mode to upload for any one or more of the mandatory documents.</p>
-                        <p>If you select <b>Option 3</b>, you will be required to either submit the photocopies with <b>Gazetted Officer attestation / Notarized by Notary Public</b> or complete the <b>physical verification of all the documents</b> submitted at the time of admission with their original documents by <b>personally visiting the Learning Centre / Examination Centre</b> prior to the <b>examination registration of Semester 2 or within 1 year</b> from the date of admission whichever is earlier.</p>
+                        <p>
+                            Kindly note that your <b>admission will be PROVISIONAL</b> if you have selected <b>Option 3</b> as a mode to upload for any one or more of the mandatory documents.
+                        </p>
+                        <p>
+                            If you select<b> Option 3</b>, you will be required to either submit the photocopies with
+                            <b>Gazetted Officer attestation / Notarized by Notary Public</b> or complete the
+                            <b>physical verification of all the documents</b> submitted at the time of admission with their original documents by
+                            <b>personally visiting the Learning Centre / Examination Centre</b> prior to the<b> examination registration of <span class="instructionSem"></span> </b>.
+                        </p>
                         <p class="text-color">Failure to comply with this requirement will result in the University reserving the right to cancel the admission without any prior further notice and fees paid will not be refunded by the University.</p>
                         <div class="modeOfUploadInstructions">
                             <p><b>FREQUENTLY ASKED QUESTIONS</b></p>
@@ -349,8 +360,10 @@
                                                         data-name="{!objdoc.name}" data-type="{!objdoc.objType}" data-id="{!objdoc.recordId}" data-isMandatory="{!objdoc.isMandatory}">
                                                         <option value="">--None--</option>
                                                         <apex:outputPanel rendered="{!IF(objdoc.name != 'Student Photograph', true, false)}" layout="none">
+                                                            <apex:outputPanel rendered="{!NOT(CONTAINS(objdoc.name,'Work Experience Certificate'))}" layout="none">
                                                             <option value="Upload Gazetted / Notarized Document"> Upload Gazetted / Notarized Document</option>
                                                             <option value="Upload via DigiLocker"> Upload via DigiLocker</option>
+                                                            </apex:outputPanel>
                                                             <apex:outputPanel rendered="{!!objdoc.showoldDocLink}" layout="none">    
                                                             <option value="Upload Self-Attested Now"> Upload Self-Attested Now( Read Instructions )</option>
                                                             </apex:outputPanel>
@@ -493,9 +506,24 @@
     <script>
         $(document).ready(function (e) { 
             
-            fetchDocumentsFromDigiLocker();
-  
+             fetchDocumentsFromDigiLocker();
+         
             showUpload('{!formSubmitResponse.isFormSubmitted}');
+            let documentInstruction ='';
+            let programCategory = '{!objStudentDetails.programCategory}';
+            let isLateral = '{!objStudentDetails.isLateral}' === 'true';
+            let lateralSem = '{!objStudentDetails.lateralSem}';
+
+            //case:00943699
+            if(programCategory ==='MBA (Online) Programs' && isLateral && lateralSem === '3') {
+                documentInstruction ='Semester 3';
+            } else if (programCategory === 'Diploma Programs' && !isLateral){
+                documentInstruction ='Semester 1';
+            } else {
+                documentInstruction ='Semester 2 or within 1 year from the date of admission whichever is earlier';
+            }
+            $('.instructionSem').text(documentInstruction);
+            console.log('Final Instruction =', $('.instructionSem').text());
 
             $('body').on('click','.showPreview', function() {
                 $('.docmentStatus').removeClass('hidden');
@@ -733,11 +761,13 @@
                             value: key,
                             text : mapOfFiles[key]
                         };
-                        if (mapOfFiles[key] === 'PAN Verification Record') {
-                            $('body').find('.mappedDocument').not('.photo-id-proof').append($('<option>', option));
-                        } else {
+                        if (mapOfFiles[key] != 'PAN Verification Record') {
                             $('body').find('.mappedDocument').append($('<option>', option));
-                        }
+                            // $('body').find('.mappedDocument').not('.photo-id-proof').append($('<option>', option));
+                        } 
+                        // else {
+                        //     $('body').find('.mappedDocument').append($('<option>', option));
+                        // }
                     }
                 } catch (e) {
                         console.error('JSON parsing failed:', e);

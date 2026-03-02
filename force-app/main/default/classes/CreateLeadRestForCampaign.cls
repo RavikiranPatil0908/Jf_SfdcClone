@@ -3,8 +3,8 @@
  * @Description        :
  * @Author             : @BK
  * @Group              :
- * @Last Modified By   : @BK
- * @Last Modified On   : 16-08-2024
+ * @Last Modified By   : @vickysahu
+ * @Last Modified On   : 11-28-2025
  * @Modification Log   :
  * Ver       Date            Author              Modification
  * 1.0    13/5/2020   @BK     Initial Version
@@ -94,6 +94,7 @@ global without sharing class CreateLeadRestForCampaign {
             String keywordMatchType = reqWrapper.keywordMatchType;
             String siteLinks = reqWrapper.siteLinks;
             String leadFormID = reqWrapper.leadFormID;
+            String otpVerifiedKey = reqWrapper.otpVerifiedKey;
             Lead objLead = new Lead();
             // API_Request__c apiReq = new API_Request__c();
             // apiReq.Request__c = requestString;
@@ -174,19 +175,20 @@ global without sharing class CreateLeadRestForCampaign {
                     Program = 'Certificate Programs';
                 } else if (Program.startsWithIgnoreCase('Bachelor')) {
                     Program = 'Bachelor Programs';
-                } else if (Program.startsWithIgnoreCase('Master') || Program.startsWithIgnoreCase('Executive') || Program.startsWithIgnoreCase('Data Science Programs') || Program.startsWithIgnoreCase('Applied Finance Programs')) {
+                } else if (Program.startsWithIgnoreCase('Master') || Program.startsWithIgnoreCase('Executive') || Program.startsWithIgnoreCase('MBA WX') || Program.startsWithIgnoreCase('Data Science Programs') || Program.startsWithIgnoreCase('Applied Finance Programs')) {
                     Program = 'Master Programs';
                     SelectProgram = mapProgramNameVsActualName.containskey(SelectProgram) ? mapProgramNameVsActualName.get(SelectProgram) : SelectProgram;
                 } else if (Program.startsWithIgnoreCase('Professional') || Program.startsWithIgnoreCase('Wealth Management Programs')) {
                     Program = 'Professional Programs';
                     SelectProgram = mapProgramNameVsActualName.containskey(SelectProgram) ? mapProgramNameVsActualName.get(SelectProgram) : SelectProgram;
-                } else if (Program.startsWithIgnoreCase('MBA (Online)') || Program.startsWithIgnoreCase('MBA Online') || Program.startsWithIgnoreCase('Post')) {
+                } else if (Program.startsWithIgnoreCase('MBA (Online)') || Program.startsWithIgnoreCase('MBA Online') || Program.startsWithIgnoreCase('Post') || Program.startsWithIgnoreCase('mba-online')) {
                     Program = 'MBA (Online) Programs';
+                    ProgramType = 'MBA (Online) Programs';
                 } else if (Program.startsWithIgnoreCase('Digital Marketing Programs')) {
                     //Program = 'MBA (Distance) Programs';
                     Program = mapProgramVsType.containskey(SelectProgram) ? mapProgramVsType.get(SelectProgram) : 'Certificate Programs';
                 }
-    
+                
                 apiReq.Choose_Program__c = Program;
             }
             Center = Center != null && Center != '' && Center != 'null' ? Center : '';
@@ -217,7 +219,7 @@ global without sharing class CreateLeadRestForCampaign {
                         fromId = 'INTERNATIONAL_FORM';
                     }
                     apiReq.Country_Code__c = CountryCode;
-    
+
                 }
             }
             CountryCode = CountryCode != null && CountryCode != '' && !CountryCode.equalsIgnoreCase('null') ? CountryCode: '';
@@ -255,14 +257,14 @@ global without sharing class CreateLeadRestForCampaign {
                 nm_StudentSelectedIC__c = Center,Partner_Lead_Source__c=PartnerLeadSource,Agency_Internal_Category__c =AgencyInternalCategory,LC_Wise_Marketing_Distribution_Date__c = Date.today(),
                 nm_Country_P__c = Country, Form_Id__c = fromId, Lead_Form_ID__c = leadFormID,
                 Program_Type__c = ProgramType, Industry = Industry, nm_SelectedProgram__c = SelectProgram, Title = Title, nm_Company_Name__c = Company, nm_StateProvince_P__c = State, nm_PostalCode_P__c = ZipCode, GCLID__c = Google_Link,  Country_Code__c = CountryCode, GACID__c = GACID,
-                Ad_Group__c = adgroup, Average_Position__c = adposition, Targeting__c = target, User_Location_Physical__c = physicallocation, User_Location_Interest__c = interestlocation,  Networks__c = network, If_Mobile_and_If_Not_Mobile__c = devicemodel, Ads__c = ad, Placements__c = placement, Adgroup_ID__c = adgroupId, Campaign_ID__c = campaignId, Experiment_ID__c = experimentId, FBCLID__c = FBCLID, Keyword_Match_Type__c = keywordMatchType, Site_Links__c = siteLinks);
+                Ad_Group__c = adgroup,OTP_Verified_Key__c=otpVerifiedKey, Average_Position__c = adposition, Targeting__c = target, User_Location_Physical__c = physicallocation, User_Location_Interest__c = interestlocation,  Networks__c = network, If_Mobile_and_If_Not_Mobile__c = devicemodel, Ads__c = ad, Placements__c = placement, Adgroup_ID__c = adgroupId, Campaign_ID__c = campaignId, Experiment_ID__c = experimentId, FBCLID__c = FBCLID, Keyword_Match_Type__c = keywordMatchType, Site_Links__c = siteLinks);
             } else {
                 objLead = new Lead(nm_Keyword__c = Keywords, nm_AdvertisementCampaign__c = AdvertCampaign, Agency__c = AdvertAgency, utm_content__c = AdvertContent, nm_AdvertisementType__c = AdvertType, nm_AdvertisementSize__c = AdvertSize, nm_ReferringURL__c = ReferringURL, nm_IPForLead__c = IPAddress, nm_Timestamp_del__c = TimeStamp, LeadSource = leadSource, nm_OtherLeadSources__c = OtherLeadSource,
                 FirstName = FirstName, LastName = LastName, Email = EmailAddress, MobilePhone = ContactNumber, Age_Group__c = AgeGroup, nm_City_P__c = City, nm_SelectedIC__c = CenterName,
                 nm_StudentSelectedIC__c = Center,Partner_Lead_Source__c=PartnerLeadSource,Agency_Internal_Category__c =AgencyInternalCategory,LC_Wise_Marketing_Distribution_Date__c = Date.today(),
                 nm_Country_P__c = Country,Form_Id__c = fromId, Lead_Form_ID__c = leadFormID,
                 nm_ChooseaProgram__c = Program, Program_Type__c = ProgramType, Industry = Industry, nm_SelectedProgram__c = SelectProgram, Title = Title, nm_Company_Name__c = Company, nm_StateProvince_P__c = State, nm_PostalCode_P__c = ZipCode, GCLID__c = Google_Link, Country_Code__c = CountryCode, GACID__c = GACID,
-                Ad_Group__c = adgroup, Average_Position__c = adposition, Targeting__c = target, User_Location_Physical__c = physicallocation, User_Location_Interest__c = interestlocation, Networks__c = network, If_Mobile_and_If_Not_Mobile__c = devicemodel, Ads__c = ad, Placements__c = placement, Adgroup_ID__c = adgroupId, Campaign_ID__c = campaignId, Experiment_ID__c = experimentId, FBCLID__c = FBCLID, Keyword_Match_Type__c = keywordMatchType, Site_Links__c = siteLinks);
+                Ad_Group__c = adgroup,OTP_Verified_Key__c=otpVerifiedKey, Average_Position__c = adposition, Targeting__c = target, User_Location_Physical__c = physicallocation, User_Location_Interest__c = interestlocation, Networks__c = network, If_Mobile_and_If_Not_Mobile__c = devicemodel, Ads__c = ad, Placements__c = placement, Adgroup_ID__c = adgroupId, Campaign_ID__c = campaignId, Experiment_ID__c = experimentId, FBCLID__c = FBCLID, Keyword_Match_Type__c = keywordMatchType, Site_Links__c = siteLinks);
             }
             list <Lead> lstExistingLead = [SELECT id, Email, MobilePhone, LeadSource FROM Lead WHERE (Email=:EmailAddress OR MobilePhone=:ContactNumber) AND IsConverted=FALSE];
             if (lstExistingLead.size() > 0) {
@@ -281,7 +283,7 @@ global without sharing class CreateLeadRestForCampaign {
                 if (LeadId == null || LeadId == '') {
                     LeadId = objLead.id;
                 }
-    
+
     
                 if (leadThroughAgency) {
                     WapperId obj = new WapperId(LeadId, 'Duplicate', 'Duplicate');
@@ -483,6 +485,7 @@ global without sharing class CreateLeadRestForCampaign {
     
             if (mapOfCenterNameVsCenter1.containsKey(currentLocation) && programName != '') {
                 nm_Centers__c objCenter1 = mapOfCenterNameVsCenter1.get(currentLocation);
+                System.debug('center---->' + JSON.serialize(objCenter1));
                 if (
                     objCenter1.nm_ChooseaProgram__c != null &&
                     objCenter1.nm_ChooseaProgram__c != '' &&

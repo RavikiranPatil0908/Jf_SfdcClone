@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 07-22-2025
+ * @last modified on  : 11-24-2025
  * @last modified by  : @vickysahu
 **/
 public without sharing class HomePageController {
@@ -15,9 +15,10 @@ public without sharing class HomePageController {
     public Boolean isInterviewEnabled {get;set;}
     public Id leadId{get; set;}  // GMT tracking 
     public String studentStatus {get;set;}
-    public Boolean showPayment {get;set;}
+    // public Boolean showPayment {get;set;}
     public Boolean showRereg {get;set;}
     public Boolean showVideoCall {get;set;}
+    public String paymentUrl {get;set;}
 
     public HomePageController() {
         objSessionUser = new SessionUser();
@@ -29,9 +30,10 @@ public without sharing class HomePageController {
         isValid = false;
         studentno = '';
         isInterviewEnabled = false;
-        showPayment = false;
+        // showPayment = false;
         showRereg = false;
         showVideoCall = true;
+        //paymentUrl = '';
     }
 
     /**
@@ -41,7 +43,7 @@ public without sharing class HomePageController {
     * @return String 
     **/
     public String setPageBlock(String navigationParam) {
-        List<String> lstOfnavParams = new List<String>{'dashboard','payment','form','reviewForm','document','call','ticket','letter','interview','reregister','history'};
+        List<String> lstOfnavParams = new List<String>{'dashboard','payment','form','reviewForm','document','call','ticket','letter','interview','reregister','validity','history'};
         if(String.isNotBlank(navigationParam) && lstOfnavParams.contains(navigationParam)) {
             redirectUrl = '?nav='+navigationParam;
             return navigationParam == 'form' ? 'form1' : navigationParam;
@@ -59,7 +61,7 @@ public without sharing class HomePageController {
             if (objSessionUser.objType == 'Account') {
                 getAccount();
             } else if (objSessionUser.objType == 'Lead') {
-                showPayment = true;
+                // showPayment = true;
                 getLead();
             }
         } catch (Exception error) {
@@ -73,10 +75,11 @@ public without sharing class HomePageController {
     * @author @BK | 24-07-2024 
     **/
     public void getAccount() {
-        List<Account> lstAccount = [SELECT Id, nm_StudentStatus__c, nm_StudentNo__c, nm_ProgramType__c, nm_Program__r.Name, Program_Type__c,nm_LeadId__c,send_Interview_registration_mail__c,Interview_Status__c,is_Video_Call_Verified__c FROM Account WHERE Id=:objSessionUser.recordId LIMIT 1];
+            List<Account> lstAccount = [SELECT Id, nm_StudentStatus__c, Extend_Validity_upto_Month__c, Validity_Month__c, Validity_Year__c, Extend_Validity_Upto_Year__c, Batch__c, Provisional_With_Hold__c, Is_Lateral__c, nm_StudentNo__c, nm_ProgramType__c, nm_Program__r.Name, Program_Type__c,nm_LeadId__c,send_Interview_registration_mail__c,Interview_Status__c,is_Video_Call_Verified__c FROM Account WHERE Id=:objSessionUser.recordId LIMIT 1];
         if (lstAccount.size() > 0) {
+            // PaymentPageHandler objHandler = new PaymentPageHandler();
             Account objAccount = lstAccount[0];
-            List<Calender__c> lstCalender = new List<Calender__c>();
+            // List<Calender__c> lstCalender = new List<Calender__c>();
             List<Opportunity> lstOpp = [SELECT Id,nm_Session__c,nm_Year__c,nm_Fee_Type__c,AccountId FROM Opportunity WHERE AccountId=:objAccount.Id AND Is_Re_Registration_Payment__c=false LIMIT 1];
             RequestWrapper objWrapper = new RequestWrapper();
             objWrapper.chooseProgram = objAccount.nm_ProgramType__c;
@@ -88,13 +91,15 @@ public without sharing class HomePageController {
             isConfirmed = objAccount.nm_StudentStatus__c == 'Confirmed' && String.isNotBlank(objAccount.nm_StudentNo__c) ? true : false;
             leadId = objAccount.nm_LeadId__c;  // GMT tracking 
             studentStatus = objAccount.nm_StudentStatus__c;
-            lstCalender = [SELECT Id, Year__c, Specialisation__c, Session_End_Date__c, Session__c, Category__c, Session_Start_Date__c FROM Calender__c WHERE Category__c='Admission' AND nm_Type__c=:objWrapper.chooseProgram AND Specialisation__c=:objWrapper.programType AND Session_Start_Date__c <= Today AND Session_End_Date__c >= Today LIMIT 1];
-            showPayment = lstCalender.size() > 0 && lstCalender[0].Session__c == objWrapper.session && Integer.valueOf(lstCalender[0].Year__c) == objWrapper.year ? true : false;
+            // lstCalender = [SELECT Id, Year__c, Specialisation__c, Session_End_Date__c, Session__c, Category__c, Session_Start_Date__c FROM Calender__c WHERE Category__c='Admission' AND nm_Type__c=:objWrapper.chooseProgram AND Specialisation__c=:objWrapper.programType AND Session_Start_Date__c <= Today AND Session_End_Date__c >= Today LIMIT 1];
+            // showPayment = lstCalender.size() > 0 && lstCalender[0].Session__c == objWrapper.session && Integer.valueOf(lstCalender[0].Year__c) == objWrapper.year ? true : false;
             showRereg = String.isNotBlank(objAccount.nm_StudentNo__c) && !objAccount.nm_StudentNo__c.contains('_') ? true : false;
             showVideoCall = String.isNotBlank(objAccount.nm_StudentNo__c) && !objAccount.is_Video_Call_Verified__c ? false : showVideoCall;
+            // paymentUrl = objHandler.checkForLateFee(objAccount);
         }
     }
 
+    
     /**
     * @description 
     * @author @BK | 24-07-2024 
@@ -158,6 +163,11 @@ public without sharing class HomePageController {
         }
         if(!isValid) {
             queryData();
+            // if(String.isNotBlank(paymentUrl)) {
+            //     PageReference pgURL1 = new PageReference(paymentUrl);
+            //     pgURL1.setRedirect(true);
+            //     return pgURL1;
+            // }
         }
         return null;
     }

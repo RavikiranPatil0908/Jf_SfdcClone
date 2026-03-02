@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 16--07--2025
+ * @last modified on  : 16--02--2026
  * @last modified by  : @Ravi
 **/
 public without sharing class DocumentPageController {
@@ -31,7 +31,7 @@ public without sharing class DocumentPageController {
     public Boolean hideSubmitButton {get;set;}
     public String JsonMapOfFetchedFiles { get; set; }
     // public Boolean isDigiLockerSelected {get;set;}
-
+    
     public DocumentPageController() {
         showOldDocument = false; 
         isRecordExists = false;
@@ -265,18 +265,18 @@ public without sharing class DocumentPageController {
 
     // Fetch Lead data based on objectId
     private List<Lead> fetchLeadData(Id leadId) {
-        return [SELECT id, nm_RegistrationNo__c, FirstName, LastName, Email, MobilePhone,Differently_abled__c, nm_Eligibility_Criteria_Ref__c, HSC_status__c, 
-                nm_Program__r.Form_Specialisation__c, Are_you_from_Defence__c, Relationship__c, nm_ProgramName__c,
-                Diploma_status__c, Is_Lateral__c, nm_Program__r.Bachelor_Specialization__c, nm_ChooseaProgram__c, nm_Nationality__c 
-                ,nm_Category__c FROM Lead WHERE id = :leadId];
+        return [SELECT id, nm_RegistrationNo__c, FirstName, LastName, Email, MobilePhone,Differently_abled__c,nm_EligiblityCriteria__c,nm_Eligibility_Criteria_Ref__c, HSC_status__c, 
+                nm_Program__r.Form_Specialisation__c, Are_you_from_Defence__c, Relationship__c, nm_ProgramName__c,nm_12thPercentage__c,Percentage1__c,Result_Diploma__c,nm_BachelorsDegreePercentage__c,
+                Diploma_status__c, Is_Lateral__c, nm_Program__r.Bachelor_Specialization__c, nm_ChooseaProgram__c, nm_Nationality__c,Program_Type__c
+                ,nm_Category__c,Sem__c FROM Lead WHERE id = :leadId];
     }
 
     // Fetch Account data based on objectId
     private List<Account> fetchAccountData(Id accountId) {
         return [SELECT Id, nm_RegistrationNumber__c,Provisional_With_Hold__c ,Differently_abled__c, nm_StudentStatus__c, FirstName, LastName, PersonEmail, PersonMobilePhone, Eligibility_Criteria_Ref__c, 
-                Program_Type__c, nm_DefencePersonnel__c, nm_Relationship__c, nmStudent_Program__c, HSC_status__c, Diploma_status__c, 
-                Is_Lateral__c, nm_Program__r.Bachelor_Specialization__c, nm_Program__r.Form_Specialisation__c, nm_Nationality__c 
-                ,nm_Category__c FROM Account WHERE id = :accountId];
+                Program_Type__c, nm_DefencePersonnel__c, nm_Relationship__c, nmStudent_Program__c, HSC_status__c, Diploma_status__c,nm_EligiblityCriteria__c,Percentage1__c,nm_ResultDiploma__c,Percentage_Bachlor__c,nm_12thPercentage__c,
+                Is_Lateral__c, nm_Program__r.Bachelor_Specialization__c, nm_Program__r.Form_Specialisation__c, nm_Nationality__c,nm_ProgramType__c,nm_ChooseaProgram__c
+                ,nm_Category__c,Sem__c FROM Account WHERE id = :accountId];
     }
 
     // Update student details from Lead
@@ -291,6 +291,8 @@ public without sharing class DocumentPageController {
         objStudentDetails.programCategory = objLead.nm_ChooseaProgram__c;
         objStudentDetails.program = objLead.nm_Program__r.Bachelor_Specialization__c;
         objStudentDetails.programSpecialisaton = objLead.nm_Program__r.Form_Specialisation__c;
+        objStudentDetails.lateralSem =objLead.Sem__c;
+        objStudentDetails.isLateral =objLead.Is_Lateral__c;
     }
 
     // Update student details from Account
@@ -302,9 +304,11 @@ public without sharing class DocumentPageController {
         objStudentDetails.studentEmail = objAccount.PersonEmail;
         objStudentDetails.studentMobileNo = objAccount.PersonMobilePhone;
         objStudentDetails.eligibility = objAccount.Eligibility_Criteria_Ref__c;
-        objStudentDetails.programCategory = objAccount.Program_Type__c;
+        objStudentDetails.programCategory = objAccount.nm_ProgramType__c;
         objStudentDetails.program = objAccount.nm_Program__r.Bachelor_Specialization__c;
         objStudentDetails.programSpecialisaton = objAccount.nm_Program__r.Form_Specialisation__c;
+        objStudentDetails.lateralSem =objAccount.Sem__c;
+        objStudentDetails.isLateral =objAccount.Is_Lateral__c;
     }
 
     // Get mandatory documents for Lead
@@ -328,7 +332,14 @@ public without sharing class DocumentPageController {
 
     // Populate StudentStatus object with details from Lead or Account
     private void populateStudentStatus(GetMandatoryDocuments.StudentStatus objStatus, Lead objLead, String objectType) {
+       Map<String, Decimal> qualificationMap = new Map<String, Decimal>{
+        objLead.nm_EligiblityCriteria__c + '-HSC'          => objLead.nm_12thPercentage__c,
+        objLead.nm_EligiblityCriteria__c + '-Diploma'      => objLead.Result_Diploma__c,
+        objLead.nm_EligiblityCriteria__c + '-Graduation'   => objLead.nm_BachelorsDegreePercentage__c
+        // objLead.nm_EligiblityCriteria__c + '-PostGraduation' => (objLead.Percentage1__c == null ? null : Decimal.valueOf(objLead.Percentage1__c))
+       };
         objStatus.chooseProgram = objLead.nm_ChooseaProgram__c;
+        objStatus.programType =objLead.Program_Type__c;
         objStatus.eligibilityCriteria = objLead.nm_Eligibility_Criteria_Ref__c;
         objStatus.isDifferentlyAbled = objLead.Differently_abled__c;
         objStatus.isDefencePersonnel = objLead.Are_you_from_Defence__c;
@@ -341,11 +352,19 @@ public without sharing class DocumentPageController {
         objStatus.isIndian = objLead.nm_Nationality__c == 'Indian';
         objStatus.objectType = objectType;
         objStatus.castCertificateDocument = objLead.nm_Category__c;
+        objstatus.mapOfAcadmicsvsPercentage.putAll(qualificationMap);
     }
 
     // Overloaded method for Account
     private void populateStudentStatus(GetMandatoryDocuments.StudentStatus objStatus, Account objAccount, String objectType) {
-        objStatus.chooseProgram = objAccount.Program_Type__c;
+      Map<String, Decimal> qualificationMap = new Map<String, Decimal>{
+        objAccount.nm_EligiblityCriteria__c + '-HSC'          => objAccount.nm_12thPercentage__c,
+        objAccount.nm_EligiblityCriteria__c + '-Diploma'      => objAccount.nm_ResultDiploma__c,
+        objAccount.nm_EligiblityCriteria__c + '-Graduation'   => objAccount.Percentage_Bachlor__c
+        // objAccount.nm_EligiblityCriteria__c + '-PostGraduation' => (objAccount.Percentage1__c == null ? null : Decimal.valueOf(objAccount.Percentage1__c))
+       };
+        objStatus.chooseProgram = objAccount.nm_ProgramType__c;
+        objStatus.programType =objAccount.Program_Type__c;
         objStatus.eligibilityCriteria = objAccount.Eligibility_Criteria_Ref__c;
         objStatus.isDefencePersonnel = objAccount.nm_DefencePersonnel__c;
         objStatus.isDifferentlyAbled = objAccount.Differently_abled__c;
@@ -358,6 +377,7 @@ public without sharing class DocumentPageController {
         objStatus.isIndian = objAccount.nm_Nationality__c == 'Indian';
         objStatus.objectType = objectType;
         objStatus.castCertificateDocument = objAccount.nm_Category__c;
+        objStatus.mapOfAcadmicsvsPercentage.putAll(qualificationMap);
     }
 
     /**
@@ -849,7 +869,7 @@ public without sharing class DocumentPageController {
         msgHandler.refreshPage = refreshPage;
     }
 
-    public class DocumentWrapper {
+    public class DocumentWrapper {     //commnet by-Ravi   same Wrapper was used for Admission mobileApp in MobileAppFormPageAPI
         public DocumentWrapper() {
             this.showoldDocLink=false;
             this.recordId = null;

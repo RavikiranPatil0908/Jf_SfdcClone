@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 05--09--2025
+ * @last modified on  : 06--02--2026
  * @last modified by  : @Ravi
 **/
 public without sharing class FormPageController {
@@ -13,10 +13,9 @@ public without sharing class FormPageController {
     public String sectionName;
     public String reloadPageBlock ;
 
-    public Boolean passout = false;
-    public String yearOfPassing = '';
-    public String monthOfPassing = '';
-    public String program = '';
+    // public Boolean passout = false;
+    // public String yearOfPassing = '';
+    // public String monthOfPassing = '';
     public String Status ='';
     // public boolean IsvalidateDEBId  = false;
 
@@ -32,6 +31,7 @@ public without sharing class FormPageController {
     public Boolean isRecordQueried {get;set;}
     public String studentNumber {get;set;}
     public Boolean isLateral {get;set;}
+    public String oldProgram {get;set;}
     public Boolean isVerified { get; set; }
     public String copyPermanantAddressFromTo {get;set;}
     public String programNameForSpecialization {get; set;}
@@ -52,9 +52,11 @@ public without sharing class FormPageController {
     public String sectionPageBlock {get;set;}
     public String isConfirm {get;set;}
     public String errorMsg {get;set;}
+    public String exceptionError{get;set;}
     public Integer yearsEligibility { get; set; }
     public Set<Id> removedWorkExperience {get;set;}
     public DEBDetails debDetailObject {get;set;}
+    public LateralStudentResponse lateraldetails {get;set;}
 
     public List<SelectOption> getDomicile {get;set;}
     public List<SelectOption> getProgramsList {get;set;}
@@ -84,6 +86,7 @@ public without sharing class FormPageController {
         isDupChecked = null;
         isVerified=false;
         isLateral =false;
+        oldProgram='';
         isLateralData = false;
         postalCodeMessage = '';
         postalCode = '';
@@ -93,6 +96,7 @@ public without sharing class FormPageController {
         removedWorkExperience = new Set<Id>();
         mapOfIdVsProgram = new Map<String,nm_Program__c>();
         debDetailObject = new DEBDetails();
+        lateraldetails =new LateralStudentResponse();
         // studentImage = null;
     }
 
@@ -265,11 +269,14 @@ public without sharing class FormPageController {
         System.debug(lstAccount[0]);
             if(lstAccount.size() > 0) {
                 Account accountRecord = lstAccount[0]; 
-                    objLead.Student_Number_Lateral__c = accountRecord.Student_ID__c;
-                    objLead.Year_Of_Passing_Lateral__c = yearOfPassing;
-                    objLead.Month_Of_Passing_Lateral__c = monthOfPassing;
-                    objLead.Course_Name_Lateral__c = program;
+                    objLead.Student_Number_Lateral__c = lateraldetails.objAcc.Student_ID__c;
+                    objLead.Year_Of_Passing_Lateral__c = lateraldetails.yearOfPassing;
+                    objLead.Month_Of_Passing_Lateral__c =lateraldetails.monthOfPassing;
+                    objLead.Course_Name_Lateral__c =lateraldetails.oldprogram;
                     objLead.Is_Lateral__c =true;
+                    objLead.Sem__c = lateraldetails.enrolledSem;
+                    objLead.nm_Semester__c = lateraldetails.enrolledSem;
+                    objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
                     assigmentWrapper.leadIdRecordId=leadId;
                     assigmentWrapper.updateLeadData(accountRecord,leadId,objLead);
                     assigmentWrapper.addLateralStudentWkExperience(accountRecord.Id);   
@@ -312,6 +319,7 @@ public without sharing class FormPageController {
         getProgramsList();
         getElegibilityCriteriaList();
         getGlobalStateAndCountryValues();
+        getNMConfig();
         isRecordQueried = true;
     }
 
@@ -338,7 +346,7 @@ public without sharing class FormPageController {
         try {
             for (Schema.PicklistEntry entry : result) {
                 if (objLead.Is_Lateral__c) {
-                    if (lateralCoureName.startsWith('Diploma') || lateralCoureName.startsWith('MBA')) {
+                    if (lateralCoureName.startsWith('Diploma')) {
                         if (allowedProgramsForDiplomaAndDistanceProgram.contains(entry.getValue())) {
                             options.add(new SelectOption(entry.getValue(), entry.getLabel()));
                         }
@@ -366,6 +374,17 @@ public without sharing class FormPageController {
             System.debug('Message ==>' + error.getMessage());
             return null;
         }
+    }
+
+    public void getNMConfig() {
+        List<NM_Payment_Form_Configuration__c> lstNmConfig = new List<NM_Payment_Form_Configuration__c>();
+        if (String.isNotBlank(objLead.Program_Type__c)) {
+            lstNmConfig = [SELECT Id,DEB_Terms_And_Condition__c FROM NM_Payment_Form_Configuration__c WHERE Session__c=:objLead.nm_Session__c AND Current_Admission_Year__c=:String.valueOf(objLead.nm_Year__c) AND Program_Category__c=:objLead.nm_ChooseaProgram__c and Payment_Type__c ='Admission' and Program_Type__c=:objLead.Program_Type__c LIMIT 1];
+        }
+        else {
+            lstNmConfig = [SELECT Id,DEB_Terms_And_Condition__c FROM NM_Payment_Form_Configuration__c WHERE Session__c=:objLead.nm_Session__c AND Current_Admission_Year__c=:String.valueOf(objLead.nm_Year__c) AND Program_Category__c=:objLead.nm_ChooseaProgram__c and Payment_Type__c ='Admission' LIMIT 1];
+        }
+        debDetailObject.debTerms = lstNmConfig.size() > 0 ? lstNmConfig[0].DEB_Terms_And_Condition__c : '';
     }
 
     /**
@@ -447,7 +466,7 @@ public without sharing class FormPageController {
     * @author @BK | 19-07-2024 
     * @return List<SelectOption> 
     **/
-    public List<SelectOption> getProgramsList(){
+    public List<SelectOption> getProgramsList(){     //comment by- Ravi same mathod copied in GetpickilistvaluesAPI class if any logic updated need to update the same for Admission App and inform
         List<SelectOption> lstProgramsOptions = new List<SelectOption>();
         Map<String,Id> MapOfSpecialisationVsId = new Map<String,Id>();
         String chooseProgram = objLead.nm_ChooseaProgram__c;
@@ -479,7 +498,6 @@ public without sharing class FormPageController {
                     MapOfSpecialisationVsId.put(objProgram.Specialisation__c,objProgram.Id);
                 }
             }
-
             if(MapOfSpecialisationVsId.size() > 0) {
                 jsonMapOfSpecialisationVsId = JSON.serialize(MapOfSpecialisationVsId);
             }
@@ -492,7 +510,7 @@ public without sharing class FormPageController {
     * @author @BK | 19-07-2024 
     * @return List<SelectOption> 
     **/
-    public List<SelectOption> getSpecializationList(){
+    public List<SelectOption> getSpecializationList(){   //comment by- Ravi   same mathod copied in GetpickilistvaluesAPI class if any logic updated need to update the same for MobileApp
         Map<String,String> mapOfSpecialisationForMaster = new Map<String,String>{
             'MBA (WX)' => 'Master of Business Administration (Working Executive)'
         };
@@ -534,7 +552,7 @@ public without sharing class FormPageController {
     * @description 
     * @author @BK | 19-07-2024 
     **/
-    public void nextPage(){
+    public void nextPage(){          //Comment by- Ravi  same mathod called from MobileAppFormPageAPIHandler class if any logic updated need to check the same for Admission App
         errorMsg = '';
         System.debug('objLead---'+objLead);
         if(validateFormOnServerSide()) {
@@ -548,6 +566,9 @@ public without sharing class FormPageController {
                errorMsg = 'Duplicate record found, Kindly contact our Support Team.';
                 return;
             } 
+            if (objLead.Agree_DEB_Terms__c && System.Label.Enable_DEB_Verification == 'No') {
+                objLead.DEB_Terms_And_Condition__c = debDetailObject.debTerms;
+            } 
             // objLead.nm_StudentImageUrl__c = studentImage;
             objLead.Partial_form_filled__c = true;
             objLead.StudentLogin__c=false;
@@ -557,8 +578,10 @@ public without sharing class FormPageController {
             System.debug('Error-->' + String.valueof(e));
             if(string.valueof(e).contains('duplicate value found') && string.valueof(e).contains('nm_CheckforDuplicacy__c')){
                 errorMsg = 'Mobile no or EmailId already exist. Please enter valid mobile no. or EmailId.';
+                exceptionError= ''+e.getMessage();
             } else {
                 errorMsg = 'Internal error occured. Kindly contact our Support Team.';
+                exceptionError= ''+e.getMessage();
             }
         }
         System.debug('After ==>'+sectionPageBlock);
@@ -569,7 +592,8 @@ public without sharing class FormPageController {
     * @description 
     * @author @BK | 19-07-2024 
     **/
-    public void goToConfirmationForm() {
+    public void goToConfirmationForm() {  //comment by- Ravi  same mathod called from MobileAppFormPageAPIHandler class if any logic updated need to check the same for Admission App
+        errorMsg = '';
         try{
              copyAddress();
             System.debug('GoToConfirmationForm ---> ');
@@ -593,11 +617,11 @@ public without sharing class FormPageController {
             System.debug('error Msg on Submit 1==>'+e.getMessage());
             System.debug('error Msg on Submit 2==>'+e.getLineNumber());
             objLead.id = null;
+            exceptionError= ''+e.getMessage();
             errorMsg = 'Internal error occured. Kindly contact our Support Team.';
             return;
         }
     }
-
     /**
     * @description 
     * @author @BK | 9-08-2024 
@@ -636,7 +660,7 @@ public without sharing class FormPageController {
     **/
     public String isDuplicateAccountExist(){
         System.debug('isDupChecked-->'+isDupChecked);
-        if(String.isNotBlank(isDupChecked) || isDupChecked=='Duplicate') {
+                if(String.isBlank(isDupChecked) || isDupChecked=='Duplicate') {
             String chooseProgram = objLead.nm_ChooseaProgram__c;
             List<Account> lstAccount = new List<Account>();
             if('Certificate Programs'.equalsIgnoreCase(chooseProgram)) {
@@ -749,8 +773,7 @@ public without sharing class FormPageController {
             objLead.nm_StateProvince_P__c = objLead.State_Province_Shipping__c;
             objLead.nm_Country_P__c = objLead.Country_Shipping__c;
             objLead.nm_City_P__c = objLead.Shipping_City__c;
-            objLead.nm_PostalCode_P__c = objLead.Zip_Postal_Code_Shipping__c;   
-
+            objLead.nm_PostalCode_P__c = objLead.Zip_Postal_Code_Shipping__c;                         
             objLead.nm_HouseNumber__c = objLead.House_No_Name_Shipping__c;
             objLead.nm_LocalityName__c = objLead.Locality_Name_Shipping__c; 
             objLead.Street = objLead.Shipping_Street__c;
@@ -770,158 +793,142 @@ public without sharing class FormPageController {
         }
     }
     
-    //         if(passout) {
-    //             if((objLead.nm_ChooseaProgram__c.startsWith('Diploma') && objAcc.nm_ChooseaProgram__c == 'Diploma Programs') ||
-    //             ((objLead.nm_ChooseaProgram__c.startsWith('Diploma') || (objLead.nm_ChooseaProgram__c.contains('Master Programs') && objLead.Program_Type__c=='MBA')) &&
-    //             objAcc.nm_ChooseaProgram__c == 'Certificate Programs' && objAcc.nm_Program__r.Name == 'C-BM' && objAcc.BatchStartD__c > date.newinstance(2019, 1, 1)) ||
-    //             ((objLead.nm_ChooseaProgram__c.contains('Master Programs') && objLead.Program_Type__c=='MBA') && objAcc.nm_ChooseaProgram__c == 'Diploma Programs'))  {
-    //                 objLead.Is_Lateral__c = true;
-    //             }
-
     /**
      * @description getLateralStudentDetailsFromStudentNo
      * @author @Ravi | 15--01--2025 
      **/
     public void getLateralStudentDetailsAPI() {
         try {
-            List<Student_Lateral_Sem_Mapping__c> objLateralSemMapping = new List<Student_Lateral_Sem_Mapping__c>();
-            Student_Lateral_Sem_Mapping__c objSemMapping = new Student_Lateral_Sem_Mapping__c();
+            Account objAcc = new Account();
             String lateralNo = studentNumber.trim();
             isLateral = false;
             lateralMessage = '';
-            System.debug('Student Lateral Number ---->' + lateralNo);
-
-            // Query lateral student account
-            List<Account> lstAccount = [SELECT Id, FirstName, LastName, nm_Program__r.nm_TotalSemesters__c, Program_Name__c, nm_DateOfBirth__c, PersonMobilePhone, PersonEmail, PersonContactId, Is_Mobile_Verified__c, nm_IsEmailVerified__c,
-                Passing_Year__c, Passing_Month__c, Pass_Out__c, nm_ChooseaProgram__c 
-                FROM Account 
-                WHERE Student_ID__c != null AND Student_ID__c LIKE :lateralNo 
-                LIMIT 1];
-            Account objAcc = lstAccount.size() > 0 ? lstAccount[0] : null;
-
-            if (objAcc != null) {
-                // Get student program details
-                List<nm_StudentProgram__c> objStudentProg = [SELECT id, nm_Student__c, Certificate_Issue__c, Certificate_Issue__r.nm_ProgramName__c, Certificate_Issue__r.nm_Type__c, ProgramType__c, nm_Program__c, nm_Program__r.nm_ProgramName__c, nm_Program__r.prgst__c, Certificate_Issue__r.prgst__c
-                    FROM nm_StudentProgram__c 
-                    WHERE nm_Student__r.Student_ID__c = :lateralNo];
-                nm_StudentProgram__c objstuProg = objStudentProg.size() > 0 ? objStudentProg[0] : null;
-                System.debug('objStudentProg -->' + objstuProg);
-
-                // Fetch lateral mapping based on program
-                String mappedProg = objstuProg.Certificate_Issue__c != null ? objstuProg.Certificate_Issue__c : objstuProg.nm_Program__c;
-                objLateralSemMapping = [SELECT Id, Lateral_Admission_to_the_Program__c, Old_Program__c, Future_Lateral_Sem__c  
-                    FROM Student_Lateral_Sem_Mapping__c 
-                    WHERE Lateral_Admission_to_the_Program__c = :objLead.nm_ChooseaProgram__c 
-                    AND Old_Program__c = :mappedProg];
-                objSemMapping = objLateralSemMapping.size() > 0 ? objLateralSemMapping[0] : null;
-
-                // Get program structure years
-                String progStructure = objstuProg != null ? objstuProg.nm_Program__r.prgst__c : null;
-                String CertifiStructure = (objstuProg != null && objstuProg.Certificate_Issue__c != null) ? objstuProg.Certificate_Issue__r.prgst__c : null;
-                Integer yearInt = progStructure != null ? Integer.valueOf(progStructure.right(4)) : null;
-                Integer certYearInt = CertifiStructure != null ? Integer.valueOf(CertifiStructure.right(4)) : null;
-
-                // Check if student is eligible for lateral (based on batch and certificate)
-                if (objstuProg.Certificate_Issue__c == null && yearInt != null && yearInt < 2019) {
+            map<String,Object> studentDetails = LateralDataAssigmentWrapper.validateLateralStudentDetails(lateralNo,objLead.nm_ChooseaProgram__c);
+            if(studentDetails != null) {
+                String status =String.valueOf(studentDetails.get('status'));
+                if(status == 'Error') {
                     setStudentAsNonLateral();
-                    lateralMessage = 'You are not eligible for lateral admission.';
-                    return;
-                } else if (objstuProg.Certificate_Issue__c != null && certYearInt != null && certYearInt < 2019) {
-                    setStudentAsNonLateral();
-                    lateralMessage = 'You are not eligible for lateral admission.';
+                    lateralMessage = String.valueOf(studentDetails.get('message'));
                     return;
                 }
-
-                if (objAcc.Pass_Out__c) {
-                    System.debug('Stage 3');
-                    passout = objAcc.Pass_Out__c;
-                } else {
-                    String jsonBody = '{"sapid":"' + lateralNo + '"}';
-                    Http http = new Http();
-                    HttpRequest request = new HttpRequest();
-                    HttpResponse response = new HttpResponse();
-                    
-                    request.SetEndPoint(System.Label.getPassedYearMonthBySapid);
-                    request.setHeader('Content-Type', 'application/json');
-                    request.setMethod('POST');
-                    request.setBody(jsonBody);
-                    response = http.send(request);
-                    
-                    System.debug('Response Body====>' + response.getBody());
-                    String result = response.getBody();
-                    Map<String, Object> mapOfAPIResponse = (Map<String, Object>) JSON.deserializeUntyped(result);
-                    
-                    Status = mapOfAPIResponse.containsKey('status') ? (String) mapOfAPIResponse.get('status') : '';
-                    if (Status == 'Success') {
-                        passout = true;
-                        yearOfPassing = (String) mapOfAPIResponse.get('yearOfPassing');
-                        monthOfPassing = (String) mapOfAPIResponse.get('monthOfPassing');
-                        program = (String) mapOfAPIResponse.get('program');
-                    } else {
-                        passout = false;
+                if(status == 'Success') {
+                      lateraldetails =  (LateralStudentResponse) JSON.deserialize(JSON.serialize(studentDetails.get('data')),LateralStudentResponse.class);
+                     if (lateraldetails.objAcc != null) {
+                        objAcc = lateraldetails.objAcc;
                     }
+                     setOTPFields(objAcc);
                 }
-
-                if (passout) {
-                    System.debug('Stage 4');
-                    if(!objAcc.Pass_Out__c){
-                        markPassout(lateralNo,objAcc);
-                    }
-                    // Check if program is Post Graduate Diploma (not eligible for lateral)
-                    if ((objstuProg.Certificate_Issue__c == null && objstuProg.ProgramType__c == 'Post Graduate Diploma Programs') 
-                        || (objstuProg.Certificate_Issue__c != null && objstuProg.Certificate_Issue__r.nm_Type__c == 'Post Graduate Diploma Programs')) {
-                        setStudentAsNonLateral();
-                        System.debug('Stage 5');
-                        lateralMessage = 'You are not eligible for lateral admission.';
-                        return;
-                    }
-                    // MBA (Distance) or Diploma in Business Management --> Lateral Sem 3
-                    if ((objstuProg.Certificate_Issue__c == null && (objstuProg.ProgramType__c == 'MBA (Distance) Programs' || objstuProg.nm_Program__r.nm_ProgramName__c == 'Diploma in Business Management'))) {
-                        objLead.Sem__c = '3';
-                        objLead.nm_Semester__c = '3';
-
-                    // Certificate in Business Management --> Lateral Sem 2
-                    } else if (objstuProg.Certificate_Issue__c == null && objstuProg.nm_Program__r.nm_ProgramName__c == 'Certificate in Business Management') {
-                        objLead.Sem__c = '2';
-                        objLead.nm_Semester__c = '2';
-
-                    // If lateral mapping exists, use mapped semester
-                    } else if (objSemMapping != null) {
-                        objLead.Sem__c = objSemMapping.Future_Lateral_Sem__c;
-                        objLead.nm_Semester__c = objSemMapping.Future_Lateral_Sem__c;
-
-                    // If nothing matches, student is not eligible
-                    } else {
-                        setStudentAsNonLateral();
-                        lateralMessage = 'You are not eligible for lateral admission.';
-                        return;
-                    }
-                    // Set final details if eligible
-                    objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
-                    program = objstuProg.Certificate_Issue__c == null ? objstuProg.nm_Program__r.nm_ProgramName__c : objstuProg.Certificate_Issue__r.nm_ProgramName__c;
-                    yearOfPassing = objAcc.Passing_Year__c;
-                    monthOfPassing = objAcc.Passing_Month__c;
-                    setOTPFields(objAcc);
-
-                } else {
-                    // Student not marked as pass-out --> not eligible for lateral
-                    setStudentAsNonLateral();
-                    lateralMessage = 'You are not eligible for lateral admission.';
-                    return;
-                }
-            } else {
-                System.debug('Stage 7');
-                setStudentAsNonLateral();
-                lateralMessage = 'No match found for entered SAP ID.';
-                return;
             }
+            // // List<Student_Lateral_Sem_Mapping__c> objLateralSemMapping = new List<Student_Lateral_Sem_Mapping__c>();
+            // // Student_Lateral_Sem_Mapping__c objSemMapping = new Student_Lateral_Sem_Mapping__c();
+            // String lateralNo = studentNumber.trim();
+            // System.debug('Student Lateral Number ---->' + lateralNo);
+
+            // // Query lateral student account
+            // List<Account> lstAccount = [SELECT Id, FirstName, LastName, nm_Program__r.nm_TotalSemesters__c, nm_Drive_Name__c,Program_Name__c, nm_DateOfBirth__c, PersonMobilePhone, PersonEmail, PersonContactId, Is_Mobile_Verified__c, nm_IsEmailVerified__c,
+            //                              Passing_Year__c, Passing_Month__c, Pass_Out__c, nm_ChooseaProgram__c  FROM Account  WHERE Student_ID__c != null AND Student_ID__c LIKE :lateralNo  LIMIT 1];
+            // Account objAcc = lstAccount.size() > 0 ? lstAccount[0] : null;
+
+            // if (objAcc != null) {
+            //     if (!String.isBlank(objAcc.nm_Drive_Name__c)) {
+            //         Date studentDriveDate = LateralDataAssigmentWrapper.convertDriveToDate(objAcc.nm_Drive_Name__c);
+
+            //         Date allowUpToDate = Date.newInstance(2024, 7, 1);
+            //         if (studentDriveDate == null || studentDriveDate < allowUpToDate) {
+            //             setStudentAsNonLateral();
+            //             lateralMessage = 'You are not eligible for lateral admission.';
+            //             return;
+            //         }
+            //     }
+            //     // Get student program details
+            //     List<nm_StudentProgram__c> objStudentProg = [SELECT id, nm_Student__c, Certificate_Issue__c, Certificate_Issue__r.nm_ProgramName__c, Certificate_Issue__r.nm_Type__c, ProgramType__c, nm_Program__c, nm_Program__r.nm_ProgramName__c, nm_Program__r.prgst__c, Certificate_Issue__r.prgst__c
+            //                                                  FROM nm_StudentProgram__c WHERE nm_Student__r.Student_ID__c = :lateralNo];
+            //     nm_StudentProgram__c objstuProg = objStudentProg.size() > 0 ? objStudentProg[0] : null;
+            //     System.debug('objStudentProg -->' + objstuProg);
+
+            //     // Get program structure years
+            //     String progStructure = objstuProg != null ? objstuProg.nm_Program__r.prgst__c : null;
+            //     String CertifiStructure = (objstuProg != null && objstuProg.Certificate_Issue__c != null) ? objstuProg.Certificate_Issue__r.prgst__c : null;
+            //     Integer yearInt = progStructure != null ? Integer.valueOf(progStructure.right(4)) : null;
+            //     Integer certYearInt = CertifiStructure != null ? Integer.valueOf(CertifiStructure.right(4)) : null;
+
+            //     // Check if student is eligible for lateral (based on batch and certificate)
+            //     if (objstuProg.Certificate_Issue__c == null && yearInt != null && yearInt < 2024) {
+            //         setStudentAsNonLateral();
+            //         lateralMessage = 'You are not eligible for lateral admission.';
+            //         return;
+            //     } else if (objstuProg.Certificate_Issue__c != null && certYearInt != null && certYearInt < 2024) {
+            //         setStudentAsNonLateral();
+            //         lateralMessage = 'You are not eligible for lateral admission.';
+            //         return;
+            //     }
+
+            //     // Fetch lateral mapping based on program
+            //     String mappedProg = objstuProg.Certificate_Issue__c != null ? objstuProg.Certificate_Issue__r.nm_ProgramName__c : objstuProg.nm_Program__r.nm_ProgramName__c;
+            //     // objLateralSemMapping = [SELECT Id, Lateral_Admission_to_the_Program__c, Old_Program__c, Future_Lateral_Sem__c   FROM Student_Lateral_Sem_Mapping__c  WHERE Lateral_Admission_to_the_Program__c = :objLead.nm_ChooseaProgram__c AND Old_Program__c = :mappedProg];
+            //     // objSemMapping = objLateralSemMapping.size() > 0 ? objLateralSemMapping[0] : null;
+        
+            //     if (objAcc.Pass_Out__c) {
+            //         System.debug('Stage 3');
+            //         passout = objAcc.Pass_Out__c;
+            //         yearOfPassing = objAcc.Passing_Year__c;
+            //         monthOfPassing = objAcc.Passing_Month__c;
+            //         oldProgram = objstuProg.Certificate_Issue__c == null ? objstuProg.nm_Program__r.nm_ProgramName__c : objstuProg.Certificate_Issue__r.nm_ProgramName__c;
+            //     } else {
+            //         checkIsPasswithPortal(lateralNo);
+            //     }
+            //     if (passout) {
+            //         System.debug('Stage 4');
+            //         if(!objAcc.Pass_Out__c){
+            //             LateralDataAssigmentWrapper.markPassout(lateralNo,objAcc);
+            //         }
+            //         // Diploma in Business Management --> Lateral Sem 3
+            //         if ((objLead.nm_ChooseaProgram__c =='MBA (Online) Programs' &&  mappedProg == 'Diploma in Business Management')) {
+            //             objLead.Sem__c = '3';
+            //             objLead.nm_Semester__c = '3';
+
+            //         // Other Diploma programs --> Lateral Sem 2
+            //         } else if((objLead.nm_ChooseaProgram__c =='MBA (Online) Programs' &&  mappedProg.startsWith('Diploma'))){
+            //             objLead.Sem__c = '2';
+            //             objLead.nm_Semester__c = '2';
+                    
+            //          // CBM --> Lateral Sem 2
+            //         } else if ((objLead.nm_ChooseaProgram__c =='MBA (Online) Programs' || objLead.nm_ChooseaProgram__c == 'Diploma Programs') && mappedProg == 'Certificate in Business Management') {
+            //             objLead.Sem__c = '2';
+            //             objLead.nm_Semester__c = '2';
+
+            //         // // If lateral mapping exists, use mapped semester
+            //         // } else if (objSemMapping != null) {
+            //         //     objLead.Sem__c = objSemMapping.Future_Lateral_Sem__c;
+            //         //     objLead.nm_Semester__c = objSemMapping.Future_Lateral_Sem__c;
+
+            //         // If nothing matches, student is not eligible
+            //         } else {
+            //             setStudentAsNonLateral();
+            //             lateralMessage = 'You are not eligible for lateral admission.';
+            //             return;
+            //         }
+            //         // Set final details if eligible
+            //         objLead.Lead_Lateral_Catogery__c = 'Lateral Admission';
+            //         setOTPFields(objAcc);
+            //     } else {
+            //         // Student not marked as pass-out --> not eligible for lateral
+            //         setStudentAsNonLateral();
+            //         lateralMessage = 'You are not eligible for lateral admission.';
+            //         return;
+            //     }
+            // } else {
+            //     System.debug('Stage 7');
+            //     setStudentAsNonLateral();
+            //     lateralMessage = 'No match found for entered SAP ID.';
+            //     return;
+            // }
         } catch (Exception e) {
             System.debug('Error Message => ' + e.getMessage());
             System.debug('Error Line Number => ' + e.getLineNumber());
             lateralMessage = 'Internal error occurred. Kindly contact our Support Team.';
         }
     }
-
 
     /**
     * @description 
@@ -1001,42 +1008,6 @@ public without sharing class FormPageController {
             System.debug('in send OTP verification handler'+objOTP.OtpMode);
             objOTP = objVerifyHandler.triggerToSendOTP(objOTP);
             return objOTP.isOTPSent;
-    }
-
-    /**
-    * @description 
-    * @author @BK | 19-07-2024 
-    * @param String studentNumber 
-    * @param Account objAccount 
-    **/
-    public void markPassout(String studentNumber, Account objAccount) {
-        Account objAcc =new Account();
-        objAcc.Id = objAccount.Id;
-        Integer sems = Integer.valueOf(objAccount.nm_Program__r.nm_TotalSemesters__c);
-        System.debug('sems ==>' + sems);
-        switch on sems {
-            when 1 {
-                objAccount.Sem_1__c = true;
-            }
-            when 2 {
-                objAccount.Sem_1__c = true;
-                objAccount.Sem_2__c = true;
-            }
-            when 3 {
-                objAccount.Sem_1__c = true;
-                objAccount.Sem_2__c = true;
-                objAccount.Sem_3__c = true;
-            }
-            when 4 {
-                objAccount.Sem_1__c = true;
-                objAccount.Sem_2__c = true;
-                objAccount.Sem_3__c = true;
-                objAccount.Sem_4__c = true;
-            }
-        }
-        System.debug(objAccount);
-        objAccount.Pass_Out__c = true;
-        update objAccount;
     }
 
     /**
@@ -1185,7 +1156,7 @@ public without sharing class FormPageController {
     * @author @BK | 19-07-2024 
     * @return List<SelectOption> 
     **/
-    public List<SelectOption> getElegibilityCriteriaList(){
+    public List<SelectOption> getElegibilityCriteriaList(){   //comment by- Ravi   same mathod copied in MobileAppFormPageAPIHandler class if any logic updated here need to update the same for Admission App 
         List<SelectOption> lstECOptions = new List<SelectOption>();
         Map<String,String> mapOfEligibilityVsWorkExp = new Map<String,String>();
         Map<String,Decimal> mapOfEligibilityVsRequiredAcademicPercentage = new Map<String,Decimal>();
@@ -1332,20 +1303,6 @@ public without sharing class FormPageController {
     }
     
     /**
-    * @description 
-    * @author @BK | 19-07-2024 
-    * @return List<SelectOption> 
-    **/
-    // public List<SelectOption> getLateralOptions(){
-    //     List<SelectOption> options = new List<SelectOption>();
-    //     options.add(new SelectOption('','Do you want to opt for Lateral Admission?'));
-    //     options.add(new SelectOption('true','Yes'));
-    //     options.add(new SelectOption('false','No'));
-    //     return options; 
-    // } 
-
-
-    /**
     * @description for MBA Executive Programs
     * @author @BK | 19-07-2024 
     * @return list<SelectOption> 
@@ -1418,39 +1375,37 @@ public without sharing class FormPageController {
         try {
             Integer monthDiff = 0;
             List<nm_WorkExperience__c> lstWEToUpsert = new List<nm_WorkExperience__c>();
+            List<String> expList =new List<String>();
         
             System.debug('lstWorkExperience--'+lstWorkExperience);
             for(nm_WorkExperience__c objWE : lstWorkExperience) {
                 objWE.nm_Lead__c = LeadId;
-                System.debug('mapOfNameVsId--'+mapOfNameVsId);
-                System.debug('mapOfNameVsId.containsKey(objWE.Name) '+mapOfNameVsId.containsKey(objWE.Name));
-                System.debug('objWE.Name'+objWE.Name);
-                
                 objWE.Id = objWE.Name!=null && mapOfNameVsId.containsKey(objWE.Name) ? mapOfNameVsId.get(objWE.Name) : null;
                  System.debug('duplicate WEId: '+objWE.Id);
                 if((objWE.nm_StartDate__c != null && objWE.nm_EndDate__c != null) || objWE.Currently_Working_Here__c == true){
                     lstWEToUpsert.add(objWE);
-    
-                    Date a = objWE.nm_StartDate__c;
-                    Date b = Date.today();
-                    if(objWE.Currently_Working_Here__c == false) {
-                        b = objWE.nm_EndDate__c;
-                    }
-                    monthDiff += a.monthsBetween(b);
-                    if (b.day() > a.day()){
-                        monthDiff++;
-                    }
+                    expList.add(objWE.Total_Work_experience__c);
+                    // Date a = objWE.nm_StartDate__c;
+                    // Date b = Date.today();
+                    // if(objWE.Currently_Working_Here__c == false) {
+                    //     b = objWE.nm_EndDate__c;
+                    // }
+                    // monthDiff += a.monthsBetween(b);
+                    // if (b.day() > a.day()){
+                    //     monthDiff++;
+                    // }
                 }
             }
 
             if( lstWEToUpsert.size() > 0 ){ 
-                getWXPListToUpsert(monthDiff, lstWEToUpsert);
+                getWXPListToUpsert(expList, lstWEToUpsert);
             }
             resetAfterUpsert();
             return false;
         }
         catch( Exception e){
             resetAfterUpsert();
+            exceptionError= ''+e.getMessage();
             errorMsg = 'Internal error occured. Kindly try again later';
             return true;
         }
@@ -1462,7 +1417,7 @@ public without sharing class FormPageController {
     * @param Integer monthDiff 
     * @param List<nm_WorkExperience__c> lstWEToUpsert 
     **/
-    private void getWXPListToUpsert(Integer monthDiff, List<nm_WorkExperience__c> lstWEToUpsert) {
+    private void getWXPListToUpsert(List<String> totalExpList, List<nm_WorkExperience__c> lstWEToUpsert) {
         try {
             //to delete removed workexpereince.
             System.debug('lstWEToUpsert Records: ' + lstWEToUpsert);
@@ -1470,27 +1425,71 @@ public without sharing class FormPageController {
             if(removedWorkExperience.size() > 0){              
                 delete [select Id from nm_WorkExperience__c where Id in :removedWorkExperience];
             }
-            
             //to make string of total months into years and month
-            System.debug('monthDiff--'+monthDiff);
-            if(monthDiff > 0) {
-                Integer months = math.MOD(monthDiff, 12);
-                Integer year = monthDiff/12;
-                System.debug(year + ' year ' +  months + 'Months');
-                objLead.Total_Work_Experience__c = year + ' year ' +  months + 'Months';
-                Integer score = year*5;
-                Integer maximumScore = Integer.valueOf(System.label.workExperienceScore);
-                if(score > maximumScore) {
-                    score = maximumScore;
-                }
-                objLead.Work_exp_Score__c = score;
+            if(totalExpList.size() > 0) {
+                String overallExp = addOverAllWorkExp(totalExpList);
+                objLead.Total_Work_Experience__c = overallExp;
             }
-                
             upsert lstWEToUpsert;
         } catch (Exception error) {
             System.debug('Error ==>'+error.getMessage());
             resetAfterUpsert();
         }
+    }
+
+    /**
+    * @description 
+    * @author @Ravi | 05--01--2026 
+    * @param List<String> expList 
+    * @return String 
+    **/
+    private String addOverAllWorkExp(List<String> expList) {
+
+        Integer totalYears = 0;
+        Integer totalMonths = 0;
+        Integer totalDays = 0;
+        for (String exp : expList) {
+            Map<String, Integer> parsed = parseWorkExp(exp);
+            totalYears  += parsed.get('years');
+            totalMonths += parsed.get('months');
+            totalDays   += parsed.get('days');
+        }
+        // Days → Months
+        if (totalDays >= 30) {
+            totalMonths += totalDays / 30;
+            totalDays = Math.mod(totalDays, 30);
+        }
+        // Months → Years
+        if (totalMonths >= 12) {
+            totalYears += totalMonths / 12;
+            totalMonths = Math.mod(totalMonths, 12);
+        }
+        Integer score = totalYears*5;
+        Integer maximumScore = Integer.valueOf(System.label.workExperienceScore);
+        if(score > maximumScore) {
+            score = maximumScore;
+        }
+        objLead.Work_exp_Score__c = score;
+        return totalYears + ' Years ' + totalMonths + ' Months ' + totalDays + ' Days';
+    }
+
+    /**
+    * @description 
+    * @author @Ravi | 05--01--2026 
+    * @param String expText 
+    * @return Map<String, Integer> 
+    **/
+    private Map<String, Integer> parseWorkExp(String expText) {
+        Map<String, Integer> result = new Map<String, Integer>{ 'years'  => 0, 'months' => 0, 'days'   => 0  };
+        if (String.isBlank(expText)) {
+            return result;
+        }
+        List<String> parts = expText.split(' ');
+        // Expected format: X Years Y Months Z Days
+        result.put('years',  Integer.valueOf(parts[0]));
+        result.put('months', Integer.valueOf(parts[2]));
+        result.put('days',   Integer.valueOf(parts[4]));
+        return result;
     }
 
     /**
@@ -1547,8 +1546,8 @@ public without sharing class FormPageController {
             'Mother_Name__c,nmm_BatchName__c,nm_InformationCenter__r.Nm_Active__c,nm_InformationCenter__r.nm_LearningCenter__c,nm_InformationCenter__r.nm_LearningCenter__r.Allow_Degree__c,'+
             'Father_s_Email_Id__c,Father_s_Mobile_number__c,Mother_s_Email_Id__c,Mother_s_Mobile_number__c,Is_Non_Lateral__c,Differently_abled__c,Your_disability__c,nm_SSC_Rating_Type__c,SSC_Marks_obtained__c,SSC_Marks_Out_Off__c,'+
             'SSC_Examination_State__c,HSC_status__c,HSC_Marks_obtained__c,HSC_Marks_Out_Off__c,HSC_Examination_State__c,nm_HSC_Rating_Type__c,nm_12thPercentage__c,ABCID__c,DEBID__c,'+
-            'Diploma_Examination_State__c,Diploma_Marks_obtained__c,Diploma_Marks_Out_Off__c,Diploma_Percentage__c,Diploma_status__c ,Other_Name_of_Program1__c,Master_s_Degree_Name__c,'+
-            'Profile_Name__c,nm_Mother_Tongue__c,nm_Other_Mother_Tongue__c,nm_WorkExperience__c,nm_Other_Reason__c,nm_StudentImageUrl__c,StudentLogin__c,nm_SelectedIC__c, Adhar_Card_Number__c,Is_Lateral__c,Lateral_Editable_set__c,OwnerId,Locality__c  FROM Lead';
+            'Diploma_Examination_State__c,Diploma_Marks_obtained__c,Diploma_Marks_Out_Off__c,Diploma_Percentage__c,Diploma_status__c ,Other_Name_of_Program1__c,Master_s_Degree_Name__c,Agree_DEB_Terms__c,DEB_Terms_And_Condition__c,'+
+            'Profile_Name__c,nm_Mother_Tongue__c,nm_Other_Mother_Tongue__c,nm_WorkExperience__c,nm_Other_Reason__c,nm_StudentImageUrl__c,StudentLogin__c,nm_SelectedIC__c,Sem__c, Adhar_Card_Number__c,Is_Lateral__c,Lateral_Editable_set__c,OwnerId,Locality__c  FROM Lead';
     }
 
     /**
@@ -1557,10 +1556,10 @@ public without sharing class FormPageController {
     * @return String 
     **/
     public String accountQuery() { 
-        return 'SELECT Id,nm_RegistrationNumber__c,nm_StudentStatus__c,nm_StudentImageUrl__c,Salutation,FirstName,LastName,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c,nm_Program__r.Bachelor_Specialization__c,'+
+        return 'SELECT Id,nm_RegistrationNumber__c,nm_StudentNo__c,nm_StudentStatus__c,nm_StudentImageUrl__c,Salutation,FirstName,LastName,nm_DateOfBirth__c,nm_Gender__c,nm_MaritialStatus__c,nm_Program__r.Bachelor_Specialization__c,'+
             'Father_Name__c,Father_Last_Name__c,Father_First_Name__c,Father_Salutation__c,Mother_Salutation__c,Mother_First_Name__c,Mother_Last_Name__c,Mother_Name__c,nm_SpouseName__c,nm_BloodGroup__c,nm_Category__c,nm_Nationality__c,nm_Domicile__c,Adhar_Card_Number__c,House_No_Name_Shipping_Account__c,nm_Program__r.Form_Specialisation__c,'+
             'Shipping_Street__c,Locality_Name_Shipping__c,Differently_abled__c,Your_disability__c,City_Shipping_Account__c,State_Province_Shipping__c,Country_Shipping__c,Zip_Postal_Code_Shipping__c,PersonMobilePhone,nm_Program__r.Specialisation__c,'+
-            'PersonEmail,nm_Mother_Tongue__c,nm_Other_Mother_Tongue__c,nm_STDCode__c,Phone,nm_HouseNumber_P__c,nm_Street__c,nm_LocalityName_P__c,nm_City__c,nm_StateProvince__c,nm_Country__c,nm_PostalCode__c,nm_SecondryEmail__c,'+
+            'PersonEmail,nm_Mother_Tongue__c,nm_Other_Mother_Tongue__c,Sem__c,Is_Lateral__c,nm_STDCode__c,Phone,nm_HouseNumber_P__c,nm_Street__c,nm_LocalityName_P__c,nm_City__c,nm_StateProvince__c,nm_Country__c,nm_PostalCode__c,nm_SecondryEmail__c,'+
             'nm_ChooseaProgram__c,Program_Type__c,Specialization_Type__c,nm_Program__c,nm_Program2__c,nm_DefencePersonnel__c,nm_ServiceNumber__c,nm_Relationship__c,nm_DateofCommission__c,nm_ArmedService__c,Rank__c,Eligibility_Criteria_Ref__c,nm_EligiblityCriteria__c,nm_10thPercentage__c,nm_NameofBoard__c,'+
             'nm_YearofCompletion__c,nm_Class12OrDiploma__c,nm_12thPercentage__c,nm_NameofBoard12__c,nm_YearofCompletion12__c,nm_NameofStateBoard10th__c,nm_NameofSchool12__c,nm_Stream__c,nm_NameofStateBoard12th__c,nm_ResultDiploma__c,'+
             'nm_DiplomaName__c,nm_DiplomaSchoolCollegeUniversityname__c,Other_Name_of_Program1__c,nm_StreamDiploma__c,nm_DurationOfDiploma__c,nm_DiplomaYearOfCompletion__c,nm_BachelorsDegreeName__c,'+
@@ -1568,10 +1567,31 @@ public without sharing class FormPageController {
             'Name_of_Program1__c,Master_s_Degree_Name__c,Name_of_College1__c,Name_of_University1__c,Year_of_Passing1__c,Duration_of_Program1__c,Percentage1__c,Graduation_Degree_Mode1__c,nm_Specialization__c,'+
             'Name_of_Program2__c,Name_of_College2__c,Name_of_University2__c,Year_of_Passing2__c,Duration_of_Program2__c,Percentage2__c,Graduation_Degree_Mode2__c,nm_NameofSchool__c,'+
             'Name_of_Program3__c,Name_of_College3__c,Name_of_University3__c,Year_of_Passing3__c,Duration_of_Program3__c,Percentage3__c,Graduation_Degree_Mode3__c,Reason__c,'+
-            'LinkedIn_URL__c,Total_Work_Experience__c,nm_WorkExperience__c,ABCID__c,DEBID__c,AadharCardNumber__c,Student_ID__c,nm_Program__r.nm_ProgramName__c,OwnerId,Locality__c ,Pass_Out__c,Program_Name__c,Passing_Year__c,Passing_Month__c FROM Account';
-    }
+            'LinkedIn_URL__c,Total_Work_Experience__c,is_Video_Call_Verified__c,nm_WorkExperience__c,send_Interview_registration_mail__c,Interview_Status__c,ABCID__c,DEBID__c,AadharCardNumber__c,Student_ID__c,nm_Program__r.nm_ProgramName__c,OwnerId,Locality__c ,Pass_Out__c,Program_Name__c,Passing_Year__c,Passing_Month__c FROM Account';
+    }   
+    public class LateralStudentResponse {
+        public String recordId { get; set; }
+        public String accId { get; set; }
+        public String monthOfPassing { get; set; }
+        public String yearOfPassing { get; set; }
+        public String oldprogram { get; set; }
+        public String enrolledSem { get; set; }
+        public Boolean passout { get; set; }
+        public Account objAcc { get; set; }
 
-    public class DEBDetails {
+        public LateralStudentResponse() {
+            recordId = '';
+            accId = '';
+            monthOfPassing = '';
+            yearOfPassing = '';
+            oldprogram = '';
+            enrolledSem = '';
+            passout = false;
+            objAcc = new Account();
+        }
+    }
+    
+    public class DEBDetails {      
         public DEBDetails() {
             this.isAPICalled = false;
             this.isDEBActive = false;
@@ -1582,6 +1602,7 @@ public without sharing class FormPageController {
             this.debUniqueId = '';
             this.abcUniqueId = '';
             this.isDebInvalid = false;
+            this.debTerms = '';
         }
 
         public Boolean isAPICalled {get;set;}
@@ -1593,6 +1614,7 @@ public without sharing class FormPageController {
         public String debUniqueId {get;set;}
         public String abcUniqueId {get;set;}
         public Boolean isDebInvalid {get;set;}
+        public String debTerms {get;set;}
     }
    
 }

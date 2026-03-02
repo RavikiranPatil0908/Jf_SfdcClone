@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : Balakrishnan
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 03-18-2023
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 02--03--2026
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                Modification
@@ -87,7 +87,7 @@ public class nmPaytmPayResponse {
         objDetails.merchantId = checkMapContainsKeyOrNot('ORDERID',mapOfParameters);
         objDetails.BankTXNId = checkMapContainsKeyOrNot('BANKTXNID',mapOfParameters);
         objDetails.udf1 = checkMapContainsKeyOrNot('MERC_UNQ_REF',mapOfParameters);
-        objDetails.depositAmount = Decimal.valueOf(mapOfParameters.get('TXNAMOUNT'));
+        objDetails.depositAmount =
         objDetails.paymentResponseUrl = nmCommon.getConfigSettings('nm_PaymentResponseUrl_Paytm__c');
         if(Test.isRunningTest()) {
             objDetails.paymentResponseUrl = Label.Site_Url + 'nmPaytmPayResponse';

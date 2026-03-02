@@ -3,8 +3,8 @@
   @Description        : 
   @Author             : shubhranshu
   @Group              : 
-  @Last Modified By   : @BK
-  @Last Modified On   : 21-08-2024
+  @Last Modified By   : @Ravi
+  @Last Modified On   : 02--03--2026
   @Modification Log   : 
   Ver       Date            Author      		    Modification
   1.0    19/3/2020   shubhranshu     Initial Version
@@ -91,6 +91,12 @@
                                 <th class="" scope="col" colspan="2">
                                     <div class="slds-truncate" title="Amount/Month">Role</div>
                                 </th>
+                                <th class="" scope="col" colspan="2">
+                                    <div class="slds-truncate" title="Action">License Action</div>
+                                </th>
+                                   <th class="" scope="col" colspan="2">
+                                    <div class="slds-truncate" title="Action">License Active</div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -110,6 +116,24 @@
                                                     onchange={handleChange} data-key={cp.key}></lightning-combobox>
                                             </div>
                                         </td>
+                                        <td class="slds-cell-edit" role="gridcell" colspan="2">
+                                            <lightning-combobox
+                                                name="licenseAction"
+                                                value={cp.licenseAction}
+                                                placeholder="Select License Action"
+                                                options={cp.licenseOptions}
+                                                onchange={handleLicenseActionChange}
+                                                data-key={cp.key}>
+                                            </lightning-combobox>
+                                        </td>
+                                         <td colspan="2">
+                                            <template if:true={cp.licenseActive}>
+                                                <span class="slds-text-color_success">Active</span>
+                                            </template>
+                                            <template if:false={cp.licenseActive}>
+                                                <span class="slds-text-color_error">Inactive</span>
+                                            </template>
+                                        </td>
                                         <!-- <td data-label="Close Date" colspan="2">
                                             <div class="slds-truncate" title={cp.role}>{cp.role}</div>
                                         </td> -->
@@ -118,36 +142,38 @@
                             </template>
 
                             <tr class="slds-line-height_reset">
-                                <th class="" scope="col">
+                                <th class="" scope="col" colspan="2">
                                     <div class="slds-truncate" title="No Of AEP Profiles">No Of AEP Profiles</div>
                                 </th>
-                                <th class="" scope="col">
+                                <th class="" scope="col" colspan="2">
                                     <div class="slds-truncate" title="Amount/Month">Amount/Month</div>
                                 </th>
-                                <th class="" scope="col">
+                                <th class="" scope="col" colspan="2">
                                     <div class="slds-truncate" title="No Of Months">No Of Months</div>
                                 </th>
-                                <th class="" scope="col">
+                                <th class="" scope="col" colspan="2">
                                     <div class="slds-truncate" title="Total Amount">Total Amount</div>
                                 </th>
                             </tr>
                             <tr class="slds-hint-parent">
-                                <td data-label="Account Name">
+                                <td data-label="Account Name" colspan="2"> 
                                     <div class="slds-truncate" title={calculation.noOfProfiles}>
                                         {calculation.noOfProfiles}
                                     </div>
                                 </td>
-                                <td data-label="Close Date">
+                                <td data-label="Close Date" colspan="2">
                                     <div class="slds-truncate" title={calculation.perMonth}>{calculation.perMonth}</div>
                                 </td>
-                                <td data-label="Prospecting">
+                                <td data-label="Prospecting" colspan="2">
                                     <div class="slds-truncate" title={calculation.monthsBetween}>
                                         {calculation.monthsBetween}
                                     </div>
                                 </td>
-                                <td data-label="Confidence">
+                                <td data-label="Confidence" colspan="2">
                                     <div class="slds-truncate" title={calculation.amount}>{calculation.amount}</div>
                                 </td>
+                                <!-- <td></td>
+                                <td></td> -->
                             </tr>
                         </tbody>
                     </table>
@@ -220,15 +246,18 @@
                         </li>
                     </ul>
                 </div>
+                <div class="slds-col slds-size_11-of-12">
+                    <p class="slds-var-p-vertical_small slds-text-color_error">Note: Kindly please select the applicable License Action for each profile.</p>
+                </div>
                 <div class="slds-grid slds-wrap slds-form-element slds-var-m-vertical_medium">
                     <div class="slds-var-p-vertical_medium">
                         <lightning-input type="checkbox" required="required" name="undertakingForLicense"
                             onchange={handleChange} checked={allowProceed}>
                         </lightning-input>
-                    </div>
+                    </div>                    
                     <div class="slds-col slds-size_11-of-12">
                         <p class="slds-var-p-vertical_small">
-                            We would like to order {calculation.noOfProfiles} no. of Partner
+                            We would like to order/Release {calculation.noOfProfiles} no. of Partner
                             Community Licenses from SVKM's NMIMS. We accept and agree to pay fee of
                             Rs.{calculation.perMonth}/-
                             per month per
@@ -238,8 +267,17 @@
                             NMIMS.
                         </p>
                     </div>
+                    
                 </div>
                 <template if:true={allowProceed}>
+                <template if:true={showReleaseButton}>
+                     <button class="slds-button slds-button_brand slds-m-top_medium"
+                       onclick={handleReleaseSubmit}>
+                       Submit Release Request
+                   </button>
+                     </template>
+
+                     <template if:false={hidePaymentButton}>
                     <div class="slds-grid slds-wrap slds-form-element">
                         <div
                             class="slds-col slds-large-size_1-of-1 slds-medium-size_1-of-1 slds-size_1-of-1 slds-var-p-horizontal_x-small">
@@ -249,6 +287,13 @@
                                 onclick={saveCenterDetailsOnlineMethod}>Make Online Payment</button>
                         </div>
                     </div>
+                    </template>
+
+                     <template if:true={showReleaseSuccessMsg}>
+        <div class="slds-text-color_success slds-m-top_medium">
+            <b>Release license request submitted successfully.</b>
+        </div>
+    </template>
                 </template>
             </template>
         </div>

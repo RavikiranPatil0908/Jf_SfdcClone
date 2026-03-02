@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 23-11-2024
- * @last modified by  : @BK
+ * @last modified on  : 02--03--2026
+ * @last modified by  : @Ravi
 **/
 public without sharing class InterviewFormPageController {
     public Id objectId;
@@ -23,7 +23,6 @@ public without sharing class InterviewFormPageController {
     public String joinLink {get;set;}
     public DateTime bookedTime {get;set;}
     public InterviewDetails objInterviewDetails {get;set;}
-
     public Map<String,String> mapOfInterviewDateTimeVsSlotId {get;set;}
     public Map<String,Integer> mapOfSlotVsAccountlistSize {get;set;}
 
@@ -299,7 +298,7 @@ public without sharing class InterviewFormPageController {
     * @param String slotId 
     * @return Boolean 
     **/
-    private Boolean checkForSlotAvalialbility(String slotId) {
+    public Boolean checkForSlotAvalialbility(String slotId) {
         try {
             Integer lstsize = 0;
             AggregateResult[] groupedResults = [SELECT count(id)lstsize FROM Account WHERE Interview_Slot__c=:slotId];

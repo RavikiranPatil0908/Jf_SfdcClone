@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : Ravi
  * @group             : 
- * @last modified on  : 07-23-2024
- * @last modified by  : Ravi
+ * @last modified on  : 07--02--2026
+ * @last modified by  : @Ravi
 **/
 
 @isTest(SeeAllData = false)
@@ -57,6 +57,29 @@ public with sharing class DashboardPageControllerTracker {
         controller.sendOTP();
         controller.verifyOTP();
         controller.validateSession();
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void unitTest4(){
+        Account testAccount = [  SELECT Id  FROM Account  LIMIT 1 ];
+        DashboardPageController controller = new DashboardPageController();
+        controller.setObjectType('Account');
+        controller.setObjectId(testAccount.Id);
+
+        controller.objDEBRequest.debId = '123456789012';
+        controller.objDEBRequest.isDebTermsAgreed = true;
+
+        Test.startTest();
+        controller.verifyDEBID();
+        Test.stopTest();
+    }
+
+    @isTest
+    static void unitTest5(){
+        Test.startTest();
+        DashboardPageController controller = new DashboardPageController();
+        controller.verifyDEBID();
         Test.stopTest();
     }
 }

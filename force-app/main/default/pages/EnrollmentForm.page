@@ -2,7 +2,7 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 21--08--2025
+  @last modified on  : 13--02--2026
   @last modified by  : @Ravi
 -->
 <apex:page showHeader="false" sidebar="false" standardStylesheets="false" cache="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" controller="HomePageController" action="{!validateSession}">
@@ -339,7 +339,7 @@
                             </li>
                         </apex:outputPanel>
 
-                        <apex:outputPanel rendered="{!IF(objSessionUser.objType == 'Account' && showVideoCall == true,true,false)}" layout="none">
+                        <apex:outputPanel rendered="{!IF(objSessionUser.objType == 'Account',true,false)}" layout="none">
                             <li class="nav-element call-nav-element">
                                 <a href="/EnrollmentForm?nav=call" class="navigate" data-navigate="call">
                                     <i class="material-icons">video_call</i>
@@ -354,15 +354,6 @@
                                 <a href="javascript:void(0);" class="navigate" data-navigate="ticket"> 
                                     <i class="material-icons">question_answer</i>
                                     <span>Raise a Query</span>
-                                </a>
-                            </li>
-                        </apex:outputPanel>
-
-                        <apex:outputPanel rendered="{!IF(showRereg == true, true, false)}" layout="none">
-                            <li class="nav-element reregister-nav-element">
-                                <a href="/EnrollmentForm?nav=reregister" class="navigate" data-navigate="reregister">
-                                    <i class="material-icons">how_to_reg</i>
-                                    <span>Re - Registration</span>
                                 </a>
                             </li>
                         </apex:outputPanel>
@@ -450,10 +441,6 @@
                     <!-- Video Call Page -->
                     <c:VideoCallVerificationPage recordId="{!objSessionUser.recordId}" objType="{!objSessionUser.objType}" rendered="{!IF(pageBlock == 'call' && objSessionUser.objType == 'Account',true, false)}"/>
                     <!-- #END# Video Call Page -->
-
-                    <!-- Re-Registration Form Page -->
-                    <c:ReRegistrationFormComponent recordId="{!objSessionUser.recordId}" objType="{!objSessionUser.objType}" rendered="{!IF(pageBlock == 'reregister' && objSessionUser.objType == 'Account',true, false)}"/>
-                    <!-- #END# Re-Registration Form Page -->
 
                     <!-- Welcome Letter Page -->
                     <c:WelcomeLetterPage recordId="{!objSessionUser.recordId}" rendered="{!IF(pageBlock == 'letter' && objSessionUser.objType == 'Account',true, false)}"/>

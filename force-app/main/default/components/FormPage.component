@@ -2,12 +2,12 @@
   @description       : 
   @author            : @BK
   @group             : 
-  @last modified on  : 03--09--2025
+  @last modified on  : 13--01--2026
   @last modified by  : @Ravi
 -->
 <apex:component controller="FormPageController" access="global" allowDML="true">
     <apex:attribute access="global" name="recordId" type="ID" description="Lead Record Id" assignTo="{!leadId}"/>
-    <!-- <apex:attribute access="global"  name="allowSubmit" type="Boolean" description="To allow to Form Submit" assignTo="{!isEditFormConfirmation}"/> -->
+    <!-- <apex:attribute access="global" name="allowSubmit" type="Boolean" description="To allow to Form Submit" assignTo="{!isEditFormConfirmation}"/> -->
     <apex:attribute access="global" name="formName" type="String" description="Load Form Section" assignTo="{!sectionName}"/>
     <script>
         
@@ -22,7 +22,7 @@
         var objDate = {};
         var responseData = null;
     </script>
-    <!-- icon -->
+    <!-- icon  -->
     <!-- <link href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet"/> -->
 
     <!-- Bootstrap DatePicker Css -->
@@ -49,7 +49,7 @@
         .btn:not(.btn-link):not(.btn-circle) span.noTop { 
             top: 0px;
             margin-left: 0px;
-}
+        }
 
         .btn-custom {
             border-bottom: 5px solid #285e8e;
@@ -70,14 +70,14 @@
         .form-control.custom-input  {
             border: #777 solid 1px;
             padding-left: 7px;
-        
-             }
-             .custom-input:hover,
-             .custom-input:focus {
-                 border-color: #007bff; 
-                 outline:none; 
-                 box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
-             }
+        }
+
+        .custom-input:hover,
+        .custom-input:focus {
+            border-color: #007bff; 
+            outline:none; 
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+        }
     </style>
 
     <div class="container-fluid">
@@ -229,16 +229,10 @@
                         console.log('Mode==>'+'{!JSENCODE(objOTP.isModeVerified)}');
                         if( $('[id$=LateralMessage]').val() != '' && $('[id$=LateralMessage]').val() != null ){
                             showHtmlMessage('Invalid Information',$('[id$=LateralMessage]').val());
-                            setTimeout(function () {
-                                window.location.href = '/EnrollmentForm?nav=form';
-                            }, 2000);
-                            // closeModalSelection();
-                            // location.reload();
-                        } else{
-                            $('[id$=LateralSelectionModal]').show();
                             closeModal();
                         }
-                      
+                        $('[id$=LateralSelectionModal]').show();
+                        closeModal();
                         // let msg = '{!JSENCODE(objOTP.isModeVerified)}' == 'E' ? 'Email Id has been verified' : 'Mobile Number has been verified';
                         // showNotificationMsg('alert-success', msg);
                         // $('[id$=IsLateralModal]').modal('hide');
@@ -257,12 +251,14 @@
                         <apex:outputPanel id="lateralErrorMsg">
                             <p class="errorMsg" style="display:none; color:red;"></p>
                         </apex:outputPanel>
-                         <p>Do you want to opt for Lateral Admission?</p>
+                        
                         <!-- Radio Buttons -->
                         <div id="LateralSelectionModal">
                             <apex:actionFunction name="closelateralModal" action="{!setStudentAsNonLateral}"  reRender="isLateralSection"
                                 oncomplete="closeModal();" status="loadStatus">
                             </apex:actionFunction>
+                             <p>Do you want to opt for Lateral Admission?</p>
+                             <!-- Yes OR No -->
                             <div class="input-group" id="lateralSelection">
                                 <span class="input-group-addon">
                                     <input type="radio" class="with-gap checkInput" id="radio_lateralYes" name="lateralStudent" value="Yes" />
@@ -272,7 +268,6 @@
                                     <input type="radio" class="with-gap checkInput" id="radio_lateralNo" name="lateralStudent" value="No" />
                                     <label for="radio_lateralNo">No</label>
                                 </span>
-
                             </div>
                               <!-- Student Number Input Section -->
                             <div class="form-group" id="sapIdSection" style="display:none;">
@@ -293,6 +288,8 @@
         
                         <div class="form-group" id="OTPModal" style="display:none;">
                             <apex:outputPanel id="sendOtp" rendered="{!IF(objOTP.otpStatus == 'OTP Sent',false,true)}">
+                                <p>Please proceed for registration as since you have cleared ({!lateraldetails.oldprogram}) certification, you will be enrolled
+                                in Sem {!lateraldetails.enrolledSem}</p>
                                 <div class="row text-center">
                                     <div class="col-12 col-sm-5 mb-2 mb-sm-0">
                                         <a href="javascript:void(0);" id="MobileOTP" class="btn btn-block bg-pink waves-effect" onclick="validateOTPForm('M','false');">
@@ -330,7 +327,7 @@
                              html-placeholder="Enter OTP.." />
                      </div>
                      <div class="modal-footer">
-                         <button class="disabledBtn btn btn-lg btn-primary waves-effect" id="reSendBtn" data-dismiss="modal" disabled="disabled" onclick="validateOTPForm('{!JSENCODE(objOTP.OtpMode)}','true');">
+                         <button class="disabledBtn btn btn-lg btn-primary waves-effect" id="reSendBtn" data-dismiss="modal" disabled="disabled" onclick="validateOTPForm('{!JSENCODE(objOTP.OtpMode)}');">
                              Resend OTP <span class="timerSection noTop">(<span class="showTimer noTop"></span><span class="timer hidden"></span>)</span>
                          </button>
                          <a href="javascript:void(0);" class="btn btn-lg btn-primary waves-effect" onclick="return validateOTPInput();">Submit</a>
@@ -355,7 +352,7 @@
                     <input type="hidden" value="{!objOTP.resendOtp}" id="resendOtp"/>
                     <input type="hidden" value="{!isLateralData}" id="isLateralData"/>
                 </apex:outputPanel> 
-                <apex:actionFunction name="IsStudentSelectYes" action="{!getLateralStudentDetailsAPI}" reRender="isLateralSection" immediate="true"
+                <apex:actionFunction name="IsStudentSelectYes" action="{!getLateralStudentDetailsAPI}" reRender="isLateralSection,sendOtp" immediate="true"
                      oncomplete="LateralStatus('Yes');" status="loadStatus">
                     <apex:param name="studentNoParam" value="" assignTo="{!studentNumber}"></apex:param>
                 </apex:actionFunction>
@@ -582,7 +579,7 @@
                                 <div class="form-line">
                                     <apex:outputlabel styleClass="form-label " value="Domicile">
                                         <apex:outputText style="color:red;font-style:bold" value=" *" /></apex:outputLabel>
-                                            <apex:selectList value="{!objLead.nm_Domicile__c}" styleClass="form-control notnull h-34 {!IF(CONTAINS(lateralfields, 'nm_Domicile__c'), '', 'lateralselect')} " multiselect="false" size="1" style="width:99%;"
+                                            <apex:selectList value="{!objLead.nm_Domicile__c}" styleClass="form-control notnull h-34 domicile1 {!IF(CONTAINS(lateralfields, 'nm_Domicile__c'), '', 'lateralselect')}" multiselect="false" size="1" style="width:99%;"
                                             id="domicile">
                                             <apex:selectOptions value="{!Domicile}" />
                                         </apex:selectList>
@@ -598,7 +595,7 @@
                                     <apex:outputlabel styleClass="form-label " value="Nationality">
                                         <apex:outputText style="color:red;font-style:bold" value=" *" /></apex:outputLabel>
                                             <apex:inputField id="nationality" styleClass="form-control notnull nationality {!IF(CONTAINS(lateralfields, 'nm_Nationality__c'), '', 'lateralselect')}" value="{!objLead.nm_Nationality__c}" />
-                                </div>
+                                        </div>    
                             </div>
                         </div>
 
@@ -766,7 +763,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <div class="form-line">
@@ -1016,13 +1012,13 @@
         <!----------------------------------------------- Program Section ------------------------------------------------------------------------>
         <apex:outputPanel id="ProgramInformationSection" styleClass="col-lg-12 col-md-12 col-sm-12 col-xs-12 formSection form3" layout="block" style="display:none;">
             <span>
-                <!-- <apex:actionFunction name="getLateralStudentDetailsAPI" action="{!getLateralStudentDetailsAPI}" reRender="pnlLateral2,AlumniMessageSection"
-                    oncomplete="AlumniStatus();" status="loadStatus"/> -->
+                <apex:actionFunction name="getLateralStudentDetailsAPI" action="{!getLateralStudentDetailsAPI}" reRender="pnlLateral2,AlumniMessageSection"
+                    oncomplete="AlumniStatus();" status="loadStatus"/>
                 <apex:actionFunction name="ChooseProgramChangeProgramDetails" rerender="chooseProgramPanel_ProgramDetails" />
                 <apex:actionFunction name="defenceYesOrNo" rerender="InnerDefencePanel" status="loadStatus" />
-                <!-- <apex:outputPanel id="AlumniMessageSection">
+                <apex:outputPanel id="AlumniMessageSection">
                     <input type="hidden" value="{!alumniMessage}" id="AlumniMessage" />
-                </apex:outputPanel> -->
+                </apex:outputPanel>
             </span>
             <div class="card">
                 <div class="header">
@@ -1232,8 +1228,6 @@
                                                 $('[id$=hscDiplomaRatingType]').hide();
 
                                                 for (var key in restrictedFieldMap) {
-                                                    console.log('HSC1 key ==>'+key)
-                                                    console.log('HSC2 key ==>'+selectedOption+'-HSC')
                                                     if (key == selectedOption + '-HSC') {
                                                         if (restrictedFieldMap[key] != null && restrictedFieldMap[key] != '') {
                                                             console.log(selectedOption + '---' + key + '-----value----' + restrictedFieldMap[key]);
@@ -1495,42 +1489,55 @@
                             </div>
                         </div>
                     </div>
-
-                    
-                    <apex:actionFunction name="reRenderDEBVerificationDetails" reRender="DEBResponseSection"  />
-
-                    <apex:outputPanel id="DEBResponseSection">
-                        <script>
-                            if('{!debDetailObject.isAPICalled}' === 'true') {
-                                $('[id$=isActive]').val('{!debDetailObject.isDEBActive}');
-                                $('[id$=dobMatched]').val('{!debDetailObject.isDOBMatched}');
-                                $('[id$=debUniqueId]').val('{!debDetailObject.debUniqueId}');
-                                $('[id$=debMatched]').val('{!debDetailObject.isDebMatched}');
-                                $('[id$=debDob]').val('{!debDetailObject.dateOfBirthDEB}');
-                                $('[id$=isDebInvalid]').val('{!debDetailObject.isDebInvalid}');
-                                // $('[id$=abcMatched]').val('{!debDetailObject.isABCMatched}');
-                                // $('[id$=abcUniqueId]').val('{!debDetailObject.abcUniqueId}');
-                                DEBStatus();
-                            }
-                        </script>
-                    </apex:outputPanel>
-
-                    <div class="row clearfix">
-                        <div class="col-md-9">
-                            <div class="verifyDEBId" style="display:none">
-                                Verify Your ABC ID and DEB ID : 
-                                <apex:commandLink styleClass="btn btn-primary btn-custom" id="verifyDEBIdBtn" value="Click Here" action="{!verifyDEBID}" 
-                                    oncomplete="reRenderDEBVerificationDetails();" onclick="showLoader();">
-                                </apex:commandLink>
-                            </div>
-                            <div class="verifiedButton" style="display:none">
-                                <a class="btn btn-success" href="javascript:void(0);">Verified
-                                    <i class="material-icons">done</i>
-                                </a>
-                            </div>
+                    <apex:outputPanel styleClass="col-lg-12 col-md-12 col-sm-12 col-xs-12 debTerms" style="display: none" layout="block">
+                        <div class="row clearfix">
+                            <input type="checkbox" id="agreeTerms" name="checkbox" class="radio-col-blue agreeTerms" />
+                            <label for="agreeTerms"><b><span style="color:#c00">* </span>{!debDetailObject.debTerms}</b></label>
                         </div>
-                        <div class="col-md-3"></div>
-                    </div>
+        
+                
+                    </apex:outputPanel>
+                        <apex:inputHidden html-class="hdnDebTerms" value="{!objLead.Agree_DEB_Terms__c}"/>
+                        <!-- <apex:inputHidden html-class="hdnDebTermsAndCondition" value="{!objLead.DEB_Terms_And_Condition__c}"/> -->
+                        <apex:inputHidden html-class="hdnLabelTermsAndCondition" value="{!debDetailObject.debTerms}"/>
+
+                    <apex:outputPanel rendered="{!IF($Label.Enable_DEB_Verification = 'Yes', true, false)}">
+                        <apex:actionFunction name="reRenderDEBVerificationDetails" reRender="DEBResponseSection"  />
+
+                        <apex:outputPanel id="DEBResponseSection">
+                            <script>
+                                if('{!debDetailObject.isAPICalled}' === 'true') {
+                                    $('[id$=isActive]').val('{!debDetailObject.isDEBActive}');
+                                    $('[id$=dobMatched]').val('{!debDetailObject.isDOBMatched}');
+                                    $('[id$=debUniqueId]').val('{!debDetailObject.debUniqueId}');
+                                    $('[id$=debMatched]').val('{!debDetailObject.isDebMatched}');
+                                    $('[id$=debDob]').val('{!debDetailObject.dateOfBirthDEB}');
+                                    $('[id$=isDebInvalid]').val('{!debDetailObject.isDebInvalid}');
+                                    // $('[id$=abcMatched]').val('{!debDetailObject.isABCMatched}');
+                                    // $('[id$=abcUniqueId]').val('{!debDetailObject.abcUniqueId}');
+                                    DEBStatus();
+                                }
+                            </script>
+                        </apex:outputPanel>
+
+                        <div class="row clearfix">
+                            <div class="col-md-9">
+                                <div class="verifyDEBId" style="display:none">
+                                    Verify Your ABC ID and DEB ID : 
+                                    <apex:commandLink styleClass="btn btn-primary btn-custom" id="verifyDEBIdBtn" value="Click Here" action="{!verifyDEBID}" 
+                                        oncomplete="reRenderDEBVerificationDetails();" onclick="showLoader();">
+                                    </apex:commandLink>
+                                </div>
+                                <div class="verifiedButton" style="display:none">
+                                    <a class="btn btn-success" href="javascript:void(0);">Verified
+                                        <i class="material-icons">done</i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                    </apex:outputPanel>
+                    
                     
                     <!-- <apex:outputPanel rendered="{!!islateralData}">
                         <h2 class="card-inside-title">Are you an exsiting student with NCDOE / Alumni</h2>
@@ -2698,5 +2705,5 @@
     <!-- Custom Script -->
     <c:FormValidationPage isLateralDataFetched="{!isLateralData}" islateral="{!objLead.Is_Lateral__c}" isOtpVerified="{!isVerified}" program="{!objLead.nm_ChooseaProgram__c}"
                           lateralAddmissionNotAllowProgramList="{!$Label.Not_allow_for_lateral_Admission}" leadStatus="{!objLead.Status}" />
-
+                          
 </apex:component>

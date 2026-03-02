@@ -4,7 +4,7 @@
  * @Author             : phalguni
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 21--07--2025
+ * @Last Modified On   : 16--02--2026
  * @Modification Log   : 
  * Ver       Date            Author                 Modification
  * 1.0    21/1/2020   phalguni     Initial Version
@@ -61,9 +61,12 @@ public class nmAccountTriggerHandler
         // ChkLateralFutureSemvs2(triggerNew, mapAccountNewMap,'Insert');
 
         updateDEBDetails(triggerNew);
+
+        UpdateAgencyHistory(triggerNew);
         // To update Account and opportunity Owner
        // UpdateAccToOpp(triggerNew,mapAccountNewMap,'Insert');
        UpdateOppOwner(triggerNew,mapAccountNewMap,'Insert');
+
     }
     
     public void BeforeInsert(List<Account> triggerNew, map<id, Account> mapAccountOldMap)
@@ -542,7 +545,7 @@ public class nmAccountTriggerHandler
             system.debug('inside isEmpty lstOldAccountOfLateral ===>'+SetOFstudent);
 
             if(SetOFstudent.size() > 0) {
-                lstOldAccountOfLateral = [select id,Name,FirstName, LastName,Student_ID__c,Ref__c,nm_DateOfBirth__c,Student_Number_Lateral__c,OldAccount__c from Account where Ref__c IN:SetOFstudent ];   //and Pass_Out__c =true
+                lstOldAccountOfLateral = [select id,Name,FirstName, LastName,Student_ID__c,Ref__c,nm_DateOfBirth__c,Student_Number_Lateral__c,OldAccount__c from Account where Ref__c IN:SetOFstudent and Pass_Out__c =true ];   //and Pass_Out__c =true 
             }
 
                 
@@ -645,9 +648,10 @@ public class nmAccountTriggerHandler
            {    
               criteriaId = objAcc.nm_EligiblityCriteria__c;
               AccountId = objAcc.id;
-              if(objacc.nm_Category__c !=accountOldMap.get(objacc.id).nm_Category__c)
+              if(objacc.nm_Category__c !=null && objacc.nm_Category__c !='General')    //if(objacc.nm_Category__c !=accountOldMap.get(objacc.id).nm_Category__c)  --> updated by ravi to check for acedmic percentage change if not general 
               {
                 //calling UpdateDocumentSubmittedStatusOnAccount method for update student
+                system.debug('objacc.nm_Category__c'+objacc.nm_Category__c+'--'+criteriaId);
                 nmDocHandler.UpdateDocumentsOnAccountForChangeInEligibilityCriteria(lstAccount,criteriaId,AccountId);
               }
            }
@@ -861,8 +865,7 @@ public class nmAccountTriggerHandler
 
                       if((objAccont.nm_StudentStatus__c == 'Confirmed' 
                       || oldmapAccount.get(objAccont.id).nm_StudentStatus__c == 'Confirmed' 
-                      || (objAccont.nm_StudentNo__c!=null && objAccont.nm_StudentNo__c!='' )) && !lstAccountStatus.contains(objAccont.nm_StudentStatus__c))
-                {
+                      || (objAccont.nm_StudentNo__c!=null && objAccont.nm_StudentNo__c!='' )) && !lstAccountStatus.contains(objAccont.nm_StudentStatus__c)) {
                   
                     // update Student Profile on Student Zone if Email or Mobile or Mother Name or Father Name change on SFDC 
                     if((objAccont.Mother_First_Name__c != null &&  objAccont.Mother_First_Name__c != oldmapAccount.get(objAccont.id).Mother_First_Name__c)
@@ -870,7 +873,7 @@ public class nmAccountTriggerHandler
                         || (objAccont.FirstName!= null &&  objAccont.FirstName!= oldmapAccount.get(objAccont.id).FirstName)
                         || (objAccont.LastName!= null &&  objAccont.LastName!= oldmapAccount.get(objAccont.id).LastName)
                         || (objAccont.nm_SpouseName__c!= null &&  objAccont.nm_SpouseName__c!= oldmapAccount.get(objAccont.id).nm_SpouseName__c)
-                        || (objAccont.ValidUptoR__c != null &&  objAccont.ValidUptoR__c != oldmapAccount.get(objAccont.id).ValidUptoR__c )
+                          || (objAccont.ValidUptoR__c != null &&  objAccont.ValidUptoR__c != oldmapAccount.get(objAccont.id).ValidUptoR__c )
                         || (objAccont.Father_First_Name__c != null &&  objAccont.Father_First_Name__c != oldmapAccount.get(objAccont.id).Father_First_Name__c)
                         || (objAccont.PersonEmail != null &&  objAccont.PersonEmail != oldmapAccount.get(objAccont.id).PersonEmail)
                         || (objAccont.PersonMobilePhone != null &&  objAccont.PersonMobilePhone != oldmapAccount.get(objAccont.id).PersonMobilePhone)
@@ -1182,6 +1185,42 @@ public class nmAccountTriggerHandler
         }
     }
 
+    public void UpdateAgencyHistory(List<Account> lstAccount) {
+        //map to store account id against lead id
+        Map<String,Id> mapLeadAccountId = new Map<String,Id>();
+        for (Account objAccount : lstAccount) {
+            if(String.isNotBlank(objAccount.nm_LeadId__c)) {
+                mapLeadAccountId.put(objAccount.nm_LeadId__c, objAccount.id);
+            }
+        }
+
+        //Query to get data of recently converted lead
+        List<Lead_Agency_History__c> lstAgencyHistory = ([SELECT Id,Lead__c,Account__c FROM Lead_Agency_History__c WHERE Lead__c IN :mapLeadAccountId.keySet()]);
+
+        if(!lstAgencyHistory.isEmpty()){
+            //List of DEB Details data to be updated
+            List<Lead_Agency_History__c> lstAgencyHistoryToUpdate = new List<Lead_Agency_History__c>();
+
+            for(Lead_Agency_History__c objAgencyHistory : lstAgencyHistory) {
+                //updating id of account
+                Id leadId = objAgencyHistory.Lead__c; 
+                objAgencyHistory.Account__c = mapLeadAccountId.get(String.valueOf(leadId));
+                System.debug('<----Account for DEB Detail----->'+objAgencyHistory.Account__c);
+                objAgencyHistory.Lead__c = null;
+                System.debug('<--- objAgencyHistory.Lead__c--->'+ objAgencyHistory.Lead__c);
+                
+                //Adding updated data in list           
+                lstAgencyHistoryToUpdate.add(objAgencyHistory);
+            }
+
+            //Updating List of DEB Details
+            if(!lstAgencyHistoryToUpdate.isEmpty()){
+                update lstAgencyHistoryToUpdate;
+            }
+        }
+    }
+
+
     public void documentApproval(list<Account> lstAccount,Map<id,Account> oldMap) {
         
         set<id> setAccId = new set<id>();
@@ -1212,8 +1251,7 @@ public class nmAccountTriggerHandler
             { 
                 system.debug('objAccount.nm_StudentStatus__c --> ' + objAccount.nm_StudentStatus__c);
                 lstDocToAddCoordinate.add(objAccount);
-        }
-
+            }
             else if((objAccount.nm_StudentStatus__c=='Admission form & documents Approved' || objAccount.nm_StudentStatus__c=='Admission Form & Documents Provisional') && objAccount.nm_StudentStatus__c != oldMap.get(objAccount.id).nm_StudentStatus__c)
             {
                 setAccId.add(objAccount.id);
@@ -1239,7 +1277,7 @@ public class nmAccountTriggerHandler
             {
                 mapOfEventName.put('eventName','Component Added');
                 setAccId.add(objAccount.id);
-            } else if(String.isNotBlank(objAccount.DEBID__c) && objAccount.is_Deb_verified__c && objAccount.is_Deb_verified__c !=oldMap.get(objAccount.id).is_Deb_verified__c){
+            } else if(String.isNotBlank(objAccount.DEBID__c) && ((objAccount.is_Deb_verified__c && objAccount.is_Deb_verified__c !=oldMap.get(objAccount.id).is_Deb_verified__c) || (System.Label.Enable_DEB_Verification == 'No' && (objAccount.DEBID__c != oldMap.get(objAccount.id).DEBID__c)))){
                 mapOfEventName.put('eventName','DEB ID Verified');
                 setAccId.add(objAccount.id);
             }/*else if(objAccount.Adhar_Card_Number__c!=null && objAccount.Adhar_Card_Number__c!=oldMap.get(objAccount.id).Adhar_Card_Number__c)

@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : @BK
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 03-11-2023
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 23--02--2026
  * @Modification Log   : 
  * Ver       Date            Author      		    Modification
  * 1.0    21/3/2020   shubhranshu     Initial Version
@@ -100,7 +100,7 @@ public without sharing class purchaseLicenseForAEPTracker {
         // purchaseLicenseForAEPController.rollbackCentersDetails(0,center.Id);
         purchaseLicenseForAEPController.DebitShareEntry(center.Id,18990);
         purchaseLicenseForAEPController.rollbackDebitShareEntry(center.Id);
-        String cpJson = '{"a1jO0000001HpwBIAS":"Manager"}';
+        String cpJson = '{"a1jO0000001HpwBIAS":{"Name":"Test CP","Role":"User","Action":"renew"}}';
         purchaseLicenseForAEPController.saveCentersDetailsForOnline(3,202.05,cpJson,center.Id);
         purchaseLicenseForAEPController.getNoOfMonths();
         purchaseLicenseForAEPController.sendNotificationEmail(center.Name, '3','18990','10.72',lstContactInsert,'www.google.com','IC share');

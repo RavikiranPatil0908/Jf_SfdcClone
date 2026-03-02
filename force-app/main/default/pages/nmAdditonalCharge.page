@@ -3,8 +3,8 @@
   @Description        :
   @Author             : Balakrishnan
   @Group              :
-  @Last Modified By   : @BK
-  @Last Modified On   : 03-01-2024
+  @Last Modified By   : @Ravi
+  @Last Modified On   : 17--01--2026
   @Modification Log   :
   ==============================================================================
   Ver         Date                     Author              Modification
@@ -116,7 +116,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <label for="first_name">{!displayName}</label>
-                                                    <input type="Text" disabled="true" value="{!If(studentInfo!='',studentInfo,studentNo)}" class="form-control" />
+                                                    <input type="Text" disabled="true" value="{!If(studentInfo !='',studentInfo,studentNo)}" class="form-control" />
                                                     <br/>
                                                     <apex:outputPanel rendered="{!(NOT(CONTAINS(paymentFor,'Late Fees')) || CONTAINS(paymentFor,'New AEP License Fee') || CONTAINS(paymentFor,'Application Fee')) }">
                                                         <div class="form-group">
@@ -131,8 +131,6 @@
                                                             <input type="Text" disabled="true" value="{!mapOfProductAndAmount[paymentFor]}" class="form-control"></input>
                                                         </div>
                                                     </apex:outputPanel>
-
-
                                                     <!-------------------------------Late Fee Note :-------------------------->
                                                     <apex:outputPanel rendered="{!applicableLateFee > 0}">
                                                         <div class="row">
@@ -416,8 +414,13 @@
                                         <input id="icicigateway" type="radio" name="paymentGatewayGrp" value="ICICI GateWay" />
                                         <label class="drinkcard-cc icicigateway" for="icicigateway" />
                                     </apex:outputPanel>
+                                    
+                                    <apex:outputPanel rendered="{!IF(gatewayMessages != '',true,false)}" styleclass="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                        <span style="color:#c00"><b>Note: </b>{!gatewayMessages}</span>
+                                    </apex:outputPanel>
 
                                 </div>
+                                
                                 <!-- <div>
                                     <p>Note: currently we are facing low success rate for payment made using billdesk</p>
                                 </div> -->

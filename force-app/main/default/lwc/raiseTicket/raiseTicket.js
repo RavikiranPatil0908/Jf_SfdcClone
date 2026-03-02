@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : 
  * @group             : 
- * @last modified on  : 22--04--2025
+ * @last modified on  : 08--12--2025
  * @last modified by  : @Ravi
  * Modifications Log
  * Ver   Date           Author   Modification
@@ -81,7 +81,6 @@ export default class RaiseTicket extends LightningElement {
 				getDependentPicklistValues({categoryValue: this.category, program: this.program}).then(result => {
 					for(let i=0; i<result.length; i++){
 						this.options = [ ...this.options, {label: result[i], value: result[i]} ];
-						console.log(this.options);
 					}						
 				})
 				.catch(error => {
@@ -123,23 +122,35 @@ export default class RaiseTicket extends LightningElement {
     }
 		
 		handleNoChange(event){
-				this.studentNo = event.target.value;
+				this.studentNo = event.target.value.trim();
 				this.caseMap['studentNo'] = this.studentNo;
+				this.subCategory = '';
+				this.subject ='';
+				this.category ='';
+				this.options = [];
+				this.program =''
 				this.studentDetails();
 		}
 		
 		studentDetails(){
+			this.error = '';
 			if(this.studentNo.length == 11){
 				getStudentDetails({sno: this.studentNo, rno: '', email: '', mobile: ''}).then(result => {
 					console.log(result);
+					if (JSON.stringify(result) !== '{}') {
 					this.program = result.program;
 					this.caseMap['converted'] = '';
 					this.error = '';
+					} else {
+						this.error ='No student found. Re-enter the Sap Id'
+					}
       	})
       	.catch(error => {
 					this.error = 'No student found. Re-enter the Sap Id';
         	console.log(error);
       	});
+			} else {
+				this.error = 'Please enter a valid Sap Id';
 			}
 		}
 		

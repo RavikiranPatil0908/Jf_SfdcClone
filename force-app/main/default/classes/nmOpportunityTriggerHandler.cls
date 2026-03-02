@@ -4,7 +4,7 @@
  * @Author             : shubhranshu
  * @Group              : 
  * @Last Modified By   : @Ravi
- * @Last Modified On   : 21--05--2025
+ * @Last Modified On   : 10--09--2025
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -163,7 +163,7 @@ public class nmOpportunityTriggerHandler
     public void UpdateICChangeStatusForPaymentApproved(Opportunity ObjOpp,IC_Change_Request__c objICChange)
     {
       System.debug('<-------Entered UpdateICCHange method--------->');
-        if(objOpp.StageName =='Closed Won')
+        if(objOpp.StageName =='Closed Won' && ObjOpp.Student_Status__c=='Confirmed')
         {
             objICChange.Status__c ='Approved';
             Update objICChange;

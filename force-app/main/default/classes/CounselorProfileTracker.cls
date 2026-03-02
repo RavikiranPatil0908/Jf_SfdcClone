@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : @BK
  * @group             : 
- * @last modified on  : 03-01-2023
- * @last modified by  : @BK
+ * @last modified on  : 23--02--2026
+ * @last modified by  : @Ravi
 **/
 @isTest(SeeAllData=false)
 public class CounselorProfileTracker {
@@ -17,9 +17,9 @@ public class CounselorProfileTracker {
         User portalAccountOwner1 = new User(
             UserRoleId = portalRole.Id,
             ProfileId = profile1.Id,
-            Username = System.now().millisecond() + 'test2@test.com',
+            Username = System.now().millisecond() + 'testtw2@test.com',
             Alias = 'batman',
-            Email='bruce22.wayne@wayneenterprises.com',
+            Email='bruce22.ayne@wayneenterprises.com',
             EmailEncodingKey='UTF-8',
             Firstname='Bruce',
             Lastname='Wayne',

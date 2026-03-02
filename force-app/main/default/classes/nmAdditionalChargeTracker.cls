@@ -3,8 +3,8 @@
  * @Description        : 
  * @Author             : Bala
  * @Group              : 
- * @Last Modified By   : @BK
- * @Last Modified On   : 08-20-2022
+ * @Last Modified By   : @Ravi
+ * @Last Modified On   : 23--02--2026
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author                    Modification
@@ -40,7 +40,7 @@ private class nmAdditionalChargeTracker{
         Counsellor_Profile__c co = new Counsellor_Profile__c();
         insert co;
         ApexPages.currentPage().getParameters().put('id',objPayment.id);
-        String cj = '{"' + co.Id +'":"User"}';
+        String cj = '{"' + co.Id + '":{"Name":"Test CP","Role":"User","Action":"renew"}}';
         nmAdditonalChargePaymentController  Controller = new nmAdditonalChargePaymentController ();
         controller.IsReregistartion=TRUE;
         Controller.showMakePaymentButtonAfterWindowClosedDateAndShowDDMessgae();
@@ -244,6 +244,18 @@ private class nmAdditionalChargeTracker{
         Test.stopTest();
         
     }
+
+    //    @IsTest
+    // static void methodName4(){
+    //   Opportunity opp = [SELECT Id From Opportunity LIMIT 1];
+    //     nmAdditonalChargePaymentController  Controller = new nmAdditonalChargePaymentController();
+    //      string idtest =opp.Id;
+    //     Controller.updateOpportunityFeesType(idtest);
+    //     Test.stopTest();
+        
+    // }
+
+
     
     public static Void LoadData(){
         Profile profile = [SELECT Id FROM Profile WHERE Name=:'Super Admin' limit 1];

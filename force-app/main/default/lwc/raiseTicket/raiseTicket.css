@@ -17,6 +17,10 @@ body {
    max-width: 300px;
 }
 
+.error-text lightning-formatted-rich-text {
+	color: red;
+}
+
 /* Title styling */
 .form-title {
 	font-size: 2rem;
